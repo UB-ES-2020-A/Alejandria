@@ -76,10 +76,18 @@ WSGI_APPLICATION = 'Alejandria.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # Se configura en el pgadmin del postgresql
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'Alejandria_DB', # Poned este nombre todos en el pgadmin al crear la db local
+        'USER': 'Alejandro', # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
+        'PASSWORD': 'Password1', # usad esta constraseña
+        'HOST': 'localhost', # como hemos dicho es una db local
+        'PORT':'5432' # a este puerto
     }
+
+    # Despues de configurar la
 }
+
 
 
 # Password validation
@@ -104,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
