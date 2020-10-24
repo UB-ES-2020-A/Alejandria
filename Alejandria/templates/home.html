@@ -1,15 +1,47 @@
 <!DOCTYPE html>
+<!---  --->
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Alejandria</title>
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+    <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font.css' %}">
+<!--    <link rel="stylesheet" href="{% static 'css/color_buttons.scss' %}">-->
+<!--    <link rel="stylesheet/less" type="text/css" href="styles.less" />-->
+    <script src="//cdn.jsdelivr.net/npm/less" ></script>
+<!--    <link rel="stylesheet" href="{% static 'css/main.css' %}">-->
+
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 </head>
 <body>
+
+<div class="" style="text-align: center;margin-top:5%">
+  <button class="icon-btn add-btn">
+    <div class="add-icon"></div>
+    <div class="btn-txt">Add</div>
+  </button>
+</div>
+<div class="" style="text-align: center; margin-top: 8px;">
+  <button class="icon-btn add-btn">
+    <div class="btn-txt">Remove</div>
+  </button>
+</div>
+<div style="text-align: center; margin-top:30px;">
+  <hr class="main-hr" />
+  <button class="icon-btn add-btn">
+    <div class="add-icon"></div>
+    <div class="btn-txt">Add</div>
+  </button>
+  <button class="icon-btn add-btn">
+    <div class="btn-txt">Remove</div>
+  </button>
+ <div>
     <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="#">Alejandría</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,7 +51,11 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+      <button class="buttonText" type="submit">About</button>
+        <button class="buttonText" type="submit">FAQS</button>
+        <button class="buttonText" type="submit">Sign in</button>
+        <button class="buttonText" type="submit">Register</button>
     </form>
 
     <div class="nav-item dropdown" style="position:absolute; right:0px;">
@@ -41,11 +77,90 @@
 </nav>
 
     <div>
+
       <img src="/static/recent_books.jpg" class="img-responsive center-block d-block mx-auto" alt="centered image" style="margin-top:10px; ">
         <!--- falta caption - background casa del libro --->
     </div>
 
+<div id='hold_images'></div>
+
+<a class="button">
+  <i class="fa fa-cloud-download"></i>
+  <strong>Download</strong>
+</a>
+<a class="button button-yellow">
+  <i class="fa fa-clock-o"></i>
+  Waiting for <strong>confirmation</strong>
+</a>
+<a class="button button-orange">
+  <i class="fa fa-exclamation-triangle"></i>
+  Watch <strong>out!</strong>
+</a>
+<a class="button button-red">
+  <i class="fa fa-times"></i>
+  Order <strong>cancelled</strong>
+</a>
+<a class="button button-purple">
+  <i class="fa fa-rocket"></i>
+  Fly me to the <strong>Moon</strong>
+</a>
+<a class="button button-blue">
+  <i class="fa fa-globe"></i>
+  Hello <strong>World</strong>
+</a>
+<a class="button button-green">
+  <i class="fa fa-check"></i>
+  Order <strong>received</strong>
+</a>
+
 
 
 </body>
+
+
+<script>
+
+images = {
+   "1" : "{% static 'test.png' %}",
+   "2" : "{% static 'test.png' %}",
+   "3" : "{% static 'test.png' %}",
+   "4" : "{% static 'test.png' %}",
+   "5" : "{% static 'test.png' %}",
+   "6" : "{% static 'test.png' %}",
+   "7" : "{% static 'test.png' %}",
+   "8" : "{% static 'test.png' %}",
+   "9" : "{% static 'test.png' %}",
+   "10" : "{% static 'test.png' %}"
+}
+
+Object.keys(images).forEach(function(path) {
+    $('#hold_images').append("<img class='my_img' width=200 height=400 src=" + images[path] + ">");
+});
+
+$('body').append("<i id='icon_right'></i>");
+$('body').append("<i id='icon_left'></i>");
+
+add_icon('#icon_right', 'fa fa-chevron-right', '40px', 'white');
+add_icon('#icon_left', 'fa fa-chevron-left', '40px', 'white');
+
+$(document).ready(function(){
+    $('.my_img').hover(function() {
+        $(this).addClass('transition');
+
+    }, function() {
+        $(this).removeClass('transition');
+    });
+});
+
+$(document).on('click', '#icon_right, #icon_left', function() {
+    if($(this).attr('id') == 'icon_right') {
+        $('body').animate({scrollLeft: 1000}, 800);
+        } else {
+        $('body').animate({scrollLeft: -1000}, 800);
+    }
+});
+
+</script>
+
+
 </html>
