@@ -1,0 +1,32 @@
+body {
+background: #141414;
+}
+#hold_images {
+display: inline-block;
+white-space: nowrap;
+}
+#icon_right {
+right: 20;
+cursor: pointer;
+margin-top: -200px;
+position: fixed;
+}
+#icon_left {
+left: 20;
+cursor: pointer;
+margin-top: -200px;
+position: fixed;
+}
+.transition {
+    -webkit-transform: scale(1.2);
+    -moz-transform: scale(1.2);
+    -o-transform: scale(1.2);
+    transform: scale(1.2);
+}
+img {
+    -webkit-transition: all .4s ease-in-out;
+    -moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -ms-transition: all .4s ease-in-out;
+    cursor: pointer;
+}
