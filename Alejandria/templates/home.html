@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 
-<!---  --->
 {% load static %}
 
 <html lang="en">
@@ -10,16 +9,18 @@
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
     <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
     <link rel="stylesheet" href="{% static 'css/font.css' %}">
-    <link rel="stylesheet" href="{% static 'css/scroll.css' %}">
     <link rel="stylesheet" href="{% static 'css/card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>
 
 
-<!--    <link rel="stylesheet" href="{% static 'css/color_buttons.scss' %}">-->
 <!--    <link rel="stylesheet/less" type="text/css" href="styles.less" />-->
     <script src="//cdn.jsdelivr.net/npm/less" ></script>
 <!--    <link rel="stylesheet" href="{% static 'css/main.css' %}">-->
@@ -30,7 +31,7 @@
 
 </head>
 <body>
-
+<!--
     <div class="" style="text-align: center;margin-top:5%">
       <button class="icon-btn add-btn">
         <div class="add-icon"></div>
@@ -51,7 +52,7 @@
       <button class="icon-btn add-btn">
         <div class="btn-txt">Remove</div>
       </button>
-     </div>
+     </div>-->
         <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand" href="#">Alejandría</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,16 +88,205 @@
       </div>
     </nav>
 
-        <div>
-          <img src="/static/recent_books.jpg" class="img-responsive center-block d-block mx-auto" alt="centered image" style="margin-top:10px; ">
-<!--             falta caption - background casa del libro -->
-        </div>
+<!--        <div>-->
+<!--          <img src="/static/recent_books.jpg" class="img-responsive center-block d-block mx-auto" alt="centered image" style="margin-top:10px; ">-->
+<!--&lt;!&ndash;             falta caption - background casa del libro &ndash;&gt;-->
+<!--        </div>-->
 
 
 
-<div class="container">
+<div class="container-fluid">
 	<div class="row">
 		<div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+            <div class="MultiCarousel-inner">
+                <div class="item" style="width: 185px;">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary leftLst"><</button>
+            <button class="btn btn-primary rightLst">></button>
+        </div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel1"  data-interval="1000">
             <div class="MultiCarousel-inner">
                 <div class="item">
                     <div class="card" style="width: 11rem;">
@@ -211,51 +401,69 @@
                     </div>
                 </div>
                 <div class="item">
-                    <div class="pad15">
-                        <p class="lead">Multi Item Carousel</p>
-                        <p>₹ 1</p>
-                        <p>₹ 6000</p>
-                        <p>50% off</p>
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
                     </div>
                 </div>
                 <div class="item">
-                    <div class="pad15">
-                        <p class="lead">Multi Item Carousel</p>
-                        <p>₹ 1</p>
-                        <p>₹ 6000</p>
-                        <p>50% off</p>
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
                     </div>
                 </div>
                 <div class="item">
-                    <div class="pad15">
-                        <p class="lead">Multi Item Carousel</p>
-                        <p>₹ 1</p>
-                        <p>₹ 6000</p>
-                        <p>50% off</p>
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
                     </div>
                 </div>
                 <div class="item">
-                    <div class="pad15">
-                        <p class="lead">Multi Item Carousel</p>
-                        <p>₹ 1</p>
-                        <p>₹ 6000</p>
-                        <p>50% off</p>
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
                     </div>
                 </div>
                 <div class="item">
-                    <div class="pad15">
-                        <p class="lead">Multi Item Carousel</p>
-                        <p>₹ 1</p>
-                        <p>₹ 6000</p>
-                        <p>50% off</p>
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
                     </div>
                 </div>
                 <div class="item">
-                    <div class="pad15">
-                        <p class="lead">Multi Item Carousel</p>
-                        <p>₹ 1</p>
-                        <p>₹ 6000</p>
-                        <p>50% off</p>
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
                     </div>
                 </div>
             </div>
@@ -265,22 +473,222 @@
 	</div>
 </div>
 
+<div class="container-fluid">
+	<div class="row">
+		<div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel2"  data-interval="1000">
+            <div class="MultiCarousel-inner">
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="card" style="width: 11rem;">
+                      <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title" style="padding-top:15px">Patria</h5>
+                        <p class="card-text">Fernando Aramburu</p>
+                          <p class="card-text">Preu: 24,95€</p>
+                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary leftLst"><</button>
+            <button class="btn btn-primary rightLst">></button>
+        </div>
+	</div>
+</div>
+
+<div class="buttons-cart">
+  <div class="container-cart">
+      <a href="https://twitter.com/masuwa1018" class="btn-cart effect01" target="_blank"><span>Add to cart</span></a>
+  </div>
+</div>
+
+
+
 
 </body>
 
 
 <script>
+
+
 $(document).ready(function () {
     var itemsMainDiv = ('.MultiCarousel');
     var itemsDiv = ('.MultiCarousel-inner');
     var itemWidth = "";
 
-    $('.leftLst, .rightLst').click(function () {
+    $('.leftLst, .rightLst').hover(function () {
         var condition = $(this).hasClass("leftLst");
         if (condition)
             click(0, this);
         else
-            click(1, this)
+            click(1, this);
+
     });
 
     ResCarouselSize();
@@ -312,21 +720,22 @@ $(document).ready(function () {
 
             if (bodyWidth >= 1200) {
                 incno = itemsSplit[3];
-                itemWidth = sampwidth / incno;
+                itemWidth = sampwidth / (incno*1.75);
             }
             else if (bodyWidth >= 992) {
                 incno = itemsSplit[2];
-                itemWidth = sampwidth / incno;
+                itemWidth = sampwidth / (incno*1.75);
             }
             else if (bodyWidth >= 768) {
                 incno = itemsSplit[1];
-                itemWidth = sampwidth / incno;
+                itemWidth = sampwidth / (incno*1.75);
             }
             else {
                 incno = itemsSplit[0];
-                itemWidth = sampwidth / incno;
+                itemWidth = sampwidth / (incno*1.75);
             }
-            $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers });
+            itemWidth = 180 /* distancia entre carts */
+            $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers});
             $(this).find(itemClass).each(function () {
                 $(this).outerWidth(itemWidth);
             });
@@ -377,77 +786,6 @@ $(document).ready(function () {
 
 });
 
-
-
-<!--images = {-->
-<!--   "1" : "{% static 'test.png' %}",-->
-<!--   "2" : "{% static 'test.png' %}",-->
-<!--   "3" : "{% static 'test.png' %}",-->
-<!--   "4" : "{% static 'test.png' %}",-->
-<!--   "5" : "{% static 'test.png' %}",-->
-<!--   "6" : "{% static 'test.png' %}",-->
-<!--   "7" : "{% static 'test.png' %}",-->
-<!--   "8" : "{% static 'test.png' %}",-->
-<!--   "9" : "{% static 'test.png' %}",-->
-<!--   "10" : "{% static 'test.png' %}",-->
-<!--   "11" : "{% static 'test.png' %}",-->
-<!--   "12" : "{% static 'test.png' %}",-->
-<!--   "13" : "{% static 'test.png' %}",-->
-<!--   "14" : "{% static 'test.png' %}",-->
-<!--   "15" : "{% static 'test.png' %}",-->
-<!--   "16" : "{% static 'test.png' %}"-->
-<!--}-->
-
-<!--Object.keys(images).forEach(function(path) {-->
-<!--    $('#hold_images').append("<img class='my_img' width=200 height=400 src=" + images[path] + ">");-->
-<!--});-->
-
-
-
-
-
-
-<!--$('body').append("<i id='icon_right'></i>");-->
-<!--$('body').append("<i id='icon_left'></i>");-->
-
-<!--add_icon('#icon_right', 'fa fa-chevron-right', '40px', 'white');-->
-<!--add_icon('#icon_left', 'fa fa-chevron-left', '40px', 'white');-->
-
-
-
-
-
-<!--$(document).ready(function(){-->
-<!--    $('.my_img').hover(function() {-->
-<!--        $(this).addClass('transition');-->
-
-<!--    }, function() {-->
-<!--        $(this).removeClass('transition');-->
-<!--    });-->
-<!--});-->
-
-
-
-<!--$("#rightbutt").click(function() {-->
-<!--    console.log("funciona")-->
-<!--    $('body').animate({scrollLeft: $('body').offset().left}, 800);-->
-<!--});-->
-
-
-
-<!--$(document).on('click', '#leftbutt, #rightbutt', function() {-->
-
-<!--    console.log("hola")-->
-<!--    $('body').animate({'scrollLeft': 500}, 800);-->
-
-<!--    if($(this).attr('id') == 'rightbutt') {-->
-<!--        $('body').animate({-->
-<!--        scrollTop: $("#myDiv").offset().top-->
-<!--    }, 2000);-->
-<!--        } else {-->
-<!--        $('body').animate({scrollLeft: -1000}, 800);-->
-<!--    }-->
-<!--});-->
 
 </script>
 
