@@ -1,3 +1,7 @@
 body {
     background: #141414;
 }
+
+.page-holder {
+  background-image: url("../portada.jpg");
+}
