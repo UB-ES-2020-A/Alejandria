@@ -1,7 +1,7 @@
 .MultiCarousel { float: left; overflow: hidden; padding: 15px; width: 100%; position:relative; }
     .MultiCarousel .MultiCarousel-inner { transition: 1s ease all; float: left; }
         .MultiCarousel .MultiCarousel-inner .item { float: left;}
-        .MultiCarousel .MultiCarousel-inner .item > div { text-align: center; padding:10px; margin:10px; background:#f1f1f1; color:#666;}
+        .MultiCarousel .MultiCarousel-inner .item > div { text-align: center; margin:10px; background:#f1f1f1; color:#666;}
     .MultiCarousel .leftLst, .MultiCarousel .rightLst { position:absolute; border-radius:50%;top:calc(50% - 20px); }
     .MultiCarousel .leftLst { left:0; }
     .MultiCarousel .rightLst { right:0; }
@@ -10,15 +10,38 @@
 
 
 .card{
-    border-radius: 4px;
-    background: #fff;
+    background: transparent;
     box-shadow: 0 6px 10px rgba(0,0,0,.08), 0 0 6px rgba(0,0,0,.05);
       transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);
-  padding: 14px 80px 18px 36px;
+  /*padding: 14px 80px 18px 36px;*/
   cursor: pointer;
+  border:none;
+  border-radius:0px;
+
 }
+
+.card-body{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0px; /* espai balnc pel titol  */
+    background-color: #fff;
+    transition: 1.5s ease;
+    overflow: hidden;
+    padding-top: 0px; /* separació titol / imatge */
+    padding-bottom: 0px;
+
+
+}
+
+
 
 .card:hover{
      transform: scale(1.05);
   box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+}
+
+.card:hover .card-body{
+     height:185px;  /* el que puja en total*/
 }
