@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>
+    <!--    <link rel="stylesheet/less" type="text/css" href="styles.less" />-->
+    <script src="//cdn.jsdelivr.net/npm/less"></script>
+    <!--    <link rel="stylesheet" href="{% static 'css/main.css' %}">-->
+
+
+    <!--    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+<div>
+
+    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
+
+        <a class="navbar-brand" href="#">Alejandría</a>
+
+        <div class="collapse navbar-collapse" id="navbarSearch">
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+
+        <div class="collapse navbar-collapse" style="position: absolute; right: 5%;">
+            <div style="margin-left:-10%"></div>
+            <button class="buttonText" type="submit">About</button>
+            <button class="buttonText" type="submit">Ayuda</button>
+            <button class="buttonText" type="submit">FAQs</button>
+            <div style="margin-left:10%"></div>
+            <button class="btn btn-danger my-2 my-sm-0" type="submit">SIGN IN</button>
+            <div style="margin-left:5%"></div>
+            <button class="btn btn-danger my-2 my-sm-0" type="submit">REGISTER</button>
+        </div>
+
+    </nav>
+</div>
