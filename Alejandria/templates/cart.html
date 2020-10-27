@@ -7,21 +7,24 @@
     <meta charset="UTF-8">
     <title>Alejandria</title>
 
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- Fonts for decorate items and images -->
     <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
-    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>
-    <!--    <link rel="stylesheet/less" type="text/css" href="styles.less" />-->
-    <script src="//cdn.jsdelivr.net/npm/less"></script>
-    <!--    <link rel="stylesheet" href="{% static 'css/main.css' %}">-->
 
+    <!-- Latest compiled and minified CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 
-    <!--    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- Css files from static folder -->
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 
 </head>
 
@@ -51,5 +54,72 @@
             <button class="btn btn-danger my-2 my-sm-0" type="submit">REGISTER</button>
         </div>
 
+    </nav>
+
+    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-danger bg-danger" style="height:50px">
+
+        <div style="margin-left:5%"></div>
+        <button class="buttonText" type="submit">Home</button>
+        <div style="margin-left:1%"></div>
+
+        <div class="dropdown">
+            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                eBooks
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Categorías</a>
+                <a class="dropdown-item" href="#">Destacados</a>
+                <a class="dropdown-item" href="#">Promociones</a>
+            </div>
+        </div>
+        <div style="margin-left:1%"></div>
+        <div class="dropdown">
+            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton2"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Más vendidos
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                <a class="dropdown-item" href="#">Categorías</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+        </div>
+        <div style="margin-left:1%"></div>
+        <div class="dropdown">
+            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton3"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Recomendados
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                <a class="dropdown-item" href="#">Categorías</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+        </div>
+        <div style="margin-left:1%"></div>
+        <div class="dropdown">
+            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton4"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Novedades
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
+                <a class="dropdown-item" href="#">Categorías</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+        </div>
+        <div style="margin-left:1%"></div>
+        <div class="dropdown">
+            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton5"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Más
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
+                <a class="dropdown-item" href="#">Categorías</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+        </div>
     </nav>
 </div>
