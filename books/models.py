@@ -4,6 +4,9 @@ from django.utils import timezone
 
 # Create your models here.
 
+"""
+TODO: IF NECESSARI INTRODUCE help_text in some characteristics.
+"""
 
 class Author(models.Model):
     first_name = models.CharField(max_length=30)
