@@ -1,0 +1,23 @@
+.body-structure{
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-bottom: 5%;
+    background-color: black;
+}
+
+.title{
+    color:white;
+    font-size: 30px;
+    width: auto;
+    height: auto;
+    text-align: center;
+}
+
+.info-book{
+    margin-top: 3%;
+    margin-left: 3%;
+}
+.book-cover{
+    width:10%;
+    height:30%;
+}

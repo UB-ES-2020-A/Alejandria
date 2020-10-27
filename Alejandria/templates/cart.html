@@ -25,6 +25,7 @@
 
     <!-- Css files from static folder -->
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/body.css' %}">
 
 </head>
 
@@ -49,9 +50,9 @@
             <button class="buttonText" type="submit">Ayuda</button>
             <button class="buttonText" type="submit">FAQs</button>
             <div style="margin-left:10%"></div>
-            <button class="btn btn-danger my-2 my-sm-0" type="submit">SIGN IN</button>
+            <button class="btn btn-danger my-2 my-sm-0" type="submit">Sign In</button>
             <div style="margin-left:5%"></div>
-            <button class="btn btn-danger my-2 my-sm-0" type="submit">REGISTER</button>
+            <button class="btn btn-danger my-2 my-sm-0" type="submit">Register</button>
         </div>
 
     </nav>
@@ -61,65 +62,43 @@
         <div style="margin-left:5%"></div>
         <button class="buttonText" type="submit">Home</button>
         <div style="margin-left:1%"></div>
+        <button class="buttonText" type="submit">eBooks</button>
+        <div style="margin-left:1%"></div>
+        <button class="buttonText" type="submit">Más vendidos</button>
+        <div style="margin-left:1%"></div>
+        <button class="buttonText" type="submit">Recomendados</button>
+        <div style="margin-left:1%"></div>
+        <button class="buttonText" type="submit">Novedades</button>
+        <div style="margin-left:1%"></div>
 
         <div class="dropdown">
             <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                eBooks
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Categorías</a>
-                <a class="dropdown-item" href="#">Destacados</a>
-                <a class="dropdown-item" href="#">Promociones</a>
-            </div>
-        </div>
-        <div style="margin-left:1%"></div>
-        <div class="dropdown">
-            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton2"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Más vendidos
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                <a class="dropdown-item" href="#">Categorías</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-        </div>
-        <div style="margin-left:1%"></div>
-        <div class="dropdown">
-            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton3"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Recomendados
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                <a class="dropdown-item" href="#">Categorías</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-        </div>
-        <div style="margin-left:1%"></div>
-        <div class="dropdown">
-            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton4"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Novedades
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                <a class="dropdown-item" href="#">Categorías</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-        </div>
-        <div style="margin-left:1%"></div>
-        <div class="dropdown">
-            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton5"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Más
             </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
-                <a class="dropdown-item" href="#">Categorías</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;" href="#">Ayuda</a>
+                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;" href="#">Blog</a>
+                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;" href="#">FAQs</a>
             </div>
         </div>
     </nav>
+
+    <div class="bg-secondary">
+        <div class="body-structure">
+            <p class="title" >MY BAG</p>
+            <div class="info-book">
+                <img class="book-cover" src="/static/images/book_cover.jpg" alt="Card image cap">
+            </div>
+            <div class="info-book">
+                <img class="book-cover" src="/static/images/book_cover.jpg" alt="Card image cap">
+            </div>
+            <div class="info-book">
+                <img class="book-cover" src="/static/images/book_cover.jpg" alt="Card image cap">
+            </div>
+            <div class="info-book">
+                <img class="book-cover" src="/static/images/book_cover.jpg" alt="Card image cap">
+            </div>
+        </div>
+    </div>
 </div>
