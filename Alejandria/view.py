@@ -5,3 +5,9 @@ def home(request):
     context = {}
 
     return render(request, template, context)
+
+def search(request):
+    template = "searchresult.html"
+    context = {}
+
+    return render(request, template, context)
