@@ -1,6 +1,7 @@
 
 
 /* button main page navbar */
+/*
 .buttonText {
   letter-spacing: 0.1em;
   cursor: pointer;
@@ -16,10 +17,11 @@
   background-color: transparent;
   border:none;
 }
+
 .buttonText:hover {
   color: #00DC17;
   text-decoration: none;
-}
+}*/
 
 /* more and less */
 

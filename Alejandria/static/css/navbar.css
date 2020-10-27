@@ -1,3 +1,42 @@
+/* Design of the buttons (FAQs, About, etc.)*/
+
+.button-navbar {
+  width: fit-content;
+  height: fit-content;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 45px;
+  position: relative;
+  text-decoration: none;
+  color: #FFFFFF;
+  background-color: transparent;
+  border:none;
+}
+.button-navbar:hover {
+  color: #dc3545;
+  text-decoration: none;
+}
+
+.button-sub-navbar {
+  width: fit-content;
+  height: fit-content;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 45px;
+  position: relative;
+  text-decoration: none;
+  color: #FFFFFF;
+  background-color: transparent;
+  border:none;
+}
+.button-sub-navbar:hover {
+  color: #141414;
+  text-decoration: none;
+}
+
+/*
 @import url("//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
 
 .navbar-icon-top .navbar-nav .nav-link > .fa {
@@ -113,3 +152,4 @@
     top: -7px;
   }
 }
+*/
