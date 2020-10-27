@@ -5,13 +5,13 @@ from django.utils import timezone
 # Create your models here.
 
 
-class Author:
+class Author(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
 
 
-class UserDummy(models.Model):  #TODO: Replace with the real User
-    ID = models.IntegerField(primary_key=True,blank=False)
+class UserDummy(models.Model):  # TODO: Replace with the real User
+    ID = models.IntegerField(primary_key=True, blank=False, null=False)
 
 
 class Book(models.Model):
@@ -23,7 +23,7 @@ class Book(models.Model):
     authors = models.ManyToManyField(Author, max_length=10, blank=True, null=True)  # Un llibre pot tenir més d'un autor.
     # Has to be datetime.date
     # By default it's now.
-    publication_date = models.DateField(null=True, blank=True, default=timezone.now())
+    publication_date = models.DateField(null=True, blank=True, default=timezone.now)
     price = models.DecimalField(decimal_places=2, max_digits=8)
     language = models.CharField(max_length=15, blank=False)  # TODO: Might have choices=<<languages it can be>>
     genre = models.CharField(max_length=30, blank=False)  # TODO: choices=<<all possible genres>>, also can have multiple choices
@@ -34,7 +34,7 @@ class Book(models.Model):
         # Path to thumbnail(Thubnail identified by ISBN)
     thumbnail = models.CharField(max_length=30)  # TODO:Should be blank=False in the Future
 
-    pub_date = publication_date  # Abreviation
+    #pub_date = publication_date  # Abreviation
 
 
 class Product(models.Model):
@@ -43,8 +43,10 @@ class Product(models.Model):
                                                             #TODO: What to do on_delete=?
     price = models.DecimalField(decimal_places=2, max_digits=8)
     # TODO: Could be in no.arange(0.00, 100.00, 0.01) -> To have percentages with 0.01 precision
-    fees = models.DecimalField(decimal_places=2, max_digits=5, choices=range(0,100))
-    discount = models.DecimalField(decimal_places=2, max_digits=5, choices=range(0,101))
+    per_values = range(0,101)
+    human_readable = [str(value) for value in per_values]
+    fees = models.DecimalField(decimal_places=2, max_digits=5, choices=zip(per_values, human_readable))
+    discount = models.DecimalField(decimal_places=2, max_digits=5, choices=zip(per_values, human_readable))
 
 
 class Rating(models.Model):
@@ -52,15 +54,17 @@ class Rating(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
     user_id = models.ForeignKey(UserDummy, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
     text = models.TextField(max_length=500,null=False, blank=True)
-    score = models.IntegerField(choices=range(1, 6),null=False, blank=False)
-    date = models.DateField(null=False, blank=False, default=timezone.now())
+    per_values = range(1, 6)
+    human_readable = [str(value) for value in per_values]
+    score = models.IntegerField(choices=zip(per_values,human_readable), null=False, blank=False)
+    date = models.DateField(null=False, blank=False, default=timezone.now)
 
 
 class Bill(models.Model):
     num_factura = models.IntegerField(primary_key=True,blank=False,null=False)  #TODO: auto field
     products = models.ManyToManyField(Product)
     user_id = models.ForeignKey(UserDummy, on_delete=models.PROTECT)
-    date = models.DateField(null=True, blank=True, default=timezone.now())
+    date = models.DateField(null=True, blank=True, default=timezone.now)
     seller_info = models.TextField(blank=True, null=False)  # TODO: This is provisional
     payment_method = models.CharField(max_length=30) # TODO: Define choices.
 
