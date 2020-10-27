@@ -26,6 +26,7 @@
     <!-- Css files from static folder -->
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'css/body.css' %}">
+    <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
 
 </head>
 
@@ -77,28 +78,128 @@
                 Más
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;" href="#">Ayuda</a>
-                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;" href="#">Blog</a>
-                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;" href="#">FAQs</a>
+                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+                   href="#">Ayuda</a>
+                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+                   href="#">Blog</a>
+                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+                   href="#">FAQs</a>
             </div>
         </div>
     </nav>
 
     <div class="bg-secondary">
         <div class="body-structure">
-            <p class="title" >MY BAG</p>
+            <p class="title" style="padding-top:3%">MY BAG</p>
             <div class="info-book">
                 <img class="book-cover" src="/static/images/book_cover.jpg" alt="Card image cap">
+                <div style="margin-left: 2%;">
+                    <p class="book-title">The Good Guy, by Mark Mcallister</p>
+                    <p class="price">24.95€</p>
+                    <span class="score">
+                        <div class="score-wrap">
+                            <span class="stars-active" style="width:80%">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                            </span>
+
+                            <span class="stars-inactive">
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                    </span>
+                    <div style="padding-top:5%"></div>
+                    <button class="icon-btn add-btn">
+                        <div class="btn-txt">Remove</div>
+                    </button>
+                    <span style="color:white; font-size:14px">&nbsp;1&nbsp;</span>
+                    <button class="icon-btn add-btn">
+                        <div class="add-icon"></div>
+                        <div class="btn-txt">Add</div>
+                    </button>
+                </div>
             </div>
+
             <div class="info-book">
-                <img class="book-cover" src="/static/images/book_cover.jpg" alt="Card image cap">
+                <img class="book-cover" src="/static/images/book_cover2.jpg" alt="Card image cap">
+                <div style="margin-left: 2%;">
+                    <p class="book-title">The Arrivals, by Lucas Lloyd</p>
+                    <p class="price">15.95€</p>
+                    <span class="score">
+                        <div class="score-wrap">
+                            <span class="stars-active" style="width:65%">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                            </span>
+
+                            <span class="stars-inactive">
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                    </span>
+                    <div style="padding-top:5%"></div>
+                    <button class="icon-btn add-btn">
+                        <div class="btn-txt">Remove</div>
+                    </button>
+                    <span style="color:white; font-size:14px">&nbsp;1&nbsp;</span>
+                    <button class="icon-btn add-btn">
+                        <div class="add-icon"></div>
+                        <div class="btn-txt">Add</div>
+                    </button>
+                </div>
             </div>
+
             <div class="info-book">
-                <img class="book-cover" src="/static/images/book_cover.jpg" alt="Card image cap">
+                <img class="book-cover" src="/static/images/book_cover3.jpg" alt="Card image cap">
+                <div style="margin-left: 2%;">
+                    <p class="book-title">In the House in the Dark of the Woods, by Laird Hunt</p>
+                    <p class="price">19.95€</p>
+                    <span class="score">
+                        <div class="score-wrap">
+                            <span class="stars-active" style="width:90%">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                            </span>
+
+                            <span class="stars-inactive">
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                    </span>
+                    <div style="padding-top:5%"></div>
+                    <button class="icon-btn add-btn">
+                        <div class="btn-txt">Remove</div>
+                    </button>
+                    <span style="color:white; font-size:14px">&nbsp;1&nbsp;</span>
+                    <button class="icon-btn add-btn">
+                        <div class="add-icon"></div>
+                        <div class="btn-txt">Add</div>
+                    </button>
+                </div>
             </div>
-            <div class="info-book">
-                <img class="book-cover" src="/static/images/book_cover.jpg" alt="Card image cap">
-            </div>
+
+            <div style="padding-bottom:3%"></div>
         </div>
     </div>
 </div>
