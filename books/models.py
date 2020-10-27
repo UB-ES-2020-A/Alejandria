@@ -20,7 +20,7 @@ class Book(models.Model):
     title = models.CharField(max_length=30, blank=False)
     description = models.TextField(max_length=500, blank=True, null=True)  # Synopsis
     saga = models.CharField(max_length=30, blank=True, null=True)
-    authors = models.ManyToManyField(Author, max_length=10, blank=True, null=True)  # Un llibre pot tenir més d'un autor.
+    authors = models.ManyToManyField(Author, max_length=10, blank=True, null=True, default=None)  # Un llibre pot tenir més d'un autor.
     # Has to be datetime.date
     # By default it's now.
     publication_date = models.DateField(null=True, blank=True, default=timezone.now)
