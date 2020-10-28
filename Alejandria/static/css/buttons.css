@@ -1,9 +1,10 @@
 /* more and less */
 
 .main-hr {
-  width: 30%;
+  width: 90%;
+  margin-left: 5%;
   border: none;
-  border-top: 1px solid #c3c3c3;
+  border-top: 1px solid white;
 }
 .icon-btn {
   width: 25px;

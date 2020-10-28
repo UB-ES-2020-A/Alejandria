@@ -4,6 +4,11 @@
     background-color: black;
 }
 
+.horizontal{
+    display: flex;
+    flex-direction: row;
+}
+
 .title{
     color:white;
     font-size: 30px;
@@ -12,15 +17,20 @@
     text-align: center;
 }
 
+.info-total{
+    margin-right: 5%;
+    width: 100%;
+}
+
 .info-book{
     margin-top: 3%;
-    margin-left: 3%;
+    width: 100%;
     display: flex;
     flex-direction: row;
 }
+
 .book-cover{
-    width:10%;
-    height:30%;
+    width:30%;
 }
 
 .price{
