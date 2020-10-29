@@ -9,7 +9,7 @@
 .icon-btn {
   width: 25px;
   height: 25px;
-  border: 1px solid #cdcdcd;
+  border: 1px solid #1ab7ea;
   background: transparent;
   border-radius: 25px;
   overflow: hidden;
@@ -27,7 +27,7 @@
   height: 2px;
   width: 5px;
   top: calc(50% - 1px);
-  background: red;
+  background: #1ab7ea;
 }
 .add-btn::after {
   right: 7px;
@@ -65,7 +65,7 @@
   height: 10px;
   width: 1px;
   top: calc(50% - 5px);
-  background: red;
+  background: #1ab7ea;
   overflow: hidden;
 }
 .add-icon::before {

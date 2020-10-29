@@ -28,70 +28,71 @@
     <link rel="stylesheet" href="{% static 'css/body.css' %}">
     <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
 
-    <!-- JavaScript files from static folder-->
-
 </head>
 
 <body>
 
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" id="headnav">
 
-        <a class="navbar-brand" href="#">Alejandría</a>
+    <a class="navbar-brand" href="#">Alejandría</a>
 
-        <div class="collapse navbar-collapse navHeaderCollapse" id="navbarSearch">
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
+    <div class="collapse navbar-collapse navHeaderCollapse" id="navbarSearch">
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
 
-        <div class="collapse navbar-collapse" style="position: absolute; right: 5%;">
-            <div style="margin-left:-10%"></div>
-            <button class="buttonText" type="submit">About</button>
-            <button class="buttonText" type="submit">Help</button>
-            <button class="buttonText" type="submit">FAQs</button>
-            <div style="margin-left:10%"></div>
-            <button class="btn btn-danger my-2 my-sm-0" type="submit">Sign In</button>
-            <div style="margin-left:5%"></div>
-            <button class="btn btn-danger my-2 my-sm-0" type="submit">Register</button>
-        </div>
+    <div class="collapse navbar-collapse" style="position: absolute; right: 5%;">
+        <div style="margin-left:-10%"></div>
+        <button class="buttonText" type="submit">About</button>
+        <button class="buttonText" type="submit">Help</button>
+        <button class="buttonText" type="submit">FAQs</button>
+        <div style="margin-left:10%"></div>
+        <button class="btn btn-danger my-2 my-sm-0" type="submit">Sign In</button>
+        <div style="margin-left:5%"></div>
+        <button class="btn btn-danger my-2 my-sm-0" type="submit">Register</button>
+    </div>
 
 </nav>
 
-<nav class="navbar sticky-top navbar-expand-lg navbar-danger bg-danger" style="height:50px; top:9%;">
+<nav class="navbar sticky-top navbar-expand-lg" style="height:50px; top:9%; background-color: #93d75f">
 
     <div style="margin-left:5%"></div>
-    <button class="buttonText" type="submit">Home</button>
+    <button class="buttonText2" type="submit">Home</button>
     <div style="margin-left:1%"></div>
-    <button class="buttonText" type="submit">eBooks</button>
+    <button class="buttonText2" type="submit">eBooks</button>
     <div style="margin-left:1%"></div>
-    <button class="buttonText" type="submit">Best sellers</button>
+    <button class="buttonText2" type="submit">Best sellers</button>
     <div style="margin-left:1%"></div>
-    <button class="buttonText" type="submit">Recommended</button>
+    <button class="buttonText2" type="submit">Recommended</button>
     <div style="margin-left:1%"></div>
-    <button class="buttonText" type="submit">News</button>
+    <button class="buttonText2" type="submit">News</button>
     <div style="margin-left:1%"></div>
 
     <div class="dropdown">
-        <button class="btn btn-danger dropdown-toggle" type="button"
-                style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+        <button class="buttonText2 dropdown-toggle" type="button"
+                style="color:white; font-size: 14px; letter-spacing: 0.1em; background-color: #93d75f"
                 id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             More
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background-color:#dc3545">
-            <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background-color:#93d75f">
+            <a class="buttonText2 dropdown-item"
+               style="color:white; font-size: 14px; letter-spacing: 0.1em; background-color: #93d75f"
                href="#">Help</a>
-            <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #BB204C;"></div>
-            <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+            <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #7AA711;"></div>
+            <a class="buttonText2 dropdown-item"
+               style="color:white; font-size: 14px; letter-spacing: 0.1em; background-color: #93d75f"
                href="#">Blog</a>
-            <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #BB204C;"></div>
-            <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+            <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #7AA711;"></div>
+            <a class="buttonText2 dropdown-item"
+               style="color:white; font-size: 14px; letter-spacing: 0.1em; background-color: #93d75f"
                href="#">FAQs</a>
         </div>
     </div>
 </nav>
 
-<div class="bg-secondary">
+<div style="background-image: url('/static/images/backgrounds/background5.jpg');">
     <div class="body-structure">
         <p class="title" style="padding-top:3%">MY BAG</p>
         <div class="main-hr"></div>
@@ -99,10 +100,10 @@
         <div class="horizontal" style="margin-top:2%">
             <div class="vertical" style="margin-left: 5%;">
                 <div class="info-book">
-                    <img class="book-cover" src="/static/images/book_cover.jpg" alt="Card image cap">
+                    <img class="book-cover" src="/static/images/cover-images/book_cover.jpg" alt="Card image cap">
                     <div style="margin-left: 3%;">
                         <p class="book-title">The Good Guy, by Mark Mcallister</p>
-                        <p class="price">24.95€</p>
+                        <p class="price" id="original_price_1">24.95€</p>
                         <span class="score">
                                 <div class="score-wrap">
                                     <span class="stars-active" style="width:80%">
@@ -123,22 +124,22 @@
                                 </div>
                             </span>
                         <div style="padding-top:5%"></div>
-                        <button class="icon-btn add-btn">
+                        <button class="icon-btn add-btn" id="button_rmv_1" onclick="rmv_books_btn1()">
                             <div class="btn-txt">Remove</div>
                         </button>
-                        <span style="color:white; font-size:14px">&nbsp;1&nbsp;</span>
-                        <button class="icon-btn add-btn">
+                        <span style="color:white; font-size:14px" id="quantity_book_1">1</span>
+                        <button class="icon-btn add-btn" id="button_add_1" onclick="add_books_btn1()">
                             <div class="add-icon"></div>
                             <div class="btn-txt">Add</div>
                         </button>
                     </div>
                 </div>
 
-                <div class="info-book">
-                    <img class="book-cover" src="/static/images/book_cover2.jpg" alt="Card image cap">
+                <div class="info-book" style="margin-top:10%">
+                    <img class="book-cover" src="/static/images/cover-images/book_cover2.jpg" alt="Card image cap">
                     <div style="margin-left: 3%;">
                         <p class="book-title">The Arrivals, by Lucas Lloyd</p>
-                        <p class="price">15.95€</p>
+                        <p class="price" id="original_price_2">15.95€</p>
                         <span class="score">
                                 <div class="score-wrap">
                                     <span class="stars-active" style="width:65%">
@@ -159,22 +160,22 @@
                                 </div>
                             </span>
                         <div style="padding-top:5%"></div>
-                        <button class="icon-btn add-btn">
+                        <button class="icon-btn add-btn" id="button_rmv_2" onclick="rmv_books_btn2()">
                             <div class="btn-txt">Remove</div>
                         </button>
-                        <span style="color:white; font-size:14px">&nbsp;1&nbsp;</span>
-                        <button class="icon-btn add-btn">
+                        <span style="color:white; font-size:14px" id="quantity_book_2">1</span>
+                        <button class="icon-btn add-btn" id="button_add_2" onclick="add_books_btn2()">
                             <div class="add-icon"></div>
                             <div class="btn-txt">Add</div>
                         </button>
                     </div>
                 </div>
 
-                <div class="info-book">
-                    <img class="book-cover" src="/static/images/book_cover3.jpg" alt="Card image cap">
+                <div class="info-book" style="margin-top:10%">
+                    <img class="book-cover" src="/static/images/cover-images/book_cover3.jpg" alt="Card image cap">
                     <div style="margin-left: 3%;">
                         <p class="book-title">In the House in the Dark of the Woods, by Laird Hunt</p>
-                        <p class="price">19.95€</p>
+                        <p class="price" id="original_price_3">19.95€</p>
                         <span class="score">
                                 <div class="score-wrap">
                                     <span class="stars-active" style="width:90%">
@@ -195,18 +196,18 @@
                                 </div>
                             </span>
                         <div style="padding-top:5%"></div>
-                        <button class="icon-btn add-btn">
+                        <button class="icon-btn add-btn" id="button_rmv_3" onclick="rmv_books_btn3()">
                             <div class="btn-txt">Remove</div>
                         </button>
-                        <span style="color:white; font-size:14px">&nbsp;1&nbsp;</span>
-                        <button class="icon-btn add-btn">
+                        <span style="color:white; font-size:14px" id="quantity_book_3">1</span>
+                        <button class="icon-btn add-btn" id="button_add_3" onclick="add_books_btn3()">
                             <div class="add-icon"></div>
                             <div class="btn-txt">Add</div>
                         </button>
                     </div>
                 </div>
 
-                <div style="padding-bottom:3%"></div>
+                <div style="padding-bottom:8%"></div>
 
             </div>
 
@@ -214,27 +215,32 @@
                 <div class="title" style="">Summary</div>
                 <div class="main-hr" style="width:95%"></div>
                 <div class="horizontal" style="margin-top:3%; margin-left:5%">
-                    <div class="book-title" style="width:100%">The Good Guy (<span id="quantity"> 1 </span>)</div>
-                    <span class="book-title" id="price">24.95€</span>
+                    <div class="book-title" style="width:100%">The Good Guy (<span id="quantity_sum_1"> 1 </span>)</div>
+                    <span class="book-title" id="price_book_1">24.95</span><span class="book-title">€</span>
                 </div>
                 <div class="horizontal" style="margin-top:3%; margin-left:5%">
-                    <div class="book-title" style="width:100%">The Arrivals (<span id="quantity2"> 1 </span>)</div>
-                    <span class="book-title" id="price2">15.95€</span>
+                    <div class="book-title" style="width:100%">The Arrivals (<span id="quantity_sum_2"> 1 </span>)</div>
+                    <span class="book-title" id="price_book_2">15.95</span><span class="book-title">€</span>
                 </div>
                 <div class="horizontal" style="margin-top:3%; margin-left:5%">
                     <div class="book-title" style="width:100%">In the House in the Dark of the Woods (<span
-                            id="quantity3"> 1 </span>)
+                            id="quantity_sum_3"> 1 </span>)
                     </div>
-                    <span class="book-title" id="price3">19.95€</span>
+                    <span class="book-title" id="price_book_3">19.95</span><span class="book-title">€</span>
                 </div>
                 <div class="main-hr" style="margin-top:3%; width:95%"></div>
                 <div class="horizontal" style="margin-top:3%; margin-left:5%">
                     <div class="book-title" style="width:100%">Total</div>
-                    <span class="book-title" id="priceTotal">60.85€</span>
+                    <span class="book-title" id="priceTotal">60.85</span><span class="book-title">€</span>
                 </div>
             </div>
 
         </div>
     </div>
 </div>
+
+    <!-- JavaScript files from static folder-->
+    <script src="static/js/addBook.js"></script>
+    <script src="static/js/rmvBook.js"></script>
+
 </body>
