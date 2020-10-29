@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 # Create your models here.
@@ -17,3 +18,22 @@ class Book(models.Model):
     num_sold = models.IntegerField()
     recommended_age = models.IntegerField()
     thumbnail = models.CharField(max_length=30)
+
+
+class Address(models.Model):
+    street = models.CharField(max_length=50, null=False, blank=False)
+    city = models.CharField(max_length=50, null=False, blank=False)
+    country = models.CharField(max_length=50, null=False, blank=False)
+    zip = models.CharField(max_length=10, null=False, blank=False)
+
+
+class User(AbstractUser):
+    id = models.AutoField(primary_key=True, null=False, blank=True)
+    role = models.CharField(max_length=10, null=False, blank=False)
+    name = models.CharField(max_length=50, null=False, blank=False)
+    password = models.CharField(max_length=50, null=False, blank=False)
+    email = models.EmailField(max_length=50, null=False, blank=False)
+    user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
+                                     related_name="user_address")
+    fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
+                                     related_name="fact_address")
