@@ -1,42 +1,70 @@
-/*  More and Less   */
+
+
+
+/* button main page navbar */
+/*
+.buttonText {
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 45px;
+  max-width: 160px;
+  position: relative;
+  text-decoration: none;
+  text-transform: uppercase;
+  width: 100%;
+  color: #FFFFFF;
+  background-color: transparent;
+  border:none;
+}
+
+.buttonText:hover {
+  color: #00DC17;
+  text-decoration: none;
+}*/
+
+/* more and less */
+
 
 .main-hr {
-  width: 90%;
-  margin-left: 5%;
+  width: 30%;
   border: none;
-  border-top: 1px solid white;
+  border-top: 1px solid #c3c3c3;
 }
 .icon-btn {
-  width: 25px;
-  height: 25px;
-  border: 1px solid #1ab7ea;
-  background: transparent;
+  width: 50px;
+  height: 50px;
+  border: 1px solid #cdcdcd;
+  background: white;
   border-radius: 25px;
   overflow: hidden;
   position: relative;
   transition: width 0.2s ease-in-out;
 }
 .add-btn:hover {
-  width: 100px;
+  width: 120px;
 }
 .add-btn::before,
 .add-btn::after {
   transition: width 0.2s ease-in-out, border-radius 0.2s ease-in-out;
   content: "";
   position: absolute;
-  height: 2px;
-  width: 5px;
-  top: calc(50% - 1px);
-  background: #1ab7ea;
+  height: 4px;
+  width: 10px;
+  top: calc(50% - 2px);
+  background: red;
 }
 .add-btn::after {
-  right: 7px;
+  right: 14px;
+
   overflow: hidden;
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
 }
 .add-btn::before {
-  left: 7px;
+  left: 14px;
+
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
 }
@@ -46,12 +74,12 @@
 .btn-txt {
   opacity: 0;
   transition: opacity 0.2s;
-  color: white;
-  font-size: 14px;
+
 }
 .add-btn:hover::before,
 .add-btn:hover::after {
-  width: 2px;
+  width: 4px;
+
   border-radius: 2px;
 }
 .add-btn:hover .btn-txt {
@@ -62,32 +90,34 @@
   transition: all 0.2s ease-in-out;
   content: "";
   position: absolute;
-  height: 10px;
-  width: 1px;
-  top: calc(50% - 5px);
-  background: #1ab7ea;
+
+  height: 20px;
+  width: 2px;
+  top: calc(50% - 10px);
+  background: red;
   overflow: hidden;
 }
 .add-icon::before {
-  left: 11px;
+  left: 22px;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
 }
 .add-icon::after {
-  right: 11px;
-  border-t1op-right-radius: 2px;
+  right: 22px;
+  border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
 }
 .add-btn:hover .add-icon::before {
-  left: 8px;
-  height: 2px;
-  top: calc(50% - 1px);
+  left: 15px;
+  height: 4px;
+  top: calc(50% - 2px);
 }
 .add-btn:hover .add-icon::after {
-  right: 8px;
-  height: 2px;
-  top: calc(50% - 1px);
+  right: 15px;
+  height: 4px;
+  top: calc(50% - 2px);
 }
+
 
 /*  Social Media  */
 
@@ -150,4 +180,3 @@
 .share-button a:nth-of-type(4){
   transition-delay: .4s;
 }
-

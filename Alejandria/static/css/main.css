@@ -1,0 +1,45 @@
+body {
+    background: #141414;
+}
+
+.page-holder {
+  background-image: url("https://www.worldwidehuntingbooks.com/images/upload//carousel_1_1.jpg?v=1587488604");
+}
+
+.bg-textt {
+  background-color: rgba(0,0,0, 0.65); /* Black w/opacity/see-through */
+  border: 3px solid #f1f1f1;
+  position: absolute;
+  top: 350px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 80%;
+  font-family:Arial;
+}
+
+
+
+.body-structure{
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-bottom: 5%;
+    background-color: black;
+}
+
+.title{
+    color:white;
+    font-size: 30px;
+    width: auto;
+    height: auto;
+    text-align: center;
+}
+
+.info-book{
+    margin-top: 3%;
+    margin-left: 3%;
+}
+.book-cover{
+    width:10%;
+    height:30%;
+}
