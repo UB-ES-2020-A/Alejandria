@@ -1,6 +1,6 @@
 /* Design of the buttons (FAQs, About, etc.)*/
 
-.button-navbar {
+.buttonText {
   width: fit-content;
   height: fit-content;
   letter-spacing: 0.1em;
@@ -13,12 +13,12 @@
   background-color: transparent;
   border:none;
 }
-.button-navbar:hover {
-  color: #dc3545;
+.buttonText:hover {
+  color: #00DC17;
   text-decoration: none;
 }
 
-.button-sub-navbar {
+.buttonText2 {
   width: fit-content;
   height: fit-content;
   letter-spacing: 0.1em;
@@ -31,8 +31,8 @@
   background-color: transparent;
   border:none;
 }
-.button-sub-navbar:hover {
-  color: #141414;
+.buttonText2:hover {
+  color: black;
   text-decoration: none;
 }
 

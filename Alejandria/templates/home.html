@@ -1,6 +1,11 @@
+
 <!DOCTYPE html>
 
+{% extends "navbar.html" %}
 {% load static %}
+
+{% block content %}
+
 
 <html lang="en">
 <head>
@@ -38,6 +43,7 @@
 <body>
 
     <!--  NAVBAR  -->
+    <!--
     <div>
         <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand" href="#">Alejandría</a>
@@ -88,29 +94,8 @@
             </div>
         </nav>
     </div>
+    -->
 
-    <!--
-        <div class="" style="text-align: center;margin-top:5%">
-          <button class="icon-btn add-btn">
-            <div class="add-icon"></div>
-            <div class="btn-txt">Add</div>
-          </button>
-        </div>
-        <div class="" style="text-align: center; margin-top: 8px;">
-          <button class="icon-btn add-btn">
-            <div class="btn-txt">Remove</div>
-          </button>
-        </div>
-        <div style="text-align: center; margin-top:30px;">
-          <hr class="main-hr" />
-          <button class="icon-btn add-btn">
-            <div class="add-icon"></div>
-            <div class="btn-txt">Add</div>
-          </button>
-          <button class="icon-btn add-btn">
-            <div class="btn-txt">Remove</div>
-          </button>
-         </div>-->
 
     <!--  HEADER MAIN PAGE  -->
     <div class="container-fluid" style="padding-right:0px; padding-left:0px">
@@ -818,3 +803,5 @@ $(document).ready(function () {
 </script>
 
 </html>
+
+{% endblock %}
