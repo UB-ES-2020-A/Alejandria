@@ -1,17 +1,12 @@
 .body-structure{
-    margin-right: 10%;
-    margin-left: 10%;
+    margin-right: 25%;
     background-color: black;
     /*#162221;*/
 }
 
-.horizontal{
-    display: flex;
-    flex-direction: row;
-}
-
 .title{
     color:white;
+    font-weight: bold;
     font-size: 30px;
     width: auto;
     height: auto;
@@ -24,24 +19,44 @@
 }
 
 .info-book{
-    margin-top: 10%;
+    margin-top: 2%;
     width: 100%;
     display: flex;
     flex-direction: row;
+    border:1px solid white
+}
+
+.horizontal{
+    position:absolute;
+    right: 0;
+    left: 0;
+    margin-left: 20%;
+    margin-right: 2%;
 }
 
 .book-cover{
-    width:30%;
+    width:20%;
 }
 
 .price{
     color: white;
-    font-size: 14px;
+    font-size: 20px;
+    margin-top: 25%;
+}
+
+.reviews{
+    color: white;
+    font-size: 20px;
 }
 
 .book-title{
+    color: blue;
+    font-size: 22px;
+}
+
+.text{
     color: white;
-    font-size: 18px;
+    font-size: 22px;
 }
 
 .score {
@@ -49,6 +64,7 @@
     font-size: 15px;
     position: relative;
     overflow: hidden;
+    margin-top:10%;
 }
 
 .score-wrap {
@@ -58,7 +74,7 @@
 }
 
 .score .stars-active {
-    color: white;
+    color: #ff9f01;
     position: relative;
     z-index: 1;
     display: inline-block;
@@ -67,10 +83,45 @@
 }
 
 .score .stars-inactive {
-    color: grey;
+    color: #ff9f01;
     position: absolute;
     top: 0;
     left: 0;
     -webkit-text-stroke: initial;
     /* overflow: hidden; */
+}
+
+#recommend-list {
+  margin: auto;
+}
+.bx-viewport {
+  height: 50px !important;
+  padding: 0 30px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+div.gallery {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 150px;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: 200px;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+
+.body{
+    background-color: #292b2c;
 }
