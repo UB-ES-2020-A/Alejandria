@@ -5,3 +5,9 @@ def home(request):
     context = {}
 
     return render(request, template, context)
+
+def cart(request):
+    template = "navbar.html"
+    context = {}
+
+    return render(request, template, context)
