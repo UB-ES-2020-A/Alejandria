@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/static/images/logo/mini_logo.png">
+    <title>Alejandria</title>
+
+    <!-- Fonts for decorate items and images -->
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+    <!-- In order to use scrollable horizontal -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bxslider/4.2.5/jquery.bxslider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bxslider/4.2.5/vendor/jquery.easing.1.3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bxslider/4.2.5/vendor/jquery.fitvids.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bxslider/4.2.5/jquery.bxslider.min.css"/>
+
+    <!-- Css files from static folder -->
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/body.css' %}">
+    <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+</head>
+
+<body>
+
+
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" id="headnav" style="height:60px">
+
+    <a class="navbar-brand" href="#"><img style='height: 100%; width: 60%; object-fit: contain'
+                                          src="/static/images/logo/logo.png"></a>
+
+    <div class="collapse navbar-collapse navHeaderCollapse" style="margin-left:-70px" id="navbarSearch">
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="collapse navbar-collapse" style="position: absolute; right: 5%;">
+        <div style="margin-left:-10%"></div>
+        <button class="buttonText" type="submit">About</button>
+        <button class="buttonText" type="submit">Help</button>
+        <button class="buttonText" type="submit">FAQs</button>
+        <div style="margin-left:10%"></div>
+        <button class="btn btn-danger my-2 my-sm-0" type="submit">Sign In</button>
+        <div style="margin-left:5%"></div>
+        <button class="btn btn-danger my-2 my-sm-0" type="submit">Register</button>
+    </div>
+
+</nav>
+
+<nav class="navbar sticky-top navbar-expand-lg bg-danger" style="height:40px; top:60px;">
+
+    <div style="margin-left:5%"></div>
+    <button class="buttonText2" type="submit">Home</button>
+    <div style="margin-left:1%"></div>
+    <button class="buttonText2" type="submit">eBooks</button>
+    <div style="margin-left:1%"></div>
+    <button class="buttonText2" type="submit">Best sellers</button>
+    <div style="margin-left:1%"></div>
+    <button class="buttonText2" type="submit">Recommended</button>
+    <div style="margin-left:1%"></div>
+    <button class="buttonText2" type="submit">News</button>
+    <div style="margin-left:1%"></div>
+
+    <div class="dropdown">
+        <button class="buttonText2 dropdown-toggle" type="button"
+                style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            More
+        </button>
+        <div class="dropdown-menu bg-danger" aria-labelledby="dropdownMenuButton" style="align-text:center">
+            <a class="buttonText2 dropdown-item bg-danger"
+               style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+               href="#">Help</a>
+            <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+            <a class="buttonText2 dropdown-item bg-danger"
+               style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+               href="#">Blog</a>
+            <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+            <a class="buttonText2 dropdown-item bg-danger"
+               style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+               href="#">FAQs</a>
+        </div>
+    </div>
+</nav>
+
+</body>
+
+{% block content %}
+
+{% endblock %}
