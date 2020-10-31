@@ -17,7 +17,8 @@
             <div class="main-hr" style="width:95%"></div>
 
             <div class="row">
-                <div class="col" style="margin-left: 5%; width:100%;">
+                <div class="col" style="margin-left: 5%; width:100%;" id="container-info-books">
+
                     <div class="info-book" id="info_book_1">
                         <img class="book-cover" src="/static/images/cover-images/book_cover.jpg" alt="Card image cap">
                         <div style="margin-left:1%;">
@@ -26,8 +27,8 @@
                                     <p class="book-title"><a href="#">The Good Guy, by Mark Mcallister</a></p>
                                 </div>
                                 <div class="col">
-                                    <p class="text" style="display: block; text-align:right;"><span
-                                            id="price_book_1">24.95</span><span>€</span></p>
+                                    <p class="text" style="text-align:right;"><span
+                                            id="price_book_1">24.95</span>€</p>
                                 </div>
                             </div>
                             <p class="price" id="original_price_1">24.95€</p>
@@ -58,8 +59,7 @@
                             <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
                                                                                              style="font-size:0.7em">15</span></a>
                             </p>
-                            <div style="padding-top:5%"></div>
-                            <button class="icon-btn add-btn" id="button_rmv_1" onclick="rmv_books_btn1()">
+                            <button class="icon-btn add-btn" id="button_rmv_1" style="margin-top:5%" onclick="rmv_books_btn1()">
                                 <div class="btn-txt">Remove</div>
                             </button>
                             <span style="color:white; font-size:14px" id="quantity_book_1">1</span>
@@ -76,6 +76,7 @@
                         </div>
 
                     </div>
+
 
                     <div class="info-book" id="info_book_2">
                         <img class="book-cover" src="/static/images/cover-images/book_cover2.jpg" alt="Card image cap">
@@ -242,10 +243,15 @@
                                                 <img class="card-img-top"
                                                      src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
                                                      alt="Card image cap">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="card-text">Fernando Aramburu</p>
-                                                    <p class="card-text">Preu: 24,95€</p>
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
+                                                    <p class="text" style="font-size: 14px">Fernando Aramburu</p>
+                                                    <script data-my_var_1="62%" src="/static/js/stars.js"></script>
+                                                    <script data-my_var_1="20%" src="/static/js/stars.js"></script>
+
+                                                    <p class="text" style="font-size: 14px">Preu: 24,95€</p>
+
                                                     <a href="#" class="btn btn-primary">Afegir al carret</a>
                                                 </div>
                                             </div>
@@ -463,7 +469,7 @@
 
                 <!-- Book 1 -->
 
-                <div class="row" style="margin-left: 1%; margin-top:3%">
+                <div class="row" style="margin-left: 1%; margin-top:3%" id="container1">
 
                     <div class="col-md-5">
                         <img src="/static/images/cover-images/book_cover5.jpg" style="width: 100%" alt="book">
@@ -496,6 +502,7 @@
                         <p class="text" style="font-size: 14px">24.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
+                                onclick="createInfoBook('info_book_1', 'price_book_1', 'original_price_1', 'gift', 'quantity_book_1', 'button_rmv_1', 'button_add_1', 'The Good Guy' , 'Mark Mcallister', 80, '/static/images/cover-images/book_cover.jpg', 24.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -741,9 +748,11 @@
 <!-- ./Full Body -->
 
 
-<!-- JavaScript files from static folder-->
+<!-- JavaScript files from static folder -->
 <script src="static/js/operateBooks.js"></script>
-<!-- ./JavaScript files from static folder-->
+<script src="static/js/stars.js"></script>
+<script src="static/js/info-book.js"></script>
+<!-- ./JavaScript files from static folder -->
 
 </body>
 {% endblock %}
