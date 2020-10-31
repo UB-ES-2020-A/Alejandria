@@ -50,7 +50,7 @@
 .price{
     color: white;
     font-size: 20px;
-    margin-top: 25%;
+    margin-top: 30%;
 }
 
 .reviews{
@@ -133,4 +133,11 @@ div.desc {
 
 .body{
     background-color: #292b2c;
+}
+
+.share-item{
+}
+
+.share-item:hover{
+    color: white;
 }
