@@ -1,4 +1,5 @@
 from django.shortcuts import render
+
 from books.models import Book
 
 def home(request):
@@ -7,7 +8,7 @@ def home(request):
 
     return render(request, template, context)
 
-def search(request):
+def search0(request):
     template = "searchresult.html"
     book0 = Book(title="Song of Ice and Fire", author="George R. R. Martin", price=24.95)
     book1 = Book(title="The Mist", author="Stephen King", price=19.99)
@@ -19,5 +20,20 @@ def search(request):
 def showDetails(request, isbn):
     template = "details.html"
     context = {"isbn": isbn}
+
+    return render(request, template, context)
+
+
+
+def search(request):
+    template = "search.html"
+    context = {}
+
+    return render(request, template, context)
+
+
+def cart(request):
+    template = "navbar.html"
+    context = {}
 
     return render(request, template, context)
