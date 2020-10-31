@@ -52,6 +52,8 @@ class BookView(generic.DetailView):
     model = Book
     template_name = 'books/book.html'
 
+    # TODO: Treat POST methods to add to cart, etc.
+
     """
       Right now im passing all the books, but in the next iteration 
       Ill only pass the necessary book info, required by POST during the search.
