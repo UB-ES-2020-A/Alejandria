@@ -1,7 +1,10 @@
 .body-structure{
-    margin-right: 25%;
     background-color: black;
     /*#162221;*/
+}
+
+.body-right{
+    background-color: black;
 }
 
 .title{
@@ -23,6 +26,12 @@
     width: 100%;
     display: flex;
     flex-direction: row;
+    border:1px solid white
+}
+
+.info-box{
+    margin-top: 30%;
+    width: 100%;
     border:1px solid white
 }
 

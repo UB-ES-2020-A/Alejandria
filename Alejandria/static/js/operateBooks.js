@@ -103,7 +103,22 @@ function updatePrices() {
   if (!item_deleted[2])
     document.getElementById("price_book_3").innerHTML = (books3 * price3).toFixed(2);
 
-  document.getElementById("priceTotal").innerHTML = (books1 * price1 + books2 * price2 + books3 * price3).toFixed(2);
-  document.getElementById("total_products").innerHTML = books1 + books2 + books3;
+  var total = (books1 * price1 + books2 * price2 + books3 * price3).toFixed(2);
+  var n_books = books1 + books2 + books3;
+
+  document.getElementById("priceTotal").innerHTML = total;
+  document.getElementById("total_products").innerHTML = n_books;
+
+  document.getElementById("priceSubtotal").innerHTML = total;
+  document.getElementById("subtotal_products").innerHTML = n_books;
+
+  if (n_books == 1) {
+    document.getElementById("products").innerHTML = 'product';
+    document.getElementById("items").innerHTML = 'item';
+  } else {
+    document.getElementById("products").innerHTML = 'products';
+    document.getElementById("items").innerHTML = 'items';
+  }
+
   opt = 0;
 }
