@@ -29,7 +29,7 @@ def book(request):  # TODO: this function is not linked to the frontend
                 'error_message': 'Alejandria can not find this book.'
             })
         else:
-            return render(request, 'book.html', {'book': req_book})
+            return render(request, 'details.html', {'book': req_book})
 
     elif request.method == 'POST':
         """
@@ -45,13 +45,13 @@ def book(request):  # TODO: this function is not linked to the frontend
 # This one works in thory when using the url with the pk inside # TODO: The idea is to use something like that
 def book_pk(request, pk):
     req_book = get_object_or_404(Book, pk=pk)
-    return render(request, 'book.html', {'book': req_book})
+    return render(request, 'details.html', {'book': req_book})
 
 
 # This one is the same but uses a generic Model, lso should work with the primary key
 class BookView(generic.DetailView):
     model = Book
-    template_name = 'book.html'
+    template_name = 'details.html'
 
     # TODO: Treat POST methods to add to cart, etc.
 
@@ -133,6 +133,11 @@ def search(request):  # TODO: Delete if SearchView is working as expected
 class SearchView(generic.ListView):
     model = Book
     template_name = 'search.html'  # TODO: Provisional file
+
+    def __init__(self):
+        super().__init__()
+        self.coincident = None
+        self.related = None
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)

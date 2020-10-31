@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 from django.utils import timezone
@@ -42,7 +43,7 @@ class Author(models.Model):
 
 class Book(models.Model):
     ISBN = models.CharField(primary_key=True, max_length=13, blank=False, null=False)  # Its a Char instead of Integer
-    user_id = models.ForeignKey(User,
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)  # Reference to the User that created it #TODO: on_delete=models.CASCADE
     title = models.CharField(max_length=30, blank=False)
     description = models.TextField(max_length=500, blank=True, null=True)  # Synopsis
@@ -82,7 +83,7 @@ class Product(models.Model):
 class Rating(models.Model):
     ID = models.AutoField(primary_key=True, blank=False, null=False)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
     text = models.TextField(max_length=500, null=False, blank=True)
     per_values = range(1, 6)
     human_readable = [str(value) for value in per_values]
@@ -97,7 +98,7 @@ class Cart(models.Model):
 class Bill(models.Model):
     num_factura = models.AutoField(primary_key=True, blank=False, null=False)  # TODO: auto field
     cart = models.ManyToManyField(Cart)  # TODO: How to treat quantities
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     date = models.DateField(null=True, blank=True, default=timezone.now)
     seller_info = models.TextField(blank=True, null=False)  # TODO: This is provisional
     payment_method = models.CharField(max_length=30)  # TODO: Define choices.
