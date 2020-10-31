@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # own apps
-
+    'crispy_forms',
     'Alejandria',
     #'books',
     'books.apps.BooksConfig',
@@ -131,4 +131,6 @@ STATIC_URL = '/static/'
 
 #STATICFILES_DIRS = ['/static/']
 AUTH_USER_MODEL = 'books.User'
+CRISPY_TEMPLATE_PACK="bootstrap4"
+
 
