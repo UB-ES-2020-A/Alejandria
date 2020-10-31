@@ -39,8 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # own apps
-    'books',
-    'Alejandria'
+
+    'Alejandria',
+    #'books',
+    'books.apps.BooksConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -132,4 +135,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 #STATICFILES_DIRS = ['/static/']
+AUTH_USER_MODEL = 'books.User'
+
