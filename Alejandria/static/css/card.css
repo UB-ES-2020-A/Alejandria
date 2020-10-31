@@ -1,56 +1,3 @@
-.MultiCarousel {
-    float: left;
-    overflow: hidden;
-    padding: 15px;
-    width: 100%;
-    position:relative;
-    margin-left:5%;
-}
-.MultiCarousel .MultiCarousel-inner {
-    transition: 1.5s ease all;
-    float: left;
-}
-.MultiCarousel .MultiCarousel-inner .item {
-    float: left;
-}
-.MultiCarousel .MultiCarousel-inner .item > div {
-    text-align: center;
-    margin:10px;
-    background:#f1f1f1;
-    color:#666;
-}
-.MultiCarousel .leftLst, .MultiCarousel .rightLst {
-    position:absolute;
-    top:5%;
-    height:282px;
-    background: rgba(0,0,0,0.4);
-    color:rgba(255,255,255,0.4);
-    border:none;
-}
-
-
-
-
-.MultiCarousel .leftLst:visited, .MultiCarousel .rightLst:visited  {
-
-    color:red;
-}
-
-.MultiCarousel .leftLst {
-    left:0;
-}
-
-.MultiCarousel .rightLst {
-    right:0;
-}
-
-.MultiCarousel .leftLst.over, .MultiCarousel .rightLst.over {
-    pointer-events: none;
-    /*background:#ccc;*/
-}
-
-
-
 .card{
     background: transparent;
     box-shadow: 0 6px 10px rgba(0,0,0,.08), 0 0 6px rgba(0,0,0,.05);
@@ -78,10 +25,10 @@
 
 
 .card:hover{
-     transform: scale(1.05);
+     transform: scale(1.0);
   box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
 }
 
 .card:hover .card-body{
-     height:282px;  /* el que puja en total*/
+     height:100%;  /* el que puja en total*/
 }
