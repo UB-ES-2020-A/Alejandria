@@ -1,2 +1,6 @@
 .idea
 venv
+__pycache__
+books/__pycache__
+books/migrations/__pycache__
+
