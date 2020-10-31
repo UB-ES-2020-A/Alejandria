@@ -1,6 +1,7 @@
 
 
 
+
 /* button main page navbar */
 /*
 .buttonText {
@@ -18,11 +19,11 @@
   background-color: transparent;
   border:none;
 }
-
 .buttonText:hover {
   color: #00DC17;
   text-decoration: none;
 }*/
+
 
 /* more and less */
 
@@ -119,6 +120,7 @@
 }
 
 
+
 /*  Social Media  */
 
 .share-button {
@@ -180,3 +182,4 @@
 .share-button a:nth-of-type(4){
   transition-delay: .4s;
 }
+

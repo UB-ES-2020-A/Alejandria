@@ -6,8 +6,18 @@ def home(request):
 
     return render(request, template, context)
 
+
+
+def search(request):
+    template = "search.html"
+    context = {}
+
+    return render(request, template, context)
+
+
 def cart(request):
     template = "navbar.html"
     context = {}
 
     return render(request, template, context)
+

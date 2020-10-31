@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'Alejandria',
     #'books',
     'books.apps.BooksConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,4 @@ STATIC_URL = '/static/'
 
 #STATICFILES_DIRS = ['/static/']
 AUTH_USER_MODEL = 'books.User'
+
