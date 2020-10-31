@@ -13,6 +13,12 @@ class Author(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.__dict__ == other.__dict__
+        else:
+            return False
+
 
 class UserDummy(models.Model):  # TODO: Replace with the real User
     ID = models.AutoField(primary_key=True, blank=False, null=False)
