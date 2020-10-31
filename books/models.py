@@ -10,6 +10,25 @@ TODO: IF NECESSARI INTRODUCE help_text in some characteristics.
 """
 
 
+class Address(models.Model):
+    street = models.CharField(max_length=50, null=False, blank=False)
+    city = models.CharField(max_length=50, null=False, blank=False)
+    country = models.CharField(max_length=50, null=False, blank=False)
+    zip = models.CharField(max_length=10, null=False, blank=False)
+
+
+class User(AbstractUser):
+    id = models.AutoField(primary_key=True, null=False, blank=True)
+    role = models.CharField(max_length=10, null=False, blank=False)
+    name = models.CharField(max_length=50, null=False, blank=False)
+    password = models.CharField(max_length=50, null=False, blank=False)
+    email = models.EmailField(max_length=50, null=False, blank=False)
+    user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
+                                     related_name="user_address")
+    fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
+                                     related_name="fact_address")
+
+
 class Author(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
@@ -72,12 +91,12 @@ class Rating(models.Model):
 
 
 class Cart(models.Model):
-    products = models.ManyToManyField(Product) # TODO: How to treat quantities
+    products = models.ManyToManyField(Product)  # TODO: How to treat quantities
 
 
 class Bill(models.Model):
     num_factura = models.AutoField(primary_key=True, blank=False, null=False)  # TODO: auto field
-    cart = models.ManyToManyField(Cart) # TODO: How to treat quantities
+    cart = models.ManyToManyField(Cart)  # TODO: How to treat quantities
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     date = models.DateField(null=True, blank=True, default=timezone.now)
     seller_info = models.TextField(blank=True, null=False)  # TODO: This is provisional
@@ -88,22 +107,3 @@ class FAQ(models.Model):
     ID = models.AutoField(primary_key=True)
     question = models.TextField(blank=False, null=False)
     answer = models.TextField(blank=False, null=False)
-
-
-class Address(models.Model):
-    street = models.CharField(max_length=50, null=False, blank=False)
-    city = models.CharField(max_length=50, null=False, blank=False)
-    country = models.CharField(max_length=50, null=False, blank=False)
-    zip = models.CharField(max_length=10, null=False, blank=False)
-
-
-class User(AbstractUser):
-    id = models.AutoField(primary_key=True, null=False, blank=True)
-    role = models.CharField(max_length=10, null=False, blank=False)
-    name = models.CharField(max_length=50, null=False, blank=False)
-    password = models.CharField(max_length=50, null=False, blank=False)
-    email = models.EmailField(max_length=50, null=False, blank=False)
-    user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
-                                     related_name="user_address")
-    fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
-                                     related_name="fact_address")

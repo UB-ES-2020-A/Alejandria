@@ -47,7 +47,7 @@ def test_address():
 def test_book():
     # Data to test
     isbn = '0123456789012'  # 13 digits
-    user_id = UserDummy()
+    user_id = User()
     user_id.save()
     title = 'THis is the TITLE'
     description = 'This is the description of a test book'
@@ -114,7 +114,7 @@ def test_product():
 
 def test_rating():
     product_id = Product.objects.all().first()
-    user_id = UserDummy.objects.all().first()
+    user_id = User.objects.all().first()
     text = 'My opinion is that this product is great.'
     score = 3  # TODO: Also test if I use not viable scores
     # date = default
@@ -173,7 +173,7 @@ def test_bill():
     # cart.save()
     # cart = Cart.objects.all().first()
     #
-    # user_id = UserDummy.objects.all().first()
+    # user_id = User.objects.all().first()
     # # date = default
     # seller_info = ' This is the information of the Seller'
     # payment_method = 'PayPal'
