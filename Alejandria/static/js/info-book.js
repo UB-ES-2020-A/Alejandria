@@ -57,7 +57,6 @@ function createInfoBook(id_book, id_price, id_original_price, id_checkbox, id_qu
 
     var span_rating = document.createElement("SPAN");
     span_rating.className = "score";
-    span_rating.style.marginTop = "-5%";
 
     var div_wrap = document.createElement("DIV");
     div_wrap.className = "score-wrap";
