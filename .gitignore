@@ -3,4 +3,5 @@ venv
 __pycache__
 books/__pycache__
 books/migrations/__pycache__
+Alejandria/__pycache__
 
