@@ -1,14 +1,16 @@
-language: python # => 1
-    python: # => 2
-      - "3.8"
-    services: # => 3
-      - postgresql
-    env: # => 4
-      -DJANGO=3.1.2
-    install: # => 5
-      - pip install -r requirements.txt
-
-    before_script: # => 6
-      - psql -c "CREATE DATABASE Alejandro_DB;" -U Alejandro
-    script: # => 7
-      - pytest
+addons: 
+  postgresql: "9.2"
+before_script:
+  - "psql -c 'create database travis_ci_test;' -U postgres"
+  - "python manage.py makemigrations"
+  - "python manage.py migrate"
+env: "-DJANGO=3.1.2"
+install: 
+  - "pip install -r requirements.txt"
+language: python
+python: 
+  - "3.8"
+script: 
+  - pytest
+services: 
+  - postgresql
