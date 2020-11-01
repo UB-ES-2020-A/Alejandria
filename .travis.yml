@@ -1,31 +1,17 @@
 addons:
-  apt:
-    packages:
-      - postgresql-12
-      - postgresql-client-12
-  postgresql: "12"
-before_install:
-  - "sudo apt-get update"
-  - "sudo apt-get install language-pack-es"
-  - "sudo /etc/init.d/postgresql stop"
-  - "sudo ls /etc/postgresql/"
-  - "sudo pg_ctlcluster 12 main start"
-  - "sudo /etc/init.d/postgresql start 12"
-  - "sudo journalctl -xe"
-  - "sudo systemctl status postgresql.service"
+  postgresql: "9.4"
 before_script:
   - "psql -c 'create database travis_ci_test;' -U postgres"
   - "python manage.py makemigrations"
   - "python manage.py migrate"
-dist: xenial
+cache: pip
 env:
-  global: "-DJANGO=3.1.2 - PGPORT=5432"
+  - "DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test"
 install:
   - "pip install -r requirements.txt"
 language: python
 python:
-  - "3.8"
+  - 3.8
 script:
   - pytest
-services:
-  - postgresql
+sudo: false
