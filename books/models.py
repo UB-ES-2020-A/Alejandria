@@ -20,6 +20,7 @@ class Address(models.Model):
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True, null=False, blank=True)
+    #TODO: AFEGIR USERNAME COM A PK
     role = models.CharField(max_length=10, null=False, blank=False)
     name = models.CharField(max_length=50, null=False, blank=False)
     password = models.CharField(max_length=50, null=False, blank=False)
@@ -70,7 +71,7 @@ class Book(models.Model):
 
 class Product(models.Model):
     ID = models.AutoField(primary_key=True)
-    ISBN = models.OneToOneField(Book, on_delete=models.CASCADE, blank=False, null=False)
+    ISBN = models.ForeignKey(Book, on_delete=models.CASCADE, blank=False, null=False)
     # TODO: What to do on_delete=?
     price = models.DecimalField(decimal_places=2, max_digits=8)
     # TODO: Could be in no.arange(0.00, 100.00, 0.01) -> To have percentages with 0.01 precision
