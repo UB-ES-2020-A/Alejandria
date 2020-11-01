@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -77,19 +77,32 @@ WSGI_APPLICATION = 'Alejandria.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        # Se configura en el pgadmin del postgresql
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Alejandria_DB',  # Poned este nombre todos en el pgadmin al crear la db local
-        'USER': 'Alejandro',  # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
-        'PASSWORD': 'Password1',  # usad esta constraseña
-        'HOST': 'localhost',  # como hemos dicho es una db local
-        'PORT': '5432'  # a este puerto
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE':   'django.db.backends.postgresql_psycopg2',
+            'NAME':     'travisci',
+            'USER':     'postgres',
+            'PASSWORD': '',
+            'HOST':     'localhost',
+            'PORT':     '5432',
+        }
     }
+else:
 
-    # Despues de configurar la
-}
+    DATABASES = {
+        'default': {
+            # Se configura en el pgadmin del postgresql
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'Alejandria_DB',  # Poned este nombre todos en el pgadmin al crear la db local
+            'USER': 'Alejandro',  # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
+            'PASSWORD': 'Password1',  # usad esta constraseña
+            'HOST': 'localhost',  # como hemos dicho es una db local
+            'PORT': '5432'  # a este puerto
+        }
+
+        # Despues de configurar la
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
