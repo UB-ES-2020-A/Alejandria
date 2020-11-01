@@ -25,7 +25,7 @@ SECRET_KEY = '56&@1#k_scqs8ymk&24hm@f4z=g!*5b#%_tgk)zmny(hh__-#d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['alejandria-es1.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
