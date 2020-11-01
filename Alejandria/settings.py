@@ -39,9 +39,8 @@ INSTALLED_APPS = [
     # own apps
     'crispy_forms',
     'Alejandria',
-    #'books',
+    # 'books',
     'books.apps.BooksConfig',
-
 ]
 
 MIDDLEWARE = [

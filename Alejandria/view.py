@@ -34,7 +34,7 @@ def search(request):
 
 
 def cart(request):
-    template = "navbar.html"
+    template = "cart.html"
     context = {}
 
     return render(request, template, context)
