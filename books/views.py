@@ -2,13 +2,14 @@ from django.shortcuts import render
 
 from django.views import generic
 
-from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.shortcuts import render, redirect
-from .forms import RegisterForm
+from .forms import RegisterForm, LoginForm
 
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.contrib.auth import authenticate, login
 
 from .models import Book, FAQ, Cart, Product, User, Author
 
@@ -225,8 +226,26 @@ class RegisterView(generic.TemplateView):
             form = RegisterForm(request.POST)
             if form.is_valid():
                 form.save()
-            return redirect("/home")
+            return redirect("/")
         else:
             form = RegisterForm()
 
         return render(request, "register.html", {"form": form})
+
+
+class LoginView(generic.TemplateView):
+
+    @staticmethod
+    def login(request):
+        form = LoginForm(request.POST)
+        if request.method == 'POST':
+            #user = authenticate(
+            #    username=request.POST['username'],
+            #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
+            #)
+            user = User.objects.get(username=request.POST['username'],password=request.POST['password'])
+            if user is not None:
+                login(request, user,backend='books.backend.EmailAuthBackend')
+                return redirect("/")
+
+        return render(request,"login.html", {"form":form})
