@@ -218,4 +218,5 @@ function createInfoBook(id_book, id_price, id_original_price, id_checkbox, id_qu
 
     //Update count
     count_id = count_id + 1;
+    addToCart(var_price);
 }

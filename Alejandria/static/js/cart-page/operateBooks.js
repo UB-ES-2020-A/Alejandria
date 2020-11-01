@@ -50,6 +50,8 @@ function updatePrices() {
   document.getElementById("priceSubtotal").innerHTML = (total).toFixed(2);
   document.getElementById("subtotal_products").innerHTML = n_books;
 
+  document.getElementById("total_items_not").innerHTML = n_books;
+
   if (n_books == 1) {
     document.getElementById("products").innerHTML = 'product';
     document.getElementById("items").innerHTML = 'item';
@@ -58,4 +60,10 @@ function updatePrices() {
     document.getElementById("items").innerHTML = 'items';
   }
 
+}
+
+function addToCart(new_price) {
+  n_books = n_books + 1;
+  total = total + new_price;
+  updatePrices();
 }
