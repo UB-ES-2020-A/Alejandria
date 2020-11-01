@@ -14,6 +14,30 @@ from books.models import Author, Book, Product, Rating, Bill, FAQ, Cart, Address
 
 
 # TODO: Make test "en cadena". If we have to test something before try one test, do it.
+# Decorator to enable DB at test function
+def test_user():
+    # Data to test
+    id = 15
+    role = 'Admin'
+    name = 'Josep'
+    password = 'password1'
+    email = 'fakemail@gmail.com'
+    user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
+    fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
+    user_address.save()
+    fact_address.save()
+
+    # Model creation
+    obj = User(id=id, role=role, name=name, password=password, email=email, user_address=user_address,
+               fact_address=fact_address)
+    obj.save()
+    # Retrieve model to check correct creation
+    obj = User.objects.all().last()
+    check = all([id == obj.id, role == obj.role, name == obj.name, password == obj.password, email == obj.email,
+                 user_address == obj.user_address, fact_address == obj.fact_address])
+    # Test sucess if check is True
+    assert check
+
 
 def test_author():
     # Data to test
@@ -47,6 +71,7 @@ def test_address():
 def test_book():
     # Data to test
     isbn = '0123456789012'  # 13 digits
+
     user_id = User.objects.all().last()#User()
     #user_id.save()
     title = 'THis is the TITLE'
@@ -238,26 +263,3 @@ def test_faq():
 
     check = all([question == obj.question, answer == obj.answer])
 
-# Decorator to enable DB at test function
-def test_user():
-    # Data to test
-    id = 15
-    role = 'Admin'
-    name = 'Josep'
-    password = 'password1'
-    email = 'fakemail@gmail.com'
-    user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
-    fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
-    user_address.save()
-    fact_address.save()
-
-    # Model creation
-    obj = User(id=id, role=role, name=name, password=password, email=email, user_address=user_address,
-               fact_address=fact_address)
-    obj.save()
-    # Retrieve model to check correct creation
-    obj = User.objects.all().last()
-    check = all([id == obj.id, role == obj.role, name == obj.name, password == obj.password, email == obj.email,
-                 user_address == obj.user_address, fact_address == obj.fact_address])
-    # Test sucess if check is True
-    assert check
