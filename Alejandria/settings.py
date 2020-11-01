@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,6 +35,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # own apps
+    'crispy_forms',
+    'Alejandria',
+    # 'books',
+    'books.apps.BooksConfig',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +74,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Alejandria.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -78,17 +81,15 @@ DATABASES = {
     'default': {
         # Se configura en el pgadmin del postgresql
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Alejandria_DB', # Poned este nombre todos en el pgadmin al crear la db local
-        'USER': 'Alejandro', # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
-        'PASSWORD': 'Password1', # usad esta constraseña
-        'HOST': 'localhost', # como hemos dicho es una db local
-        'PORT':'5432' # a este puerto
+        'NAME': 'Alejandria_DB',  # Poned este nombre todos en el pgadmin al crear la db local
+        'USER': 'Alejandro',  # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
+        'PASSWORD': 'Password1',  # usad esta constraseña
+        'HOST': 'localhost',  # como hemos dicho es una db local
+        'PORT': '5432'  # a este puerto
     }
 
     # Despues de configurar la
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -108,6 +109,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'books.backend.EmailAuthBackend',
+
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -122,8 +128,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+#STATICFILES_DIRS = ['/static/']
+AUTH_USER_MODEL = 'books.User'
+CRISPY_TEMPLATE_PACK="bootstrap4"
+
+
