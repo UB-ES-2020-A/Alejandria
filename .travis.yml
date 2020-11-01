@@ -8,8 +8,8 @@ before_install:
   - "sudo apt-get update"
   - "sudo apt-get install language-pack-es"
   - "sudo /etc/init.d/postgresql stop"
-  - "ls /etc/postgresql/"
-  - "pg_ctlcluster 12 main start"
+  - "sudo ls /etc/postgresql/"
+  - "sudo pg_ctlcluster 12 main start"
   - "sudo /etc/init.d/postgresql start 12"
   - "sudo systemctl status postgresql.service"
 before_script:
