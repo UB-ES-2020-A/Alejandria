@@ -1,1 +1,1 @@
-web: gunicorn Alejandria/wsgi.py
+web: gunicorn Alejandria/wsgi
