@@ -37,11 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # own apps
-
     'Alejandria',
-    #'books',
+    # 'books',
     'books.apps.BooksConfig',
-
 ]
 
 MIDDLEWARE = [
