@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'Alejandria.wsgi.application'
 if 'TRAVIS' in os.environ:
     DATABASES = {
         'default': {
-            'ENGINE':   'django.db.backends.postgresql_psycopg2',
+            'ENGINE':   'django.db.backends.postgresql',
             'NAME':     'travis_ci_test',
             'USER':     'postgres',
             'PASSWORD': '',
@@ -96,15 +96,16 @@ else:
         'default': {
             # Se configura en el pgadmin del postgresql
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'Alejandria_DB',  # Poned este nombre todos en el pgadmin al crear la db local
-            'USER': 'Alejandro',  # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
-            'PASSWORD': 'Password1',  # usad esta constraseña
-            'HOST': 'localhost',  # como hemos dicho es una db local
+            'NAME': 'd6ttju9kflvip9',  # Poned este nombre todos en el pgadmin al crear la db local
+            'USER': 'hhcommywfpctls',  # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
+            'PASSWORD': 'dcd0b919ef67e90389ee27dc77b4a75a4c2d245936f67c85cc774ee46f7dfa0a',  # usad esta constraseña
+            'HOST': 'ec2-54-156-85-145.compute-1.amazonaws.com',  # como hemos dicho es una db local
             'PORT': '5432'  # a este puerto
         }
 
         # Despues de configurar la
     }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
