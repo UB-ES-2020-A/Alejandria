@@ -2,11 +2,14 @@ from django.shortcuts import render
 
 from django.views import generic
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.shortcuts import render, redirect
+from .forms import RegisterForm, LoginForm
 
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.contrib.auth import authenticate, login
 
 from .models import Book, FAQ, Cart, Product, User, Author
 
@@ -142,7 +145,6 @@ class SearchView(generic.ListView):
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-
     def get_queryset(self):  # TODO: This is a rather simple method, can be improved # TODO: TEST
         try:
             srch = self.kwargs['search']
@@ -169,8 +171,6 @@ class SearchView(generic.ListView):
         if not self.related or len(self.related) == 0:
             context['related_error_message'] = 'No Books Related Found'
         context['related'] = self.related
-
-
 
 
 class CartView(generic.ListView):
@@ -216,3 +216,36 @@ class FaqsView(generic.ListView):
     template_name = 'FAQs.html'  # TODO: Provisional file
 
     # TODO: In next iterations has to have the option to make POSTs by the admin.
+
+
+class RegisterView(generic.TemplateView):
+
+    @staticmethod
+    def register(request):
+        if request.method == "POST":
+            form = RegisterForm(request.POST)
+            if form.is_valid():
+                form.save()
+            return redirect("/")
+        else:
+            form = RegisterForm()
+
+        return render(request, "register.html", {"form": form})
+
+
+class LoginView(generic.TemplateView):
+
+    @staticmethod
+    def login(request):
+        form = LoginForm(request.POST)
+        if request.method == 'POST':
+            #user = authenticate(
+            #    username=request.POST['username'],
+            #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
+            #)
+            user = User.objects.get(username=request.POST['username'],password=request.POST['password'])
+            if user is not None:
+                login(request, user,backend='books.backend.EmailAuthBackend')
+                return redirect("/")
+
+        return render(request,"login.html", {"form":form})

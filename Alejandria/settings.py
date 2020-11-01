@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # own apps
+    'crispy_forms',
     'Alejandria',
     # 'books',
     'books.apps.BooksConfig',
@@ -108,6 +109,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'books.backend.EmailAuthBackend',
+
+)
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -129,4 +136,6 @@ STATIC_URL = '/static/'
 
 #STATICFILES_DIRS = ['/static/']
 AUTH_USER_MODEL = 'books.User'
+CRISPY_TEMPLATE_PACK="bootstrap4"
+
 

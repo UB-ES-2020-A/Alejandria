@@ -36,6 +36,8 @@
     <link rel="stylesheet" href="{% static 'css/body.css' %}">
     <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
     <link rel="stylesheet" href="{% static 'css/card.css' %}">
+    <script type="text/javascript" src="{% static 'js/navbar.js' %}"></script>
+
 
 </head>
 
@@ -64,19 +66,19 @@
         <button class="buttonText" type="submit">Help</button>
         <button class="buttonText" type="submit">FAQs</button>
         <div style="margin-left:10%"></div>
-        <button class="btn btn-danger my-2 my-sm-0" type="submit">Sign In</button>
+        <button class="btn btn-danger my-2 my-sm-0" id="login_btn" type="submit">Sign In</button>
         <div style="margin-left:5%"></div>
-        <button class="btn btn-danger my-2 my-sm-0" type="submit">Register</button>
+        <button class="btn btn-danger my-2 my-sm-0" id="register_btn" type="submit">Register</button>
     </div>
 
 </nav>
 
 <nav class="navbar sticky-top navbar-expand-lg bg-danger" style="height:40px; top:60px;">
-
     <div class="col-md-11">
         <div class="row">
         <div style="margin-left:5%"></div>
-        <a href="/" class="buttonText2" >Home</a>
+        <!-- <a href="/" class="buttonText2" >Home</a> -->
+        <button class="buttonText2" id="home_btn" type="submit">Home</button>
         <div style="margin-left:1%"></div>
         <a href="#" class="buttonText2">eBooks</a>
         <div style="margin-left:1%"></div>
