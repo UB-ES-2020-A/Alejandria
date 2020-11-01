@@ -9,6 +9,7 @@ before_install:
   - "sudo apt-get install language-pack-es"
   - "sudo /etc/init.d/postgresql stop"
   - "sudo /etc/init.d/postgresql start 12"
+  - "sudo systemctl status postgresql.service"
 before_script:
   - "psql -c 'create database travis_ci_test;' -U postgres"
   - "python manage.py makemigrations"
