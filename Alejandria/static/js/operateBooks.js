@@ -1,115 +1,53 @@
-var opt = 0;
-var item_deleted = [false, false, false]
+var total = 60.85; //Just for this example
+var n_books = 3;
 
-/*  Add functions   */
-function add_books_btn1() {
-  var books = parseInt(document.getElementById("quantity_book_1").innerText);
-  document.getElementById("quantity_book_1").innerHTML = books + 1;
+/*  Add function   */
+function add_books_btn(evt) {
+  var price = evt.currentTarget.myParamPrice;
+  var id_books = evt.currentTarget.myParamIDQuantity;
+  var books_remained = parseInt(document.getElementById(id_books).innerText);
+  var id_price = evt.currentTarget.myParamIDPrice;
+  document.getElementById(id_books).innerHTML = books_remained + 1;
+  document.getElementById(id_price).innerHTML = (parseFloat(document.getElementById(id_price).innerText) + price).toFixed(2) + '€';
+  n_books = n_books + 1;
+  total = total + price;
   updatePrices();
 }
 
-function add_books_btn2() {
-  var books = parseInt(document.getElementById("quantity_book_2").innerText);
-  document.getElementById("quantity_book_2").innerHTML = books + 1;
-  updatePrices();
-}
-
-function add_books_btn3() {
-  var books = parseInt(document.getElementById("quantity_book_3").innerText);
-  document.getElementById("quantity_book_3").innerHTML = books + 1;
-  updatePrices();
-}
-
-/*  Remove functions    */
-function rmv_books_btn1() {
-  var books = parseInt(document.getElementById("quantity_book_1").innerText);
-  if (books > 0) {
-    document.getElementById("quantity_book_1").innerHTML = books - 1;
+/*  Remove function    */
+function rmv_books_btn(evt) {
+  var price = evt.currentTarget.myParamPrice;
+  var id_books = evt.currentTarget.myParamIDQuantity;
+  var id_price = evt.currentTarget.myParamIDPrice;
+  var books_remained = parseInt(document.getElementById(id_books).innerText);
+  if (books_remained > 0) {
+    document.getElementById(id_books).innerHTML = books_remained - 1;
+    document.getElementById(id_price).innerHTML = (parseFloat(document.getElementById(id_price).innerText) - price).toFixed(2) + '€';
+    n_books = n_books - 1;
+    total = total - price;
+    updatePrices();
   }
-  updatePrices();
 }
 
-function rmv_books_btn2() {
-  var books = parseInt(document.getElementById("quantity_book_2").innerText);
-  if (books > 0) {
-    document.getElementById("quantity_book_2").innerHTML = books - 1;
-  }
-  updatePrices();
-}
 
-function rmv_books_btn3() {
-  var books = parseInt(document.getElementById("quantity_book_3").innerText);
-  if (books > 0) {
-    document.getElementById("quantity_book_3").innerHTML = books - 1;
-  }
+/*  Delete function    */
+function dlt_books_btn(evt) {
+  var price = evt.currentTarget.myParamPrice;
+  var id_books = evt.currentTarget.myParamIDQuantity;
+  var id_block = evt.currentTarget.myParamIDBook;
+  var books =  parseInt(document.getElementById(id_books).innerText);
+  total = total - price * books;
+  n_books = n_books - books;
+  document.getElementById('container-info-books').removeChild(document.getElementById(id_block));
   updatePrices();
-}
-
-/*  Delete functions    */
-function dlt_books_btn1() {
-  opt = 1;
-  updatePrices();
-  document.getElementById("info_book_1").remove();
-}
-
-function dlt_books_btn2() {
-  opt = 2;
-  updatePrices();
-  document.getElementById("info_book_2").remove();
-}
-
-function dlt_books_btn3() {
-  opt = 3;
-  updatePrices();
-  document.getElementById("info_book_3").remove();
 }
 
 function updatePrices() {
-  var price1 = 0;
-  var price2 = 0;
-  var price3 = 0;
 
-  var books1 = 0;
-  var books2 = 0;
-  var books3 = 0;
-
-  if (opt != 1 && !item_deleted[0]) {
-    books1 = parseInt(document.getElementById("quantity_book_1").innerText);
-    price1 = parseFloat(document.getElementById("original_price_1").innerText);
-  }
-  if (opt != 2 && !item_deleted[1]) {
-    books2 = parseInt(document.getElementById("quantity_book_2").innerText);
-    price2 = parseFloat(document.getElementById("original_price_2").innerText);
-  }
-  if (opt != 3 && !item_deleted[2]) {
-    books3 = parseInt(document.getElementById("quantity_book_3").innerText);
-    price3 = parseFloat(document.getElementById("original_price_3").innerText);
-  }
-
-  if (opt == 1 && !item_deleted[0]){
-    item_deleted[0] = true;
-  }
-  if (opt == 2 && !item_deleted[1]){
-    item_deleted[1] = true;
-  }
-  if (opt == 3 && !item_deleted[2]){
-    item_deleted[2] = true;
-  }
-
-  if (!item_deleted[0])
-    document.getElementById("price_book_1").innerHTML = (books1 * price1).toFixed(2);
-  if (!item_deleted[1])
-    document.getElementById("price_book_2").innerHTML = (books2 * price2).toFixed(2);
-  if (!item_deleted[2])
-    document.getElementById("price_book_3").innerHTML = (books3 * price3).toFixed(2);
-
-  var total = (books1 * price1 + books2 * price2 + books3 * price3).toFixed(2);
-  var n_books = books1 + books2 + books3;
-
-  document.getElementById("priceTotal").innerHTML = total;
+  document.getElementById("priceTotal").innerHTML = (total).toFixed(2);
   document.getElementById("total_products").innerHTML = n_books;
 
-  document.getElementById("priceSubtotal").innerHTML = total;
+  document.getElementById("priceSubtotal").innerHTML = (total).toFixed(2);
   document.getElementById("subtotal_products").innerHTML = n_books;
 
   if (n_books == 1) {
@@ -120,5 +58,4 @@ function updatePrices() {
     document.getElementById("items").innerHTML = 'items';
   }
 
-  opt = 0;
 }

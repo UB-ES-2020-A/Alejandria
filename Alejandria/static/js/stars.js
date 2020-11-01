@@ -1,6 +1,7 @@
-function createRating(rating){
+window.onload = function createRating(evt, rating){
 
-    var container = document.getElementById("info_book_1");
+    alert(id);
+    var container = document.getElementById(id);
 
     var span = document.createElement("SPAN");
     span.className = "score";

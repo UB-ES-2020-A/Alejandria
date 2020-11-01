@@ -68,7 +68,7 @@
                                 <div class="btn-txt">Add</div>
                             </button>
                             <div style="padding-top:20%"></div>
-                            <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn1()"
+                            <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn(this,)"
                                     type="submit">
                                 Delete
                             </button>
@@ -121,16 +121,16 @@
                                                                                              style="font-size:0.7em">4</span></a>
                             </p>
                             <div style="padding-top:5%"></div>
-                            <button class="icon-btn add-btn" id="button_rmv_2" onclick="rmv_books_btn2()">
+                            <button class="icon-btn add-btn" id="button_rmv_2" onclick="rmv_books_btn()">
                                 <div class="btn-txt">Remove</div>
                             </button>
                             <span style="color:white; font-size:14px" id="quantity_book_2">1</span>
-                            <button class="icon-btn add-btn" id="button_add_2" onclick="add_books_btn2()">
+                            <button class="icon-btn add-btn" id="button_add_2" onclick="add_books_btn()">
                                 <div class="add-icon"></div>
                                 <div class="btn-txt">Add</div>
                             </button>
                             <div style="padding-top:20%"></div>
-                            <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn2()"
+                            <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn()"
                                     type="submit">
                                 Delete
                             </button>
@@ -246,13 +246,14 @@
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text" style="font-size: 14px">Fernando Aramburu</p>
-                                                    <script data-my_var_1="62%" src="/static/js/stars.js"></script>
-                                                    <script data-my_var_1="20%" src="/static/js/stars.js"></script>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car" ></span>
 
-                                                    <p class="text" style="font-size: 14px">Preu: 24,95€</p>
+                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
 
-                                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                                    <button class="btn btn-success"
+                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -264,11 +265,17 @@
                                                 <img class="card-img-top"
                                                      src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
                                                      alt="Card image cap">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="card-text">Fernando Aramburu</p>
-                                                    <p class="card-text">Preu: 24,95€</p>
-                                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car2" ></span>
+
+                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
+
+                                                    <button class="btn btn-success"
+                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -280,11 +287,17 @@
                                                 <img class="card-img-top"
                                                      src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
                                                      alt="Card image cap">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="card-text">Fernando Aramburu</p>
-                                                    <p class="card-text">Preu: 24,95€</p>
-                                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car3" ></span>
+
+                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
+
+                                                    <button class="btn btn-success"
+                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -302,11 +315,17 @@
                                                 <img class="card-img-top"
                                                      src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
                                                      alt="Card image cap">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="card-text">Fernando Aramburu</p>
-                                                    <p class="card-text">Preu: 24,95€</p>
-                                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car4" ></span>
+
+                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
+
+                                                    <button class="btn btn-success"
+                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -318,11 +337,17 @@
                                                 <img class="card-img-top"
                                                      src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
                                                      alt="Card image cap">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="card-text">Fernando Aramburu</p>
-                                                    <p class="card-text">Preu: 24,95€</p>
-                                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car5" ></span>
+
+                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
+
+                                                    <button class="btn btn-success"
+                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -334,11 +359,17 @@
                                                 <img class="card-img-top"
                                                      src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
                                                      alt="Card image cap">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="card-text">Fernando Aramburu</p>
-                                                    <p class="card-text">Preu: 24,95€</p>
-                                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car6" ></span>
+
+                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
+
+                                                    <button class="btn btn-success"
+                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -356,11 +387,17 @@
                                                 <img class="card-img-top"
                                                      src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
                                                      alt="Card image cap">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="card-text">Fernando Aramburu</p>
-                                                    <p class="card-text">Preu: 24,95€</p>
-                                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car7" ></span>
+
+                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
+
+                                                    <button class="btn btn-success"
+                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -372,11 +409,17 @@
                                                 <img class="card-img-top"
                                                      src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
                                                      alt="Card image cap">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="card-text">Fernando Aramburu</p>
-                                                    <p class="card-text">Preu: 24,95€</p>
-                                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car8" ></span>
+
+                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
+
+                                                    <button class="btn btn-success"
+                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -388,11 +431,17 @@
                                                 <img class="card-img-top"
                                                      src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
                                                      alt="Card image cap">
-                                                <div class="card-body">
-                                                    <h5 class="card-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="card-text">Fernando Aramburu</p>
-                                                    <p class="card-text">Preu: 24,95€</p>
-                                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car9" ></span>
+
+                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
+
+                                                    <button class="btn btn-success"
+                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -404,8 +453,7 @@
                         <div class="col-md-2" style="align:center">
                             <!-- Button Right -->
                             <button class="btn btn-outline-light rightLst" href="#multi-item-example" data-slide="next">
-                                <i
-                                        class="fas fa-chevron-right fa-7x"></i></button>
+                                <i class="fas fa-chevron-right fa-7x"></i></button>
                             <!-- ./Button Right -->
                         </div>
                     </div>
@@ -502,7 +550,7 @@
                         <p class="text" style="font-size: 14px">24.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book_1', 'price_book_1', 'original_price_1', 'gift', 'quantity_book_1', 'button_rmv_1', 'button_add_1', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
+                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -547,7 +595,7 @@
                         <p class="text" style="font-size: 14px">13.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book_1', 'price_book_1', 'original_price_1', 'gift', 'quantity_book_1', 'button_rmv_1', 'button_add_1', 'The King of Drugs' , 'Nora Barret', 82, '/static/images/cover-images/book_cover6.jpg', 13.95)"
+                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'The King of Drugs' , 'Nora Barret', 82, '/static/images/cover-images/book_cover6.jpg', 13.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -589,7 +637,7 @@
                         <p class="text" style="font-size: 14px">15.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book_1', 'price_book_1', 'original_price_1', 'gift', 'quantity_book_1', 'button_rmv_1', 'button_add_1', 'The Arrivals' , 'Lucas Lloyd', 60, '/static/images/cover-images/book_cover2.jpg', 15.95)"
+                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'The Arrivals' , 'Lucas Lloyd', 60, '/static/images/cover-images/book_cover2.jpg', 15.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -632,7 +680,7 @@
                         <p class="text" style="font-size: 14px">24.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book_1', 'price_book_1', 'original_price_1', 'gift', 'quantity_book_1', 'button_rmv_1', 'button_add_1', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
+                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -675,7 +723,7 @@
                         <p class="text" style="font-size: 14px">9.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book_1', 'price_book_1', 'original_price_1', 'gift', 'quantity_book_1', 'button_rmv_1', 'button_add_1', 'Dancing to my Death', 'Danielo O'Leary', 65, '/static/images/cover-images/book_cover7.jpg', 9.95)"
+                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Dancing to my Death', 'Danielo O'Leary', 65, '/static/images/cover-images/book_cover7.jpg', 9.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -718,7 +766,7 @@
                         <p class="text" style="font-size: 14px">24.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book_1', 'price_book_1', 'original_price_1', 'gift', 'quantity_book_1', 'button_rmv_1', 'button_add_1', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
+                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
                                 type="submit">Add to cart
                         </button>
 

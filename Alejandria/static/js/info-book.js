@@ -1,9 +1,10 @@
+var count_id = 4;
 function createInfoBook(id_book, id_price, id_original_price, id_checkbox, id_quantity, id_btn_rmv, id_btn_add, var_title, var_author, var_rating, var_src_img, var_price) {
 
     var container = document.getElementById('container-info-books');
     var div_info_book = document.createElement('DIV');
     div_info_book.className = 'info-book';
-    div_info_book.id = id_book;
+    div_info_book.id = id_book + '_' + count_id;
 
     var img = document.createElement('IMG');
     img.className = 'book-cover';
@@ -16,7 +17,7 @@ function createInfoBook(id_book, id_price, id_original_price, id_checkbox, id_qu
     div_row.className = 'row horizontal';
 
     var div_col_1 = document.createElement('DIV');
-    div_col_1.className = 'col';
+    div_col_1.className = 'col-md-8';
 
     var p_title = document.createElement('P');
     p_title.className = 'book-title';
@@ -33,7 +34,7 @@ function createInfoBook(id_book, id_price, id_original_price, id_checkbox, id_qu
     p_price.style.textAlign = 'right';
 
     var span_price = document.createElement('SPAN');
-    span_price.id = id_price;
+    span_price.id = id_price + '_' + count_id;
     span_price.innerHTML = var_price + '€';
 
     var p_original_price = document.createElement('P');
@@ -47,11 +48,11 @@ function createInfoBook(id_book, id_price, id_original_price, id_checkbox, id_qu
     var input_checkbox = document.createElement('INPUT');
     input_checkbox.className = 'custom-control-input';
     input_checkbox.type = 'checkbox';
-    input_checkbox.id = id_checkbox;
+    input_checkbox.id = id_checkbox + '_' + count_id;
 
     var label_checkbox = document.createElement('LABEL');
     label_checkbox.className = 'custom-control-label';
-    label_checkbox.htmlFor  = id_checkbox;
+    label_checkbox.htmlFor  = id_checkbox + '_' + count_id;
     label_checkbox.style.color = 'white';
     label_checkbox.innerHTML = 'This is a gift';
 
@@ -91,9 +92,12 @@ function createInfoBook(id_book, id_price, id_original_price, id_checkbox, id_qu
 
     var btn_rmv = document.createElement('BUTTON');
     btn_rmv.className = 'icon-btn add-btn';
-    btn_rmv.id = id_btn_rmv;
+    btn_rmv.id = id_btn_rmv + '_' + count_id;
     btn_rmv.style.marginTop = '5%';
-    btn_rmv.onclick = 'rmv_books_btn1()';
+    btn_rmv.addEventListener('click', rmv_books_btn, false);
+    btn_rmv.myParamPrice = var_price;
+    btn_rmv.myParamIDQuantity = id_quantity + '_' + count_id;
+    btn_rmv.myParamIDPrice = id_price + '_' + count_id;
 
     var div_text_rmv = document.createElement('DIV');
     div_text_rmv.className = 'btn_txt';
@@ -102,14 +106,17 @@ function createInfoBook(id_book, id_price, id_original_price, id_checkbox, id_qu
     var span_quantity = document.createElement('SPAN');
     span_quantity.style.color = 'white';
     span_quantity.style.fontSize = '14px';
-    span_quantity.id = id_quantity;
+    span_quantity.id = id_quantity + '_' + count_id;
     span_quantity.innerHTML = '1';
 
     var btn_add = document.createElement('BUTTON');
     btn_add.className = 'icon-btn add-btn';
-    btn_add.id = id_btn_rmv;
+    btn_add.id = id_btn_add + '_' + count_id;
     btn_add.style.marginTop = '5%';
-    btn_add.onclick = 'add_books_btn1()';
+    btn_add.addEventListener('click', add_books_btn, false);
+    btn_add.myParamPrice = var_price;
+    btn_add.myParamIDQuantity = id_quantity + '_' + count_id;
+    btn_add.myParamIDPrice = id_price + '_' + count_id;
 
     var div_add = document.createElement('DIV');
     div_add.className = 'add-icon';
@@ -123,7 +130,10 @@ function createInfoBook(id_book, id_price, id_original_price, id_checkbox, id_qu
 
     var btn_delete = document.createElement('BUTTON');
     btn_delete.className = 'btn btn-outline-danger my-2 my-sm-0';
-    btn_delete.onclick = 'dlt_books_btn1()';
+    btn_delete.addEventListener('click', dlt_books_btn, false);
+    btn_delete.myParamPrice = var_price;
+    btn_delete.myParamIDQuantity = id_quantity + '_' + count_id;
+    btn_delete.myParamIDBook = id_book + '_' + count_id;
     btn_delete.type = 'submit';
     btn_delete.innerHTML = 'Delete';
 
@@ -205,4 +215,7 @@ function createInfoBook(id_book, id_price, id_original_price, id_checkbox, id_qu
     container.insertBefore(div_info_book, container.firstChild);
 
     /*  ./Construct Structure Info Book   */
+
+    //Update count
+    count_id = count_id + 1;
 }
