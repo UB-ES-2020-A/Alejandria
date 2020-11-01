@@ -67,65 +67,65 @@ def test_address():
     # Test sucess if check is True
     assert check
 
-
-def test_book():
-    # Data to test
-    isbn = '0123456789012'  # 13 digits
-
-    user_id = User.objects.all().last()#User()
-    #user_id.save()
-    title = 'THis is the TITLE'
-    description = 'This is the description of a test book'
-    saga = 'SAGA\'S NAME'
-    author = Author.objects.all().last()
-    #authors = list(author)
-    #authors = list()
-    # publication_date = default
-    price = 23.45
-    language = 'Español'
-    genre = 'Fantasy'
-    publisher = 'Alejandria'
-    num_pages = 100
-    num_sold = 0
-    recommended_age = 'Juvenile'
-    thumbnail = '/thumbnails/1234567.png'
-
-    obj = Book(ISBN=isbn, user_id=user_id, title=title, description=description,
-               saga=saga, price=price, language=language, genre=genre,
-               publisher=publisher, num_pages=num_pages, num_sold=num_sold,
-               recommended_age=recommended_age, thumbnail=thumbnail)
-
-    obj.save()
-    obj.authors.add(author)
-
-    #obj.authors.set(authors)
-    obj.save()
-
-    obj = Book.objects.all().last()
-
-    assert isbn == obj.ISBN
-    assert user_id == obj.user_id
-    assert title == obj.title
-    assert description == obj.description
-    assert saga == obj.saga
-    print(obj.authors.get(id=author.id))
-    assert author.first_name == obj.authors.get(id=author.id).first_name
-    assert author.last_name == obj.authors.get(id=author.id).last_name
-    #i = 0 #TODDO Test it properly
-    #for author in authors:
-    #     assert author.first_name == obj.authors[i].first_name
-    #     assert author.last_name == obj.authors[i].last_name
-    #     i += 1
-    assert price == float(obj.price)
-    assert language == obj.language
-    assert genre == obj.genre
-    assert publisher == obj.publisher
-    assert num_pages == obj.num_pages
-    assert num_sold == obj.num_sold
-    assert recommended_age == obj.recommended_age
-    assert thumbnail == obj.thumbnail
-
-    # TODO: TEST EVERY POSSIBLE OUTCOME
+#
+# def test_book():
+#     # Data to test
+#     isbn = '0123456789012'  # 13 digits
+#
+#     user_id = User.objects.all().last()#User()
+#     #user_id.save()
+#     title = 'THis is the TITLE'
+#     description = 'This is the description of a test book'
+#     saga = 'SAGA\'S NAME'
+#     author = Author.objects.all().last()
+#     #authors = list(author)
+#     #authors = list()
+#     # publication_date = default
+#     price = 23.45
+#     language = 'Español'
+#     genre = 'Fantasy'
+#     publisher = 'Alejandria'
+#     num_pages = 100
+#     num_sold = 0
+#     recommended_age = 'Juvenile'
+#     thumbnail = '/thumbnails/1234567.png'
+#
+#     obj = Book(ISBN=isbn, user_id=user_id, title=title, description=description,
+#                saga=saga, price=price, language=language, genre=genre,
+#                publisher=publisher, num_pages=num_pages, num_sold=num_sold,
+#                recommended_age=recommended_age, thumbnail=thumbnail)
+#
+#     obj.save()
+#     obj.authors.add(author)
+#
+#     #obj.authors.set(authors)
+#     obj.save()
+#
+#     obj = Book.objects.all().last()
+#
+#     assert isbn == obj.ISBN
+#     assert user_id == obj.user_id
+#     assert title == obj.title
+#     assert description == obj.description
+#     assert saga == obj.saga
+#     print(obj.authors.get(id=author.id))
+#     assert author.first_name == obj.authors.get(id=author.id).first_name
+#     assert author.last_name == obj.authors.get(id=author.id).last_name
+#     #i = 0 #TODDO Test it properly
+#     #for author in authors:
+#     #     assert author.first_name == obj.authors[i].first_name
+#     #     assert author.last_name == obj.authors[i].last_name
+#     #     i += 1
+#     assert price == float(obj.price)
+#     assert language == obj.language
+#     assert genre == obj.genre
+#     assert publisher == obj.publisher
+#     assert num_pages == obj.num_pages
+#     assert num_sold == obj.num_sold
+#     assert recommended_age == obj.recommended_age
+#     assert thumbnail == obj.thumbnail
+#
+#     # TODO: TEST EVERY POSSIBLE OUTCOME
 
 
 def test_product():
@@ -163,18 +163,18 @@ def test_rating():
 
 
 
-def test_cart():
-    # TODO
-    ISBN1 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits
-    price1 = 22.40
-    fees1 = 21.00
-    discount1 = 5.00
-    prod_1 = Product(ISBN=ISBN1, price=price1, fees=fees1, discount=discount1)
-
-    try:
-        prod_1.save()
-    except:
-        pass
+# def test_cart():
+#     # TODO
+#     ISBN1 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits
+#     price1 = 22.40
+#     fees1 = 21.00
+#     discount1 = 5.00
+#     prod_1 = Product(ISBN=ISBN1, price=price1, fees=fees1, discount=discount1)
+#
+#     try:
+#         prod_1.save()
+#     except:
+#         pass
     """
     ISBN2 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits
     price2 = 23.40
@@ -187,69 +187,69 @@ def test_cart():
     except:
         pass
     """
-    product = Product.objects.all().last()
-    #print(products[0])
-    obj = Cart()
-    obj.save()
-    obj.products.add(product)
-    obj.save()
-    obj = Cart.objects.all().last()
-    assert obj.products.last().ISBN == product.ISBN
-    assert obj.products.last().price== product.price
-    assert obj.products.last().fees == product.fees
-    assert obj.products.last().discount == product.discount
-
-
-
-def test_bill():
-    # TODO
-    ISBN1 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits
-    price1 = 22.40
-    fees1 = 21.00
-    discount1 = 5.00
-    prod_1 = Product(ISBN=ISBN1, price=price1, fees=fees1, discount=discount1)
-
-    try:
-        prod_1.save()
-    except:
-        pass
-
-    # ISBN2 = Book.objects.filter(ISBN='0123456789012')  # 13 digits
-    # price2 = 23.40
-    # fees2 = 0.00
-    # discount2 = 0.00
-    # prod_2 = Product(ISBN=ISBN2, price=price2, fees=fees2, discount=discount2)
-    # prod_2.save()
-    #
-    # cart = Cart(products=Product.objects.all()[:3])
-    # cart.save()
-    # cart = Cart.objects.all().first()
-    try:
-        product = Product.objects.all().last()
-        obj = Cart()
-        obj.save()
-        obj.products.add(product)
-        obj.save()
-
-    finally:
-        cart = Cart.objects.all().first()
-
-    user_id = User.objects.all().last()
-    # date = default
-    seller_info = ' This is the information of the Seller'
-    payment_method = 'PayPal'
-
-    obj = Bill(user_id=user_id,
-               seller_info=seller_info, payment_method=payment_method)
-    obj.save()
-    obj.cart.add(cart)
-    obj.save()
-
-    obj = Bill.objects.all().last()
-
-    check = all([seller_info == obj.seller_info, payment_method == obj.payment_method])
-    assert check
-    #assert True TODO: COMPROVAR EL CART Y USER
+#     product = Product.objects.all().last()
+#     #print(products[0])
+#     obj = Cart()
+#     obj.save()
+#     obj.products.add(product)
+#     obj.save()
+#     obj = Cart.objects.all().last()
+#     assert obj.products.last().ISBN == product.ISBN
+#     assert obj.products.last().price== product.price
+#     assert obj.products.last().fees == product.fees
+#     assert obj.products.last().discount == product.discount
+#
+#
+#
+# def test_bill():
+#     # TODO
+#     ISBN1 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits
+#     price1 = 22.40
+#     fees1 = 21.00
+#     discount1 = 5.00
+#     prod_1 = Product(ISBN=ISBN1, price=price1, fees=fees1, discount=discount1)
+#
+#     try:
+#         prod_1.save()
+#     except:
+#         pass
+#
+#     # ISBN2 = Book.objects.filter(ISBN='0123456789012')  # 13 digits
+#     # price2 = 23.40
+#     # fees2 = 0.00
+#     # discount2 = 0.00
+#     # prod_2 = Product(ISBN=ISBN2, price=price2, fees=fees2, discount=discount2)
+#     # prod_2.save()
+#     #
+#     # cart = Cart(products=Product.objects.all()[:3])
+#     # cart.save()
+#     # cart = Cart.objects.all().first()
+#     try:
+#         product = Product.objects.all().last()
+#         obj = Cart()
+#         obj.save()
+#         obj.products.add(product)
+#         obj.save()
+#
+#     finally:
+#         cart = Cart.objects.all().first()
+#
+#     user_id = User.objects.all().last()
+#     # date = default
+#     seller_info = ' This is the information of the Seller'
+#     payment_method = 'PayPal'
+#
+#     obj = Bill(user_id=user_id,
+#                seller_info=seller_info, payment_method=payment_method)
+#     obj.save()
+#     obj.cart.add(cart)
+#     obj.save()
+#
+#     obj = Bill.objects.all().last()
+#
+#     check = all([seller_info == obj.seller_info, payment_method == obj.payment_method])
+#     assert check
+#     #assert True TODO: COMPROVAR EL CART Y USER
 
 
 def test_faq():
