@@ -11,6 +11,7 @@ before_install:
   - "sudo ls /etc/postgresql/"
   - "sudo pg_ctlcluster 12 main start"
   - "sudo /etc/init.d/postgresql start 12"
+  - "sudo journalctl -xe"
   - "sudo systemctl status postgresql.service"
 before_script:
   - "psql -c 'create database travis_ci_test;' -U postgres"
