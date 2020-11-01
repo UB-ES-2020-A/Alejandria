@@ -1,7 +1,6 @@
 addons: 
   postgresql: "9.2"
 before_script:
-  - "systemctl status postgresql"
   - "psql -c 'create database travis_ci_test;' -U postgres"
   - "python manage.py makemigrations"
   - "python manage.py migrate"
