@@ -7,6 +7,10 @@
   border-top: 1px solid white;
 }
 
+select {
+   padding: 0 0 0 20px;
+}
+
 .btn-drop {
   width: fit-content;
   height: fit-content;

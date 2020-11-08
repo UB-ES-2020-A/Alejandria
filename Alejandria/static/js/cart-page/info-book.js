@@ -100,7 +100,7 @@ function createInfoBook(var_title, var_author, var_rating, var_src_img, var_pric
     var select_quantity = document.createElement('SELECT');
     select_quantity.className = 'selectpicker btn-drop m1';
     select_quantity.style.color = 'white';
-    select_quantity.style.fontSize = '14px';
+    select_quantity.style.fontSize = '15px';
     select_quantity.style.width = '60px';
     select_quantity.id = 'selectItems' + count_id;
     select_quantity.addEventListener('change', update_quantity, false);
