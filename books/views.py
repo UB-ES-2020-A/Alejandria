@@ -1,5 +1,6 @@
+from django.core import serializers
 from django.shortcuts import render
-
+import json
 from django.views import generic
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -249,3 +250,62 @@ class LoginView(generic.TemplateView):
                 return redirect("/")
 
         return render(request,"login.html", {"form":form})
+
+
+
+def getAllBooks(request):
+    # request should be ajax and method should be GET.
+    print("getallboooooks")
+    if request.is_ajax and request.method == "GET":
+        # get the nick name from the client side.
+        ####################nick_name = request.GET.get("nick_name", None)
+        # check for the nick name in the database.
+        print("holaaaaaaaaaaaaaaaaaaaaaaaaa")
+        books = Book.objects.all()
+        #SomeModel_json = serializers.serialize("json", Book.objects.all())
+        #print("books ",books )
+        #data = {"SomeModel_json": SomeModel_json}
+        #print(data)
+        books_json = []
+        for book in books:
+            books_json.append(booksToJson(book))
+
+        print(books_json)
+        data={"books": books_json}
+        #return data
+
+
+
+        return JsonResponse(data)
+
+
+
+        #print(books)
+        #return JsonResponse(books, status=200)
+"""
+        if Book.objects.filter(nick_name=nick_name).exists():
+            # if nick_name found return not valid new friend
+            return JsonResponse({"valid": False}, status=200)
+        else:
+            # if nick_name not found, then user can create a new friend.
+            return JsonResponse({"valid": True}, status=200)
+
+    return JsonResponse({}, status=400)
+"""
+
+def booksToJson(book):
+    return {
+        "ISBN": book.pk,
+        "user_id": book.user_id.id,
+        "title": book.title,
+        "description": book.description,
+        "saga": book.saga,
+        "price": book.price,
+        "language": book.language,
+        "genre": book.genre,
+        "publisher": book.publisher,
+        "num_pages": book.num_pages,
+        "num_sold": book.num_sold,
+        "recommended_age": book.recommended_age,
+        "thumbnail": book.thumbnail
+    }
