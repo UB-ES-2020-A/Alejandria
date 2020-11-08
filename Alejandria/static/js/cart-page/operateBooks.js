@@ -1,5 +1,5 @@
-var total = 60.85; //Just for this example
-var n_books = 3;
+var total = 0.00; //Just for this example
+var n_books = 0;
 
 /*  Add function   */
 function update_quantity(evt) {
@@ -35,6 +35,10 @@ function dlt_books_btn(evt) {
 }
 
 function updatePrices() {
+
+  if (total == -0) {
+    total = 0;
+  }
 
   document.getElementById("priceTotal").innerHTML = (total).toFixed(2);
   document.getElementById("total_products").innerHTML = n_books;
