@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from .forms import RegisterForm, LoginForm
+from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
@@ -239,13 +240,11 @@ class LoginView(generic.TemplateView):
     def login(request):
         form = LoginForm(request.POST)
         if request.method == 'POST':
-            #user = authenticate(
-            #    username=request.POST['username'],
-            #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
-            #)
-            user = User.objects.get(username=request.POST['username'],password=request.POST['password'])
-            if user is not None:
+            user = User.objects.get(email=request.POST['mail'],password=request.POST['password'])
+            if user:
                 login(request, user,backend='books.backend.EmailAuthBackend')
-                return redirect("/")
+                return JsonResponse({"name":user.first_name,"error":False})
+            else:
+                return JsonResponse({"error": True})
 
         return render(request,"login.html", {"form":form})
