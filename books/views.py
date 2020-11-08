@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 from .forms import RegisterForm, LoginForm
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth import logout
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
 
@@ -234,17 +234,25 @@ class RegisterView(generic.TemplateView):
         return render(request, "register.html", {"form": form})
 
 
-class LoginView(generic.TemplateView):
+@csrf_exempt
+def login_user(request):
 
-    @staticmethod
-    def login(request):
-        form = LoginForm(request.POST)
-        if request.method == 'POST':
-            user = User.objects.get(email=request.POST['mail'],password=request.POST['password'])
+    if request.method == 'POST':
+        if 'trigger' in request.POST and 'login' in request.POST['trigger']:
+            user = User.objects.filter(email=request.POST['mail'],password=request.POST['password'])
             if user:
+                user = user.first()
                 login(request, user,backend='books.backend.EmailAuthBackend')
                 return JsonResponse({"name":user.first_name,"error":False})
             else:
                 return JsonResponse({"error": True})
 
-        return render(request,"login.html", {"form":form})
+        elif 'trigger' in request.POST and 'logout' in request.POST['trigger']:
+            error = False
+            try:
+                logout(request)
+            except:
+                error = True
+
+            return JsonResponse({"error": error})
+

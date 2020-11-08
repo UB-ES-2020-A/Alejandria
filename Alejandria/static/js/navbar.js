@@ -11,6 +11,34 @@ $(document).ready(function () {
         window.location.href = window.location.origin;
     });
 
+    $("#logout_btn").click(function (){
+        var url = window.location.origin+"/login/";
+        setCSRF();
+        $.ajax(url, {
+                method: "POST",
+                data: {trigger:"logout"},
+                ContentType: 'application/x-www-form-urlencode',
+                success: function (response) {
+                    if(response.error){
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Oops...',
+                          text: 'Something went wrong!',
+                        })
+                    }
+                    else{
+                        Swal.fire({
+                          icon: 'success',
+                          title: 'See you later',
+                          text: 'Logout was a success!',
+                        })
+                        $(".swal2-confirm").click(function(){ window.location.href = ""; });
+                    }
+                }
+
+            })
+    });
+
     $("#login_btn").click(async function () {
         var url = window.location.origin+"/login/";
 
@@ -26,13 +54,14 @@ $(document).ready(function () {
                 return {
                     mail:$("#login_mail").val(),
                     password:$("#login_password").val(),
-                    csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').attr('value')
+                    trigger:"login"
 
                 }
             }
         })
 
         if(loginParams){
+            setCSRF();
             $.ajax(url, {
                 method: "POST",
                 data: loginParams,
@@ -51,6 +80,7 @@ $(document).ready(function () {
                           title: 'Welcome back, '+response.name,
                           text: 'Sign In was a success!',
                         })
+                        $(".swal2-confirm").click(function(){ window.location.href = ""; });
                     }
                 }
 
@@ -58,3 +88,16 @@ $(document).ready(function () {
         }
     });
 });
+
+function setCSRF() {
+    $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (settings.type == 'POST' || settings.type == 'PUT' || settings.type == 'DELETE') {
+                        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                            // Only send the token to relative URLs i.e. locally.
+                            xhr.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
+                        }
+                    }
+                }
+            });
+}
