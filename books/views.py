@@ -12,7 +12,7 @@ from django.contrib.auth import logout
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
 
-from .models import Book, FAQ, Cart, Product, User, Author
+from .models import Book, FAQ, Cart, Product, User, Author, Address
 
 # Create your views here.
 
@@ -219,22 +219,28 @@ class FaqsView(generic.ListView):
     # TODO: In next iterations has to have the option to make POSTs by the admin.
 
 
-class RegisterView(generic.TemplateView):
-
-    @staticmethod
-    def register(request):
-        if request.method == "POST":
-            form = RegisterForm(request.POST)
-            if form.is_valid():
-                form.save()
-            return redirect("/")
-        else:
-            form = RegisterForm()
-
-        return render(request, "register.html", {"form": form})
 
 
-@csrf_exempt
+def register(request):
+    if request.method == 'POST':
+        if 'trigger' in request.POST and 'register' in request.POST['trigger']:
+            try:
+                user_address = Address(city=request.POST['city1'], street=request.POST['street1'], country=request.POST['country1'], zip=request.POST['zip1'])
+                fact_address = Address(city=request.POST['city2'], street=request.POST['street2'], country=request.POST['country2'], zip=request.POST['zip2'])
+                user_address.save()
+                fact_address.save()
+
+                # Model creation
+                user = User(role="user",username=request.POST['username'], name=request.POST['firstname'],last_name=request.POST['lastname'] ,password=request.POST['password1'], email=request.POST['email'], user_address=user_address,
+                           fact_address=fact_address)
+                user.save()
+
+                return JsonResponse({"error":False})
+
+            except:
+                return JsonResponse({"error": True})
+
+
 def login_user(request):
 
     if request.method == 'POST':
@@ -243,7 +249,7 @@ def login_user(request):
             if user:
                 user = user.first()
                 login(request, user,backend='books.backend.EmailAuthBackend')
-                return JsonResponse({"name":user.first_name,"error":False})
+                return JsonResponse({"name":user.name,"error":False})
             else:
                 return JsonResponse({"error": True})
 
