@@ -1,15 +1,13 @@
-from django.shortcuts import render
-
 from django.views import generic
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from .forms import RegisterForm, LoginForm
 
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
+from datetime import datetime, timedelta
+
 
 from .models import Book, FAQ, Cart, Product, User, Author
 
@@ -21,6 +19,7 @@ This is my custom response to get to a book by it's ISBN. The ISBN is passed by 
 
 NUM_COINCIDENT = 10
 NUM_RELATED = 5
+MONTHS_TO_CONSIDER_TOP_SELLER = 6
 
 
 def book(request):  # TODO: this function is not linked to the frontend
@@ -93,11 +92,17 @@ class HomeView(generic.ListView):
     model = Book
 
     def get_queryset(self):  # TODO: Return list requested by the front end, TOP SELLERS, etc.
-        return Book.objects.order_by('-num_sold')[:10]
+        today = datetime.today()
+        return Book.objects.order_by('-num_sold').filter(
+            publication_date__range=[str(today), str(today-timedelta(days=30*MONTHS_TO_CONSIDER_TOP_SELLER))])[:10]
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['filtered_list'] = Book.objects.filter(title__contains='Red')  # Example
+        today = datetime.today()
+        context['new_books'] = Book.objects.filter(
+            publication_date__range=[str(today), str(today-timedelta(days=10))])[:10]
+        context['novels'] = Book.objects.filter(genre__contains="Novel")
+
 
     """
       Right now im passing all the books, but in the next iteration 
