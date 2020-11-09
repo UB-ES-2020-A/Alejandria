@@ -8,7 +8,6 @@ from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
 from datetime import datetime, timedelta
 
-
 from .models import Book, FAQ, Cart, Product, User, Author
 
 # Create your views here.
@@ -89,20 +88,25 @@ class BookView(generic.DetailView):
 
 class HomeView(generic.ListView):
     template_name = 'home.html'
+    context_object_name = 'book_list'
     model = Book
 
+    # queryset = Book.objects.all()
     def get_queryset(self):  # TODO: Return list requested by the front end, TOP SELLERS, etc.
         today = datetime.today()
-        return Book.objects.order_by('-num_sold').filter(
-            publication_date__range=[str(today), str(today-timedelta(days=30*MONTHS_TO_CONSIDER_TOP_SELLER))])[:10]
+        return Book.objects.all()  ## TODO: Replace with the one below when ready to test with a full database.
+        # return Book.objects.order_by('-num_sold')[:10].filter(
+        #     publication_date__range=[str(today)[:10],
+        #                              str(today - timedelta(days=30 * MONTHS_TO_CONSIDER_TOP_SELLER))[:10]])[:10]
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         today = datetime.today()
         context['new_books'] = Book.objects.filter(
-            publication_date__range=[str(today), str(today-timedelta(days=10))])[:10]
+            publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
         context['novels'] = Book.objects.filter(genre__contains="Novel")
 
+        return context
 
     """
       Right now im passing all the books, but in the next iteration 
@@ -131,11 +135,6 @@ class HomeView(generic.ListView):
                 return context
     
     """
-
-
-# TODO: Not being used
-def search(request):  # TODO: Delete if SearchView is working as expected
-    pass
 
 
 class SearchView(generic.ListView):
@@ -244,13 +243,13 @@ class LoginView(generic.TemplateView):
     def login(request):
         form = LoginForm(request.POST)
         if request.method == 'POST':
-            #user = authenticate(
+            # user = authenticate(
             #    username=request.POST['username'],
             #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
-            #)
-            user = User.objects.get(username=request.POST['username'],password=request.POST['password'])
+            # )
+            user = User.objects.get(username=request.POST['username'], password=request.POST['password'])
             if user is not None:
-                login(request, user,backend='books.backend.EmailAuthBackend')
+                login(request, user, backend='books.backend.EmailAuthBackend')
                 return redirect("/")
 
-        return render(request,"login.html", {"form":form})
+        return render(request, "login.html", {"form": form})
