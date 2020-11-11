@@ -34,7 +34,7 @@
   border-radius: 3px;
 }
 
-input[type=text] {
+.input-payment{
   width: 100%;
   margin-bottom: 20px;
   padding: 12px;
@@ -53,7 +53,7 @@ label {
   font-size: 24px;
 }
 
-.btn {
+.btn-payment {
   background-color: #4CAF50;
   color: white;
   padding: 12px;
@@ -65,7 +65,7 @@ label {
   font-size: 17px;
 }
 
-.btn:hover {
+.btn-payment:hover {
   background-color: #45a049;
 }
 
