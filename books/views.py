@@ -249,3 +249,10 @@ class LoginView(generic.TemplateView):
                 return redirect("/")
 
         return render(request,"login.html", {"form":form})
+
+
+# TODO: Not implemented yet
+class PaymentView(generic.TemplateView):
+    model = Book
+    template_name = 'payment.html'
+    queryset = Product.objects.all()

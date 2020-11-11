@@ -1,13 +1,12 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-
 from django.utils import timezone
 
 # Create your models here.
 
 """
-TODO: IF NECESSARI INTRODUCE help_text in some characteristics.
+TODO: IF NECESSARY INTRODUCE help_text in some characteristics.
 """
 
 
@@ -20,7 +19,7 @@ class Address(models.Model):
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True, null=False, blank=True)
-    #TODO: AFEGIR USERNAME COM A PK
+    # TODO: ADD USERNAME AS A PK
     role = models.CharField(max_length=10, null=False, blank=False)
     name = models.CharField(max_length=50, null=False, blank=False)
     password = models.CharField(max_length=50, null=False, blank=False)
