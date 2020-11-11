@@ -25,7 +25,6 @@ def showDetails(request, isbn):
     return render(request, template, context)
 
 
-
 def search(request):
     template = "search.html"
     context = {}
@@ -35,6 +34,13 @@ def search(request):
 
 def cart(request):
     template = "cart.html"
+    context = {}
+
+    return render(request, template, context)
+
+
+def payment(request):
+    template = "payment.html"
     context = {}
 
     return render(request, template, context)

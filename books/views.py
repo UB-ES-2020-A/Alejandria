@@ -278,3 +278,9 @@ def login_user(request):
                 error = True
 
             return JsonResponse({"error": error})
+          
+# TODO: Not implemented yet
+class PaymentView(generic.TemplateView):
+    model = Book
+    template_name = 'payment.html'
+    queryset = Product.objects.all()
