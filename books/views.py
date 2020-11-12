@@ -7,11 +7,14 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from .forms import RegisterForm, LoginForm
-
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import logout
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
 
-from .models import Book, FAQ, Cart, Product, User
+
+from .models import Book, FAQ, Cart, Product, User, Address
+
 
 # Create your views here.
 
@@ -218,34 +221,68 @@ class FaqsView(generic.ListView):
     # TODO: In next iterations has to have the option to make POSTs by the admin.
 
 
-class RegisterView(generic.TemplateView):
+def register(request):
+    def validate_register(data):
+        # No Blank Data
+        data_answered = all([len(data[key]) > 0 for key in data])
+        exists = User.objects.filter(email=request.POST["email"]).exists()
+        validation = data and not exists
+        return validation
 
-    @staticmethod
-    def register(request):
-        if request.method == "POST":
-            form = RegisterForm(request.POST)
-            if form.is_valid():
-                form.save()
-            return redirect("/")
-        else:
-            form = RegisterForm()
+    if request.method == 'POST':
+        if 'trigger' in request.POST and 'register' in request.POST['trigger']:
+            if validate_register(request.POST):
+                query = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
+                                       country=request.POST['country1'], zip=request.POST['zip1'])
+                if query.exists():
+                    user_address = query.first()
+                else:
+                    user_address = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
+                                           country=request.POST['country1'], zip=request.POST['zip1'])
+                    user_address.save()
 
-        return render(request, "register.html", {"form": form})
+                if request.POST['city1'] == request.POST['city2'] and request.POST['street1'] == request.POST['street2'] and request.POST['country1'] == request.POST["country2"] and request.POST['zip1'] == request.POST["zip2"]:
+                    fact_address = user_address
+                else:
+                    fact_address = Address(city=request.POST['city2'], street=request.POST['street2'],
+                                           country=request.POST['country2'], zip=request.POST['zip2'])
+                    fact_address.save()
+
+                # Model creation
+                user = User(role="user", username=request.POST['username'], name=request.POST['firstname'],
+                            last_name=request.POST['lastname'], password=request.POST['password1'],
+                            email=request.POST['email'], user_address=user_address,
+                            fact_address=fact_address)
+                user.save()
+
+                return JsonResponse({"error": False})
+
+            else:
+                return JsonResponse({"error": True})
 
 
-class LoginView(generic.TemplateView):
+def login_user(request):
+    if request.method == 'POST':
+        if 'trigger' in request.POST and 'login' in request.POST['trigger']:
+            user = User.objects.filter(email=request.POST['mail'], password=request.POST['password'])
+            if user:
+                user = user.first()
+                login(request, user, backend='books.backend.EmailAuthBackend')
+                return JsonResponse({"name": user.name, "error": False})
+            else:
+                return JsonResponse({"error": True})
 
-    @staticmethod
-    def login(request):
-        form = LoginForm(request.POST)
-        if request.method == 'POST':
-            #user = authenticate(
-            #    username=request.POST['username'],
-            #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
-            #)
-            user = User.objects.get(username=request.POST['username'],password=request.POST['password'])
-            if user is not None:
-                login(request, user,backend='books.backend.EmailAuthBackend')
-                return redirect("/")
+        elif 'trigger' in request.POST and 'logout' in request.POST['trigger']:
+            error = False
+            try:
+                logout(request)
+            except:
+                error = True
 
-        return render(request,"login.html", {"form":form})
+            return JsonResponse({"error": error})
+          
+# TODO: Not implemented yet
+class PaymentView(generic.TemplateView):
+    model = Book
+    template_name = 'payment.html'
+    queryset = Product.objects.all()
