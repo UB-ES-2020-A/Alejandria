@@ -10,7 +10,7 @@ app = get_wsgi_application()
 
 import random
 # Then load own libs
-from books.models import Author, Book, Product, Rating, Bill, FAQ, Cart, Address, User
+from books.models import Book, Product, Rating, Bill, FAQ, Cart, Address, User
 
 
 # TODO: Make test "en cadena". If we have to test something before try one test, do it.

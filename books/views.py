@@ -11,7 +11,7 @@ from .forms import RegisterForm, LoginForm
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
 
-from .models import Book, FAQ, Cart, Product, User, Author
+from .models import Book, FAQ, Cart, Product, User
 
 # Create your views here.
 
