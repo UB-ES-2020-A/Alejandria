@@ -90,8 +90,7 @@ if 'TRAVIS' in os.environ:
             'PORT':     '5432',
         }
     }
-else:
-
+elif 'HEROKU' in os.environ:
     DATABASES = {
         'default': {
             # Se configura en el pgadmin del postgresql
@@ -100,6 +99,21 @@ else:
             'USER': 'hhcommywfpctls',  # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
             'PASSWORD': 'dcd0b919ef67e90389ee27dc77b4a75a4c2d245936f67c85cc774ee46f7dfa0a',  # usad esta constraseña
             'HOST': 'ec2-54-156-85-145.compute-1.amazonaws.com',  # como hemos dicho es una db local
+            'PORT': '5432'  # a este puerto
+        }
+
+        # Despues de configurar la
+    }
+
+else:
+    DATABASES = {
+        'default': {
+            # Se configura en el pgadmin del postgresql
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'Alejandria_DB',  # Poned este nombre todos en el pgadmin al crear la db local
+            'USER': 'Alejandro',  # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
+            'PASSWORD': 'Password1',  # usad esta constraseña
+            'HOST': 'localhost',  # como hemos dicho es una db local
             'PORT': '5432'  # a este puerto
         }
 

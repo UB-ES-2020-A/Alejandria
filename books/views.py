@@ -8,11 +8,11 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from .forms import RegisterForm, LoginForm
-
+from django.db.models import Q
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
 
-from .models import Book, FAQ, Cart, Product, User, Author
+from .models import Book, FAQ, Cart, Product, User
 
 from django.forms.models import model_to_dict
 
@@ -147,52 +147,45 @@ class SearchView(generic.ListView):
         self.coincident = None
         self.related = None
         self.searchBook = None
+        self.genres = []
 
     def get(self, request, *args, **kwargs):
         print(request.GET);
         if('search_book' in request.GET):
             self.searchBook = request.GET['search_book']
             print("esta es gucci", self.searchBook)
-        if 'Horror' in request.GET:
-            print("hola")
+        else:
+            keys = request.GET.keys()
+            for key in keys:
+                self.genres.append(request.GET[key])
+
+
+        # if 'CrimeThriller' in request.GET:
+        #     print(request.GET['CrimeThriller'])
+        #     #self.genres = 'Horror'
+        #     self.genres = request.GET.keys()
         return super().get(request, *args, **kwargs)
 
-    # def get_queryset(self):  # TODO: This is a rather simple method, can be improved # TODO: TEST
-    #     try:
-    #         srch = self.kwargs['search']
-    #         print(srch)
-    #     except:
-    #         srch = None
-    #
-    #     if srch != None:
-    #         vector = SearchVector('title', 'saga', 'authors', 'description')
-    #         query = SearchQuery(srch)
-    #         self.coincident = Book.objects.annotate(rank=SearchRank(vector, query)).order_by('-rank')[:NUM_COINCIDENT]
-    #         vector_related = SearchVector('saga', 'genre', 'authors')
-    #         query_related = SearchQuery(" ".join((self.coincident[0].saga, self.coincident[0].genre,
-    #                                               self.coincident[
-    #                                                   0].saga.authors)))  # TODO: Right now uses info of the first coincidende
-    #         self.related = Book.objects.annotate(
-    #             rel_rank=SearchRank(vector_related, query_related)).order_by('-rel_rank')[:NUM_RELATED]
-    #         if len(self.coincident) > 0:
-    #             context = super().get_context_data()
-    #             context['error_message'] = 'No coincidences'
-    #         return self.coincident
+
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
 
+        #Filtratge per nom
         if(self.searchBook):
-            filtered =  Book.objects.filter(title=self.searchBook)
+            filtered =  Book.objects.filter(title__icontains=self.searchBook)
             print("filtered", filtered)  # TODO: FALTA QUE AMB UNA PART DEL TITOL FUNCIONI I QUE FILTRI AUTORS ETC...
+            context['book_list'] = filtered
+            return context
+        #Filtratge per filtres
+        if(self.genres):
+            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
             context['book_list'] = filtered
             return context
 
         context['book_list'] = Book.objects.all()
         print(context)
-        #if not self.related or len(self.related) == 0:
-        #    context['related_error_message'] = 'No Books Related Found'
-        #context['related'] = self.related
+
         return context
 
 
