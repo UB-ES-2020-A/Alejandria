@@ -15,7 +15,7 @@ urlpatterns = [
 
 
 
-    path('search/get/ajax/books', views.getAllBooks, name = "getAllBooks"),
+    #path('search/get/ajax/books', views.getAllBooks, name = "getAllBooks"),
 
 
 

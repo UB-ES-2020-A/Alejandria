@@ -14,6 +14,8 @@ from django.contrib.auth import authenticate, login
 
 from .models import Book, FAQ, Cart, Product, User, Author
 
+from django.forms.models import model_to_dict
+
 # Create your views here.
 
 """
@@ -138,40 +140,60 @@ class SearchView(generic.ListView):
     model = Book
     template_name = 'search.html'  # TODO: Provisional file
 
+
+
     def __init__(self):
         super().__init__()
         self.coincident = None
         self.related = None
+        self.searchBook = None
 
     def get(self, request, *args, **kwargs):
+        print(request.GET);
+        if('search_book' in request.GET):
+            self.searchBook = request.GET['search_book']
+            print("esta es gucci", self.searchBook)
+        if 'Horror' in request.GET:
+            print("hola")
         return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):  # TODO: This is a rather simple method, can be improved # TODO: TEST
-        try:
-            srch = self.kwargs['search']
-        except:
-            srch = None
-
-        if srch != None:
-            vector = SearchVector('title', 'saga', 'authors', 'description')
-            query = SearchQuery(srch)
-            self.coincident = Book.objects.annotate(rank=SearchRank(vector, query)).order_by('-rank')[:NUM_COINCIDENT]
-            vector_related = SearchVector('saga', 'genre', 'authors')
-            query_related = SearchQuery(" ".join((self.coincident[0].saga, self.coincident[0].genre,
-                                                  self.coincident[
-                                                      0].saga.authors)))  # TODO: Right now uses info of the first coincidende
-            self.related = Book.objects.annotate(
-                rel_rank=SearchRank(vector_related, query_related)).order_by('-rel_rank')[:NUM_RELATED]
-            if len(self.coincident) > 0:
-                context = super().get_context_data()
-                context['error_message'] = 'No coincidences'
-            return self.coincident
+    # def get_queryset(self):  # TODO: This is a rather simple method, can be improved # TODO: TEST
+    #     try:
+    #         srch = self.kwargs['search']
+    #         print(srch)
+    #     except:
+    #         srch = None
+    #
+    #     if srch != None:
+    #         vector = SearchVector('title', 'saga', 'authors', 'description')
+    #         query = SearchQuery(srch)
+    #         self.coincident = Book.objects.annotate(rank=SearchRank(vector, query)).order_by('-rank')[:NUM_COINCIDENT]
+    #         vector_related = SearchVector('saga', 'genre', 'authors')
+    #         query_related = SearchQuery(" ".join((self.coincident[0].saga, self.coincident[0].genre,
+    #                                               self.coincident[
+    #                                                   0].saga.authors)))  # TODO: Right now uses info of the first coincidende
+    #         self.related = Book.objects.annotate(
+    #             rel_rank=SearchRank(vector_related, query_related)).order_by('-rel_rank')[:NUM_RELATED]
+    #         if len(self.coincident) > 0:
+    #             context = super().get_context_data()
+    #             context['error_message'] = 'No coincidences'
+    #         return self.coincident
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
-        if not self.related or len(self.related) == 0:
-            context['related_error_message'] = 'No Books Related Found'
-        context['related'] = self.related
+
+        if(self.searchBook):
+            filtered =  Book.objects.filter(title=self.searchBook)
+            print("filtered", filtered)  # TODO: FALTA QUE AMB UNA PART DEL TITOL FUNCIONI I QUE FILTRI AUTORS ETC...
+            context['book_list'] = filtered
+            return context
+
+        context['book_list'] = Book.objects.all()
+        print(context)
+        #if not self.related or len(self.related) == 0:
+        #    context['related_error_message'] = 'No Books Related Found'
+        #context['related'] = self.related
+        return context
 
 
 class CartView(generic.ListView):
@@ -257,9 +279,7 @@ def getAllBooks(request):
     # request should be ajax and method should be GET.
     print("getallboooooks")
     if request.is_ajax and request.method == "GET":
-        # get the nick name from the client side.
-        ####################nick_name = request.GET.get("nick_name", None)
-        # check for the nick name in the database.
+
         print("holaaaaaaaaaaaaaaaaaaaaaaaaa")
         books = Book.objects.all()
         #SomeModel_json = serializers.serialize("json", Book.objects.all())
@@ -269,6 +289,7 @@ def getAllBooks(request):
         books_json = []
         for book in books:
             books_json.append(booksToJson(book))
+            #########books_json.append(model_to_dict(book))
 
         print(books_json)
         data={"books": books_json}

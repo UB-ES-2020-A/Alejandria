@@ -33,7 +33,7 @@
 <!--    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-    <script type="text/javascript" src="{% static 'js/carrousel_search.js' %}"></script>
+<!--    <script type="text/javascript" src="{% static 'js/carrousel_search.js' %}"></script>-->
 
 </head>
 <body style="background-color:#141414">
@@ -55,39 +55,39 @@
 
         <h4 style="margin-left: 30px; color:white">Categories</h4>
 
-        <input type="checkbox" style="margin-left: 30px; color:white" id="Fantasy" name="vehicle1" value="Bike">
+        <input type="checkbox" style="margin-left: 30px; color:white" id="Fantasy" name="Fantasy" value="Fantasy">
       <label for="Fantasy"style="color:white">Fantasy</label><br>
 
-        <input type="checkbox" style="margin-left: 30px"  id="Crime & Thriller" name="vehicle1" value="Bike">
+        <input type="checkbox" style="margin-left: 30px"  id="Crime & Thriller" name="CrimeThriller" value="Crime">
       <label for="Crime & Thriller" style="color:white">Crime & Thriller</label><br>
 
-        <input type="checkbox" style="margin-left: 30px" id="Fiction" name="vehicle1" value="Bike">
+        <input type="checkbox" style="margin-left: 30px" id="Fiction" name="Fiction" value="Fiction">
       <label for="Fiction" style="color:white">Fiction</label><br>
 
-        <input type="checkbox" style="margin-left: 30px" id="Science Fiction" name="vehicle1" value="Bike">
+        <input type="checkbox" style="margin-left: 30px" id="Science Fiction" name="ScienceFiction" value="ScFiction">
       <label for="Science Fiction" style="color:white">Science Fiction</label><br>
 
-        <input type="checkbox" style="margin-left: 30px"  id="Horror" name="vehicle1" value="Bike">
+        <input type="checkbox" style="margin-left: 30px"  id="Horror" name="Horror" value="Horror">
       <label for="Horror" style="color:white">Horror</label><br>
 
-        <input type="checkbox" style="margin-left: 30px" id="Romance" name="vehicle1" value="Bike">
+        <input type="checkbox" style="margin-left: 30px" id="Romance" name="Romance" value="Romance">
       <label for="Romance" style="color:white">Romance</label><br>
 
-        <input type="checkbox" style="margin-left: 30px" id="Teen & Young Adult" name="vehicle1" value="Bike">
+        <input type="checkbox" style="margin-left: 30px" id="Teen & Young Adult" name="TeenYoung" value="Teen">
       <label for="Teen & Young Adult" style="color:white">Teen & Young Adult</label><br>
 
-        <input type="checkbox" style="margin-left: 30px" id="Children's Books" name="vehicle1" value="Bike">
-      <label for="Romance" style="color:white">Romance</label><br>
+        <input type="checkbox" style="margin-left: 30px" id="Children's Books" name="ChildrenBook" value="Children">
+      <label for="Children's Books" style="color:white">Children's Books</label><br>
 
-        <input type="checkbox" style="margin-left: 30px" id="Anime & Manga" name="vehicle1" value="Bike">
+        <input type="checkbox" style="margin-left: 30px" id="Anime & Manga" name="AnimeManga" value="Anime">
       <label for="Anime & Manga" style="color:white">Anime & Manga</label><br>
 
         <h4 style="margin-left: 30px; color:white">Others</h4>
 
-        <input type="checkbox"  style="margin-left: 30px" id="Bestsellers" name="vehicle1" value="Bike">
+        <input type="checkbox"  style="margin-left: 30px" id="Bestsellers" name="Bestsellers" value="Bestsellers">
       <label for="Bestsellers" style="color:white" >Bestsellers</label><br>
 
-        <input type="checkbox" style="margin-left: 30px" id="On sale" name="vehicle1" value="Bike">
+        <input type="checkbox" style="margin-left: 30px" id="On sale" name="OnSale" value="Sale">
       <label for="On sale" style="color:white">On sale</label><br>
 
       <input type="submit" style="margin-left: 30px" value="Apply filters">
@@ -104,13 +104,27 @@
 
     <h3 style="color:#ffffff; padding:35px; padding-bottom:0px">Títols coincidents amb la teva cerca...</h3>
 
+
+
 <div class="container-fluid">
 	<div class="row">
 		<div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
             <div class="MultiCarousel-inner" id="MultiCarouselCoincidents">
-
-
-
+                {% for obj in book_list%}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{obj.ISBN}}" style="text-decoration: none; color: inherit;">
+                          <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                          <div class="card-body">
+                            <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
+                            <p class="card-text">Fernando Aramburu</p>
+                              <p class="card-text">Preu: {{obj.price}}€</p>
+                            <a href="#" class="btn btn-primary">Afegir al carret</a>
+                          </div>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
             <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
             <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
@@ -118,7 +132,7 @@
 	</div>
 </div>
 
-<h3 style="color:white; padding:25px; padding-bottom:0px">Títols relacionats a la teva cerca...</h3>>
+<h3 style="color:white; padding:25px; padding-bottom:0px">Títols relacionats a la teva cerca...</h3>
 
 <div class="container-fluid">
 	<div class="row">
@@ -573,6 +587,56 @@
 </body>
 
 <script>
+
+var itemsMainDiv = ('.MultiCarousel');
+var itemsDiv = ('.MultiCarousel-inner');
+var itemWidth = "";
+
+//this function define the size of the items
+    function ResCarouselSize() {
+        var incno = 0;
+        var dataItems = ("data-items");
+        var itemClass = ('.item');
+        var id = 0;
+        var btnParentSb = '';
+        var itemsSplit = '';
+        var sampwidth = $(itemsMainDiv).width();
+        var bodyWidth = $('body').width();
+        $(itemsDiv).each(function () {
+            id = id + 1;
+            var itemNumbers = $(this).find(itemClass).length;
+            btnParentSb = $(this).parent().attr(dataItems);
+            itemsSplit = btnParentSb.split(',');
+            $(this).parent().attr("id", "MultiCarousel" + id);
+
+
+            if (bodyWidth >= 1200) {
+                incno = itemsSplit[3];
+                itemWidth = sampwidth / (incno*1.75);
+            }
+            else if (bodyWidth >= 992) {
+                incno = itemsSplit[2];
+                itemWidth = sampwidth / (incno*1.75);
+            }
+            else if (bodyWidth >= 768) {
+                incno = itemsSplit[1];
+                itemWidth = sampwidth / (incno*1.75);
+            }
+            else {
+                incno = itemsSplit[0];
+                itemWidth = sampwidth / (incno*1.75);
+            }
+            itemWidth = 180 /* distancia entre carts */
+            $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers});
+            $(this).find(itemClass).each(function () {
+                $(this).outerWidth(itemWidth);
+            });
+
+            $(".leftLst").addClass("over");
+            $(".rightLst").removeClass("over");
+
+        });
+    }
 
 
 $(document).ready(function () {

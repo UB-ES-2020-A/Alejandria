@@ -1,21 +1,19 @@
 
 $(document).ready(function () {
-    console.log("hola");
+
     $.ajax({
             type: 'GET',
             dataType:'json',
             url: "get/ajax/books",//"{% url 'getAllBooks' %}",
             //data: {"nick_name": nick_name},
             success: function (response) {
-                console.log("hola1");
+
                 console.log(response);
 
 
 
             $.each(response['books'], function (i) {
-                    console.log("HOLITA");
                     console.log(response['books'][i]);
-                    console.log("HOLITA");
                     //console.log(response[i]);
                     //var attrs_book = response[i]["fields"];
                     //console.log(attrs_book);
@@ -35,12 +33,8 @@ $(document).ready(function () {
 
 
 
-
-
-
-
             })
-
+            ResCarouselSize();
 
 
 
