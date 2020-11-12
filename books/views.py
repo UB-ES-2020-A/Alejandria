@@ -12,7 +12,9 @@ from django.contrib.auth import logout
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
 
-from .models import Book, FAQ, Cart, Product, User, Author, Address
+
+from .models import Book, FAQ, Cart, Product, User, Address
+
 
 # Create your views here.
 
