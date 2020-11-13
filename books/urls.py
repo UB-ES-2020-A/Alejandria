@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views
-from .views import getAllBooks
+
 
 app_name = 'books'
 urlpatterns = [
@@ -15,7 +15,6 @@ urlpatterns = [
 
 
 
-    #path('search/get/ajax/books', views.getAllBooks, name = "getAllBooks"),
 
 
 

@@ -159,11 +159,6 @@ class SearchView(generic.ListView):
             for key in keys:
                 self.genres.append(request.GET[key])
 
-
-        # if 'CrimeThriller' in request.GET:
-        #     print(request.GET['CrimeThriller'])
-        #     #self.genres = 'Horror'
-        #     self.genres = request.GET.keys()
         return super().get(request, *args, **kwargs)
 
 
@@ -171,20 +166,20 @@ class SearchView(generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
 
-        #Filtratge per nom
+        #Filtering by title or author
         if(self.searchBook):
-            filtered =  Book.objects.filter(title__icontains=self.searchBook)
-            print("filtered", filtered)  # TODO: FALTA QUE AMB UNA PART DEL TITOL FUNCIONI I QUE FILTRI AUTORS ETC...
+            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))
             context['book_list'] = filtered
             return context
-        #Filtratge per filtres
+        #Filtering by genre (primary and secondary) using checkbox from frontend
         if(self.genres):
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
             context['book_list'] = filtered
             return context
+        #TODO: Filtering by topseller and On Sale
 
         context['book_list'] = Book.objects.all()
-        print(context)
+
 
         return context
 
@@ -268,58 +263,4 @@ class LoginView(generic.TemplateView):
 
 
 
-def getAllBooks(request):
-    # request should be ajax and method should be GET.
-    print("getallboooooks")
-    if request.is_ajax and request.method == "GET":
 
-        print("holaaaaaaaaaaaaaaaaaaaaaaaaa")
-        books = Book.objects.all()
-        #SomeModel_json = serializers.serialize("json", Book.objects.all())
-        #print("books ",books )
-        #data = {"SomeModel_json": SomeModel_json}
-        #print(data)
-        books_json = []
-        for book in books:
-            books_json.append(booksToJson(book))
-            #########books_json.append(model_to_dict(book))
-
-        print(books_json)
-        data={"books": books_json}
-        #return data
-
-
-
-        return JsonResponse(data)
-
-
-
-        #print(books)
-        #return JsonResponse(books, status=200)
-"""
-        if Book.objects.filter(nick_name=nick_name).exists():
-            # if nick_name found return not valid new friend
-            return JsonResponse({"valid": False}, status=200)
-        else:
-            # if nick_name not found, then user can create a new friend.
-            return JsonResponse({"valid": True}, status=200)
-
-    return JsonResponse({}, status=400)
-"""
-
-def booksToJson(book):
-    return {
-        "ISBN": book.pk,
-        "user_id": book.user_id.id,
-        "title": book.title,
-        "description": book.description,
-        "saga": book.saga,
-        "price": book.price,
-        "language": book.language,
-        "genre": book.genre,
-        "publisher": book.publisher,
-        "num_pages": book.num_pages,
-        "num_sold": book.num_sold,
-        "recommended_age": book.recommended_age,
-        "thumbnail": book.thumbnail
-    }
