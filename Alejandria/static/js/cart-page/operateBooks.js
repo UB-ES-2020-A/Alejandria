@@ -1,41 +1,33 @@
-var total = 60.85; //Just for this example
-var n_books = 3;
+var total = 0.00; //Just for this example
+var n_books = 0;
 
 /*  Add function   */
-function add_books_btn(evt) {
+function update_quantity(evt) {
   var price = evt.currentTarget.myParamPrice;
-  var id_books = evt.currentTarget.myParamIDQuantity;
-  var books_remained = parseInt(document.getElementById(id_books).innerText);
+  var selectID = evt.currentTarget.myParamID;
+  var books_remained = $('#' + selectID).val();
   var id_price = evt.currentTarget.myParamIDPrice;
-  document.getElementById(id_books).innerHTML = books_remained + 1;
-  document.getElementById(id_price).innerHTML = (parseFloat(document.getElementById(id_price).innerText) + price).toFixed(2) + '€';
-  n_books = n_books + 1;
-  total = total + price;
+
+  var n_books_selected = n_books_left(document.getElementById(id_price).innerHTML, books_remained * price, price);
+
+  document.getElementById(id_price).innerHTML = (books_remained * price).toFixed(2) + '€';
+  n_books = n_books + n_books_selected;
+  total = total + n_books_selected * price;
   updatePrices();
 }
 
-/*  Remove function    */
-function rmv_books_btn(evt) {
-  var price = evt.currentTarget.myParamPrice;
-  var id_books = evt.currentTarget.myParamIDQuantity;
-  var id_price = evt.currentTarget.myParamIDPrice;
-  var books_remained = parseInt(document.getElementById(id_books).innerText);
-  if (books_remained > 0) {
-    document.getElementById(id_books).innerHTML = books_remained - 1;
-    document.getElementById(id_price).innerHTML = (parseFloat(document.getElementById(id_price).innerText) - price).toFixed(2) + '€';
-    n_books = n_books - 1;
-    total = total - price;
-    updatePrices();
-  }
+function n_books_left(price_before, price_now, price) {
+  price_before = price_before.substring(0, price_before.length - 1);
+  return price_now / price - price_before / price
 }
 
 
 /*  Delete function    */
 function dlt_books_btn(evt) {
   var price = evt.currentTarget.myParamPrice;
-  var id_books = evt.currentTarget.myParamIDQuantity;
   var id_block = evt.currentTarget.myParamIDBook;
-  var books =  parseInt(document.getElementById(id_books).innerText);
+  var selectID = evt.currentTarget.myParamID;
+  var books = $('#' + selectID).val();
   total = total - price * books;
   n_books = n_books - books;
   document.getElementById('container-info-books').removeChild(document.getElementById(id_block));
@@ -43,6 +35,10 @@ function dlt_books_btn(evt) {
 }
 
 function updatePrices() {
+
+  if (total == -0) {
+    total = 0;
+  }
 
   document.getElementById("priceTotal").innerHTML = (total).toFixed(2);
   document.getElementById("total_products").innerHTML = n_books;
