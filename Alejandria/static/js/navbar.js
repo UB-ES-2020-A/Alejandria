@@ -9,6 +9,22 @@ $(document).ready(function () {
         window.location.href = window.location.origin;
     });
 
+    $("#buttonSearch").click(function () {
+            book_name = document.getElementById('textSearch').value;
+            if(book_name!=""){
+                var urlname = window.location.origin+"/search";
+                var url = new URL(urlname);
+                url.searchParams.append('search_book', document.getElementById('textSearch').value);
+                window.location.href = url;
+                //window.location.href = "/search/" + document.getElementById('textSearch').value; //window.location.origin+"/login";
+            }
+            else{ //TODO: Falta fer el search buit...
+                console.log("NULL");
+                window.location.href = "/search";
+             }
+
+        });
+
     $("#logout_btn").click(function () {
         var url = window.location.origin + "/login/";
         setCSRF();
@@ -36,25 +52,13 @@ $(document).ready(function () {
             }
 
 
-         $("#buttonSearch").click(function () {
-            book_name = document.getElementById('textSearch').value;
-            if(book_name!=""){
-                var urlname = window.location.origin+"/search";
-                var url = new URL(urlname);
-                url.searchParams.append('search_book', document.getElementById('textSearch').value);
-                window.location.href = url;
-                //window.location.href = "/search/" + document.getElementById('textSearch').value; //window.location.origin+"/login";
-            }
-            else{ //TODO: Falta fer el search buit...
-                console.log("NULL");
-                window.location.href = "/search";
-             }
 
-        });
 
 
         })
     });
+
+
 
     $("#login_btn").click(async function () {
         var url = window.location.origin + "/login/";
