@@ -185,6 +185,53 @@ class SearchView(generic.ListView):
 
         return context
 
+class SellView(generic.ListView):
+    model = Book
+    template_name = 'sell.html'
+
+
+
+    def __init__(self):
+        super().__init__()
+        self.coincident = None
+        self.related = None
+        self.searchBook = None
+        self.genres = []
+
+    def get(self, request, *args, **kwargs):
+        print(request.GET);
+        if('search_book' in request.GET):
+            self.searchBook = request.GET['search_book']
+            print("esta es gucci", self.searchBook)
+        else:
+            keys = request.GET.keys()
+            for key in keys:
+                self.genres.append(request.GET[key])
+
+        return super().get(request, *args, **kwargs)
+
+
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
+        context = super().get_context_data(**kwargs)
+
+        #Filtering by title or author
+        if(self.searchBook):
+            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))
+            context['book_list'] = filtered
+            return context
+        #Filtering by genre (primary and secondary) using checkbox from frontend
+        if(self.genres):
+            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
+            context['book_list'] = filtered
+            return context
+        #TODO: Filtering by topseller and On Sale
+
+        context['book_list'] = Book.objects.all()
+
+
+        return context
+
 
 class CartView(generic.ListView):
     model = Book

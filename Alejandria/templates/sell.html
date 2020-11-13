@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+
+<!--    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>-->
+<!--    <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>-->
+
+
+
+<!--    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">-->
+
+
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+    <!-- popper.js -->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>-->
+
+
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
+
+
+    <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font.css' %}">
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form-sell.css' %}">
+    <!-- Css files from static folder -->
+
+
+    <script src="//cdn.jsdelivr.net/npm/less" ></script>
+
+
+</head>
+<body>
+<div class="signup-container" style="margin:auto; margin-top:50px">
+  <div style="margin:auto;padding-right:30px;">
+    <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="width:110%">
+  </div>
+  <div class="right-container" style="width:auto">
+    <header>
+      <h1>Add a book to Alejandria</h1>
+      <div class="set">
+        <div class="pets-name">
+          <label for="pets-name">* Title</label>
+          <input id="pets-name" placeholder="Pet's name" type="text"></input>
+        </div>
+        <div class="pets-photo">
+          <button id="pets-upload">
+            <i class="fas fa-camera-retro"></i>
+          </button>
+          <label for="pets-upload">Upload a photo</label>
+        </div>
+      </div>
+      <div class="set">
+        <div class="pets-breed">
+          <label for="pets-breed">Author</label>
+          <input id="pets-breed" placeholder="Pet's breed" type="text"></input>
+        </div>
+        <div class="pets-birthday">
+          <label for="pets-birthday">Price</label>
+          <input id="pets-birthday" placeholder="MM/DD/YYYY" type="text"></input>
+        </div>
+      </div>
+      <div class="set">
+        <div class="pets-gender">
+          <label for="pet-gender-female">* ISBN</label>
+          <div class="radio-container">
+            <input id="pet-gender-female" name="pet-gender" type="radio" value="female"></input>
+            <label for="pet-gender-female">Female</label>
+            <input id="pet-gender-male" name="pet-gender" type="radio" value="male"></input>
+            <label for="pet-gender-male">Male</label>
+          </div>
+        </div>
+        <div class="pets-spayed-neutered">
+          <label for="pet-spayed">Saga</label>
+          <div class="radio-container">
+            <input id="pet-spayed" name="spayed-neutered" type="radio" value="spayed"></input>
+            <label for="pet-spayed">Spayed</label>
+            <input id="pet-neutered" name="spayed-neutered" type="radio" value="neutered"></input>
+            <label for="pet-neutered">Neutered</label>
+          </div>
+        </div>
+      </div>
+      <div class="pets-weight">
+        <label for="horror-p">Primary genre</label>
+        <div class="radio-container">
+            <div class="row">
+
+                <input id="horror-p" name="pet-weight" type="radio" value="0-25"></input>
+          <label for="horror-p">Horror</label>
+          <input id="romance-p" name="pet-weight" type="radio" value="25-50"></input>
+          <label for="romance-p">Romance</label>
+                <input id="crime-p" name="pet-weight" type="radio" value="50-100"></input>
+          <label for="crime-p">Crime</label>
+          <input id="scfi-p" name="pet-weight" type="radio" value="100+"></input>
+          <label for="scfi-p">Science Fiction</label>
+            <input id="fantasy-p" name="pet-weight" type="radio" value="100+"></input>
+          <label for="fantasy-p">Fantasy</label>
+
+                <input id="fiction-p" name="pet-weight" type="radio" value="0-25"></input>
+          <label for="fiction-p">Fiction</label>
+          <input id="teen-p" name="pet-weight" type="radio" value="25-50"></input>
+          <label for="teen-p">Teen</label>
+                <input id="children-p" name="pet-weight" type="radio" value="50-100"></input>
+          <label for="children-p">Children</label>
+          <input id="anime-p" name="pet-weight" type="radio" value="100+"></input>
+          <label for="anime-p">Anime</label>
+            <input id="other-p" name="pet-weight" type="radio" value="100+"></input>
+          <label for="other-p">Others</label>
+
+                </div>
+        </div>
+      </div>
+
+        <div class="pets-weight">
+        <label for="horror-s">Secondary genre</label>
+        <div class="radio-container">
+            <div class="row">
+
+                <input id="horror-s" name="pet-weight2" type="radio" value="0-25"></input>
+          <label for="horror-s">Horror</label>
+          <input id="romance-s" name="pet-weight2" type="radio" value="25-50"></input>
+          <label for="romance-s">Romance</label>
+                <input id="crime-s" name="pet-weight2" type="radio" value="50-100"></input>
+          <label for="crime-s">Crime</label>
+          <input id="scfi-s" name="pet-weight2" type="radio" value="100+"></input>
+          <label for="scfi-s">Science Fiction</label>
+            <input id="fantasy-s" name="pet-weight2" type="radio" value="100+"></input>
+          <label for="fantasy-s">Fantasy</label>
+
+                <input id="fiction-s" name="pet-weight2" type="radio" value="0-25"></input>
+          <label for="fiction-s">Fiction</label>
+          <input id="teen-s" name="pet-weight2" type="radio" value="25-50"></input>
+          <label for="teen-s">Teen</label>
+                <input id="children-s" name="pet-weight2" type="radio" value="50-100"></input>
+          <label for="children-s">Children</label>
+          <input id="anime-s" name="pet-weight2" type="radio" value="100+"></input>
+          <label for="anime-s">Anime</label>
+            <input id="other-s" name="pet-weight2" type="radio" value="100+"></input>
+          <label for="other-s">Others</label>
+
+                </div>
+
+
+
+        </div>
+      </div>
+
+
+    </header>
+    <footer>
+      <div class="set">
+        <button id="back">Back</button>
+        <button id="next">Next</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+
+</body>
+
+<script>
+</script>
+{% endblock %}
+</html>
