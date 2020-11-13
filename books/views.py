@@ -20,6 +20,11 @@ NUM_COINCIDENT = 10
 NUM_RELATED = 5
 MONTHS_TO_CONSIDER_TOP_SELLER = 6
 
+# Method decorators TODO: NOT TESTED, I don't know how we should test if the user is logged in etc.
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+decorators = [login_required]
+
 
 def book(request):  # TODO: this function is not linked to the frontend
     if request.method == 'GET' and request['']:
@@ -54,36 +59,7 @@ class BookView(generic.DetailView):
     model = Book
     template_name = 'details.html'
 
-    # TODO: Treat POST methods to add to cart, etc.
-
-    """
-      Right now im passing all the books, but in the next iteration 
-      Ill only pass the necessary book info, required by POST during the search.
-      #  TODO: Pass only necessary lists with get_queryset(self) and get_context_data()
-      In this case I might use get_object().
-
-      Example:
-        # views.py
-        from django.shortcuts import get_object_or_404
-        from django.views.generic import ListView
-        from books.models import Book, Publisher
-
-        class PublisherBookList(ListView):
-
-            template_name = 'books/books_by_publisher.html'
-
-            def get_queryset(self):
-                self.publisher = get_object_or_404(Publisher, name=self.kwargs['publisher'])
-                return Book.objects.filter(publisher=self.publisher)
-
-            def get_context_data(self, **kwargs):
-                # Call the base implementation first to get a context
-                context = super().get_context_data(**kwargs)
-                # Add in the publisher
-                context['publisher'] = self.publisher
-                return context
-
-    """
+    # TODO: Treat POST to add a book
 
 
 class HomeView(generic.ListView):
@@ -108,46 +84,19 @@ class HomeView(generic.ListView):
 
         return context
 
-    """
-      Right now im passing all the books, but in the next iteration 
-      Ill pass only those lists necessary por the Home page, like TopSellers, Genre lists, recommended, etc.
-      #  TODO: Pass only necessary lists with get_queryset(self) and get_context_data()
-      
-      Example:
-        # views.py
-        from django.shortcuts import get_object_or_404
-        from django.views.generic import ListView
-        from books.models import Book, Publisher
-        
-        class PublisherBookList(ListView):
-        
-            template_name = 'books/books_by_publisher.html'
-        
-            def get_queryset(self):
-                self.publisher = get_object_or_404(Publisher, name=self.kwargs['publisher'])
-                return Book.objects.filter(publisher=self.publisher)
-                
-            def get_context_data(self, **kwargs):
-                # Call the base implementation first to get a context
-                context = super().get_context_data(**kwargs)
-                # Add in the publisher
-                context['publisher'] = self.publisher
-                return context
-    
-    """
-
 
 class SearchView(generic.ListView):
     model = Book
     template_name = 'search.html'  # TODO: Provisional file
+    context_object_name = 'coincident'
 
     def __init__(self):
         super().__init__()
         self.coincident = None
         self.related = None
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+    # def get(self, request, *args, **kwargs):
+    #     return super().get(request, *args, **kwargs)
 
     def get_queryset(self):  # TODO: This is a rather simple method, can be improved # TODO: TEST
         try:
@@ -175,44 +124,37 @@ class SearchView(generic.ListView):
         if not self.related or len(self.related) == 0:
             context['related_error_message'] = 'No Books Related Found'
         context['related'] = self.related
+        return context
 
 
 class CartView(generic.ListView):
     model = Book
     template_name = 'cart.html'  # TODO: Provisional file
-    queryset = Product.objects.all()  # TODO: Right now im giving all the Products created to the Cart.
-    # TODO: Should get books in User.Cart
 
-    # TODO: Manage POST METHODS URGENT *****************************************
-
-    #  TODO: Listen to Post from view, generate a response. To do that change genericView to a normal one.
-
-    """
-    Example:
-    
-    from django.http import HttpResponseRedirect
-    from django.shortcuts import render
-    from django.views import View
-    
-    from .forms import MyForm
-    
-    class MyFormView(View):
-        form_class = MyForm
-        initial = {'key': 'value'}
-        template_name = 'form_template.html'
-    
-        def get(self, request, *args, **kwargs):
-            form = self.form_class(initial=self.initial)
-            return render(request, self.template_name, {'form': form})
-    
-        def post(self, request, *args, **kwargs):
-            form = self.form_class(request.POST)
-            if form.is_valid():
-                # <process form cleaned data>
-                return HttpResponseRedirect('/success/')
-    
-            return render(request, self.template_name, {'form': form})
-    """
+    ## TODO: This is m aproach to Cart post method, but it shouldn't be done in this branch.
+    # def get_queryset(self):
+    #     if self.logged_in():
+    #         user = User.objects.get(username=super().request.POST['username'], password=super().request.POST['password'])
+    #         return User.objects.filter(username=user).products.all()
+    #     else:
+    #         ## TODO: What to do when visitant whants to see it's Cart @method_decorator??
+    #         return None ## TODO and error_message
+    #
+    # def post(self, request, *args, **kwargs):
+    #     ## TODO: Make form to check if the request for CartView is good.
+    #     auth = super().request.auth
+    #     print(auth)
+    #     if auth: ## https://www.django-rest-framework.org/api-guide/authentication/
+    #         user = super().request.user
+    #         if user: ## TODO User and auth is linked somehow? or request.user?
+    #             pass
+    #
+    #
+    #     #return render(request, self.template_name, {'form': form})
+    #
+    # ## TODO Check if the user is logged in. With tocken or userneme password or auth or user
+    # def logged_in(self):
+    #     return True
 
 
 class FaqsView(generic.ListView):
