@@ -58,9 +58,11 @@ class BookView(generic.DetailView):
     template_name = 'details.html'
 
     # TODO: Treat POST methods to add to cart, etc.
+    def get(self, request, **kwargs):
+        
 
     """
-      Right now im passing all the books, but in the next iteration 
+      Right now im passing all the books, but in the next iteration
       Ill only pass the necessary book info, required by POST during the search.
       #  TODO: Pass only necessary lists with get_queryset(self) and get_context_data()
       In this case I might use get_object().
