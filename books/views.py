@@ -1,5 +1,6 @@
+from django.core import serializers
 from django.shortcuts import render
-
+import json
 from django.views import generic
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -7,6 +8,9 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from .forms import RegisterForm, LoginForm
+
+from django.db.models import Q
+from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
@@ -139,40 +143,46 @@ class SearchView(generic.ListView):
     model = Book
     template_name = 'search.html'  # TODO: Provisional file
 
+
+
     def __init__(self):
         super().__init__()
         self.coincident = None
         self.related = None
+        self.searchBook = None
+        self.genres = []
 
     def get(self, request, *args, **kwargs):
+        print(request.GET);
+        if('search_book' in request.GET):
+            self.searchBook = request.GET['search_book']
+            print("esta es gucci", self.searchBook)
+        else:
+            keys = request.GET.keys()
+            for key in keys:
+                self.genres.append(request.GET[key])
+
         return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):  # TODO: This is a rather simple method, can be improved # TODO: TEST
-        try:
-            srch = self.kwargs['search']
-        except:
-            srch = None
 
-        if srch != None:
-            vector = SearchVector('title', 'saga', 'authors', 'description')
-            query = SearchQuery(srch)
-            self.coincident = Book.objects.annotate(rank=SearchRank(vector, query)).order_by('-rank')[:NUM_COINCIDENT]
-            vector_related = SearchVector('saga', 'genre', 'authors')
-            query_related = SearchQuery(" ".join((self.coincident[0].saga, self.coincident[0].genre,
-                                                  self.coincident[
-                                                      0].saga.authors)))  # TODO: Right now uses info of the first coincidende
-            self.related = Book.objects.annotate(
-                rel_rank=SearchRank(vector_related, query_related)).order_by('-rel_rank')[:NUM_RELATED]
-            if len(self.coincident) > 0:
-                context = super().get_context_data()
-                context['error_message'] = 'No coincidences'
-            return self.coincident
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
-        if not self.related or len(self.related) == 0:
-            context['related_error_message'] = 'No Books Related Found'
-        context['related'] = self.related
+
+        #Filtering by title or author
+        if(self.searchBook):
+            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))
+            context['book_list'] = filtered
+            return context
+        #Filtering by genre (primary and secondary) using checkbox from frontend
+        if(self.genres):
+            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
+            context['book_list'] = filtered
+            return context
+        #TODO: Filtering by topseller and On Sale
+
+        context['book_list'] = Book.objects.all()
+
         return context
 
 
@@ -237,6 +247,42 @@ class FaqsView(generic.ListView):
     # TODO: In next iterations has to have the option to make POSTs by the admin.
     def post(self):
         pass
+
+
+
+class RegisterView(generic.TemplateView):
+
+    @staticmethod
+    def register(request):
+        if request.method == "POST":
+            form = RegisterForm(request.POST)
+            if form.is_valid():
+                form.save()
+            return redirect("/")
+        else:
+            form = RegisterForm()
+
+        return render(request, "register.html", {"form": form})
+
+
+class LoginView(generic.TemplateView):
+
+    @staticmethod
+    def login(request):
+        form = LoginForm(request.POST)
+        if request.method == 'POST':
+            #user = authenticate(
+            #    username=request.POST['username'],
+            #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
+            #)
+            user = User.objects.get(username=request.POST['username'],password=request.POST['password'])
+            if user is not None:
+                login(request, user,backend='books.backend.EmailAuthBackend')
+                return redirect("/")
+
+        return render(request,"login.html", {"form":form})
+
+
 
 
 def register(request):
