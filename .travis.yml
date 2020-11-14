@@ -1,17 +1,20 @@
 addons:
-  postgresql: "9.4"
+  postgresql: '9.4'
 before_script:
-  - "psql -c 'create database travis_ci_test;' -U postgres"
-  - "python manage.py makemigrations"
-  - "python manage.py migrate"
+- psql -c 'create database travis_ci_test;' -U postgres
+- python manage.py makemigrations
+- python manage.py migrate
 cache: pip
 env:
-  - "DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test"
+- DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test
 install:
-  - "pip install -r requirements.txt"
+- pip install -r requirements.txt
 language: python
 python:
-  - 3.8
+- 3.8
 script:
-  - pytest
+- pytest
 sudo: false
+deploy:
+  api_key:
+    secure: YF5CMJr/ULN5QGKFwYY+aq9CFXjFq3hnjgCnfYKl68CzTr02VRbK8hanrBbNT1/I3zft4iCV0seJDZTjiVZ86BEJTuYT2BbX3GDoisMWYiahoz1JnqrfaT/C9LwvGBli3xG3+rmSUOGbQPo/EyZ2paBHK71ZoN/8jUNObkUeZEcvBcr6FPQPCICjZ45OHwxLxAhz2nwhjQdjum09+hTp/4BcY9SckktDRKkFbR4vC6AQJFDBXKg5I/qM+feldu7yLkV3qXpP8yqk5YeH89P99PtkzTNg16CdqUCysdgXlEEc1KL8lxHj9nGXC/hrOpC/JCsP8UnufYYcqIIm/l8kJQwk2zpb2NJ0bBSCUm/NPAWpsh92Xn2aVvyNl07f8d/cXBQkLQWYoFVZM8SAezloVxgFmT+SQ1riEISaMV2rX7T8heM6ndA/N0MOg3s18dpXlMDWTPYaSsSrW4dOMcfVtGkcJCRh56YsMJrKCUnhrvFC90f/Uw5ToDduf6F2Tkboqi1xCnhT4KFwMtFZpRiqlCKq7yJiB11gKm07uGnDhs0yvJNqbwTBXla4w0nZUBkUVvPj8rrpjkoAEeYGMfcWCDLvRhMwQBlHPSdk7w3nxa4bPcRWDIDJcF9G7phh3vuzH3SZVXK0Knqw8io1Uunq6Gd2/z3U+jQEDLGmPqnB4uk=
