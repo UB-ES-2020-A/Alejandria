@@ -74,7 +74,7 @@
         <div style="margin-left:-10%"></div>
         <button class="buttonText" type="submit">About</button>
         <button class="buttonText" type="submit">Help</button>
-        <button class="buttonText" type="submit">FAQs</button>
+        <button class="buttonText" id="faqs_btn" type="submit">FAQs</button>
         <div style="margin-left:10%"></div>
         {% if not user.is_authenticated %}
             <button class="btn btn-danger my-2 my-sm-0" id="login_btn" type="submit">Sign In</button>
@@ -121,7 +121,7 @@
                 <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
                 <a class="buttonText2 dropdown-item bg-danger"
                    style="color:white; font-size: 14px; letter-spacing: 0.1em;"
-                   href="#">FAQs</a>
+                   href="/faqs/">FAQs</a>
                 </div>
             </div>
         </div>

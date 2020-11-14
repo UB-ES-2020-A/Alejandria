@@ -93,6 +93,10 @@ $(document).ready(function () {
 
                 }*/
 
+    $("#faqs_btn").click(function () {
+        window.location.href = "/faqs/";
+    });
+
     $("#register_btn").click(function () {
         Swal.mixin({
             title: "Sign In",
