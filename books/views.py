@@ -1,14 +1,26 @@
+
+from django.core import serializers
+from django.shortcuts import render
+import json
+
 from django.views import generic
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import RegisterForm, LoginForm
 
+from django.db.models import Q
+from django.forms.models import model_to_dict
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import logout
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
+
 from datetime import datetime, timedelta
 
-from .models import Book, FAQ, Cart, Product, User, Author
+from .models import Book, FAQ, Cart, Product, User, Address
+
+
 
 # Create your views here.
 
@@ -85,40 +97,47 @@ class SearchView(generic.ListView):
     template_name = 'search.html'  # TODO: Provisional file
     context_object_name = 'coincident'
 
+
+
     def __init__(self):
         super().__init__()
         self.coincident = None
         self.related = None
+        self.searchBook = None
+        self.genres = []
 
-    # def get(self, request, *args, **kwargs):
-    #     return super().get(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        print(request.GET);
+        if('search_book' in request.GET):
+            self.searchBook = request.GET['search_book']
+            print("esta es gucci", self.searchBook)
+        else:
+            keys = request.GET.keys()
+            for key in keys:
+                self.genres.append(request.GET[key])
 
-    def get_queryset(self):  # TODO: This is a rather simple method, can be improved # TODO: TEST
-        try:
-            srch = self.kwargs['search']
-        except:
-            srch = None
+        return super().get(request, *args, **kwargs)
 
-        if srch != None:
-            vector = SearchVector('title', 'saga', 'authors', 'description')
-            query = SearchQuery(srch)
-            self.coincident = Book.objects.annotate(rank=SearchRank(vector, query)).order_by('-rank')[:NUM_COINCIDENT]
-            vector_related = SearchVector('saga', 'genre', 'authors')
-            query_related = SearchQuery(" ".join((self.coincident[0].saga, self.coincident[0].genre,
-                                                  self.coincident[
-                                                      0].saga.authors)))  # TODO: Right now uses info of the first coincidende
-            self.related = Book.objects.annotate(
-                rel_rank=SearchRank(vector_related, query_related)).order_by('-rel_rank')[:NUM_RELATED]
-            if len(self.coincident) > 0:
-                context = super().get_context_data()
-                context['error_message'] = 'No coincidences'
-            return self.coincident
+
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
-        if not self.related or len(self.related) == 0:
-            context['related_error_message'] = 'No Books Related Found'
-        context['related'] = self.related
+
+        #Filtering by title or author
+        if(self.searchBook):
+            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))
+            context['book_list'] = filtered
+            return context
+        #Filtering by genre (primary and secondary) using checkbox from frontend
+        if(self.genres):
+            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
+            context['book_list'] = filtered
+            return context
+        #TODO: Filtering by topseller and On Sale
+
+        context['book_list'] = Book.objects.all()
+
+
         return context
 
 
@@ -159,6 +178,7 @@ class FaqsView(generic.ListView):
     # TODO: In next iterations has to have the option to make POSTs by the admin.
 
 
+
 class RegisterView(generic.TemplateView):
 
     @staticmethod
@@ -189,4 +209,73 @@ class LoginView(generic.TemplateView):
                 login(request, user, backend='books.backend.EmailAuthBackend')
                 return redirect("/")
 
-        return render(request, "login.html", {"form": form})
+        return render(request,"login.html", {"form":form})
+
+
+
+
+def register(request):
+    def validate_register(data):
+        # No Blank Data
+        data_answered = all([len(data[key]) > 0 for key in data])
+        exists = User.objects.filter(email=request.POST["email"]).exists()
+        validation = data and not exists
+        return validation
+
+    if request.method == 'POST':
+        if 'trigger' in request.POST and 'register' in request.POST['trigger']:
+            if validate_register(request.POST):
+                query = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
+                                       country=request.POST['country1'], zip=request.POST['zip1'])
+                if query.exists():
+                    user_address = query.first()
+                else:
+                    user_address = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
+                                           country=request.POST['country1'], zip=request.POST['zip1'])
+                    user_address.save()
+
+                if request.POST['city1'] == request.POST['city2'] and request.POST['street1'] == request.POST['street2'] and request.POST['country1'] == request.POST["country2"] and request.POST['zip1'] == request.POST["zip2"]:
+                    fact_address = user_address
+                else:
+                    fact_address = Address(city=request.POST['city2'], street=request.POST['street2'],
+                                           country=request.POST['country2'], zip=request.POST['zip2'])
+                    fact_address.save()
+
+                # Model creation
+                user = User(role="user", username=request.POST['username'], name=request.POST['firstname'],
+                            last_name=request.POST['lastname'], password=request.POST['password1'],
+                            email=request.POST['email'], user_address=user_address,
+                            fact_address=fact_address)
+                user.save()
+
+                return JsonResponse({"error": False})
+
+            else:
+                return JsonResponse({"error": True})
+
+
+def login_user(request):
+    if request.method == 'POST':
+        if 'trigger' in request.POST and 'login' in request.POST['trigger']:
+            user = User.objects.filter(email=request.POST['mail'], password=request.POST['password'])
+            if user:
+                user = user.first()
+                login(request, user, backend='books.backend.EmailAuthBackend')
+                return JsonResponse({"name": user.name, "error": False})
+            else:
+                return JsonResponse({"error": True})
+
+        elif 'trigger' in request.POST and 'logout' in request.POST['trigger']:
+            error = False
+            try:
+                logout(request)
+            except:
+                error = True
+
+            return JsonResponse({"error": error})
+          
+# TODO: Not implemented yet
+class PaymentView(generic.TemplateView):
+    model = Book
+    template_name = 'payment.html'
+    queryset = Product.objects.all()

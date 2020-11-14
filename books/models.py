@@ -1,13 +1,12 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-
 from django.utils import timezone
 
 # Create your models here.
 
 """
-TODO: IF NECESSARI INTRODUCE help_text in some characteristics.
+TODO: IF NECESSARY INTRODUCE help_text in some characteristics.
 """
 
 
@@ -20,7 +19,7 @@ class Address(models.Model):
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True, null=False, blank=True)
-    #TODO: AFEGIR USERNAME COM A PK
+    # TODO: ADD USERNAME AS A PK
     role = models.CharField(max_length=10, null=False, blank=False)
     name = models.CharField(max_length=50, null=False, blank=False)
     password = models.CharField(max_length=50, null=False, blank=False)
@@ -31,33 +30,49 @@ class User(AbstractUser):
                                      related_name="fact_address")
 
 
-class Author(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-
-    def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return self.__dict__ == other.__dict__
-        else:
-            return False
+# class Author(models.Model):
+#     first_name = models.CharField(max_length=30)
+#     last_name = models.CharField(max_length=30)
+#
+#     def __eq__(self, other):
+#         if isinstance(other, self.__class__):
+#             return self.__dict__ == other.__dict__
+#         else:
+#             return False
 
 
 class Book(models.Model):
+
+    GENRE_CHOICES = [
+        ('FANT','Fantasy'),
+        ('CRIM', 'Crime & Thriller'),
+        ('FICT', 'Fiction'),
+        ('SCFI', 'Science Fiction'),
+        ('HORR', 'Horror'),
+        ('ROMA', 'Romance'),
+        ('TEEN', 'Teen & Young Adult'),
+        ('KIDS', "Children's Books"),
+        ('ANIM', 'Anime & Manga'),
+        ('OTHR', 'Others'),
+    ]
+
+
     ISBN = models.CharField(primary_key=True, max_length=13, blank=False, null=False)  # Its a Char instead of Integer
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)  # Reference to the User that created it #TODO: on_delete=models.CASCADE
     title = models.CharField(max_length=30, blank=False)
     description = models.TextField(max_length=500, blank=True, null=True)  # Synopsis
     saga = models.CharField(max_length=30, blank=True, null=True)
-    authors = models.ManyToManyField(Author, max_length=10, blank=True, null=True,
-                                     default=None)  # Un llibre pot tenir més d'un autor.
+    # authors = models.ManyToManyField(Author, max_length=10, blank=True, null=True,
+    #                                  default=None)  # Un llibre pot tenir més d'un autor.
+    author = models.CharField(max_length=30, default="Anonymous")
     # Has to be datetime.date
     # By default it's now.
     publication_date = models.DateField(null=True, blank=True, default=timezone.now)
     price = models.DecimalField(decimal_places=2, max_digits=8)
     language = models.CharField(max_length=15, blank=False)  # TODO: Might have choices=<<languages it can be>>
-    genre = models.CharField(max_length=30,
-                             blank=False)  # TODO: choices=<<all possible genres>>, also can have multiple choices
+    primary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, default='OTHR')  # TODO: choices=<<all possible genres>>, also can have multiple choices
+    secondary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True)
     publisher = models.CharField(max_length=30)
     num_pages = models.IntegerField(blank=False)
     num_sold = models.IntegerField(default=0)

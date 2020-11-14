@@ -32,6 +32,7 @@
   background-color: transparent;
   border:none;
 }
+
 .buttonText2:hover {
   color: black;
   text-decoration: none;
@@ -54,6 +55,8 @@
 .share-button {
   width: 280px;
   height: 80px;
+  font-size: 20px;
+  font-family: Verdana, Charcoal, sans-serif;
   background-color: black;
   display: flex;
   align-items: center;

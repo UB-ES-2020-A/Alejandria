@@ -1,3 +1,13 @@
+/*  Select hover for firefox   */
+select option:checked,
+select option:hover {
+    box-shadow: 0 0 10px 100px grey inset;
+}
+
+/*  Select hover for chrome   */
+select:focus > option:checked {
+    background: grey !important;
+}
 .body-structure{
     background-color: black;
     /*#162221;*/
