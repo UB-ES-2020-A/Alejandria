@@ -62,6 +62,8 @@ class BookView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         book_id = self.kwargs['pk']
         context['review_list'] = Rating.objects.filter(product_id=book_id).all()[:5]
+        if self.request.user.id == Book.objects.filter(ISBN=book_id).first().user_id:
+            context['book_owner'] = True
 
 
     """
