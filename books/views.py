@@ -222,43 +222,40 @@ class AddView(generic.ListView):
     model = Book
     template_name = 'createbook.html'
 
-    def get(self, request, *args, **kwargs):
-        return render(request, 'createbook.html', {})
-
     def post(self, request, *args, **kwargs):
         book = Book.objects.filter(ISBN=request.POST['isbn']).first()
+
         if(book):
-            '''
-            We need to check if the current user is the one who uploaded the book in the first place
-            if(book.user_id != current_user_id):
+
+            if(book.user_id != request.user.id):
                 return JsonResponse({'message': 'The book does not belong to you'}, status=401)
-            
+
             else:
-            '''
-            print('The book exists')
-            book.title = request.POST['title']
-            #book.authors = request.POST['author']
-            book.description = request.POST['description']
-            book.saga = request.POST['saga']
-            book.price = float(request.POST['price'])
-            book.language = request.POST['language']
-            # book.genre = request.POST['genre']
-            book.publisher = request.POST['publisher']
-            book.num_pages = request.POST['numpages']
-            book.recommended_age = request.POST['recommendedage']
-            book.thumbnail = request.POST['thumbnail']
-            book.ebook = request.POST['ebook']
+                print('The book exists')
+                book.title = request.POST['title']
+                book.user_id = request.user.id
+                book.authors = request.POST['author']
+                book.description = request.POST['description']
+                book.saga = request.POST['saga']
+                book.price = float(request.POST['price'])
+                book.language = request.POST['language']
+                # book.genre = request.POST['genre']
+                book.publisher = request.POST['publisher']
+                book.num_pages = request.POST['numpages']
+                book.recommended_age = request.POST['recommendedage']
+                book.thumbnail = request.POST['thumbnail']
+                book.ebook = request.POST['ebook']
 
-            book.save()
+                book.save()
 
-            return JsonResponse({'message': 'The book was modified successfully'}, status=200)
+                return JsonResponse({'message': 'The book was modified successfully'}, status=200)
 
         else:
             print('The book does not exist')
             newbook = Book(ISBN = request.POST['isbn'],
                            user_id = User.objects.filter(username="franchito55").first(),
                            title = request.POST['title'],
-                           authors=request.POST['author'],
+                           #authors=request.POST['author'],
                            description=request.POST['description'],
                            saga=request.POST['saga'],
                            price=float(request.POST['price']),
