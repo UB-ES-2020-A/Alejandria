@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.shortcuts import render, redirect
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, BookForm
 
 from django.db.models import Q
 from django.forms.models import model_to_dict
@@ -186,51 +186,20 @@ class SearchView(generic.ListView):
         return context
 
 class SellView(generic.ListView):
-    model = Book
-    template_name = 'sell.html'
-
-
-
-    def __init__(self):
-        super().__init__()
-        self.coincident = None
-        self.related = None
-        self.searchBook = None
-        self.genres = []
-
-    def get(self, request, *args, **kwargs):
-        print(request.GET);
-        if('search_book' in request.GET):
-            self.searchBook = request.GET['search_book']
-            print("esta es gucci", self.searchBook)
+    @staticmethod
+    def add_book(request):
+        if request.method == "POST":
+            form = BookForm(request.POST)
+            if form.is_valid():
+                print(request.POST)
+                form.save()
+            else:
+                print(form.errors)
+            #return redirect("/")
         else:
-            keys = request.GET.keys()
-            for key in keys:
-                self.genres.append(request.GET[key])
+            form = BookForm()
 
-        return super().get(request, *args, **kwargs)
-
-
-
-    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
-        context = super().get_context_data(**kwargs)
-
-        #Filtering by title or author
-        if(self.searchBook):
-            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))
-            context['book_list'] = filtered
-            return context
-        #Filtering by genre (primary and secondary) using checkbox from frontend
-        if(self.genres):
-            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
-            context['book_list'] = filtered
-            return context
-        #TODO: Filtering by topseller and On Sale
-
-        context['book_list'] = Book.objects.all()
-
-
-        return context
+        return render(request, "sell.html", {"form": form})
 
 
 class CartView(generic.ListView):

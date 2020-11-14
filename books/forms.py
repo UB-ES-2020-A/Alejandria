@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from books.models import User, Address
+from books.models import User, Address, Book
 import django.contrib.auth.forms
 from django.contrib.auth.forms import AuthenticationForm
 from crispy_forms.helper import FormHelper
@@ -67,3 +67,25 @@ class LoginForm(AuthenticationForm):
                 Submit('login', 'Login', css_class='btn-primary')
             )
         )
+
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = [
+            "ISBN",
+            "user_id",
+            "title",
+            "description",
+            "saga",
+            "author",
+            "publication_date",
+            "price",
+            "language",
+            "primary_genre",
+            "secondary_genre",
+            "publisher",
+            "num_pages",
+            "num_sold",
+            "recommended_age",
+            "thumbnail"
+        ]
