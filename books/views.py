@@ -20,11 +20,6 @@ NUM_COINCIDENT = 10
 NUM_RELATED = 5
 MONTHS_TO_CONSIDER_TOP_SELLER = 6
 
-# Method decorators TODO: NOT TESTED, I don't know how we should test if the user is logged in etc.
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-decorators = [login_required]
-
 
 def book(request):  # TODO: this function is not linked to the frontend
     if request.method == 'GET' and request['']:
