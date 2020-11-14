@@ -226,9 +226,12 @@ class FaqsView(generic.ListView):
         context = super().get_context_data(**kwargs)
         _range = list(range(len(FAQ.FAQ_CHOICES)))
         context['category_names'] = dict(zip(_range, [a[1] for a in FAQ.FAQ_CHOICES]))
-        context['list_query'] = dict(zip(_range, [FAQ.objects.filter(category='DWLDBOOK'), FAQ.objects.filter(category='DEVOL'),
-                                 FAQ.objects.filter(category='SELL'), FAQ.objects.filter(category='FACTU'),
-                                 FAQ.objects.filter(category='CONTACT')]))
+        context['list_query'] = dict(zip(_range, [FAQ.objects.filter(category='DWLDBOOK'),
+                                                  FAQ.objects.filter(category='DEVOL'),
+                                                  FAQ.objects.filter(category='SELL'),
+                                                  FAQ.objects.filter(category='FACTU'),
+                                                  FAQ.objects.filter(category='CONTACT')]))
+        print(context)
         return context
 
     # TODO: In next iterations has to have the option to make POSTs by the admin.
