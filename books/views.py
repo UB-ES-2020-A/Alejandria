@@ -12,7 +12,7 @@ from django.contrib.auth import logout
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
 
-from .models import Book, FAQ, Cart, Product, User, Author, Address
+from .models import Book, FAQ, Cart, Product, User, Author, Address, Rating
 
 # Create your views here.
 
@@ -58,8 +58,11 @@ class BookView(generic.DetailView):
     template_name = 'details.html'
 
     # TODO: Treat POST methods to add to cart, etc.
-    def get(self, request, **kwargs):
-        
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book_id = self.kwargs['pk']
+        context['review_list'] = Rating.objects.filter(product_id=book_id).all()[:5]
+
 
     """
       Right now im passing all the books, but in the next iteration

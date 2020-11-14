@@ -77,13 +77,20 @@
     </div>
 </div>
 
-<div style="margin-left: 200px; margin-top: 50px;">
+<div style="margin-left: 200px; margin-right: 200px; margin-top: 350px; border-top: 1px solid gray; border-bottom: 1px solid gray">
     {% if review_list %}
         {% for review in review_list %}
-            <div
+            <div style="color: white">
+                <p> {{ review.score }} / 5 </p>
+                <p> {{ review.text }} </p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="margin-top: 50px; margin-bottom: 50px; margin-left: 50px; color: white"> There are no reviews for this product. </p>
+    {% endif %}
 </div>
 
-<h2 style="color:white; margin-top: 400px; margin-left: 25px;">Títols relacionats a la teva cerca...</h2>>
+<h2 style="color:white; margin-top: 50px; margin-left: 25px;">Títols relacionats a la teva cerca...</h2>>
 
 <div class="container-fluid">
 	<div class="row">
