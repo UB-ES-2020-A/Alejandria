@@ -114,7 +114,23 @@
   transition-delay: .4s;
 }
 
+.swal2-progress-steps .swal2-progress-step {
+  background: #dc3545!important;
+}
+.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step {
+  background: #dc3545!important;
+}
+.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step {
+  background: #c08080!important;
+}
 
+.swal2-progress-step-line {
+  background: #c08080!important;
+}
+
+.swal2-styled.swal2-confirm {
+  background-color: #dc3545!important;
+}
 /*
 
 @import url("//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
