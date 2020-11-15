@@ -49,7 +49,9 @@
                   <h4>{{faq.question}}</h4>
                 </div>
                 <div class="row ml-4">
-                  <p>{{faq.answer}}</p>
+                {% autoescape off %}
+                    {{faq.answer|safe}}
+                {% endautoescape %}
                 </div>
                 {% endfor %}
               </div>
@@ -64,7 +66,7 @@
                   <h4>{{faq.question}}</h4>
                 </div>
                 <div class="row ml-4">
-                  <p>{{faq.answer}}</p>
+                  {{faq.answer|safe}}
                 </div>
                 {% endfor %}
               </div>
@@ -79,7 +81,7 @@
                   <h4>{{faq.question}}</h4>
                 </div>
                 <div class="row ml-4">
-                  <p>{{faq.answer}}</p>
+                  {{faq.answer|safe}}
                 </div>
                 {% endfor %}
               </div>
@@ -94,7 +96,7 @@
                   <h4>{{faq.question}}</h4>
                 </div>
                 <div class="row ml-4">
-                  <p>{{faq.answer}}</p>
+                   {{faq.answer|safe}}
                 </div>
                 {% endfor %}
               </div>
@@ -109,7 +111,7 @@
                   <h4>{{faq.question}}</h4>
                 </div>
                 <div class="row ml-4">
-                  <p>{{faq.answer}}</p>
+                  {{faq.answer|safe}}
                 </div>
                 {% endfor %}
               </div>
