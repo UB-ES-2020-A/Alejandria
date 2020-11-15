@@ -127,6 +127,13 @@ class SearchView(generic.ListView):
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
 
+        # Get number of cart products
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            products = cart.products.all()
+            items = len(products)
+            context['total_items'] = [items]
+
         # Filtering by title or author
         if self.searchBook:
             filtered = Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))[
@@ -150,11 +157,6 @@ class SearchView(generic.ListView):
             context['book_list'] = filtered
             return context
 
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
-            products = cart.products.all()
-            items = len(products)
-            context['total_items'] = [items]
         # TODO: Filtering by topseller and On Sale
 
         return context
