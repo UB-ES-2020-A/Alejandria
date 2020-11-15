@@ -94,6 +94,3 @@ class BookForm(forms.ModelForm):
             "thumbnail"
         ]
 
-
-
-
