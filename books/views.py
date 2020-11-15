@@ -24,33 +24,33 @@ NUM_COINCIDENT = 10
 NUM_RELATED = 5
 MONTHS_TO_CONSIDER_TOP_SELLER = 6
 
-
-def book(request):  # TODO: this function is not linked to the frontend
-    if request.method == 'GET' and request['']:
-        try:
-            req_book = get_object_or_404(Book, pk=request.GET['ISBN'])  # I get ISBN set in frontend form ajax
-        except(KeyError, Book.DoesNotExist):
-            return render(request, 'search.html', {  # TODO: Provisional
-                'error_message': 'Alejandria can not find this book.'
-            })
-        else:
-            return render(request, 'details.html', {'book': req_book})
-
-    elif request.method == 'POST':
-        """
-        Here we can treat different situations,
-            Is it an admin, who wants to add a book?
-            Is it an editor?
-            What information do we need?
-        """
-        # TODO: Treat POST methods to save new Books
-        return render(request, 'search.html', {'error_message': 'Not Implemented Yet'})  # TODO: Provisional
-
-
-# This one works in theory when using the url with the pk inside # TODO: The idea is to use something like that
-def book_pk(request, pk):
-    req_book = get_object_or_404(Book, pk=pk)
-    return render(request, 'details.html', {'book': req_book})
+#
+# def book(request):  # TODO: this function is not linked to the frontend
+#     if request.method == 'GET' and request['']:
+#         try:
+#             req_book = get_object_or_404(Book, pk=request.GET['ISBN'])  # I get ISBN set in frontend form ajax
+#         except(KeyError, Book.DoesNotExist):
+#             return render(request, 'search.html', {  # TODO: Provisional
+#                 'error_message': 'Alejandria can not find this book.'
+#             })
+#         else:
+#             return render(request, 'details.html', {'book': req_book})
+#
+#     elif request.method == 'POST':
+#         """
+#         Here we can treat different situations,
+#             Is it an admin, who wants to add a book?
+#             Is it an editor?
+#             What information do we need?
+#         """
+#         # TODO: Treat POST methods to save new Books
+#         return render(request, 'search.html', {'error_message': 'Not Implemented Yet'})  # TODO: Provisional
+#
+#
+# # This one works in theory when using the url with the pk inside # TODO: The idea is to use something like that
+# def book_pk(request, pk):
+#     req_book = get_object_or_404(Book, pk=pk)
+#     return render(request, 'details.html', {'book': req_book})
 
 
 # This one is the same but uses a generic Model, lso should work with the primary key
@@ -58,13 +58,49 @@ class BookView(generic.DetailView):
     model = Book
     template_name = 'details.html'
 
-    def get_context_data(self, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        book_id = self.kwargs['pk']
-        context['review_list'] = Rating.objects.filter(product_id=book_id).all()[:5]
-        if self.request.user.id == Book.objects.filter(ISBN=book_id).first().user_id:
-            context['book_owner'] = True
+        relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
 
+        if relation_book:
+            context['book_relation'] = relation_book
+        else:
+            context['book_relation'] = Book.objects.all()[:20]
+
+        return context
+
+
+
+    # TODO: Treat POST methods to add to cart, etc.
+
+    """
+      Right now im passing all the books, but in the next iteration 
+      Ill only pass the necessary book info, required by POST during the search.
+      #  TODO: Pass only necessary lists with get_queryset(self) and get_context_data()
+      In this case I might use get_object().
+
+      Example:
+        # views.py
+        from django.shortcuts import get_object_or_404
+        from django.views.generic import ListView
+        from books.models import Book, Publisher
+
+        class PublisherBookList(ListView):
+
+            template_name = 'books/books_by_publisher.html'
+
+            def get_queryset(self):
+                self.publisher = get_object_or_404(Publisher, name=self.kwargs['publisher'])
+                return Book.objects.filter(publisher=self.publisher)
+
+            def get_context_data(self, **kwargs):
+                # Call the base implementation first to get a context
+                context = super().get_context_data(**kwargs)
+                # Add in the publisher
+                context['publisher'] = self.publisher
+                return context
+
+    """
 
 class HomeView(generic.ListView):
     template_name = 'home.html'
@@ -80,17 +116,17 @@ class HomeView(generic.ListView):
 
         today = datetime.today()
         self.user_id = self.request.user.id or None
-        return Book.objects.all()  # TODO: Replace with the one below when ready to test with a full database.
-        # return Book.objects.order_by('-num_sold')[:10].filter(
-        #     publication_date__range=[str(today)[:10],
-        #                              str(today - timedelta(days=30 * MONTHS_TO_CONSIDER_TOP_SELLER))[:10]])[:10]
+        #return Book.objects.all() # TODO: Replace with the one below when ready to test with a full database.
+        return Book.objects.order_by('-num_sold')[:20]
+        #.filter(publication_date__range=[str(today)[:10],str(today - timedelta(days=30 * MONTHS_TO_CONSIDER_TOP_SELLER))[:10]])[:10]
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         today = datetime.today()
-        context['new_books'] = Book.objects.filter(
-            publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
-        # context['novels'] = Book.objects.filter(genre__contains="Novel")
+        #context['new_books'] = Book.objects.filter(
+        #    publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
+        context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
+        context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
             products = cart.products.all()
