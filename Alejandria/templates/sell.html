@@ -43,7 +43,14 @@
 
 
 
-
+{% if messages %}
+  {% for msg in messages %}
+    <div class="alert alert-info alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{msg.message}}
+    </div>
+  {% endfor %}
+{% endif %}
 
 <!--<div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
@@ -63,13 +70,6 @@
     </footer>
   </div>
 </div>-->
-
-
-
-
-
-
-
 
 
 {% if form.errors %}
@@ -112,22 +112,10 @@
 <!--<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>-->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
 <!--    <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="width:110%">-->
-    <img id="blah" style="width:110%" src="#" alt="your image" />
+    <img id="blah" style="width:110%" src="https://i0.wp.com/www.pagoderiofrio.es/wp-content/uploads/2016/07/no-image.jpg?fit=450%2C450&ssl=1" />
   </div>
   <div class="right-container" style="width:auto">
     <header>
@@ -146,7 +134,7 @@
 </div>
       <div class="set">
         <div class="pets-breed">
-          <label for="author">Author</label>
+          <label for="author">* Author</label>
           <input id="author" placeholder="Anonymous" name="author" type="text"></input>
         </div>
         <div class="pets-birthday">
@@ -178,7 +166,7 @@
           <div class="set">
       <div class="pets-name">
         <label for="numpages">* Nº Pages</label>
-        <input id="numpages" name="num_pages" placeholder="Number of pages" type="number"></input>
+        <input id="numpages" name="num_pages" placeholder="100" type="number"></input>
       </div>
         <div class="pets-name">
             <label for="numsold">* Nº Sells</label>
@@ -190,10 +178,10 @@
       <div class="set">
     <div class="pets-breed">
       <label for="publi_date">Publication date</label>
-      <input id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="text"></input>
+      <input id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="date"></input>
     </div>
     <div class="pets-birthday">
-      <label for="recommended_age">* Recommended age</label>
+      <label for="recommended_age">Recommended age</label>
         <input id="recommended_age" name="recommended_age" placeholder="Adult" type="text"></input>
     </div>
   </div>
@@ -205,6 +193,7 @@
 <!--            <i class="fas fa-camera-retro"></i>-->
 <!--          </button>-->
 <!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
+          <label for="thumbnail">* Thumbnail</label>
           <input id="thumbnail" type='file' name="thumbnail" accept="image/jpeg, image/png" onchange="readURL(this);" />
 
 
@@ -238,7 +227,7 @@
         </div>
       </div>
 
-      <div class="pets-weight">
+      <div class="pets-weight" style="padding-top:20px;padding-bottom:20px;">
         <label for="horror-s">Secondary genre</label>
         <div class="radio-container">
           <div class="row">
@@ -270,7 +259,7 @@
         <label for="description">Description</label>
         <textarea  id="description" placeholder="Place here the description of book" type="text" style="height:200px; width:100%;"></textarea>
       </div>
-        <div class="set">
+        <div class="set" style="float: right;">
         <input type="submit" data-toggle="modal" data-target="#myModal" value="Next" />
         </div>
 </form>

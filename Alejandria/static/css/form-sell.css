@@ -133,6 +133,19 @@
 	 border-radius: 19px;
 	 font-family: 'Montserrat', sans-serif;
 }
+
+input[type=submit]{
+border: 1px solid rgba(0, 0, 0, .2);
+	 height: 38px;
+	 line-height: 38px;
+	 width: 100px;
+	 border-radius: 19px;
+	 font-family: 'Montserrat', sans-serif;
+	 background: #141414;
+	 color:white;
+}
+
+
  .right-container footer #back {
 	 background: #141414;
 	 border: 1px solid transparent;

@@ -193,10 +193,11 @@ class SellView(generic.ListView):
             form = BookForm(request.POST)
             if form.is_valid():
                 print(request.POST)
-                messages.success(request, 'Form submission successful')
+                #messages.success(request, 'Form submission successful')
+                messages.info(request, 'Your book has been updated successfully!')
                 form.save()
-            else:
-                print(form.errors)
+            #else:
+                #print(form.errors)
             #return redirect("/")
         else:
             form = BookForm()
