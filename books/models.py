@@ -130,6 +130,23 @@ class Bill(models.Model):
 
 
 class FAQ(models.Model):
+    # First object = Saved on the model, second object = Human readable one
+    FAQ_CHOICES = [
+        ('DWLDBOOK', 'Como descargar un ebook'),
+        ('DEVOL', 'Devoluciones'),
+        ('SELL', 'Vende tus libros'),
+        ('FACTU', 'Necesito la factura de mi libro o alguna modificación'),
+        ('CONTACT', 'Contacta con nosotros'),
+    ]
+
     ID = models.AutoField(primary_key=True)
+
     question = models.TextField(blank=False, null=False)
     answer = models.TextField(blank=False, null=False)
+    category = models.CharField(blank=False, null=False, choices=FAQ_CHOICES, max_length=50)
+
+    def __str__(self):
+        return "ID:{}  CAT:{}   {} --- {}".format(self.ID, self.category, self.question, self.answer)
+
+## TODO: If we decide to give the option to the admin to add the FAQ to a new category, categories shold be saved to the database
+# class FAQchoices(models.Model):

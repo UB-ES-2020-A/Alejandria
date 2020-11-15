@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font.css' %}">
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>
+
+
+<!--    <link rel="stylesheet/less" type="text/css" href="styles.less" />-->
+    <script src="//cdn.jsdelivr.net/npm/less" ></script>
+<!--    <link rel="stylesheet" href="{% static 'css/main.css' %}">-->
+
+<!--    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+    <div class="container-fluid m-5">
+      <div class="row mb-5">
+        <h1 style="color: white"> Preguntas frequentes </h1>
+      </div>
+      <div class="container m-2">
+            <div class="row">
+              <div class="col-lg-1-12">
+                <h3>{{ category_names.0 }}</h3>
+              </div>
+              <div class="container p-2 m-3">
+                {% for faq in list_query.0 %}
+                <div class="row ml-3">
+                  <h4>{{faq.question}}</h4>
+                </div>
+                <div class="row ml-4">
+                {% autoescape off %}
+                    {{faq.answer|safe}}
+                {% endautoescape %}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+                  <div class="row">
+              <div class="col-lg-1-12">
+                <h3>{{ category_names.1 }}</h3>
+              </div>
+              <div class="container p-2 m-3">
+                {% for faq in list_query.1 %}
+                <div class="row ml-3">
+                  <h4>{{faq.question}}</h4>
+                </div>
+                <div class="row ml-4">
+                  {{faq.answer|safe}}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+                  <div class="row">
+              <div class="col-lg-1-12">
+                <h3>{{ category_names.2 }}</h3>
+              </div>
+              <div class="container p-2 m-3">
+                {% for faq in list_query.2 %}
+                <div class="row ml-3">
+                  <h4>{{faq.question}}</h4>
+                </div>
+                <div class="row ml-4">
+                  {{faq.answer|safe}}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+                        <div class="row">
+              <div class="col-lg-1-12">
+                <h3>{{ category_names.3 }}</h3>
+              </div>
+              <div class="container p-2 m-3">
+                {% for faq in list_query.3 %}
+                <div class="row ml-3">
+                  <h4>{{faq.question}}</h4>
+                </div>
+                <div class="row ml-4">
+                   {{faq.answer|safe}}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+                        <div class="row">
+              <div class="col-lg-1-12">
+                <h3>{{ category_names.4 }}</h3>
+              </div>
+              <div class="container p-2 m-3">
+                {% for faq in list_query.4 %}
+                <div class="row ml-3">
+                  <h4>{{faq.question}}</h4>
+                </div>
+                <div class="row ml-4">
+                  {{faq.answer|safe}}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+        </div>
+      </div>
+<!--        <div>-->
+<!--          <img src="/static/recent_books.jpg" class="img-responsive center-block d-block mx-auto" alt="centered image" style="margin-top:10px; ">-->
+<!--&lt;!&ndash;             falta caption - background casa del libro &ndash;&gt;-->
+<!--        </div>-->
+
+</body>
+
+</html>
+
+{% endblock %}

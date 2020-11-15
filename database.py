@@ -3,7 +3,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 import django
 django.setup()
 
-from books.models import Book, User, Address, Product, Cart
+from books.models import Book, User, Address, Product, Cart, FAQ
 import random
 
 user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
@@ -84,3 +84,90 @@ for p in products:
 cart.save()
 
 print("CART SAVED...OK")
+
+## TO GENEREATE FAQS, CAN BE CREATED FROM A FILE faqs.txt OR WRITTEN IN TERMINAL. ALSO DELETE ALL OR SEE WHAT IS IN THE DATABASE
+
+def write_some_faqs():
+    while True:
+        n = input("Number of faqs you whant to write:")
+        if n.isdigit():
+            n = int(n)
+            break
+        else:
+            print("Introduce number")
+
+    questions = list()
+    answers = list()
+    categories = list()
+
+    for i in range(n):
+        loop = True
+        category = "DEFAULT"
+        while loop:
+            category = input("CATEGORY (DWLDBOOK, DEVOL, SELL, FACTU, CONTACT):")
+            loop = False
+        question = input("Question:")
+        answer = input("Answer")
+
+        categories.append(category)
+        questions.append(question)
+        answers.append(answer)
+
+    faqs = list(zip(categories, questions, answers))
+    print("Faqs:",faqs)
+    create_faqs(faqs)
+
+
+def read_faqs_from_file():
+    # Using readlines()
+    print("READING FILE...")
+    filename = 'faqs.txt'
+    file1 = open(filename, 'r')
+    lines = file1.readlines()
+
+    questions = list()
+    answers = list()
+    categories = list()
+
+    # Strips the newline character
+    for line in lines:
+        print(line)
+        category, question, answer = line.strip().split('///')
+        questions.append(question)
+        answers.append(answer)
+        categories.append(category)
+
+    print("ALL FAQS READ...OK")
+    faqs = list(zip(categories, questions, answers))
+    create_faqs(faqs)
+
+
+def create_faqs(faqs):
+    print("SAVING FAQS...OK")
+    for faq in faqs:
+        print("### FAQ ---->", faq)
+        to_save = FAQ(question=faq[1], answer=faq[2], category=faq[0])
+        print(to_save)
+        to_save.save()
+     print("ALL FAQS SAVED...OK")
+
+
+what = input("Chose option, insert manually, read in file information, see whats in database or delete all FAQ"
+             " (I/RF/DB/DEL) :")
+while True:
+    if what == 'I':
+        write_some_faqs()
+        break
+    elif what == 'RF':
+        read_faqs_from_file()
+        break
+    elif what == 'DB':
+        faqs = FAQ.objects.all()
+        print(faqs)
+        for faq in faqs:
+            print(faq)
+        break
+    elif what == 'DEL':
+        FAQ.objects.all().delete()
+        print(FAQ.objects.all())
+        break
