@@ -10,6 +10,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
 
 from books.models import *
+from random import randint
 
 try:
     adress = Address(street="anonimous", city="Terraplana", country="Illuminados", zip=12345)
@@ -67,7 +68,7 @@ for _, genre in Book.GENRE_CHOICES:
                 # authors = json['authors'][0] if 'authors' in json else None #TODO
 
                 book = Book(ISBN=isbn, num_pages=json["number_of_pages"], title=title, description=description,
-                            saga=saga, publication_date=None, primary_genre=_, price=0,
+                            saga=saga, publication_date=None, primary_genre=_, price=randint(5, 75),
                             publisher=publisher, user_id=user)
                 print('BOOK: ', book)
                 book.save()
