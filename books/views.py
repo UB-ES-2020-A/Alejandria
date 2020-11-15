@@ -108,7 +108,6 @@ class SearchView(generic.ListView):
         print(request.GET)
         if 'search_book' in request.GET:
             self.searchBook = request.GET['search_book']
-            print("esta es gucci", self.searchBook)
         else:
             keys = request.GET.keys()
             for key in keys:
@@ -121,20 +120,33 @@ class SearchView(generic.ListView):
 
         # Filtering by title or author
         if self.searchBook:
-            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))
+            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))[:20]
             context['book_list'] = filtered
-            return context
-        # Filtering by genre (primary and secondary) using checkbox from frontend
-        if self.genres:
-            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
-            context['book_list'] = filtered
-            return context
-        # TODO: Filtering by topseller and On Sale
+            genres_relation=[]
+            for book in filtered:
+                if book.primary_genre not in genres_relation:
+                    genres_relation.append(book.primary_genre)
 
-        context['book_list'] = Book.objects.all()
+            relation_book = Book.objects.filter(primary_genre__in=genres_relation)[:20]
+            if(relation_book):
+                context['book_relation'] = relation_book
+                return context
+
+        else:
+            context['book_relation'] = Book.objects.all()[:20]
+
+        if self.genres:
+            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))[:20]
+            context['book_list'] = filtered
+            return context
+
 
 
         return context
+        # Filtering by genre (primary and secondary) using checkbox from frontend
+
+        # TODO: Filtering by topseller and On Sale
+
 
 class SellView(generic.ListView):
     @staticmethod
