@@ -101,10 +101,13 @@
           <input id="pets-name" name="title" placeholder="Title of book" type="text"></input>
         </div>
         <div class="pets-photo">
-          <button id="pets-upload">
-            <i class="fas fa-camera-retro"></i>
-          </button>
-          <label for="pets-upload">Upload a photo</label>
+<!--          <button id="pets-upload">-->
+<!--            <i class="fas fa-camera-retro"></i>-->
+<!--          </button>-->
+          <label for="thumbnail">Upload a photo</label>
+          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">
+
+
         </div>
       </div>
       <div class="set">
@@ -143,6 +146,10 @@
       <div class="pets-name">
         <label for="numpages">Nº Pages</label>
         <input id="numpages" name="num_pages" placeholder="Number of pages" type="number"></input>
+      </div>
+      <div class="pets-name">
+        <label for="user_id">*User ID</label>
+        <input id="user_id" name="user_id" placeholder="User ID" type="number" value=""></input>
       </div>
 
       <div class="pets-weight">
@@ -205,13 +212,11 @@
         <label for="description">Description</label>
         <textarea  id="description" placeholder="Place here the description of book" type="text" style="height:200px; width:100%;"></textarea>
       </div>
+        <div class="set">
+        <input type="submit" value="Next" />
+        </div>
 </form>
     </header>
-    <footer>
-      <div class="set">
-        <button id="next">Next</button>
-      </div>
-    </footer>
   </div>
 </div>
 
