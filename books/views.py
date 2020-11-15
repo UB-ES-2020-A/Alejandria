@@ -1,20 +1,18 @@
+import re
 from datetime import datetime, timedelta
 
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
+from django.core.mail import send_mail
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, render, redirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, render
 from django.views import generic
 
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.urls import reverse
-from .forms import BookForm
-
-from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
-from django.contrib import messages
-from django.core.mail import send_mail
-import re
 from Alejandria.settings import EMAIL_HOST_USER
+from .forms import BookForm
+from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
 
 # Create your views here.
 
@@ -49,7 +47,7 @@ def book(request):  # TODO: this function is not linked to the frontend
         return render(request, 'search.html', {'error_message': 'Not Implemented Yet'})  # TODO: Provisional
 
 
-# This one works in thory when using the url with the pk inside # TODO: The idea is to use something like that
+# This one works in theory when using the url with the pk inside # TODO: The idea is to use something like that
 def book_pk(request, pk):
     req_book = get_object_or_404(Book, pk=pk)
     return render(request, 'details.html', {'book': req_book})
@@ -80,9 +78,8 @@ class HomeView(generic.ListView):
     # queryset = Book.objects.all()
     def get_queryset(self):  # TODO: Return list requested by the front end, TOP SELLERS, etc.
         today = datetime.today()
-        print("GEEET BOOKS: ", Book.objects.all())
         self.user_id = self.request.user.id or None
-        return Book.objects.all()  ## TODO: Replace with the one below when ready to test with a full database.
+        return Book.objects.all()  # TODO: Replace with the one below when ready to test with a full database.
         # return Book.objects.order_by('-num_sold')[:10].filter(
         #     publication_date__range=[str(today)[:10],
         #                              str(today - timedelta(days=30 * MONTHS_TO_CONSIDER_TOP_SELLER))[:10]])[:10]
@@ -141,7 +138,7 @@ class SearchView(generic.ListView):
                     genres_relation.append(book.primary_genre)
 
             relation_book = Book.objects.filter(primary_genre__in=genres_relation)[:20]
-            if (relation_book):
+            if relation_book:
                 context['book_relation'] = relation_book
                 return context
 
@@ -200,7 +197,9 @@ class CartView(generic.ListView):
         self.user_id = request.user.id or None
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
-            return cart.products.all()
+            print(cart)
+            if cart:
+                return cart.products.all()
         return None
 
     def get_context_data(self, **kwargs):
@@ -209,7 +208,6 @@ class CartView(generic.ListView):
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
             products = cart.products.all()
-            print(products)
             total_price = 0
             items = len(products)
             for prod in products:
@@ -259,7 +257,12 @@ class FaqsView(generic.ListView):
     template_name = 'faqs.html'  # TODO: Provisional file
     context_object_name = 'faqs'
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.user_id = None
+
     def get_queryset(self):
+        self.user_id = self.request.user.id or None
         return FAQ.objects.all()
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -272,45 +275,16 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FACTU'),
                                                   FAQ.objects.filter(category='CONTACT')]))
         print(context)
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            products = cart.products.all()
+            items = len(products)
+            context['total_items'] = [items]
         return context
 
     # TODO: In next iterations has to have the option to make POSTs by the admin.
     def post(self):
         pass
-
-
-class RegisterView(generic.TemplateView):
-
-    @staticmethod
-    def register(request):
-        if request.method == "POST":
-            form = RegisterForm(request.POST)
-            if form.is_valid():
-                form.save()
-            return redirect("/")
-        else:
-            form = RegisterForm()
-
-        return render(request, "register.html", {"form": form})
-
-
-class LoginView(generic.TemplateView):
-
-    @staticmethod
-    def login(request):
-        form = LoginForm(request.POST)
-        if request.method == 'POST':
-            # user = authenticate(
-            #    username=request.POST['username'],
-            #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
-            # )
-            user = User.objects.get(username=request.POST['username'], password=request.POST['password'])
-            if user is not None:
-                login(request, user, backend='books.backend.EmailAuthBackend')
-                return redirect("/")
-
-        return render(request,"login.html", {"form":form})
-
 
 
 class AddView(generic.ListView):
@@ -320,9 +294,9 @@ class AddView(generic.ListView):
     def post(self, request, *args, **kwargs):
         book = Book.objects.filter(ISBN=request.POST['isbn']).first()
 
-        if(book):
+        if book:
 
-            if(book.user_id != request.user.id):
+            if book.user_id != request.user.id:
                 return JsonResponse({'message': 'The book does not belong to you'}, status=401)
 
             else:
@@ -347,10 +321,10 @@ class AddView(generic.ListView):
 
         else:
             print('The book does not exist')
-            newbook = Book(ISBN = request.POST['isbn'],
-                           user_id = User.objects.filter(username="franchito55").first(),
-                           title = request.POST['title'],
-                           #authors=request.POST['author'],
+            newbook = Book(ISBN=request.POST['isbn'],
+                           user_id=User.objects.filter(username="franchito55").first(),
+                           title=request.POST['title'],
+                           # authors=request.POST['author'],
                            description=request.POST['description'],
                            saga=request.POST['saga'],
                            price=float(request.POST['price']),
@@ -403,6 +377,10 @@ def register(request):
                             fact_address=fact_address)
                 user.save()
 
+                # Create user's cart
+                cart = Cart(user_id=user)
+                cart.save()
+
                 return JsonResponse({"error": False})
 
             else:
@@ -427,15 +405,16 @@ def forgot(request, **kwargs):
                 host = request.get_raw_uri()
                 matches = re.finditer('/', host)
                 idx = [match.start() for match in matches][2]
-                link = host[:idx] + "/forgot/" + str(last)+"/"
+                link = host[:idx] + "/forgot/" + str(last) + "/"
                 msg = 'Dear, ' + query.first().username + '\n\n Confirm your new password using this link: ' + link + "\n Remember that once you complete the change this link will be disabled.\n\n Alejandria Team."
 
                 try:
                     ResetMails(id=last, user=query.first()).save()
-                    send_mail(subject, msg, EMAIL_HOST_USER, [recipient],fail_silently=True)
-                    return JsonResponse({"error": False, "msg":"Reset mail was sent to "+recipient+" successfully. Please check your inbox."})
+                    send_mail(subject, msg, EMAIL_HOST_USER, [recipient], fail_silently=True)
+                    return JsonResponse({"error": False,
+                                         "msg": "Reset mail was sent to " + recipient + " successfully. Please check your inbox."})
                 except:
-                    return JsonResponse({"error": True, "msg":"Your request failed, please try it again."})
+                    return JsonResponse({"error": True, "msg": "Your request failed, please try it again."})
 
             return JsonResponse({"error": True,
                                  "msg": "Invalid mail address"})
