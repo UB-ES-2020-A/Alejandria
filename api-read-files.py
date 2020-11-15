@@ -56,7 +56,9 @@ for _, genre in Book.GENRE_CHOICES:
                 print('ISBN: ', isbn)
                 title = json["title"] or "Unknown Title"
                 print('title: ', title)
-                description = json["description"]["value"] if "description" in json else None
+                description = json["description"]if "description" in json else None
+                if type(description) != str and not description == None:
+                    description = description["value"]
                 print('dessc: ', description)
                 saga = json['series'][0] if 'series' in json else None
                 print('saga: ', saga)

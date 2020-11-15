@@ -256,9 +256,27 @@ def add_product(request, view, book):
 
 class FaqsView(generic.ListView):
     model = FAQ
-    template_name = 'FAQs.html'  # TODO: Provisional file
+    template_name = 'faqs.html'  # TODO: Provisional file
+    context_object_name = 'faqs'
+
+    def get_queryset(self):
+        return FAQ.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        _range = list(range(len(FAQ.FAQ_CHOICES)))
+        context['category_names'] = dict(zip(_range, [a[1] for a in FAQ.FAQ_CHOICES]))
+        context['list_query'] = dict(zip(_range, [FAQ.objects.filter(category='DWLDBOOK'),
+                                                  FAQ.objects.filter(category='DEVOL'),
+                                                  FAQ.objects.filter(category='SELL'),
+                                                  FAQ.objects.filter(category='FACTU'),
+                                                  FAQ.objects.filter(category='CONTACT')]))
+        print(context)
+        return context
 
     # TODO: In next iterations has to have the option to make POSTs by the admin.
+    def post(self):
+        pass
 
 
 class RegisterView(generic.TemplateView):
