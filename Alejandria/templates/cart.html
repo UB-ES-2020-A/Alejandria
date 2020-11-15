@@ -6,10 +6,10 @@
 {% block content %}
 
 <html lang="en">
-    <!--    Css Files for this page     -->
-    <link rel="stylesheet" href="{% static 'css/cart-page/body.css' %}">
-    <link rel="stylesheet" href="{% static 'css/cart-page/buttons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/cart-page/card.css' %}">
+<!--    Css Files for this page     -->
+<link rel="stylesheet" href="{% static 'css/cart-page/body.css' %}">
+<link rel="stylesheet" href="{% static 'css/cart-page/buttons.css' %}">
+<link rel="stylesheet" href="{% static 'css/cart-page/card.css' %}">
 </html>
 
 <body style="padding-bottom:119px">
@@ -21,17 +21,78 @@
         <!-- Left Body -->
         <div class="col-md-9 body-structure">
             <p class="title" style="padding-top:3%">MY PURCHASE</p>
-            <div class="main-hr" style="width:95%"></div>
 
             <div class="row">
-                <div class="col" style="margin-left: 5%; width:100%;" id="container-info-books">
+                <div class="col" style="margin-left: 5%; width:100%; height:800px; overflow:auto; border: 1px solid white"
+                     id="container-info-books">
+
+                    {% for product in cart_list %}
+                    <div class="info-book">
+                        <img class="book-cover" src="/static/images/cover-images/book_cover.jpg" alt="Card image cap">
+                        <div style="margin-left:1%;">
+                            <div class="row horizontal">
+                                <div class="col-md-8">
+                                    <p class="book-title"><a href="#">{{ product.ISBN.title }}</a></p>
+                                </div>
+                                <div class="col">
+                                    <p class="text" style="text-align:right;"><span>{{ product.price }}</span>€</p>
+                                </div>
+                            </div>
+                            <p class="price">{{ product.price }}€</p>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input">
+                                <label class="custom-control-label" for="gift_checkbox1" style="color:white">This is a
+                                    gift</label>
+                            </div>
+                            <span class="score">
+                                <div class="score-wrap">
+                                    <span class="stars-active" style="width:80%">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </span>
+
+                                    <span class="stars-inactive">
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </span>
+                            <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
+                                                                                             style="font-size:0.7em">15</span></a>
+                            </p>
+                            <div class="dropdown">
+                                <label style="color:white">Quantity</label>
+                                <select class="selectpicker btn-drop m1"
+                                        style="color:white; font-size: 14px; width:60px;"
+                                        onclick="update_quantity()">
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">1</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">2</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">3</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">4</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">5</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn(this,)"
+                                    type="submit">
+                                Delete
+                            </button>
+                            <div style="padding-bottom:15%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
 
                     <div class="info-book" id="info_book_1">
                         <img class="book-cover" src="/static/images/cover-images/book_cover.jpg" alt="Card image cap">
                         <div style="margin-left:1%;">
                             <div class="row horizontal">
-                                <div class="col">
-                                    <p class="book-title"><a href="#">The Good Guy, by Mark Mcallister</a></p>
+                                <div class="col-md-8">
+                                    <p class="book-title"><a href="#">DON'T DELETE used as test material</a></p>
                                 </div>
                                 <div class="col">
                                     <p class="text" style="text-align:right;"><span
@@ -45,179 +106,64 @@
                                     gift</label>
                             </div>
                             <span class="score">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:80%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
+                                <div class="score-wrap">
+                                    <span class="stars-active" style="width:80%">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </span>
 
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
+                                    <span class="stars-inactive">
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </span>
                             <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
                                                                                              style="font-size:0.7em">15</span></a>
                             </p>
-                            <button class="icon-btn add-btn" id="button_rmv_1" style="margin-top:5%" onclick="rmv_books_btn1()">
-                                <div class="btn-txt">Remove</div>
-                            </button>
-                            <span style="color:white; font-size:14px" id="quantity_book_1">1</span>
-                            <button class="icon-btn add-btn" id="button_add_1" onclick="add_books_btn1()">
-                                <div class="add-icon"></div>
-                                <div class="btn-txt">Add</div>
-                            </button>
-                            <div style="padding-top:20%"></div>
+                            <div class="dropdown">
+                                <label style="color:white">Quantity</label>
+                                <select class="selectpicker btn-drop m1"
+                                        style="color:white; font-size: 14px; width:60px;" id="selectItems1"
+                                        onclick="update_quantity()">
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">1</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">2</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">3</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">4</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">5</option>
+                                </select>
+                            </div>
                             <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn(this,)"
                                     type="submit">
                                 Delete
                             </button>
                             <div style="padding-bottom:15%"></div>
                         </div>
-
-                    </div>
-
-
-                    <div class="info-book" id="info_book_2">
-                        <img class="book-cover" src="/static/images/cover-images/book_cover2.jpg" alt="Card image cap">
-                        <div style="margin-left: 1%;">
-                            <div class="row horizontal">
-                                <div class="col">
-                                    <p class="book-title"><a href="#">The Arrivals, by
-                                        Lucas Lloyd</a></p>
-                                </div>
-                                <div class="col">
-                                    <p class="text"
-                                       style="width:100%; display: block; text-align:right;"><span
-                                            id="price_book_2">15.95</span><span>€</span></p>
-                                </div>
-                            </div>
-                            <p class="price" id="original_price_2">15.95€</p>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="gift_checkbox2">
-                                <label class="custom-control-label" for="gift_checkbox2" style="color:white">This is a
-                                    gift</label>
-                            </div>
-                            <span class="score">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:65%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
-
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
-                            <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
-                                                                                             style="font-size:0.7em">4</span></a>
-                            </p>
-                            <div style="padding-top:5%"></div>
-                            <button class="icon-btn add-btn" id="button_rmv_2" onclick="rmv_books_btn()">
-                                <div class="btn-txt">Remove</div>
-                            </button>
-                            <span style="color:white; font-size:14px" id="quantity_book_2">1</span>
-                            <button class="icon-btn add-btn" id="button_add_2" onclick="add_books_btn()">
-                                <div class="add-icon"></div>
-                                <div class="btn-txt">Add</div>
-                            </button>
-                            <div style="padding-top:20%"></div>
-                            <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn()"
-                                    type="submit">
-                                Delete
-                            </button>
-                            <div style="padding-bottom:15%"></div>
-                        </div>
-                    </div>
-
-                    <div class="info-book" id="info_book_3">
-                        <img class="book-cover" src="/static/images/cover-images/book_cover3.jpg" alt="Card image cap">
-                        <div style="margin-left: 1%;">
-                            <div class="row horizontal">
-                                <div class="col">
-                                    <p class="book-title" style="width:200%;"><a href="#">In the House in the Dark of
-                                        the
-                                        Woods,
-                                        by Laird Hunt</a></p>
-                                </div>
-                                <div class="col">
-                                    <p class="text" style="display: block; text-align:right;"><span
-                                            id="price_book_3">19.95</span><span>€</span></p>
-                                </div>
-                            </div>
-                            <p class="price" id="original_price_3">19.95€</p>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="gift_checkbox3">
-                                <label class="custom-control-label" for="gift_checkbox3" style="color:white">This is a
-                                    gift</label>
-                            </div>
-                            <span class="score">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:90%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
-
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
-                            <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
-                                                                                             style="font-size:0.7em">7</span></a>
-                            </p>
-                            <button class="icon-btn add-btn" id="button_rmv_3" onclick="rmv_books_btn3()">
-                                <div class="btn-txt">Remove</div>
-                            </button>
-                            <span style="color:white; font-size:14px" id="quantity_book_3">1</span>
-                            <button class="icon-btn add-btn" id="button_add_3" onclick="add_books_btn3()">
-                                <div class="add-icon"></div>
-                                <div class="btn-txt">Add</div>
-                            </button>
-                            <div style="padding-top:20%"></div>
-                            <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn3()"
-                                    type="submit">
-                                Delete
-                            </button>
-                            <div style="padding-bottom:15%"></div>
-                        </div>
-                    </div>
-                    <div class="main-hr" style="margin-top:3%; margin-left:0%; width:100%"></div>
-                    <div class="row horizontal" style="margin-top:0%; margin-left:0%;">
-                        <div class="col">
-                            <div class="text" style="width:100%; font-size: 22px;">Total&nbsp;(<span
-                                    id="total_products">3</span>&nbsp;<span id="products">products</span>)
-                            </div>
-                        </div>
-                        <div class="col" style="text-align:right;">
-                            <span class="text" style="font-size: 22px;" id="priceTotal">60.85</span><span
-                                class="text" style="font-size: 22px;">€</span>
-                        </div>
                     </div>
 
                 </div>
+
+                <!-- Bottom Total -->
+                <div class="main-hr" style="margin-top:3%; margin-left:5%; width:100%"></div>
+                <div class="row" style="margin-top:0%; margin-left:5%; clear:both">
+                    <div class="col">
+                        <div class="text" style="width:100%; font-size: 22px;">Total&nbsp;(<span
+                                id="total_products">0</span>&nbsp;<span id="products">products</span>)
+                        </div>
+                    </div>
+                    <div class="col" style="text-align:right;">
+                        <span class="text" style="font-size: 22px;" id="priceTotal">0.00</span><span
+                            class="text" style="font-size: 22px;">€</span>
+                    </div>
+                </div>
+                <!-- ./Bottom Total -->
+
             </div>
 
             <!-- List of Recommendations -->
@@ -253,14 +199,16 @@
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car" ></span>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando
+                                                        Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car"></span>
 
                                                     <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
 
                                                     <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -275,14 +223,16 @@
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car2" ></span>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando
+                                                        Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car2"></span>
 
                                                     <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
 
                                                     <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -297,14 +247,16 @@
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car3" ></span>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando
+                                                        Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car3"></span>
 
                                                     <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
 
                                                     <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -325,14 +277,16 @@
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car4" ></span>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando
+                                                        Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car4"></span>
 
                                                     <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
 
                                                     <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -347,14 +301,16 @@
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car5" ></span>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando
+                                                        Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car5"></span>
 
                                                     <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
 
                                                     <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -369,14 +325,16 @@
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car6" ></span>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando
+                                                        Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car6"></span>
 
                                                     <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
 
                                                     <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -397,14 +355,16 @@
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car7" ></span>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando
+                                                        Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car7"></span>
 
                                                     <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
 
                                                     <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -419,14 +379,16 @@
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car8" ></span>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando
+                                                        Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car8"></span>
 
                                                     <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
 
                                                     <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -441,14 +403,16 @@
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car9" ></span>
+                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando
+                                                        Aramburu</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car9"></span>
 
                                                     <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
 
                                                     <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
+                                                    >Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -472,7 +436,9 @@
             <div style="margin-top:5%; padding-bottom:5%; width:100%; text-align: center;">
                 <button class="btn btn-success my-2 my-sm-0"
                         style="width:200px;"
-                        type="submit">Complete purchase
+                        type="submit"
+                        id="btn_purchase"
+                >Complete purchase
                 </button>
                 <p class="text" style="font-size:12px">New client? &nbsp;<a href="#">Register here</a></p>
             </div>
@@ -489,13 +455,13 @@
 
                 <div class="row">
                     <div class="col" style="margin-left:4%">
-                        <div class="text">Subtotal&nbsp;(<span id="subtotal_products">3</span>&nbsp;<span
+                        <div class="text">Subtotal&nbsp;(<span id="subtotal_products">0</span>&nbsp;<span
                                 id="items">items</span>)
                         </div>
                     </div>
 
                     <div class="col">
-                        <span class="text" id="priceSubtotal">60.85</span><span class="text">€</span>
+                        <span class="text" id="priceSubtotal">0.00</span><span class="text">€</span>
                     </div>
                 </div>
 
@@ -509,7 +475,9 @@
                 <div style="text-align: center; margin-bottom:2%">
                     <button class="btn btn-success my-2 my-sm-0"
                             style="width:80%;"
-                            type="submit">Proceed to Checkout
+                            type="submit"
+                            id="btn_checkout"
+                    >Proceed to Checkout
                     </button>
                 </div>
             </div>
@@ -557,7 +525,7 @@
                         <p class="text" style="font-size: 14px">24.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
+                                onclick="createInfoBook('No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -602,7 +570,7 @@
                         <p class="text" style="font-size: 14px">13.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'The King of Drugs' , 'Nora Barret', 82, '/static/images/cover-images/book_cover6.jpg', 13.95)"
+                                onclick="createInfoBook('The King of Drugs' , 'Nora Barret', 82, '/static/images/cover-images/book_cover6.jpg', 13.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -644,7 +612,7 @@
                         <p class="text" style="font-size: 14px">15.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'The Arrivals' , 'Lucas Lloyd', 60, '/static/images/cover-images/book_cover2.jpg', 15.95)"
+                                onclick="createInfoBook('The Arrivals' , 'Lucas Lloyd', 60, '/static/images/cover-images/book_cover2.jpg', 15.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -687,7 +655,7 @@
                         <p class="text" style="font-size: 14px">24.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
+                                onclick="createInfoBook('No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -730,7 +698,7 @@
                         <p class="text" style="font-size: 14px">9.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Dancing to my Death', 'Danielo O'Leary', 65, '/static/images/cover-images/book_cover7.jpg', 9.95)"
+                                onclick="createInfoBook('Dancing to my Death', 'Danielo O\'Leary', 65, '/static/images/cover-images/book_cover7.jpg', 9.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -773,7 +741,7 @@
                         <p class="text" style="font-size: 14px">24.95€</p>
 
                         <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
+                                onclick="createInfoBook('No Place Like Here', 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
                                 type="submit">Add to cart
                         </button>
 
@@ -797,6 +765,7 @@
 <script src="/static/js/cart-page/operateBooks.js"></script>
 <script src="/static/js/cart-page/stars.js"></script>
 <script src="/static/js/cart-page/info-book.js"></script>
+<script src="/static/js/cart-page/navigation.js"></script>
 <!-- ./JavaScript files from static folder -->
 
 </body>

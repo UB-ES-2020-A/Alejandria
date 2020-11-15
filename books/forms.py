@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from books.models import User, Address
+from books.models import User, Address, Book
 import django.contrib.auth.forms
 from django.contrib.auth.forms import AuthenticationForm
 from crispy_forms.helper import FormHelper
@@ -67,3 +67,15 @@ class LoginForm(AuthenticationForm):
                 Submit('login', 'Login', css_class='btn-primary')
             )
         )
+
+## TODO: That is an option to load books in the paige details.htm, but by now we are using the standard django
+## Model DetailView, and passing the information through the html.
+# class GetBookForm(forms.ModelForm):
+#     class Meta:
+#         model = Book
+#         fields = ['ISBN', 'title', 'description', 'saga', 'authors',
+#                   'publication_date', 'price', 'language', 'genre', 'publisher',
+#                   'num_pages', 'recommended_age', 'thumbnail']
+#         widgets = {
+#             'thumbnail' :
+#         }
