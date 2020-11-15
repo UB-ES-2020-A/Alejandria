@@ -16,6 +16,7 @@ from django.contrib.auth import logout
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
 from .models import Book, FAQ, Cart, Product, User, Address
+from django.contrib import messages
 
 
 # Create your views here.
@@ -192,8 +193,7 @@ class SellView(generic.ListView):
             form = BookForm(request.POST)
             if form.is_valid():
                 print(request.POST)
-
-
+                messages.success(request, 'Form submission successful')
                 form.save()
             else:
                 print(form.errors)

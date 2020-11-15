@@ -72,7 +72,44 @@
 
 
 
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+<!--                <strong>{{ error }}</strong>-->
+                <strong>Hubo un problema en el campo "{{ field.name }}". {{ error|escape }}</strong>
+<!--                <strong>{{ error|escape }}</strong>-->
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
 
+<!--<div id="myModal" class="modal fade" role="dialog">-->
+<!--  <div class="modal-dialog">-->
+
+<!--    &lt;!&ndash; Modal content&ndash;&gt;-->
+<!--    <div class="modal-content">-->
+<!--      <div class="modal-header">-->
+<!--        <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--        <h4 class="modal-title">Modal Header</h4>-->
+<!--      </div>-->
+<!--      <div class="modal-body">-->
+<!--        <p>Some text in the modal.</p>-->
+<!--      </div>-->
+<!--      <div class="modal-footer">-->
+<!--        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--  </div>-->
+<!--</div>-->
+
+<!--<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>-->
 
 
 
@@ -96,22 +133,17 @@
     <header>
       <form method="POST"> {% csrf_token %}
       <h1>Add a book to Alejandria</h1>
-      <div class="set">
+<div class="set">
         <div class="pets-name">
           <label for="pets-name">* Title</label>
           <input id="pets-name" name="title" placeholder="Title of book" type="text"></input>
         </div>
-        <div class="pets-photo">
-<!--          <button id="pets-upload">-->
-<!--            <i class="fas fa-camera-retro"></i>-->
-<!--          </button>-->
-          <label for="thumbnail">Upload a photo</label>
-<!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
-          <input id="thumbnail" type='file' name="thumbnail" accept="image/jpeg, image/png" onchange="readURL(this);" />
-
-
-        </div>
+    <div class="pets-name">
+        <label for="user_id">*User ID</label>
+        <input id="user_id" name="user_id" placeholder="User ID" type="number" value="15"></input>
       </div>
+
+</div>
       <div class="set">
         <div class="pets-breed">
           <label for="author">Author</label>
@@ -145,19 +177,38 @@
       </div>
           <div class="set">
       <div class="pets-name">
-        <label for="numpages">Nº Pages</label>
+        <label for="numpages">* Nº Pages</label>
         <input id="numpages" name="num_pages" placeholder="Number of pages" type="number"></input>
       </div>
         <div class="pets-name">
-            <label for="numsold">Nº Sells</label>
+            <label for="numsold">* Nº Sells</label>
             <input id="numsold" name="num_sold" placeholder="Number of sells" type="number"></input>
       </div>
 
       </div>
-      <div class="pets-name">
-        <label for="user_id">*User ID</label>
-        <input id="user_id" name="user_id" placeholder="User ID" type="number" value="15"></input>
-      </div>
+
+      <div class="set">
+    <div class="pets-breed">
+      <label for="publi_date">Publication date</label>
+      <input id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="text"></input>
+    </div>
+    <div class="pets-birthday">
+      <label for="recommended_age">* Recommended age</label>
+        <input id="recommended_age" name="recommended_age" placeholder="Adult" type="text"></input>
+    </div>
+  </div>
+
+
+
+      <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
+<!--          <button id="pets-upload">-->
+<!--            <i class="fas fa-camera-retro"></i>-->
+<!--          </button>-->
+<!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
+          <input id="thumbnail" type='file' name="thumbnail" accept="image/jpeg, image/png" onchange="readURL(this);" />
+
+
+        </div>
 
       <div class="pets-weight">
         <label for="horror-p">* Primary genre</label>
@@ -220,7 +271,7 @@
         <textarea  id="description" placeholder="Place here the description of book" type="text" style="height:200px; width:100%;"></textarea>
       </div>
         <div class="set">
-        <input type="submit" value="Next" />
+        <input type="submit" data-toggle="modal" data-target="#myModal" value="Next" />
         </div>
 </form>
     </header>

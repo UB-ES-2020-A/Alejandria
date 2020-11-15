@@ -89,3 +89,5 @@ class BookForm(forms.ModelForm):
             "recommended_age",
             "thumbnail"
         ]
+
+
