@@ -38,12 +38,12 @@
 
     <!-- Css files from static folder -->
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
-    <link rel="stylesheet" href="{% static 'css/body.css' %}">
-    <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
     <link rel="stylesheet" href="{% static 'css/card.css' %}">
     <link rel="stylesheet" href="{% static 'css/common.css' %}">
     <link rel="stylesheet" href="{% static 'css/swal-forms.css' %}">
     <link rel="stylesheet" href="{% static 'css/sweet-alert.css' %}">
+  
+    <!-- JavaScript static -->
     <script type="text/javascript" src="{% static 'js/sweet-alert.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/swal-forms.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/navbar.js' %}"></script>
@@ -62,10 +62,10 @@
 
     <div class="collapse navbar-collapse navHeaderCollapse" style="margin-left:-70px" id="navbarSearch">
         <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="textSearch">
 <!--            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
 
-             <a href="/search" class="btn btn-outline-success my-2 my-sm-0" >Search</a>
+            <div class="btn btn-outline-success my-2 my-sm-0" id = "buttonSearch">Search</div>
 
         </form>
     </div>
@@ -74,7 +74,7 @@
         <div style="margin-left:-10%"></div>
         <button class="buttonText" type="submit">About</button>
         <button class="buttonText" type="submit">Help</button>
-        <button class="buttonText" type="submit">FAQs</button>
+        <button class="buttonText" id="faqs_btn" type="submit">FAQs</button>
         <div style="margin-left:10%"></div>
         {% if not user.is_authenticated %}
             <button class="btn btn-danger my-2 my-sm-0" id="login_btn" type="submit">Sign In</button>
@@ -121,14 +121,14 @@
                 <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
                 <a class="buttonText2 dropdown-item bg-danger"
                    style="color:white; font-size: 14px; letter-spacing: 0.1em;"
-                   href="#">FAQs</a>
+                   href="/faqs/">FAQs</a>
                 </div>
             </div>
         </div>
     </div>
     <div class="col">
         <a href="/cart" style="color:white; text-align:right; background: transparent; border: none; text-decoration:none"><i class="fas fa-shopping-cart"></i>
-        <span class="badge badge-light" id="total_items_not">3</span></a>
+        <span class="badge badge-light" id="total_items_not">0</span></a>
     </div>
 </nav>
 
@@ -143,10 +143,10 @@
 {% endblock %}
 
 <div class="row horizontal-nav" style="margin:0px;">
-    <div class="col" style="padding-left: 50px;">
+    <div class="col" style="margin-left: 5%;">
         <a href="#"><img src="/static/images/logo/logo.png"></a>
     </div>
-    <div class="col-md-3" style="padding-left:150px;">
+    <div class="col-md-3">
         <div class="share-button">
             <span class="text">SHARE US</span>
             <a href="#"><i class="fab fa-facebook-f share-item"></i></a>

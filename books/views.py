@@ -1,18 +1,24 @@
+
+from django.core import serializers
 from django.shortcuts import render
+import json
 
 from django.views import generic
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from .forms import RegisterForm, LoginForm
+
+from django.db.models import Q
+from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
 
-from .models import Book, FAQ, Cart, Product, User, Author, Address
+from datetime import datetime, timedelta
+
+from .models import Book, FAQ, Cart, Product, User, Address, Rating
 
 # Create your views here.
 
@@ -22,6 +28,7 @@ This is my custom response to get to a book by it's ISBN. The ISBN is passed by 
 
 NUM_COINCIDENT = 10
 NUM_RELATED = 5
+MONTHS_TO_CONSIDER_TOP_SELLER = 6
 
 
 def book(request):  # TODO: this function is not linked to the frontend
@@ -57,127 +64,108 @@ class BookView(generic.DetailView):
     model = Book
     template_name = 'details.html'
 
-    # TODO: Treat POST methods to add to cart, etc.
-
-    """
-      Right now im passing all the books, but in the next iteration 
-      Ill only pass the necessary book info, required by POST during the search.
-      #  TODO: Pass only necessary lists with get_queryset(self) and get_context_data()
-      In this case I might use get_object().
-
-      Example:
-        # views.py
-        from django.shortcuts import get_object_or_404
-        from django.views.generic import ListView
-        from books.models import Book, Publisher
-
-        class PublisherBookList(ListView):
-
-            template_name = 'books/books_by_publisher.html'
-
-            def get_queryset(self):
-                self.publisher = get_object_or_404(Publisher, name=self.kwargs['publisher'])
-                return Book.objects.filter(publisher=self.publisher)
-
-            def get_context_data(self, **kwargs):
-                # Call the base implementation first to get a context
-                context = super().get_context_data(**kwargs)
-                # Add in the publisher
-                context['publisher'] = self.publisher
-                return context
-
-    """
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book_id = self.kwargs['pk']
+        context['review_list'] = Rating.objects.filter(product_id=book_id).all()[:5]
+        if self.request.user.id == Book.objects.filter(ISBN=book_id).first().user_id:
+            context['book_owner'] = True
 
 
 class HomeView(generic.ListView):
     template_name = 'home.html'
+    context_object_name = 'book_list'
     model = Book
 
+    # queryset = Book.objects.all()
     def get_queryset(self):  # TODO: Return list requested by the front end, TOP SELLERS, etc.
-        return Book.objects.order_by('-num_sold')[:10]
+        today = datetime.today()
+        return Book.objects.all()  ## TODO: Replace with the one below when ready to test with a full database.
+        # return Book.objects.order_by('-num_sold')[:10].filter(
+        #     publication_date__range=[str(today)[:10],
+        #                              str(today - timedelta(days=30 * MONTHS_TO_CONSIDER_TOP_SELLER))[:10]])[:10]
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['filtered_list'] = Book.objects.filter(title__contains='Red')  # Example
+        today = datetime.today()
+        context['new_books'] = Book.objects.filter(
+            publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
+        context['novels'] = Book.objects.filter(primary_genre__contains="Novel", secondary_genre__contains='Novel')
 
-    """
-      Right now im passing all the books, but in the next iteration 
-      Ill pass only those lists necessary por the Home page, like TopSellers, Genre lists, recommended, etc.
-      #  TODO: Pass only necessary lists with get_queryset(self) and get_context_data()
-      
-      Example:
-        # views.py
-        from django.shortcuts import get_object_or_404
-        from django.views.generic import ListView
-        from books.models import Book, Publisher
-        
-        class PublisherBookList(ListView):
-        
-            template_name = 'books/books_by_publisher.html'
-        
-            def get_queryset(self):
-                self.publisher = get_object_or_404(Publisher, name=self.kwargs['publisher'])
-                return Book.objects.filter(publisher=self.publisher)
-                
-            def get_context_data(self, **kwargs):
-                # Call the base implementation first to get a context
-                context = super().get_context_data(**kwargs)
-                # Add in the publisher
-                context['publisher'] = self.publisher
-                return context
-    
-    """
-
-
-# TODO: Not being used
-def search(request):  # TODO: Delete if SearchView is working as expected
-    pass
+        return context
 
 
 class SearchView(generic.ListView):
     model = Book
     template_name = 'search.html'  # TODO: Provisional file
+    context_object_name = 'coincident'
+
+
 
     def __init__(self):
         super().__init__()
         self.coincident = None
         self.related = None
+        self.searchBook = None
+        self.genres = []
 
     def get(self, request, *args, **kwargs):
+        print(request.GET);
+        if('search_book' in request.GET):
+            self.searchBook = request.GET['search_book']
+            print("esta es gucci", self.searchBook)
+        else:
+            keys = request.GET.keys()
+            for key in keys:
+                self.genres.append(request.GET[key])
+
         return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):  # TODO: This is a rather simple method, can be improved # TODO: TEST
-        try:
-            srch = self.kwargs['search']
-        except:
-            srch = None
 
-        if srch != None:
-            vector = SearchVector('title', 'saga', 'authors', 'description')
-            query = SearchQuery(srch)
-            self.coincident = Book.objects.annotate(rank=SearchRank(vector, query)).order_by('-rank')[:NUM_COINCIDENT]
-            vector_related = SearchVector('saga', 'genre', 'authors')
-            query_related = SearchQuery(" ".join((self.coincident[0].saga, self.coincident[0].genre,
-                                                  self.coincident[
-                                                      0].saga.authors)))  # TODO: Right now uses info of the first coincidende
-            self.related = Book.objects.annotate(
-                rel_rank=SearchRank(vector_related, query_related)).order_by('-rel_rank')[:NUM_RELATED]
-            if len(self.coincident) > 0:
-                context = super().get_context_data()
-                context['error_message'] = 'No coincidences'
-            return self.coincident
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
-        if not self.related or len(self.related) == 0:
-            context['related_error_message'] = 'No Books Related Found'
-        context['related'] = self.related
+
+        #Filtering by title or author
+        if(self.searchBook):
+            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))
+            context['book_list'] = filtered
+            return context
+        #Filtering by genre (primary and secondary) using checkbox from frontend
+        if(self.genres):
+            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
+            context['book_list'] = filtered
+            return context
+        #TODO: Filtering by topseller and On Sale
+
+        context['book_list'] = Book.objects.all()
+
+        return context
 
 
 class CartView(generic.ListView):
-    model = Book
+    model = Cart
     template_name = 'cart.html'  # TODO: Provisional file
-    queryset = Product.objects.all()  # TODO: Right now im giving all the Products created to the Cart.
+    context_object_name = 'cart_list'
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.user_id = None
+
+    def get_queryset(self):
+        print("IM IN GET QUERYSET")
+        request = self.request
+        self.user_id = request.user.id or None
+        print("USER ID: ", self.user_id)
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            print("Cart: ", cart.products.all())
+            return cart.products.all()
+        return None
+
+        #if user:
+            #queryset = Cart.products  # TODO: Right now im giving all the Products created to the Cart.
+
     # TODO: Should get books in User.Cart
 
     # TODO: Manage POST METHODS URGENT *****************************************
@@ -214,9 +202,63 @@ class CartView(generic.ListView):
 
 class FaqsView(generic.ListView):
     model = FAQ
-    template_name = 'FAQs.html'  # TODO: Provisional file
+    template_name = 'faqs.html'  # TODO: Provisional file
+    context_object_name = 'faqs'
+
+    def get_queryset(self):
+        return FAQ.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        _range = list(range(len(FAQ.FAQ_CHOICES)))
+        context['category_names'] = dict(zip(_range, [a[1] for a in FAQ.FAQ_CHOICES]))
+        context['list_query'] = dict(zip(_range, [FAQ.objects.filter(category='DWLDBOOK'),
+                                                  FAQ.objects.filter(category='DEVOL'),
+                                                  FAQ.objects.filter(category='SELL'),
+                                                  FAQ.objects.filter(category='FACTU'),
+                                                  FAQ.objects.filter(category='CONTACT')]))
+        print(context)
+        return context
 
     # TODO: In next iterations has to have the option to make POSTs by the admin.
+    def post(self):
+        pass
+
+
+
+class RegisterView(generic.TemplateView):
+
+    @staticmethod
+    def register(request):
+        if request.method == "POST":
+            form = RegisterForm(request.POST)
+            if form.is_valid():
+                form.save()
+            return redirect("/")
+        else:
+            form = RegisterForm()
+
+        return render(request, "register.html", {"form": form})
+
+
+class LoginView(generic.TemplateView):
+
+    @staticmethod
+    def login(request):
+        form = LoginForm(request.POST)
+        if request.method == 'POST':
+            # user = authenticate(
+            #    username=request.POST['username'],
+            #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
+            # )
+            user = User.objects.get(username=request.POST['username'], password=request.POST['password'])
+            if user is not None:
+                login(request, user, backend='books.backend.EmailAuthBackend')
+                return redirect("/")
+
+        return render(request,"login.html", {"form":form})
+
+
 
 class AddView(generic.ListView):
     model = Book
@@ -284,15 +326,17 @@ def register(request):
         if 'trigger' in request.POST and 'register' in request.POST['trigger']:
             if validate_register(request.POST):
                 query = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
-                                       country=request.POST['country1'], zip=request.POST['zip1'])
+                                               country=request.POST['country1'], zip=request.POST['zip1'])
                 if query.exists():
                     user_address = query.first()
                 else:
                     user_address = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
-                                           country=request.POST['country1'], zip=request.POST['zip1'])
+                                                          country=request.POST['country1'], zip=request.POST['zip1'])
                     user_address.save()
 
-                if request.POST['city1'] == request.POST['city2'] and request.POST['street1'] == request.POST['street2'] and request.POST['country1'] == request.POST["country2"] and request.POST['zip1'] == request.POST["zip2"]:
+                if request.POST['city1'] == request.POST['city2'] and request.POST['street1'] == request.POST[
+                    'street2'] and request.POST['country1'] == request.POST["country2"] and request.POST['zip1'] == \
+                        request.POST["zip2"]:
                     fact_address = user_address
                 else:
                     fact_address = Address(city=request.POST['city2'], street=request.POST['street2'],
@@ -331,3 +375,10 @@ def login_user(request):
                 error = True
 
             return JsonResponse({"error": error})
+
+
+# TODO: Not implemented yet
+class PaymentView(generic.TemplateView):
+    model = Book
+    template_name = 'payment.html'
+    queryset = Product.objects.all()
