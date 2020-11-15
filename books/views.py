@@ -18,7 +18,7 @@ from django.contrib.auth import authenticate, login
 
 from datetime import datetime, timedelta
 
-from .models import Book, FAQ, Cart, Product, User, Author, Address, Rating
+from .models import Book, FAQ, Cart, Product, User, Address, Rating
 
 # Create your views here.
 
