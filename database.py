@@ -1,17 +1,18 @@
 import os
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 import django
 
 django.setup()
 
 from books.models import Book, User, Address, Product, Cart, FAQ
+
 import random
 
 user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 user_address.save()
 fact_address.save()
+
 
 print("ADDRESS SAVED...OK")
 

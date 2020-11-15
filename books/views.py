@@ -7,9 +7,14 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import generic
 
-from .forms import RegisterForm, LoginForm
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.shortcuts import render, redirect
+from .forms import RegisterForm, LoginForm, BookForm
 
 from .models import Book, FAQ, Cart, Product, User, Address
+from django.contrib import messages
 
 
 # Create your views here.
@@ -130,6 +135,24 @@ class SearchView(generic.ListView):
 
 
         return context
+
+class SellView(generic.ListView):
+    @staticmethod
+    def add_book(request):
+        if request.method == "POST":
+            form = BookForm(request.POST)
+            if form.is_valid():
+                print(request.POST)
+                #messages.success(request, 'Form submission successful')
+                messages.info(request, 'Your book has been updated successfully!')
+                form.save()
+            #else:
+                #print(form.errors)
+            #return redirect("/")
+        else:
+            form = BookForm()
+
+        return render(request, "sell.html", {"form": form})
 
 
 class CartView(generic.ListView):
