@@ -1,4 +1,4 @@
-/*  More and Less   */
+/*  Border line   */
 
 .main-hr {
   width: 90%;
@@ -6,147 +6,29 @@
   border: none;
   border-top: 1px solid white;
 }
-.icon-btn {
-  width: 25px;
-  height: 25px;
-  border: 1px solid #1ab7ea;
-  background: transparent;
-  border-radius: 25px;
-  overflow: hidden;
+
+select {
+   padding: 0 0 0 20px;
+}
+
+.btn-drop {
+  width: fit-content;
+  height: fit-content;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 45px;
   position: relative;
-  transition: width 0.2s ease-in-out;
+  text-decoration: none;
+  color: #FFFFFF;
+  background-color: transparent;
+  border:none;
 }
-.add-btn:hover {
-  width: 100px;
-}
-.add-btn::before,
-.add-btn::after {
-  transition: width 0.2s ease-in-out, border-radius 0.2s ease-in-out;
-  content: "";
-  position: absolute;
-  height: 2px;
-  width: 5px;
-  top: calc(50% - 1px);
-  background: #1ab7ea;
-}
-.add-btn::after {
-  right: 7px;
-  overflow: hidden;
-  border-top-right-radius: 2px;
-  border-bottom-right-radius: 2px;
-}
-.add-btn::before {
-  left: 7px;
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: 2px;
-}
-.icon-btn:focus {
-  outline: none;
-}
+
 .btn-txt {
   opacity: 0;
   transition: opacity 0.2s;
   color: white;
   font-size: 14px;
 }
-.add-btn:hover::before,
-.add-btn:hover::after {
-  width: 2px;
-  border-radius: 2px;
-}
-.add-btn:hover .btn-txt {
-  opacity: 1;
-}
-.add-icon::after,
-.add-icon::before {
-  transition: all 0.2s ease-in-out;
-  content: "";
-  position: absolute;
-  height: 10px;
-  width: 1px;
-  top: calc(50% - 5px);
-  background: #1ab7ea;
-  overflow: hidden;
-}
-.add-icon::before {
-  left: 11px;
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: 2px;
-}
-.add-icon::after {
-  right: 11px;
-  border-t1op-right-radius: 2px;
-  border-bottom-right-radius: 2px;
-}
-.add-btn:hover .add-icon::before {
-  left: 8px;
-  height: 2px;
-  top: calc(50% - 1px);
-}
-.add-btn:hover .add-icon::after {
-  right: 8px;
-  height: 2px;
-  top: calc(50% - 1px);
-}
 
-/*  Social Media  */
-
-.share-button {
-  width: 280px;
-  height: 80px;
-  background-color: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 50px;
-  overflow: hidden;
-  position: relative;
-  cursor: pointer;
-  transition: .3s linear;
-}
-.share-button:hover{
-  transform: scale(1.1);
-}
-.share-button span{
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: black;
-  border: 1px bold white;
-  color: #f1f1f1;
-  text-align: center;
-  line-height: 80px;
-  z-index: 999;
-  transition: .6s linear;
-
-}
-.share-button:hover span{
-  transform: translateX(-100%);
-  transition-delay: .3s;
-}
-.share-button a {
-  flex: 1;
-  font-size: 26px;
-  margin-right: 20px;
-  color: #2d3436;
-  text-align: center;
-  transform: translateX(-100%);
-  opacity: 0;
-  transition: .3s linear;
-}
-.share-button:hover a {
-  opacity: 1;
-  transform: translateX(0);
-}
-.share-button a:nth-of-type(1){
-  transition-delay: 1s;
-}
-.share-button a:nth-of-type(2){
-  transition-delay: .8s;
-}
-.share-button a:nth-of-type(3){
-  transition-delay: .6s;
-}
-.share-button a:nth-of-type(4){
-  transition-delay: .4s;
-}

@@ -6,13 +6,13 @@
 {% block content %}
 
 <html lang="en">
-    <!--    Css Files for this page     -->
-    <link rel="stylesheet" href="{% static 'css/cart-page/body.css' %}">
-    <link rel="stylesheet" href="{% static 'css/cart-page/buttons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/cart-page/card.css' %}">
+<!--    Css Files for this page     -->
+<link rel="stylesheet" href="{% static 'css/cart-page/body.css' %}">
+<link rel="stylesheet" href="{% static 'css/cart-page/buttons.css' %}">
+<link rel="stylesheet" href="{% static 'css/cart-page/card.css' %}">
 </html>
 
-<body>
+<body style="padding-bottom:119px">
 
 <!-- Full Body -->
 <div class="container-fluid">
@@ -21,17 +21,78 @@
         <!-- Left Body -->
         <div class="col-md-9 body-structure">
             <p class="title" style="padding-top:3%">MY PURCHASE</p>
-            <div class="main-hr" style="width:95%"></div>
 
             <div class="row">
-                <div class="col" style="margin-left: 5%; width:100%;" id="container-info-books">
+                <div class="col"
+                     style="margin-left: 5%; width:100%; height:800px; overflow:auto; border: 1px solid white"
+                     id="container-info-books">
+
+                    {% for product in cart_list %}
+                    <div class="info-book">
+                        <img class="book-cover" src="/static/images/cover-images/book_cover.jpg" alt="Card image cap">
+                        <div style="margin-left:1%;">
+                            <div class="row horizontal">
+                                <div class="col-md-8">
+                                    <p class="book-title"><a href="#">{{ product.ISBN.title }}</a></p>
+                                </div>
+                                <div class="col">
+                                    <p class="text" style="text-align:right;"><span>{{ product.price }}</span>€</p>
+                                </div>
+                            </div>
+                            <p class="price">{{ product.price }}€</p>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input">
+                                <label class="custom-control-label" for="gift_checkbox1" style="color:white">This is a
+                                    gift</label>
+                            </div>
+                            <span class="score">
+                                <div class="score-wrap">
+                                    <span class="stars-active" style="width:80%">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </span>
+
+                                    <span class="stars-inactive">
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </span>
+                            <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
+                                                                                             style="font-size:0.7em">15</span></a>
+                            </p>
+                            <div class="dropdown">
+                                <label style="color:white">Quantity</label>
+                                <select class="selectpicker btn-drop m1"
+                                        style="color:white; font-size: 14px; width:60px;"
+                                        onclick="update_quantity()">
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">1</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">2</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">3</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">4</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">5</option>
+                                </select>
+                            </div>
+                            <a class="btn btn-outline-danger my-2 my-sm-0"
+                               href="{% url 'books:delete_product' product.ID %}">Delete</a>
+
+                            <div style="padding-bottom:15%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
 
                     <div class="info-book" id="info_book_1">
                         <img class="book-cover" src="/static/images/cover-images/book_cover.jpg" alt="Card image cap">
                         <div style="margin-left:1%;">
                             <div class="row horizontal">
-                                <div class="col">
-                                    <p class="book-title"><a href="#">The Good Guy, by Mark Mcallister</a></p>
+                                <div class="col-md-8">
+                                    <p class="book-title"><a href="#">DON'T DELETE used as test material</a></p>
                                 </div>
                                 <div class="col">
                                     <p class="text" style="text-align:right;"><span
@@ -45,179 +106,69 @@
                                     gift</label>
                             </div>
                             <span class="score">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:80%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
+                                <div class="score-wrap">
+                                    <span class="stars-active" style="width:80%">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </span>
 
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
+                                    <span class="stars-inactive">
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </span>
                             <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
                                                                                              style="font-size:0.7em">15</span></a>
                             </p>
-                            <button class="icon-btn add-btn" id="button_rmv_1" style="margin-top:5%" onclick="rmv_books_btn1()">
-                                <div class="btn-txt">Remove</div>
-                            </button>
-                            <span style="color:white; font-size:14px" id="quantity_book_1">1</span>
-                            <button class="icon-btn add-btn" id="button_add_1" onclick="add_books_btn1()">
-                                <div class="add-icon"></div>
-                                <div class="btn-txt">Add</div>
-                            </button>
-                            <div style="padding-top:20%"></div>
+                            <div class="dropdown">
+                                <label style="color:white">Quantity</label>
+                                <select class="selectpicker btn-drop m1"
+                                        style="color:white; font-size: 14px; width:60px;" id="selectItems1"
+                                        onclick="update_quantity()">
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">1</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">2</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">3</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">4</option>
+                                    <option class="btn btn-dark btn-drop" style="background-color:black">5</option>
+                                </select>
+                            </div>
                             <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn(this,)"
                                     type="submit">
                                 Delete
                             </button>
                             <div style="padding-bottom:15%"></div>
                         </div>
-
-                    </div>
-
-
-                    <div class="info-book" id="info_book_2">
-                        <img class="book-cover" src="/static/images/cover-images/book_cover2.jpg" alt="Card image cap">
-                        <div style="margin-left: 1%;">
-                            <div class="row horizontal">
-                                <div class="col">
-                                    <p class="book-title"><a href="#">The Arrivals, by
-                                        Lucas Lloyd</a></p>
-                                </div>
-                                <div class="col">
-                                    <p class="text"
-                                       style="width:100%; display: block; text-align:right;"><span
-                                            id="price_book_2">15.95</span><span>€</span></p>
-                                </div>
-                            </div>
-                            <p class="price" id="original_price_2">15.95€</p>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="gift_checkbox2">
-                                <label class="custom-control-label" for="gift_checkbox2" style="color:white">This is a
-                                    gift</label>
-                            </div>
-                            <span class="score">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:65%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
-
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
-                            <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
-                                                                                             style="font-size:0.7em">4</span></a>
-                            </p>
-                            <div style="padding-top:5%"></div>
-                            <button class="icon-btn add-btn" id="button_rmv_2" onclick="rmv_books_btn()">
-                                <div class="btn-txt">Remove</div>
-                            </button>
-                            <span style="color:white; font-size:14px" id="quantity_book_2">1</span>
-                            <button class="icon-btn add-btn" id="button_add_2" onclick="add_books_btn()">
-                                <div class="add-icon"></div>
-                                <div class="btn-txt">Add</div>
-                            </button>
-                            <div style="padding-top:20%"></div>
-                            <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn()"
-                                    type="submit">
-                                Delete
-                            </button>
-                            <div style="padding-bottom:15%"></div>
-                        </div>
-                    </div>
-
-                    <div class="info-book" id="info_book_3">
-                        <img class="book-cover" src="/static/images/cover-images/book_cover3.jpg" alt="Card image cap">
-                        <div style="margin-left: 1%;">
-                            <div class="row horizontal">
-                                <div class="col">
-                                    <p class="book-title" style="width:200%;"><a href="#">In the House in the Dark of
-                                        the
-                                        Woods,
-                                        by Laird Hunt</a></p>
-                                </div>
-                                <div class="col">
-                                    <p class="text" style="display: block; text-align:right;"><span
-                                            id="price_book_3">19.95</span><span>€</span></p>
-                                </div>
-                            </div>
-                            <p class="price" id="original_price_3">19.95€</p>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="gift_checkbox3">
-                                <label class="custom-control-label" for="gift_checkbox3" style="color:white">This is a
-                                    gift</label>
-                            </div>
-                            <span class="score">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:90%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
-
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
-                            <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
-                                                                                             style="font-size:0.7em">7</span></a>
-                            </p>
-                            <button class="icon-btn add-btn" id="button_rmv_3" onclick="rmv_books_btn3()">
-                                <div class="btn-txt">Remove</div>
-                            </button>
-                            <span style="color:white; font-size:14px" id="quantity_book_3">1</span>
-                            <button class="icon-btn add-btn" id="button_add_3" onclick="add_books_btn3()">
-                                <div class="add-icon"></div>
-                                <div class="btn-txt">Add</div>
-                            </button>
-                            <div style="padding-top:20%"></div>
-                            <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn3()"
-                                    type="submit">
-                                Delete
-                            </button>
-                            <div style="padding-bottom:15%"></div>
-                        </div>
-                    </div>
-                    <div class="main-hr" style="margin-top:3%; margin-left:0%; width:100%"></div>
-                    <div class="row horizontal" style="margin-top:0%; margin-left:0%;">
-                        <div class="col">
-                            <div class="text" style="width:100%; font-size: 22px;">Total&nbsp;(<span
-                                    id="total_products">3</span>&nbsp;<span id="products">products</span>)
-                            </div>
-                        </div>
-                        <div class="col" style="text-align:right;">
-                            <span class="text" style="font-size: 22px;" id="priceTotal">60.85</span><span
-                                class="text" style="font-size: 22px;">€</span>
-                        </div>
                     </div>
 
                 </div>
+
+                <!-- Bottom Total -->
+                <div class="main-hr" style="margin-top:3%; margin-left:5%; width:100%"></div>
+                <div class="row" style="margin-top:0%; margin-left:5%; clear:both">
+                    {% for v in total_items %}
+                    <div class="col">
+                        <div class="text" style="width:100%; font-size: 22px;">Total&nbsp;(<span
+                                id="total_products"></span>{{ v }}&nbsp;<span id="products">products</span>)
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {% for v in total_price %}
+                    <div class="col" style="text-align:right;">
+                        <span class="text" style="font-size: 22px;" id="priceTotal"></span><span
+                            class="text" style="font-size: 22px;">{{ v }}€</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!-- ./Bottom Total -->
+
             </div>
 
             <!-- List of Recommendations -->
@@ -242,6 +193,7 @@
 
                         <div class="col">
                             <!--First slide-->
+                            {% for book in books_from_cart_view %}
                             <div class="carousel-item active">
                                 <div class="row">
                                     <div class="col-md-4">
@@ -252,567 +204,162 @@
                                                      alt="Card image cap">
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car" ></span>
+                                                    <h5 class="book-title" style="padding-top:15px">{{ book.title
+                                                        }}</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{
+                                                        book.author }}</p>
+                                                    <span onclick="createRating(this.id, 62)" id="rating-car"></span>
 
-                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{
+                                                        book.price }}€</p>
 
-                                                    <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="card mb-2">
-                                            <div class="card" style="width: 11rem;">
-                                                <img class="card-img-top"
-                                                     src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
-                                                     alt="Card image cap">
-                                                <div class="card-body"
-                                                     style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car2" ></span>
-
-                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
-
-                                                    <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="card mb-2">
-                                            <div class="card" style="width: 11rem;">
-                                                <img class="card-img-top"
-                                                     src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
-                                                     alt="Card image cap">
-                                                <div class="card-body"
-                                                     style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car3" ></span>
-
-                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
-
-                                                    <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
+                                                    <a href="{% url 'books:add_product' 'cart' book.ISBN %}"
+                                                       class="btn btn-success">Add to cart</a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- ./First slide -->
 
-                            <!-- Second slide -->
-                            <div class="carousel-item">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="card mb-2">
-                                            <div class="card" style="width: 11rem;">
-                                                <img class="card-img-top"
-                                                     src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
-                                                     alt="Card image cap">
-                                                <div class="card-body"
-                                                     style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car4" ></span>
-
-                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
-
-                                                    <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="card mb-2">
-                                            <div class="card" style="width: 11rem;">
-                                                <img class="card-img-top"
-                                                     src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
-                                                     alt="Card image cap">
-                                                <div class="card-body"
-                                                     style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car5" ></span>
-
-                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
-
-                                                    <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="card mb-2">
-                                            <div class="card" style="width: 11rem;">
-                                                <img class="card-img-top"
-                                                     src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
-                                                     alt="Card image cap">
-                                                <div class="card-body"
-                                                     style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car6" ></span>
-
-                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
-
-                                                    <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            {% endfor %}
+                                <!-- ./First slide -->
                             </div>
-                            <!-- ./Second slide -->
-
-                            <!-- Third slide -->
-                            <div class="carousel-item">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="card mb-2">
-                                            <div class="card" style="width: 11rem;">
-                                                <img class="card-img-top"
-                                                     src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
-                                                     alt="Card image cap">
-                                                <div class="card-body"
-                                                     style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car7" ></span>
-
-                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
-
-                                                    <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="card mb-2">
-                                            <div class="card" style="width: 11rem;">
-                                                <img class="card-img-top"
-                                                     src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
-                                                     alt="Card image cap">
-                                                <div class="card-body"
-                                                     style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car8" ></span>
-
-                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
-
-                                                    <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="card mb-2">
-                                            <div class="card" style="width: 11rem;">
-                                                <img class="card-img-top"
-                                                     src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
-                                                     alt="Card image cap">
-                                                <div class="card-body"
-                                                     style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">Patria</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">Fernando Aramburu</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car9" ></span>
-
-                                                    <p class="text-card" style="font-size: 14px; color:white">24.95€</p>
-
-                                                    <button class="btn btn-success"
-                                                    onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)"
-                                                    >Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-md-2" style="align:center">
+                                <!-- Button Right -->
+                                <button class="btn btn-outline-light rightLst" href="#multi-item-example"
+                                        data-slide="next">
+                                    <i class="fas fa-chevron-right fa-7x"></i></button>
+                                <!-- ./Button Right -->
                             </div>
-                            <!-- ./Third slide -->
                         </div>
-                        <div class="col-md-2" style="align:center">
-                            <!-- Button Right -->
-                            <button class="btn btn-outline-light rightLst" href="#multi-item-example" data-slide="next">
-                                <i class="fas fa-chevron-right fa-7x"></i></button>
-                            <!-- ./Button Right -->
-                        </div>
-                    </div>
 
-                </div>
-            </div>
-
-            <!--Bottom of the page-->
-            <div style="margin-top:5%; padding-bottom:5%; width:100%; text-align: center;">
-                <button class="btn btn-success my-2 my-sm-0"
-                        style="width:200px;"
-                        type="submit">Complete purchase
-                </button>
-                <p class="text" style="font-size:12px">New client? &nbsp;<a href="#">Register here</a></p>
-            </div>
-            <!-- ./Bottom of the page -->
-
-        </div>
-        <!-- ./Left Body -->
-
-        <!-- Right Body -->
-        <div class="col-md-3 body-right">
-
-            <!-- Total Payment -->
-            <div class="info-box">
-
-                <div class="row">
-                    <div class="col" style="margin-left:4%">
-                        <div class="text">Subtotal&nbsp;(<span id="subtotal_products">3</span>&nbsp;<span
-                                id="items">items</span>)
-                        </div>
-                    </div>
-
-                    <div class="col">
-                        <span class="text" id="priceSubtotal">60.85</span><span class="text">€</span>
                     </div>
                 </div>
 
-                <div class="custom-control custom-checkbox" style="margin-left:4%; margin-bottom: 3%">
-                    <input type="checkbox" class="custom-control-input" id="gift_checkbox_subtotal">
-                    <label class="custom-control-label" for="gift_checkbox_subtotal" style="color:white">This order
-                        contains a
-                        gift</label>
-                </div>
-
-                <div style="text-align: center; margin-bottom:2%">
+                <!--Bottom of the page-->
+                <div style="margin-top:5%; padding-bottom:5%; width:100%; text-align: center;">
                     <button class="btn btn-success my-2 my-sm-0"
-                            style="width:80%;"
-                            type="submit">Proceed to Checkout
+                            style="width:200px;"
+                            type="submit"
+                            id="btn_purchase"
+                    >Complete purchase
                     </button>
+                    <p class="text" style="font-size:12px">New client? &nbsp;<a href="#">Register here</a></p>
                 </div>
-            </div>
-            <!-- ./Total Payment -->
-
-            <!-- List of books -->
-            <div class="info-box">
-
-                <div class="text" style="margin-left:4%; font-size: 16px">Users who bought books like yours also liked
-                    these ones
-                </div>
-
-                <!-- Book 1 -->
-
-                <div class="row" style="margin-left: 1%; margin-top:3%" id="container1">
-
-                    <div class="col-md-5">
-                        <img src="/static/images/cover-images/book_cover5.jpg" style="width: 100%" alt="book">
-                    </div>
-
-                    <div class="col" style="margin-left:-6%">
-                        <p class="book-title" style="font-size:16px"><a href="#">No Place Like Here, by Christina
-                            Jane</a></p>
-
-                        <span class="score" style="margin-top:-5%">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:72%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
-
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
-
-                        <p class="text" style="font-size: 14px">24.95€</p>
-
-                        <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
-                                type="submit">Add to cart
-                        </button>
-
-                    </div>
-                </div>
-
-                <!-- ./Book 1 -->
-
-
-                <!-- Book 2 -->
-
-                <div class="row" style="margin-left: 1%; margin-top:5%">
-
-                    <div class="col-md-5">
-                        <img src="/static/images/cover-images/book_cover6.jpg" style="width: 100%" alt="book">
-                    </div>
-
-                    <div class="col" style="margin-left:-6%">
-                        <p class="book-title" style="font-size:16px"><a href="#">The King of Drugs, by Nora Barret</a>
-                        </p>
-
-                        <span class="score" style="margin-top:-5%">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:82%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
-
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
-
-                        <p class="text" style="font-size: 14px">13.95€</p>
-
-                        <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'The King of Drugs' , 'Nora Barret', 82, '/static/images/cover-images/book_cover6.jpg', 13.95)"
-                                type="submit">Add to cart
-                        </button>
-
-                    </div>
-                </div>
-                <!-- ./Book 2 -->
-
-                <!-- Book 3 -->
-
-                <div class="row" style="margin-left: 1%; margin-top:5%">
-
-                    <div class="col-md-5">
-                        <img src="/static/images/cover-images/book_cover2.jpg" style="width: 100%" alt="book">
-                    </div>
-
-                    <div class="col" style="margin-left:-6%">
-                        <p class="book-title" style="font-size:16px"><a href="#">The Arrivals, by Lucas LLoyd</a></p>
-
-                        <span class="score" style="margin-top:-5%">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:60%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
-
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
-
-                        <p class="text" style="font-size: 14px">15.95€</p>
-
-                        <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'The Arrivals' , 'Lucas Lloyd', 60, '/static/images/cover-images/book_cover2.jpg', 15.95)"
-                                type="submit">Add to cart
-                        </button>
-
-                    </div>
-                </div>
-                <!-- ./Book 3 -->
-
-                <!-- Book 4 -->
-
-                <div class="row" style="margin-left: 1%; margin-top:5%">
-
-                    <div class="col-md-5">
-                        <img src="/static/images/cover-images/book_cover5.jpg" style="width: 100%" alt="book">
-                    </div>
-
-                    <div class="col" style="margin-left:-6%">
-                        <p class="book-title" style="font-size:16px"><a href="#">No Place Like Here, by Christina
-                            Jane</a></p>
-
-                        <span class="score" style="margin-top:-5%">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:72%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
-
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
-
-                        <p class="text" style="font-size: 14px">24.95€</p>
-
-                        <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
-                                type="submit">Add to cart
-                        </button>
-
-                    </div>
-                </div>
-                <!-- ./Book 4 -->
-
-                <!-- Book 5 -->
-
-                <div class="row" style="margin-left: 1%; margin-top:5%">
-
-                    <div class="col-md-5">
-                        <img src="/static/images/cover-images/book_cover7.jpg" style="width: 100%" alt="book">
-                    </div>
-
-                    <div class="col" style="margin-left:-6%">
-                        <p class="book-title" style="font-size:16px"><a href="#">Dancing to my Death, by Danielo
-                            O'Leary</a></p>
-
-                        <span class="score" style="margin-top:-5%">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:65%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
-
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
-
-                        <p class="text" style="font-size: 14px">9.95€</p>
-
-                        <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Dancing to my Death', 'Danielo O'Leary', 65, '/static/images/cover-images/book_cover7.jpg', 9.95)"
-                                type="submit">Add to cart
-                        </button>
-
-                    </div>
-                </div>
-                <!-- ./Book 5 -->
-
-                <!-- Book 6 -->
-
-                <div class="row" style="margin-left: 1%; margin-top:5%; margin-bottom: 5%">
-
-                    <div class="col-md-5">
-                        <img src="/static/images/cover-images/book_cover5.jpg" style="width: 100%" alt="book">
-                    </div>
-
-                    <div class="col" style="margin-left:-6%">
-                        <p class="book-title" style="font-size:16px"><a href="#">No Place Like Here, by Christina
-                            Jane</a></p>
-
-                        <span class="score" style="margin-top:-5%">
-                            <div class="score-wrap">
-                                <span class="stars-active" style="width:72%">
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </span>
-
-                                <span class="stars-inactive">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </span>
-
-                        <p class="text" style="font-size: 14px">24.95€</p>
-
-                        <button class="btn btn-success" style="margin-top:-5%"
-                                onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'No Place Like Here' , 'Christina Jane', 72, '/static/images/cover-images/book_cover5.jpg', 24.95)"
-                                type="submit">Add to cart
-                        </button>
-
-                    </div>
-                </div>
-                <!-- ./Book 6 -->
+                <!-- ./Bottom of the page -->
 
             </div>
-            <!-- ./List of books -->
+            <!-- ./Left Body -->
+
+            <!-- Right Body -->
+            <div class="col-md-3 body-right">
+
+                <!-- Total Payment -->
+                <div class="info-box">
+
+                    <div class="row">
+                        {% for v in total_items %}
+                        <div class="col" style="margin-left:4%">
+                            <div class="text">Subtotal&nbsp;(<span id="subtotal_products">{{ v }}
+                                </span>&nbsp;<span
+                                    id="items">items</span>)
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        {% for v in total_price %}
+                        <div class="col">
+                            <span class="text" id="priceSubtotal"></span><span class="text">{{ v }}€</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="custom-control custom-checkbox" style="margin-left:4%; margin-bottom: 3%">
+                        <input type="checkbox" class="custom-control-input" id="gift_checkbox_subtotal">
+                        <label class="custom-control-label" for="gift_checkbox_subtotal" style="color:white">This order
+                            contains a
+                            gift</label>
+                    </div>
+
+                    <div style="text-align: center; margin-bottom:2%">
+                        <button class="btn btn-success my-2 my-sm-0"
+                                style="width:80%;"
+                                type="submit"
+                                id="btn_checkout"
+                        >Proceed to Checkout
+                        </button>
+                    </div>
+                </div>
+                <!-- ./Total Payment -->
+
+                <!-- List of books -->
+                <div class="info-box">
+
+                    <div class="text" style="margin-left:4%; font-size: 16px">Users who bought books like yours also
+                        liked
+                        these ones
+                    </div>
+
+
+                    <div class="row" style="margin-left: 1%; margin-top:3%" id="container1">
+
+                        {% for book in books_from_cart_view %}
+
+                        <div class="col-md-5" style="margin-top:5%">
+                            <img src="/static/images/cover-images/book_cover5.jpg" style="width: 100%" alt="book">
+                        </div>
+
+                        <div class="col" style="margin-left:-6%; margin-top:5%">
+                            <p class="book-title" style="font-size:16px"><a href="#">{{ book.title }}, {{ book.author }}
+                            </a></p>
+
+                            <span class="score" style="margin-top:-5%">
+                            <div class="score-wrap">
+                                <span class="stars-active" style="width:72%">
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                </span>
+
+                                <span class="stars-inactive">
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                        </span>
+
+                            <p class="text" style="font-size: 14px">{{ book.price }}€</p>
+
+                            <a href="{% url 'books:add_product' 'cart' book.ISBN %}" style="margin-top:-5%" class="btn btn-success">Add to cart</a>
+
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- ./List of books -->
+
+            </div>
+            <!-- ./Right Body -->
 
         </div>
-        <!-- ./Right Body -->
 
     </div>
-
-    <div class="row horizontal" style="width:100%; background-color:black; margin:0; padding-bottom:2%">
-        <div class="col">
-            <a href="#"><img src="/static/images/logo/logo.png"></a>
-        </div>
-        <div class="col-md-3">
-            <div class="share-button">
-                <span class="text">SHARE US</span>
-                <a href="#"><i class="fab fa-facebook-f share-item"></i></a>
-                <a href="#"><i class="fab fa-twitter share-item"></i></a>
-                <a href="#"><i class="fab fa-instagram share-item"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in share-item"></i></a>
-            </div>
-        </div>
-    </div>
-
-</div>
-<!-- ./Full Body -->
+    <!-- ./Full Body -->
 
 
-<!-- JavaScript files from static folder -->
-<script src="/static/js/cart-page/operateBooks.js"></script>
-<script src="/static/js/cart-page/stars.js"></script>
-<script src="/static/js/cart-page/info-book.js"></script>
-<!-- ./JavaScript files from static folder -->
+    <!-- JavaScript files from static folder -->
+    <script src="/static/js/cart-page/operateBooks.js"></script>
+    <script src="/static/js/cart-page/stars.js"></script>
+    <script src="/static/js/cart-page/info-book.js"></script>
+    <script src="/static/js/cart-page/navigation.js"></script>
+    <!-- ./JavaScript files from static folder -->
 
 </body>
 {% endblock %}

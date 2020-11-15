@@ -25,7 +25,7 @@ SECRET_KEY = '56&@1#k_scqs8ymk&24hm@f4z=g!*5b#%_tgk)zmny(hh__-#d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['alejandria-es.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['alejandria-es.herokuapp.com', '127.0.0.1','localhost']
 
 # Application definition
 
@@ -90,8 +90,7 @@ if 'TRAVIS' in os.environ:
             'PORT':     '5432',
         }
     }
-else:
-
+elif 'HEROKU' in os.environ:
     DATABASES = {
         'default': {
             # Se configura en el pgadmin del postgresql
@@ -100,6 +99,22 @@ else:
             'USER': 'hhcommywfpctls',  # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
             'PASSWORD': 'dcd0b919ef67e90389ee27dc77b4a75a4c2d245936f67c85cc774ee46f7dfa0a',  # usad esta constraseña
             'HOST': 'ec2-54-156-85-145.compute-1.amazonaws.com',  # como hemos dicho es una db local
+            'PORT': '5432'  # a este puerto
+        }
+
+        # Despues de configurar la
+    }
+
+else:
+    print("Remember, you are in the local database.")
+    DATABASES = {
+        'default': {
+            # Se configura en el pgadmin del postgresql
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'Alejandria_DB',  # Poned este nombre todos en el pgadmin al crear la db local
+            'USER': 'Alejandro',  # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
+            'PASSWORD': 'Password1',  # usad esta constraseña
+            'HOST': 'localhost',  # como hemos dicho es una db local
             'PORT': '5432'  # a este puerto
         }
 
@@ -155,4 +170,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 AUTH_USER_MODEL = 'books.User'
 CRISPY_TEMPLATE_PACK="bootstrap4"
 
-
+# MAIL SETUP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'alejandria.books.2020@gmail.com'
+EMAIL_HOST_PASSWORD = 'alejandriaES2020'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'Alejandria Books <alejandria.books.2020@gmail.com>'
