@@ -25,7 +25,7 @@ SECRET_KEY = '56&@1#k_scqs8ymk&24hm@f4z=g!*5b#%_tgk)zmny(hh__-#d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['alejandria-es.herokuapp.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['alejandria-es.herokuapp.com', '127.0.0.1','localhost']
 
 # Application definition
 
@@ -80,20 +80,17 @@ WSGI_APPLICATION = 'Alejandria.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 if 'TRAVIS' in os.environ:
-    print("Remember, you are in the TRAVIS database.")
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'travis_ci_test',
-            'USER': 'postgres',
+            'ENGINE':   'django.db.backends.postgresql',
+            'NAME':     'travis_ci_test',
+            'USER':     'postgres',
             'PASSWORD': '',
-            'HOST': 'localhost',
-            'PORT': '5432',
+            'HOST':     'localhost',
+            'PORT':     '5432',
         }
     }
 elif 'HEROKU' in os.environ:
-    DEBUG = False
-    print("Remember, you are in the HEROKU database.")
     DATABASES = {
         'default': {
             # Se configura en el pgadmin del postgresql
@@ -123,6 +120,7 @@ else:
 
         # Despues de configurar la
     }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -167,6 +165,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# STATICFILES_DIRS = ['/static/']
+
+#STATICFILES_DIRS = ['/static/']
 AUTH_USER_MODEL = 'books.User'
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_TEMPLATE_PACK="bootstrap4"
+
+
