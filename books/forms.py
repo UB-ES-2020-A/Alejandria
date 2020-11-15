@@ -69,6 +69,10 @@ class LoginForm(AuthenticationForm):
         )
 
 class BookForm(forms.ModelForm):
+    terms = forms.BooleanField(
+        error_messages={'required': 'You must accept the terms and conditions'},
+        label="Terms&Conditions"
+    )
     class Meta:
         model = Book
         fields = [
@@ -89,5 +93,7 @@ class BookForm(forms.ModelForm):
             "recommended_age",
             "thumbnail"
         ]
+
+
 
 

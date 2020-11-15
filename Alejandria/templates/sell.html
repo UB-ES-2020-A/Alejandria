@@ -194,7 +194,18 @@
 <!--          </button>-->
 <!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
           <label for="thumbnail">* Thumbnail</label>
-          <input id="thumbnail" type='file' name="thumbnail" accept="image/jpeg, image/png" onchange="readURL(this);" />
+          <input style="border:0px" id="thumbnail" type='file' name="thumbnail" accept="image/jpeg, image/png" onchange="readURL(this);" />
+
+
+        </div>
+
+       <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
+<!--          <button id="pets-upload">-->
+<!--            <i class="fas fa-camera-retro"></i>-->
+<!--          </button>-->
+<!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
+          <label for="file">* File eBook</label>
+          <input id="file" style="border:0px;" type='file' name="file" accept="application/pdf" />
 
 
         </div>
@@ -259,8 +270,12 @@
         <label for="description">Description</label>
         <textarea  id="description" placeholder="Place here the description of book" type="text" style="height:200px; width:100%;"></textarea>
       </div>
+
+        <input type="checkbox" style="vertical-align:middle;" id="terms" name="terms">
+        <label for="terms"> I accept the terms and conditions</label>
+
         <div class="set" style="float: right;">
-        <input type="submit" data-toggle="modal" data-target="#myModal" value="Next" />
+        <input type="submit" data-toggle="modal" data-target="#myModal" value="Save" />
         </div>
 </form>
     </header>
