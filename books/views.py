@@ -77,6 +77,7 @@ class HomeView(generic.ListView):
 
     # queryset = Book.objects.all()
     def get_queryset(self):  # TODO: Return list requested by the front end, TOP SELLERS, etc.
+
         today = datetime.today()
         self.user_id = self.request.user.id or None
         return Book.objects.all()  # TODO: Replace with the one below when ready to test with a full database.
