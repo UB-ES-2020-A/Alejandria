@@ -1,12 +1,12 @@
+
 from django.core import serializers
 from django.shortcuts import render
 import json
+
 from django.views import generic
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from .forms import RegisterForm, LoginForm
 
 from django.db.models import Q
@@ -15,7 +15,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.auth import authenticate, login
+
+from datetime import datetime, timedelta
+
 from .models import Book, FAQ, Cart, Product, User, Address
+
 
 
 # Create your views here.
@@ -26,6 +30,7 @@ This is my custom response to get to a book by it's ISBN. The ISBN is passed by 
 
 NUM_COINCIDENT = 10
 NUM_RELATED = 5
+MONTHS_TO_CONSIDER_TOP_SELLER = 6
 
 
 def book(request):  # TODO: this function is not linked to the frontend
@@ -61,86 +66,36 @@ class BookView(generic.DetailView):
     model = Book
     template_name = 'details.html'
 
-    # TODO: Treat POST methods to add to cart, etc.
-
-    """
-      Right now im passing all the books, but in the next iteration 
-      Ill only pass the necessary book info, required by POST during the search.
-      #  TODO: Pass only necessary lists with get_queryset(self) and get_context_data()
-      In this case I might use get_object().
-
-      Example:
-        # views.py
-        from django.shortcuts import get_object_or_404
-        from django.views.generic import ListView
-        from books.models import Book, Publisher
-
-        class PublisherBookList(ListView):
-
-            template_name = 'books/books_by_publisher.html'
-
-            def get_queryset(self):
-                self.publisher = get_object_or_404(Publisher, name=self.kwargs['publisher'])
-                return Book.objects.filter(publisher=self.publisher)
-
-            def get_context_data(self, **kwargs):
-                # Call the base implementation first to get a context
-                context = super().get_context_data(**kwargs)
-                # Add in the publisher
-                context['publisher'] = self.publisher
-                return context
-
-    """
+    # TODO: Treat POST to add a book
 
 
 class HomeView(generic.ListView):
     template_name = 'home.html'
+    context_object_name = 'book_list'
     model = Book
 
+    # queryset = Book.objects.all()
     def get_queryset(self):  # TODO: Return list requested by the front end, TOP SELLERS, etc.
-        return Book.objects.order_by('-num_sold')[:10]
+        today = datetime.today()
+        return Book.objects.all()  ## TODO: Replace with the one below when ready to test with a full database.
+        # return Book.objects.order_by('-num_sold')[:10].filter(
+        #     publication_date__range=[str(today)[:10],
+        #                              str(today - timedelta(days=30 * MONTHS_TO_CONSIDER_TOP_SELLER))[:10]])[:10]
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['filtered_list'] = Book.objects.filter(title__contains='Red')  # Example
+        today = datetime.today()
+        context['new_books'] = Book.objects.filter(
+            publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
+        context['novels'] = Book.objects.filter(genre__contains="Novel")
 
-    """
-      Right now im passing all the books, but in the next iteration 
-      Ill pass only those lists necessary por the Home page, like TopSellers, Genre lists, recommended, etc.
-      #  TODO: Pass only necessary lists with get_queryset(self) and get_context_data()
-      
-      Example:
-        # views.py
-        from django.shortcuts import get_object_or_404
-        from django.views.generic import ListView
-        from books.models import Book, Publisher
-        
-        class PublisherBookList(ListView):
-        
-            template_name = 'books/books_by_publisher.html'
-        
-            def get_queryset(self):
-                self.publisher = get_object_or_404(Publisher, name=self.kwargs['publisher'])
-                return Book.objects.filter(publisher=self.publisher)
-                
-            def get_context_data(self, **kwargs):
-                # Call the base implementation first to get a context
-                context = super().get_context_data(**kwargs)
-                # Add in the publisher
-                context['publisher'] = self.publisher
-                return context
-    
-    """
-
-
-# TODO: Not being used
-def search(request):  # TODO: Delete if SearchView is working as expected
-    pass
+        return context
 
 
 class SearchView(generic.ListView):
     model = Book
     template_name = 'search.html'  # TODO: Provisional file
+    context_object_name = 'coincident'
 
 
 
@@ -189,39 +144,31 @@ class SearchView(generic.ListView):
 class CartView(generic.ListView):
     model = Book
     template_name = 'cart.html'  # TODO: Provisional file
-    queryset = Product.objects.all()  # TODO: Right now im giving all the Products created to the Cart.
-    # TODO: Should get books in User.Cart
 
-    # TODO: Manage POST METHODS URGENT *****************************************
-
-    #  TODO: Listen to Post from view, generate a response. To do that change genericView to a normal one.
-
-    """
-    Example:
-    
-    from django.http import HttpResponseRedirect
-    from django.shortcuts import render
-    from django.views import View
-    
-    from .forms import MyForm
-    
-    class MyFormView(View):
-        form_class = MyForm
-        initial = {'key': 'value'}
-        template_name = 'form_template.html'
-    
-        def get(self, request, *args, **kwargs):
-            form = self.form_class(initial=self.initial)
-            return render(request, self.template_name, {'form': form})
-    
-        def post(self, request, *args, **kwargs):
-            form = self.form_class(request.POST)
-            if form.is_valid():
-                # <process form cleaned data>
-                return HttpResponseRedirect('/success/')
-    
-            return render(request, self.template_name, {'form': form})
-    """
+    ## TODO: This is m aproach to Cart post method, but it shouldn't be done in this branch.
+    # def get_queryset(self):
+    #     if self.logged_in():
+    #         user = User.objects.get(username=super().request.POST['username'], password=super().request.POST['password'])
+    #         return User.objects.filter(username=user).products.all()
+    #     else:
+    #         ## TODO: What to do when visitant whants to see it's Cart @method_decorator??
+    #         return None ## TODO and error_message
+    #
+    # def post(self, request, *args, **kwargs):
+    #     ## TODO: Make form to check if the request for CartView is good.
+    #     auth = super().request.auth
+    #     print(auth)
+    #     if auth: ## https://www.django-rest-framework.org/api-guide/authentication/
+    #         user = super().request.user
+    #         if user: ## TODO User and auth is linked somehow? or request.user?
+    #             pass
+    #
+    #
+    #     #return render(request, self.template_name, {'form': form})
+    #
+    # ## TODO Check if the user is logged in. With tocken or userneme password or auth or user
+    # def logged_in(self):
+    #     return True
 
 
 class FaqsView(generic.ListView):
@@ -253,13 +200,13 @@ class LoginView(generic.TemplateView):
     def login(request):
         form = LoginForm(request.POST)
         if request.method == 'POST':
-            #user = authenticate(
+            # user = authenticate(
             #    username=request.POST['username'],
             #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
-            #)
-            user = User.objects.get(username=request.POST['username'],password=request.POST['password'])
+            # )
+            user = User.objects.get(username=request.POST['username'], password=request.POST['password'])
             if user is not None:
-                login(request, user,backend='books.backend.EmailAuthBackend')
+                login(request, user, backend='books.backend.EmailAuthBackend')
                 return redirect("/")
 
         return render(request,"login.html", {"form":form})
@@ -332,4 +279,3 @@ class PaymentView(generic.TemplateView):
     model = Book
     template_name = 'payment.html'
     queryset = Product.objects.all()
-
