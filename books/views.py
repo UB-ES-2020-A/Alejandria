@@ -187,9 +187,28 @@ class SearchView(generic.ListView):
 
 
 class CartView(generic.ListView):
-    model = Book
+    model = Cart
     template_name = 'cart.html'  # TODO: Provisional file
-    queryset = Product.objects.all()  # TODO: Right now im giving all the Products created to the Cart.
+    context_object_name = 'cart_list'
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.user_id = None
+
+    def get_queryset(self):
+        print("IM IN GET QUERYSET")
+        request = self.request
+        self.user_id = request.user.id or None
+        print("USER ID: ", self.user_id)
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            print("Cart: ", cart.products.all())
+            return cart.products.all()
+        return None
+
+        #if user:
+            #queryset = Cart.products  # TODO: Right now im giving all the Products created to the Cart.
+
     # TODO: Should get books in User.Cart
 
     # TODO: Manage POST METHODS URGENT *****************************************
