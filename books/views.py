@@ -140,17 +140,17 @@ class CartView(generic.ListView):
         self.user_id = request.user.id or None
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
-            print("Cart: ", cart.products.all())
             return cart.products.all()
         return None
 
 
 def delete_product(request, product_id):
     user_id = request.user.id or None
+    print(request.GET)
     if user_id:
         cart = Cart.objects.get(user_id=user_id)
-        print("Cart: ", cart.products.all())
         product = cart.products.get(ID=product_id)
+        print("Delete Product ", product)
         cart.products.remove(product)
     return HttpResponseRedirect('/cart')
 
