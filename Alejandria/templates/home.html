@@ -97,7 +97,7 @@
                                         <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
                                         <p class="card-text">{{ book.authors }}</p>
                                         <p class="card-text">Preu: {{ book.price }}€</p>
-                                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                        <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Afegir al carret</a>
                                     </div>
                                 </a>
                             </div>
@@ -125,7 +125,7 @@
                                     <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
                                     <p class="card-text">{{ book.authors }}</p>
                                     <p class="card-text">Preu: {{ book.price }}€</p>
-                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Afegir al carret</a>
                                 </div>
                             </a>
                         </div>
@@ -153,7 +153,7 @@
                                     <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
                                     <p class="card-text">{{ book.authors }}</p>
                                     <p class="card-text">Preu: {{ book.price }}€</p>
-                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Afegir al carret</a>
                                 </div>
                             </a>
                         </div>

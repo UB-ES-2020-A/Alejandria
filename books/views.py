@@ -65,6 +65,7 @@ class HomeView(generic.ListView):
     # queryset = Book.objects.all()
     def get_queryset(self):  # TODO: Return list requested by the front end, TOP SELLERS, etc.
         today = datetime.today()
+        print("GEEET BOOKS: ", Book.objects.all())
         return Book.objects.all()  ## TODO: Replace with the one below when ready to test with a full database.
         # return Book.objects.order_by('-num_sold')[:10].filter(
         #     publication_date__range=[str(today)[:10],
@@ -121,7 +122,6 @@ class SearchView(generic.ListView):
 
         context['book_list'] = Book.objects.all()
 
-
         return context
 
 
@@ -143,6 +143,18 @@ class CartView(generic.ListView):
             return cart.products.all()
         return None
 
+    def get_context_data(self, **kwargs):
+        context = super(CartView, self).get_context_data(**kwargs)
+        context['books_from_cart_view'] = Book.objects.all()[:6]
+        # Add any other variables to the context here
+        return context
+
+
+def get_products_ajax(request):
+    if request.method == 'GET':
+        request_getdata = request.POST.get('getdata', None)
+        # make sure that you serialise "request_getdata"
+        return JsonResponse(request_getdata)
 
 def delete_product(request, product_id):
     user_id = request.user.id or None
@@ -152,7 +164,25 @@ def delete_product(request, product_id):
         product = cart.products.get(ID=product_id)
         print("Delete Product ", product)
         cart.products.remove(product)
+        cart.save()
     return HttpResponseRedirect('/cart')
+
+
+def add_product(request, view, book):
+    user_id = request.user.id or None
+    print(request.POST)
+    if user_id:
+        cart = Cart.objects.get(user_id=user_id)
+        products = Product.objects.all()
+        for product in products:
+            if product.ISBN.ISBN == book:
+                print("ADD BOOK ", book)
+                cart.products.add(product)
+                cart.save()
+    if view == 'home':
+        return HttpResponseRedirect('/')
+    if view == 'cart':
+        return HttpResponseRedirect('/cart')
 
 
 class FaqsView(generic.ListView):
