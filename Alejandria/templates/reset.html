@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+
+
+
+
+    <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font.css' %}">
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script src="//cdn.jsdelivr.net/npm/less" ></script>
+    <!-- Cool Modals and alerts-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bxslider/4.2.5/jquery.bxslider.min.css"/>
+
+    <!-- Css files from static folder -->
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
+    <link rel="stylesheet" href="{% static 'css/swal-forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sweet-alert.css' %}">
+
+    <!-- JavaScript static -->
+    <script type="text/javascript" src="{% static 'js/sweet-alert.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/swal-forms.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/reset.js' %}"></script>
+    {% csrf_token %}
+
+
+</head>
+<body>
+<center>
+<form style="width: 50%; padding-top: 15%">
+    <h1 style="color: white">Reset Password</h1>
+    <div class="form-group">
+        <label for="id_password" style="color:white; margin-right: 90%">New Password</label>
+        <input type="password" class="form-control" id="id_password" placeholder="Enter New Password">
+    </div>
+
+    <div class="form-group">
+        <label for="id_confirm" style="color:white; margin-right: 85%">Confirm New Password</label>
+        <input type="password" class="form-control" id="id_confirm" placeholder="Confirm New Password">
+    </div>
+
+    <button type="button" id="change_btn" class="btn btn-danger">Change</button>
+</form>
+</center>
+</body>
+{% endblock %}
+</html>
+
+
+

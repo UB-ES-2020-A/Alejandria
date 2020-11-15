@@ -3,15 +3,12 @@ from datetime import datetime, timedelta
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.db.models import Q
-from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import generic
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-from django.shortcuts import render, redirect
-from .forms import RegisterForm, LoginForm, BookForm
+from .forms import BookForm
 
 from .models import Book, FAQ, Cart, Product, User, Address
 from django.contrib import messages
@@ -242,7 +239,7 @@ def register(request):
         # No Blank Data
         data_answered = all([len(data[key]) > 0 for key in data])
         exists = User.objects.filter(email=request.POST["email"]).exists()
-        validation = data and not exists
+        validation = data_answered and not exists
         return validation
 
     if request.method == 'POST':
@@ -253,7 +250,7 @@ def register(request):
                 if query.exists():
                     user_address = query.first()
                 else:
-                    user_address = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
+                    user_address = Address(city=request.POST['city1'], street=request.POST['street1'],
                                            country=request.POST['country1'], zip=request.POST['zip1'])
                     user_address.save()
 
@@ -275,6 +272,8 @@ def register(request):
 
             else:
                 return JsonResponse({"error": True})
+
+        return JsonResponse({"error": True})
 
 
 def login_user(request):
