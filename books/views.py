@@ -10,7 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from .forms import BookForm
 
-from .models import Book, FAQ, Cart, Product, User, Address, ResetMails
+from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
 from django.contrib import messages
 from django.core.mail import send_mail
 import re
