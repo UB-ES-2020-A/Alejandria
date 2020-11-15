@@ -42,9 +42,8 @@ class User(AbstractUser):
 
 
 class Book(models.Model):
-
     GENRE_CHOICES = [
-        ('FANT','Fantasy'),
+        ('FANT', 'Fantasy'),
         ('CRIM', 'Crime & Thriller'),
         ('FICT', 'Fiction'),
         ('SCFI', 'Science Fiction'),
@@ -55,7 +54,6 @@ class Book(models.Model):
         ('ANIM', 'Anime & Manga'),
         ('OTHR', 'Others'),
     ]
-
 
     ISBN = models.CharField(primary_key=True, max_length=13, blank=False, null=False)  # Its a Char instead of Integer
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -71,7 +69,8 @@ class Book(models.Model):
     publication_date = models.DateField(null=True, blank=True, default=timezone.now)
     price = models.DecimalField(decimal_places=2, max_digits=8)
     language = models.CharField(max_length=15, blank=False)  # TODO: Might have choices=<<languages it can be>>
-    primary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, default='OTHR')  # TODO: choices=<<all possible genres>>, also can have multiple choices
+    primary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES,
+                                     default='OTHR')  # TODO: choices=<<all possible genres>>, also can have multiple choices
     secondary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True)
     publisher = models.CharField(max_length=30)
     num_pages = models.IntegerField(blank=False)
@@ -92,14 +91,15 @@ class Product(models.Model):
     # TODO: Could be in no.arange(0.00, 100.00, 0.01) -> To have percentages with 0.01 precision
     per_values = range(0, 101)
     human_readable = [str(value) for value in per_values]
-    fees = models.DecimalField(decimal_places=2, max_digits=5, choices=zip(per_values, human_readable))
-    discount = models.DecimalField(decimal_places=2, max_digits=5, choices=zip(per_values, human_readable))
+    fees = models.DecimalField(decimal_places=2, max_digits=5, choices=zip(per_values, human_readable), default=21.0)
+    discount = models.DecimalField(decimal_places=2, max_digits=5, choices=zip(per_values, human_readable), default=0.0)
 
 
 class Rating(models.Model):
     ID = models.AutoField(primary_key=True, blank=False, null=False)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
+                                blank=False)  # TODO: on_delete
     text = models.TextField(max_length=500, null=False, blank=True)
     per_values = range(1, 6)
     human_readable = [str(value) for value in per_values]
@@ -108,7 +108,8 @@ class Rating(models.Model):
 
 
 class Cart(models.Model):
-    products = models.ManyToManyField(Product)  # TODO: How to treat quantities
+    user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=False)
+    products = models.ManyToManyField(Product)
 
 
 class Bill(models.Model):
@@ -121,6 +122,23 @@ class Bill(models.Model):
 
 
 class FAQ(models.Model):
+    # First object = Saved on the model, second object = Human readable one
+    FAQ_CHOICES = [
+        ('DWLDBOOK', 'Como descargar un ebook'),
+        ('DEVOL', 'Devoluciones'),
+        ('SELL', 'Vende tus libros'),
+        ('FACTU', 'Necesito la factura de mi libro o alguna modificación'),
+        ('CONTACT', 'Contacta con nosotros'),
+    ]
+
     ID = models.AutoField(primary_key=True)
+
     question = models.TextField(blank=False, null=False)
     answer = models.TextField(blank=False, null=False)
+    category = models.CharField(blank=False, null=False, choices=FAQ_CHOICES, max_length=50)
+
+    def __str__(self):
+        return "ID:{}  CAT:{}   {} --- {}".format(self.ID, self.category, self.question, self.answer)
+
+## TODO: If we decide to give the option to the admin to add the FAQ to a new category, categories shold be saved to the database
+# class FAQchoices(models.Model):
