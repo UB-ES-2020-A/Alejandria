@@ -10,9 +10,11 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from .forms import BookForm
 
-from .models import Book, FAQ, Cart, Product, User, Address, Rating
+from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
 from django.contrib import messages
-
+from django.core.mail import send_mail
+import re
+from Alejandria.settings import EMAIL_HOST_USER
 
 # Create your views here.
 
@@ -130,15 +132,16 @@ class SearchView(generic.ListView):
 
         # Filtering by title or author
         if self.searchBook:
-            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))[:20]
+            filtered = Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))[
+                       :20]
             context['book_list'] = filtered
-            genres_relation=[]
+            genres_relation = []
             for book in filtered:
                 if book.primary_genre not in genres_relation:
                     genres_relation.append(book.primary_genre)
 
             relation_book = Book.objects.filter(primary_genre__in=genres_relation)[:20]
-            if(relation_book):
+            if (relation_book):
                 context['book_relation'] = relation_book
                 return context
 
@@ -146,7 +149,7 @@ class SearchView(generic.ListView):
             context['book_relation'] = Book.objects.all()[:20]
 
         if self.genres:
-            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))[:20]
+            filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
             return context
 
@@ -170,12 +173,12 @@ class SellView(generic.ListView):
             form = BookForm(request.POST)
             if form.is_valid():
                 print(request.POST)
-                #messages.success(request, 'Form submission successful')
+                # messages.success(request, 'Form submission successful')
                 messages.info(request, 'Your book has been updated successfully!')
                 form.save()
-            #else:
-                #print(form.errors)
-            #return redirect("/")
+            # else:
+            # print(form.errors)
+            # return redirect("/")
         else:
             form = BookForm()
 
@@ -258,39 +261,6 @@ class FaqsView(generic.ListView):
     # TODO: In next iterations has to have the option to make POSTs by the admin.
 
 
-class RegisterView(generic.TemplateView):
-
-    @staticmethod
-    def register(request):
-        if request.method == "POST":
-            form = RegisterForm(request.POST)
-            if form.is_valid():
-                form.save()
-            return redirect("/")
-        else:
-            form = RegisterForm()
-
-        return render(request, "register.html", {"form": form})
-
-
-class LoginView(generic.TemplateView):
-
-    @staticmethod
-    def login(request):
-        form = LoginForm(request.POST)
-        if request.method == 'POST':
-            # user = authenticate(
-            #    username=request.POST['username'],
-            #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
-            # )
-            user = User.objects.get(username=request.POST['username'], password=request.POST['password'])
-            if user is not None:
-                login(request, user, backend='books.backend.EmailAuthBackend')
-                return redirect("/")
-
-        return render(request,"login.html", {"form":form})
-
-
 def register(request):
     def validate_register(data):
         # No Blank Data
@@ -303,7 +273,7 @@ def register(request):
         if 'trigger' in request.POST and 'register' in request.POST['trigger']:
             if validate_register(request.POST):
                 query = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
-                                       country=request.POST['country1'], zip=request.POST['zip1'])
+                                               country=request.POST['country1'], zip=request.POST['zip1'])
                 if query.exists():
                     user_address = query.first()
                 else:
@@ -311,7 +281,9 @@ def register(request):
                                            country=request.POST['country1'], zip=request.POST['zip1'])
                     user_address.save()
 
-                if request.POST['city1'] == request.POST['city2'] and request.POST['street1'] == request.POST['street2'] and request.POST['country1'] == request.POST["country2"] and request.POST['zip1'] == request.POST["zip2"]:
+                if request.POST['city1'] == request.POST['city2'] and request.POST['street1'] == request.POST[
+                    'street2'] and request.POST['country1'] == request.POST["country2"] and request.POST['zip1'] == \
+                        request.POST["zip2"]:
                     fact_address = user_address
                 else:
                     fact_address = Address(city=request.POST['city2'], street=request.POST['street2'],
@@ -333,6 +305,57 @@ def register(request):
         return JsonResponse({"error": True})
 
 
+def forgot(request, **kwargs):
+    if request.method == 'POST':
+        if 'trigger' in request.POST and request.POST['trigger'] == 'forgot':
+            recipient = request.POST['mail']
+            query = User.objects.filter(email=recipient)
+            if query.exists():
+                try:
+                    last = ResetMails.objects.latest('id')
+                    last = last.id + 1
+                except:
+                    last = 0
+
+                subject = 'Alejandria Password Reset'
+                host = request.get_raw_uri()
+                matches = re.finditer('/', host)
+                idx = [match.start() for match in matches][2]
+                link = host[:idx] + "/forgot/" + str(last)+"/"
+                msg = 'Dear, ' + query.first().username + '\n\n Confirm your new password using this link: ' + link + "\n Remember that once you complete the change this link will be disabled.\n\n Alejandria Team."
+
+                try:
+                    ResetMails(id=last, user=query.first()).save()
+                    send_mail(subject, msg, EMAIL_HOST_USER, [recipient],fail_silently=True)
+                    return JsonResponse({"error": False, "msg":"Reset mail was sent to "+recipient+" successfully. Please check your inbox."})
+                except:
+                    return JsonResponse({"error": True, "msg":"Your request failed, please try it again."})
+
+            return JsonResponse({"error": True,
+                                 "msg": "Invalid mail address"})
+
+
+        elif 'trigger' in request.POST and request.POST['trigger'] == 'reset':
+            try:
+                reset_id = kwargs['id']
+                new_pass = request.POST['new_pass']
+                user = ResetMails.objects.filter(id=int(reset_id)).first().user
+                user.password = new_pass
+                user.save()
+                return JsonResponse({"error": False})
+            except:
+                return JsonResponse({"error": True})
+
+    elif request.method == 'GET':
+        reset_id = kwargs['id']
+        query = ResetMails.objects.filter(id=reset_id)
+
+        if query.exists() and query.first().activated:
+            return render(request, "reset.html")
+        else:
+            return render(request, "not_found.html")
+
+
 def login_user(request):
     if request.method == 'POST':
         if 'trigger' in request.POST and 'login' in request.POST['trigger']:
@@ -352,7 +375,7 @@ def login_user(request):
                 error = True
 
             return JsonResponse({"error": error})
-          
+
 
 # TODO: Not implemented yet
 class PaymentView(generic.TemplateView):
