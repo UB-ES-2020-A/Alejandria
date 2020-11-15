@@ -69,9 +69,8 @@ class Book(models.Model):
     publication_date = models.DateField(null=True, blank=True, default=timezone.now)
     price = models.DecimalField(decimal_places=2, max_digits=8)
     language = models.CharField(max_length=30, blank=False)  # TODO: Might have choices=<<languages it can be>>
-    primary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES,
-                                     default='OTHR')  # TODO: choices=<<all possible genres>>, also can have multiple choices
-    secondary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True)
+    primary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, default='OTHR')  # TODO: choices=<<all possible genres>>, also can have multiple choices
+    secondary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
     publisher = models.CharField(max_length=50)
     num_pages = models.IntegerField(blank=False)
     num_sold = models.IntegerField(default=0)

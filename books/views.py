@@ -3,13 +3,15 @@ from datetime import datetime, timedelta
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.db.models import Q
-from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import generic
 
-from .forms import RegisterForm, LoginForm
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.urls import reverse
+from .forms import BookForm
 
-from .models import Book, FAQ, Cart, Product, User, Address
+from .models import Book, FAQ, Cart, Product, User, Address, Rating
+from django.contrib import messages
 
 
 # Create your views here.
@@ -103,7 +105,6 @@ class SearchView(generic.ListView):
         print(request.GET)
         if 'search_book' in request.GET:
             self.searchBook = request.GET['search_book']
-            print("esta es gucci", self.searchBook)
         else:
             keys = request.GET.keys()
             for key in keys:
@@ -116,20 +117,51 @@ class SearchView(generic.ListView):
 
         # Filtering by title or author
         if self.searchBook:
-            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))
+            filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))[:20]
             context['book_list'] = filtered
-            return context
-        # Filtering by genre (primary and secondary) using checkbox from frontend
-        if self.genres:
-            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
-            context['book_list'] = filtered
-            return context
-        # TODO: Filtering by topseller and On Sale
+            genres_relation=[]
+            for book in filtered:
+                if book.primary_genre not in genres_relation:
+                    genres_relation.append(book.primary_genre)
 
-        context['book_list'] = Book.objects.all()
+            relation_book = Book.objects.filter(primary_genre__in=genres_relation)[:20]
+            if(relation_book):
+                context['book_relation'] = relation_book
+                return context
+
+        else:
+            context['book_relation'] = Book.objects.all()[:20]
+
+        if self.genres:
+            filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))[:20]
+            context['book_list'] = filtered
+            return context
+
 
 
         return context
+        # Filtering by genre (primary and secondary) using checkbox from frontend
+
+        # TODO: Filtering by topseller and On Sale
+
+
+class SellView(generic.ListView):
+    @staticmethod
+    def add_book(request):
+        if request.method == "POST":
+            form = BookForm(request.POST)
+            if form.is_valid():
+                print(request.POST)
+                #messages.success(request, 'Form submission successful')
+                messages.info(request, 'Your book has been updated successfully!')
+                form.save()
+            #else:
+                #print(form.errors)
+            #return redirect("/")
+        else:
+            form = BookForm()
+
+        return render(request, "sell.html", {"form": form})
 
 
 class CartView(generic.ListView):
@@ -207,7 +239,7 @@ def register(request):
         # No Blank Data
         data_answered = all([len(data[key]) > 0 for key in data])
         exists = User.objects.filter(email=request.POST["email"]).exists()
-        validation = data and not exists
+        validation = data_answered and not exists
         return validation
 
     if request.method == 'POST':
@@ -218,7 +250,7 @@ def register(request):
                 if query.exists():
                     user_address = query.first()
                 else:
-                    user_address = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
+                    user_address = Address(city=request.POST['city1'], street=request.POST['street1'],
                                            country=request.POST['country1'], zip=request.POST['zip1'])
                     user_address.save()
 
@@ -240,6 +272,8 @@ def register(request):
 
             else:
                 return JsonResponse({"error": True})
+
+        return JsonResponse({"error": True})
 
 
 def login_user(request):

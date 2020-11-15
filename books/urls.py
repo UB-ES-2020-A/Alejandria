@@ -14,5 +14,5 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login_user, name='login'),
     path('payment/', views.PaymentView.as_view(), name='payment'),
-
+    path('sell/', views.SellView.add_book, name='sell'),
 ]
