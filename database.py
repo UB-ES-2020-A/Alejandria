@@ -1,6 +1,8 @@
 import os
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 import django
+
 django.setup()
 
 from books.models import Book, User, Address, Product, Cart, FAQ
@@ -65,7 +67,7 @@ print("BOOKS SAVED...OK")
 
 # Create Products
 books = Book.objects.all()
-products = []   # TODO: Product.objects.all() doesn't work.
+products = []  # TODO: Product.objects.all() doesn't work.
 for b in books:
     product = Product(ISBN=b, price=b.price)
     products.append(product)
@@ -74,7 +76,7 @@ for b in books:
 print("PRODUCTS SAVED...OK")
 
 # Create Cart
-cart = Cart(user_id=user)   # TODO: if not postgresql complains about the cart is not created in database.
+cart = Cart(user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
 cart.save()
 cart = Cart(id=1, user_id=user)
 
@@ -84,6 +86,7 @@ for p in products:
 cart.save()
 
 print("CART SAVED...OK")
+
 
 ## TO GENEREATE FAQS, CAN BE CREATED FROM A FILE faqs.txt OR WRITTEN IN TERMINAL. ALSO DELETE ALL OR SEE WHAT IS IN THE DATABASE
 
@@ -113,9 +116,9 @@ def write_some_faqs():
         questions.append(question)
         answers.append(answer)
 
-    faqs = list(zip(categories, questions, answers))
-    print("Faqs:",faqs)
-    create_faqs(faqs)
+    faqs_list = list(zip(categories, questions, answers))
+    print("Faqs:", faqs_list)
+    create_faqs(faqs_list)
 
 
 def read_faqs_from_file():
@@ -138,18 +141,18 @@ def read_faqs_from_file():
         categories.append(category)
 
     print("ALL FAQS READ...OK")
-    faqs = list(zip(categories, questions, answers))
-    create_faqs(faqs)
+    faqs_list = list(zip(categories, questions, answers))
+    create_faqs(faqs_list)
 
 
-def create_faqs(faqs):
+def create_faqs(faqs_to_create):
     print("SAVING FAQS...OK")
-    for faq in faqs:
-        print("### FAQ ---->", faq)
-        to_save = FAQ(question=faq[1], answer=faq[2], category=faq[0])
+    for faq_element in faqs_to_create:
+        print("### FAQ ---->", faq_element)
+        to_save = FAQ(question=faq_element[1], answer=faq_element[2], category=faq_element[0])
         print(to_save)
         to_save.save()
-     print("ALL FAQS SAVED...OK")
+    print("ALL FAQS SAVED...OK")
 
 
 what = input("Chose option, insert manually, read in file information, see whats in database or delete all FAQ"
