@@ -62,10 +62,15 @@ class HomeView(generic.ListView):
     context_object_name = 'book_list'
     model = Book
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.user_id = None
+
     # queryset = Book.objects.all()
     def get_queryset(self):  # TODO: Return list requested by the front end, TOP SELLERS, etc.
         today = datetime.today()
         print("GEEET BOOKS: ", Book.objects.all())
+        self.user_id = self.request.user.id or None
         return Book.objects.all()  ## TODO: Replace with the one below when ready to test with a full database.
         # return Book.objects.order_by('-num_sold')[:10].filter(
         #     publication_date__range=[str(today)[:10],
@@ -77,6 +82,11 @@ class HomeView(generic.ListView):
         context['new_books'] = Book.objects.filter(
             publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
         # context['novels'] = Book.objects.filter(genre__contains="Novel")
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            products = cart.products.all()
+            items = len(products)
+            context['total_items'] = [items]
 
         return context
 
@@ -92,9 +102,11 @@ class SearchView(generic.ListView):
         self.related = None
         self.searchBook = None
         self.genres = []
+        self.user_id = None
 
     def get(self, request, *args, **kwargs):
         print(request.GET)
+        self.user_id = self.request.user.id or None
         if 'search_book' in request.GET:
             self.searchBook = request.GET['search_book']
             print("esta es gucci", self.searchBook)
@@ -118,6 +130,11 @@ class SearchView(generic.ListView):
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
             context['book_list'] = filtered
             return context
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            products = cart.products.all()
+            items = len(products)
+            context['total_items'] = [items]
         # TODO: Filtering by topseller and On Sale
 
         context['book_list'] = Book.objects.all()
@@ -146,15 +163,24 @@ class CartView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
         context['books_from_cart_view'] = Book.objects.all()[:6]
-        # Add any other variables to the context here
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            products = cart.products.all()
+            print(products)
+            total_price = 0
+            items = len(products)
+            for prod in products:
+                print(prod.price)
+                total_price += prod.price
+                print("TOTAL_PRICE ", total_price)
+            context['total_price'] = [total_price]
+            context['total_items'] = [items]
+        else:
+            context['total_price'] = [0.00]
+            context['total_items'] = [0]
+
         return context
 
-
-def get_products_ajax(request):
-    if request.method == 'GET':
-        request_getdata = request.POST.get('getdata', None)
-        # make sure that you serialise "request_getdata"
-        return JsonResponse(request_getdata)
 
 def delete_product(request, product_id):
     user_id = request.user.id or None

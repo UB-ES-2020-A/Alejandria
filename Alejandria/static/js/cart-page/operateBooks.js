@@ -1,52 +1,6 @@
 var total = 0.00; //Just for this example
 var n_books = 0;
 
-
-$(document).ready(function () {
-
-    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            // if not safe, set csrftoken
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
-
-    $.ajax({
-        url: "{% url 'cart_ajax' %}",
-        data: {
-            // here getdata should be a string so that
-            // in your views.py you can fetch the value using get('getdata')
-            'getdata': JSON.stringify(hot.getData())
-        },
-        dataType: 'json',
-        success: function (res, status) {
-            alert(res);
-            alert(status);
-        },
-        error: function (res) {
-            alert(res.status);
-        }
-    });
-
-    }
-);
-
-
-
-
-
-
-
-
 /*  Add function   */
 function update_quantity(evt) {
   var price = evt.currentTarget.myParamPrice;
