@@ -261,6 +261,94 @@ class FaqsView(generic.ListView):
     # TODO: In next iterations has to have the option to make POSTs by the admin.
 
 
+class RegisterView(generic.TemplateView):
+
+    @staticmethod
+    def register(request):
+        if request.method == "POST":
+            form = RegisterForm(request.POST)
+            if form.is_valid():
+                form.save()
+            return redirect("/")
+        else:
+            form = RegisterForm()
+
+        return render(request, "register.html", {"form": form})
+
+
+class LoginView(generic.TemplateView):
+
+    @staticmethod
+    def login(request):
+        form = LoginForm(request.POST)
+        if request.method == 'POST':
+            # user = authenticate(
+            #    username=request.POST['username'],
+            #    password=request.POST['password'],backend='books.backend.EmailAuthBackend'
+            # )
+            user = User.objects.get(username=request.POST['username'], password=request.POST['password'])
+            if user is not None:
+                login(request, user, backend='books.backend.EmailAuthBackend')
+                return redirect("/")
+
+        return render(request,"login.html", {"form":form})
+
+
+
+class AddView(generic.ListView):
+    model = Book
+    template_name = 'createbook.html'
+
+    def post(self, request, *args, **kwargs):
+        book = Book.objects.filter(ISBN=request.POST['isbn']).first()
+
+        if(book):
+
+            if(book.user_id != request.user.id):
+                return JsonResponse({'message': 'The book does not belong to you'}, status=401)
+
+            else:
+                print('The book exists')
+                book.title = request.POST['title']
+                book.user_id = request.user.id
+                book.authors = request.POST['author']
+                book.description = request.POST['description']
+                book.saga = request.POST['saga']
+                book.price = float(request.POST['price'])
+                book.language = request.POST['language']
+                # book.genre = request.POST['genre']
+                book.publisher = request.POST['publisher']
+                book.num_pages = request.POST['numpages']
+                book.recommended_age = request.POST['recommendedage']
+                book.thumbnail = request.POST['thumbnail']
+                book.ebook = request.POST['ebook']
+
+                book.save()
+
+                return JsonResponse({'message': 'The book was modified successfully'}, status=200)
+
+        else:
+            print('The book does not exist')
+            newbook = Book(ISBN = request.POST['isbn'],
+                           user_id = User.objects.filter(username="franchito55").first(),
+                           title = request.POST['title'],
+                           #authors=request.POST['author'],
+                           description=request.POST['description'],
+                           saga=request.POST['saga'],
+                           price=float(request.POST['price']),
+                           language=request.POST['language'],
+                           genre=request.POST['genre'],
+                           publisher=request.POST['publisher'],
+                           num_pages=request.POST['numpages'],
+                           recommended_age=request.POST['recommendedage'],
+                           thumbnail=request.POST['thumbnail'],
+                           ebook=request.POST['ebook'])
+
+            newbook.save()
+
+            return JsonResponse({'message': 'The book was added successfully'}, status=200)
+
+
 def register(request):
     def validate_register(data):
         # No Blank Data

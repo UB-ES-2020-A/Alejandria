@@ -14,6 +14,7 @@ urlpatterns = [
     path('faqs/', views.FaqsView.as_view(), name='faqs'),
     path('register/', views.register, name='register'),
     path('login/', views.login_user, name='login'),
+    path('upload/', views.AddView.as_view(), name='add'),
     path('payment/', views.PaymentView.as_view(), name='payment'),
     path('sell/', views.SellView.add_book, name='sell'),
     path('forgot/', views.forgot, name='forgot'),
