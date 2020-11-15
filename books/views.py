@@ -192,6 +192,8 @@ class SellView(generic.ListView):
             form = BookForm(request.POST)
             if form.is_valid():
                 print(request.POST)
+
+
                 form.save()
             else:
                 print(form.errors)

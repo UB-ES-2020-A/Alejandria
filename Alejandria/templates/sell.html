@@ -43,9 +43,9 @@
 
 
 
-<!--
 
-<div class="signup-container" style="margin:auto; margin-top:50px">
+
+<!--<div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
     <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="width:110%">
   </div>
@@ -62,9 +62,9 @@
       </div>
     </footer>
   </div>
-</div>
+</div>-->
 
--->
+
 
 
 
@@ -89,7 +89,8 @@
 
 <div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
-    <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="width:110%">
+<!--    <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="width:110%">-->
+    <img id="blah" style="width:110%" src="#" alt="your image" />
   </div>
   <div class="right-container" style="width:auto">
     <header>
@@ -105,7 +106,8 @@
 <!--            <i class="fas fa-camera-retro"></i>-->
 <!--          </button>-->
           <label for="thumbnail">Upload a photo</label>
-          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">
+<!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
+          <input id="thumbnail" type='file' name="thumbnail" accept="image/jpeg, image/png" onchange="readURL(this);" />
 
 
         </div>
@@ -141,15 +143,20 @@
           <input id="publisher" name="publisher" placeholder="Publisher of book" type="text"></input>
         </div>
       </div>
-
-
+          <div class="set">
       <div class="pets-name">
         <label for="numpages">Nº Pages</label>
         <input id="numpages" name="num_pages" placeholder="Number of pages" type="number"></input>
       </div>
+        <div class="pets-name">
+            <label for="numsold">Nº Sells</label>
+            <input id="numsold" name="num_sold" placeholder="Number of sells" type="number"></input>
+      </div>
+
+      </div>
       <div class="pets-name">
         <label for="user_id">*User ID</label>
-        <input id="user_id" name="user_id" placeholder="User ID" type="number" value=""></input>
+        <input id="user_id" name="user_id" placeholder="User ID" type="number" value="15"></input>
       </div>
 
       <div class="pets-weight">
@@ -224,6 +231,21 @@
 </body>
 
 <script>
+    function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#blah')
+                        .attr('src', e.target.result)
+                        .width(150)
+                        .height(200);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
 </script>
 {% endblock %}
 </html>
