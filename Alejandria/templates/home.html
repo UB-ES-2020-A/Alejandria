@@ -111,26 +111,26 @@
     </div>
 
     <!--  SCROLL  -->
-    <h3 class="scroll-title">Novelas</h3>
+    <h3 class="scroll-title">Fantasy</h3>
     <div class="container-fluid">
         <div class="row">
             <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel1"  data-interval="1000">
                 <div class="MultiCarousel-inner">
+                    {% for book in fantasy %}
                     <div class="item" style="width: 185px;">
-                        {% for book in novels %}
-                            <div class="card" style="width: 11rem;">
-                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                                <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                    <p class="card-text">{{ book.authors }}</p>
-                                    <p class="card-text">Preu: {{ book.price }}€</p>
-                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Afegir al carret</a>
-                                </div>
-                            </a>
-                        </div>
-                        {% endfor %}
+                        <div class="card" style="width: 11rem;">
+                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                            <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                <p class="card-text">{{ book.authors }}</p>
+                                <p class="card-text">Preu: {{ book.price }}€</p>
+                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Afegir al carret</a>
+                            </div>
+                        </a>
                     </div>
+                    </div>
+                    {% endfor %}
                 </div>
                 <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
                 <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
@@ -139,12 +139,12 @@
     </div>
 
     <!--  SCROLL  -->
-    <h3 class="scroll-title">Aventuras</h3>
+    <h3 class="scroll-title">Crime</h3>
     <div class="container-fluid">
         <div class="row">
             <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel2"  data-interval="1000">
                 <div class="MultiCarousel-inner">
-                    {% for book in new_books %}
+                    {% for book in crime %}
                         <div class="item" style="width: 185px;">
                         <div class="card" style="width: 11rem;">
                             <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
