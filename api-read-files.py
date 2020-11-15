@@ -1,4 +1,6 @@
 import os
+import traceback
+
 import django
 import json
 import requests
@@ -8,6 +10,15 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
 
 from books.models import *
+
+try:
+    adress = Address(street="anonimous", city="Terraplana", country="Illuminados", zip=12345)
+    adress.save()
+    user = User(role="Admin", name="admin", password="admin", email="admin@mail.com", user_address=adress,
+                fact_address=adress)
+    user.save()
+except:
+    user = User.objects.filter(name="admin").first()
 
 
 def isbn_10__to__isbn_13(isbn_10):
@@ -36,26 +47,32 @@ for _, genre in Book.GENRE_CHOICES:
         json = response.json()
         for book in json["result"]:
             time.sleep(0.5)
-            print(book)
             params = {"key": book, "prettyprint": "true"}
             request = requests.get('http://openlibrary.org/api/get', params=params)
             json = request.json()["result"]
-            print(json)
             try:
-                isbn = json["isbn_13"] if "isbn_13" in json else isbn_10__to__isbn_13(json["isbn_10"])
+                isbn = json["isbn_13"][0] if "isbn_13" in json else isbn_10__to__isbn_13(json["isbn_10"])
+                print('ISBN: ', isbn)
                 title = json["title"] or "Unknown Title"
-                description = json["description"] if "description" in json else None
+                print('title: ', title)
+                description = json["description"]["value"] if "description" in json else None
+                print('dessc: ', description)
                 saga = json['series'][0] if 'series' in json else None
-                publication_date = json["publish_date"]
+                print('saga: ', saga)
+                # publication_date = json["publish_date"] TODO, modify incomming format to YYY-MM-DD or accept multiple formats
+                # print('publication date: ', publication_date)
+                publisher = json["publishers"][0] if "publishers" in json else None
+                print('publisher: ', publisher)
 
-                authors = json['authors'][0] if 'authors' in json else None
+                # authors = json['authors'][0] if 'authors' in json else None #TODO
 
-                book = Book(ISBN=isbn, num_pages=json["number_of_pages"], title=title, desctiption = description,
-                            saga = saga, publication_date = publication_date)
-
-                print("BOOK: ", book)
+                book = Book(ISBN=isbn, num_pages=json["number_of_pages"], title=title, description=description,
+                            saga=saga, publication_date=None, primary_genre=_, price=0,
+                            publisher=publisher, user_id=user)
+                print('BOOK: ', book)
+                book.save()
             except:
-                print("This book does not have ISBN")
+                traceback.print_exc()
 
     # Reset list for the next genre
     responses = list()
