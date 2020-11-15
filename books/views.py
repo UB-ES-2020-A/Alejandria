@@ -1,24 +1,16 @@
-
-from django.core import serializers
-from django.shortcuts import render
-import json
-
-from django.views import generic
-
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, render, redirect
-from .forms import RegisterForm, LoginForm
-
-from django.db.models import Q
-from django.forms.models import model_to_dict
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import logout
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-from django.contrib.auth import authenticate, login
-
 from datetime import datetime, timedelta
 
-from .models import Book, FAQ, Cart, Product, User, Address, Rating
+from django.contrib.auth import login
+from django.contrib.auth import logout
+from django.db.models import Q
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, redirect
+from django.views import generic
+
+from .forms import RegisterForm, LoginForm
+
+from .models import Book, FAQ, Cart, Product, User, Address
+
 
 # Create your views here.
 
@@ -90,7 +82,7 @@ class HomeView(generic.ListView):
         today = datetime.today()
         context['new_books'] = Book.objects.filter(
             publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
-        context['novels'] = Book.objects.filter(primary_genre__contains="Novel", secondary_genre__contains='Novel')
+        # context['novels'] = Book.objects.filter(genre__contains="Novel")
 
         return context
 
@@ -100,8 +92,6 @@ class SearchView(generic.ListView):
     template_name = 'search.html'  # TODO: Provisional file
     context_object_name = 'coincident'
 
-
-
     def __init__(self):
         super().__init__()
         self.coincident = None
@@ -110,8 +100,8 @@ class SearchView(generic.ListView):
         self.genres = []
 
     def get(self, request, *args, **kwargs):
-        print(request.GET);
-        if('search_book' in request.GET):
+        print(request.GET)
+        if 'search_book' in request.GET:
             self.searchBook = request.GET['search_book']
             print("esta es gucci", self.searchBook)
         else:
@@ -121,24 +111,23 @@ class SearchView(generic.ListView):
 
         return super().get(request, *args, **kwargs)
 
-
-
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
 
-        #Filtering by title or author
-        if(self.searchBook):
+        # Filtering by title or author
+        if self.searchBook:
             filtered =  Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))
             context['book_list'] = filtered
             return context
-        #Filtering by genre (primary and secondary) using checkbox from frontend
-        if(self.genres):
+        # Filtering by genre (primary and secondary) using checkbox from frontend
+        if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres )| Q(secondary_genre__in=self.genres))
             context['book_list'] = filtered
             return context
-        #TODO: Filtering by topseller and On Sale
+        # TODO: Filtering by topseller and On Sale
 
         context['book_list'] = Book.objects.all()
+
 
         return context
 
@@ -153,77 +142,31 @@ class CartView(generic.ListView):
         self.user_id = None
 
     def get_queryset(self):
-        print("IM IN GET QUERYSET")
         request = self.request
+        print(request.GET)
         self.user_id = request.user.id or None
-        print("USER ID: ", self.user_id)
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
-            print("Cart: ", cart.products.all())
             return cart.products.all()
         return None
 
-        #if user:
-            #queryset = Cart.products  # TODO: Right now im giving all the Products created to the Cart.
 
-    # TODO: Should get books in User.Cart
-
-    # TODO: Manage POST METHODS URGENT *****************************************
-
-    #  TODO: Listen to Post from view, generate a response. To do that change genericView to a normal one.
-
-    """
-    Example:
-    
-    from django.http import HttpResponseRedirect
-    from django.shortcuts import render
-    from django.views import View
-    
-    from .forms import MyForm
-    
-    class MyFormView(View):
-        form_class = MyForm
-        initial = {'key': 'value'}
-        template_name = 'form_template.html'
-    
-        def get(self, request, *args, **kwargs):
-            form = self.form_class(initial=self.initial)
-            return render(request, self.template_name, {'form': form})
-    
-        def post(self, request, *args, **kwargs):
-            form = self.form_class(request.POST)
-            if form.is_valid():
-                # <process form cleaned data>
-                return HttpResponseRedirect('/success/')
-    
-            return render(request, self.template_name, {'form': form})
-    """
+def delete_product(request, product_id):
+    user_id = request.user.id or None
+    print(request.GET)
+    if user_id:
+        cart = Cart.objects.get(user_id=user_id)
+        product = cart.products.get(ID=product_id)
+        print("Delete Product ", product)
+        cart.products.remove(product)
+    return HttpResponseRedirect('/cart')
 
 
 class FaqsView(generic.ListView):
     model = FAQ
-    template_name = 'faqs.html'  # TODO: Provisional file
-    context_object_name = 'faqs'
-
-    def get_queryset(self):
-        return FAQ.objects.all()
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        _range = list(range(len(FAQ.FAQ_CHOICES)))
-        context['category_names'] = dict(zip(_range, [a[1] for a in FAQ.FAQ_CHOICES]))
-        context['list_query'] = dict(zip(_range, [FAQ.objects.filter(category='DWLDBOOK'),
-                                                  FAQ.objects.filter(category='DEVOL'),
-                                                  FAQ.objects.filter(category='SELL'),
-                                                  FAQ.objects.filter(category='FACTU'),
-                                                  FAQ.objects.filter(category='CONTACT')]))
-        print(context)
-        return context
+    template_name = 'FAQs.html'  # TODO: Provisional file
 
     # TODO: In next iterations has to have the option to make POSTs by the admin.
-    def post(self):
-        pass
-
 
 
 class RegisterView(generic.TemplateView):
@@ -313,7 +256,7 @@ class AddView(generic.ListView):
 
             return JsonResponse({'message': 'The book was added successfully'}, status=200)
 
-
+          
 def register(request):
     def validate_register(data):
         # No Blank Data
@@ -326,17 +269,15 @@ def register(request):
         if 'trigger' in request.POST and 'register' in request.POST['trigger']:
             if validate_register(request.POST):
                 query = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
-                                               country=request.POST['country1'], zip=request.POST['zip1'])
+                                       country=request.POST['country1'], zip=request.POST['zip1'])
                 if query.exists():
                     user_address = query.first()
                 else:
                     user_address = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
-                                                          country=request.POST['country1'], zip=request.POST['zip1'])
+                                           country=request.POST['country1'], zip=request.POST['zip1'])
                     user_address.save()
 
-                if request.POST['city1'] == request.POST['city2'] and request.POST['street1'] == request.POST[
-                    'street2'] and request.POST['country1'] == request.POST["country2"] and request.POST['zip1'] == \
-                        request.POST["zip2"]:
+                if request.POST['city1'] == request.POST['city2'] and request.POST['street1'] == request.POST['street2'] and request.POST['country1'] == request.POST["country2"] and request.POST['zip1'] == request.POST["zip2"]:
                     fact_address = user_address
                 else:
                     fact_address = Address(city=request.POST['city2'], street=request.POST['street2'],
@@ -375,7 +316,7 @@ def login_user(request):
                 error = True
 
             return JsonResponse({"error": error})
-
+          
 
 # TODO: Not implemented yet
 class PaymentView(generic.TemplateView):

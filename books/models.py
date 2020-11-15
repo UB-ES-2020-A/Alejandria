@@ -94,10 +94,6 @@ class Product(models.Model):
     fees = models.DecimalField(decimal_places=2, max_digits=5, choices=zip(per_values, human_readable), default=21.0)
     discount = models.DecimalField(decimal_places=2, max_digits=5, choices=zip(per_values, human_readable), default=0.0)
 
-    def find_product(self, cart_id):
-        product = Product.objects.get(ISBN=self.ISBN, cart=cart_id)
-        return product
-
 
 class Rating(models.Model):
     ID = models.AutoField(primary_key=True, blank=False, null=False)
@@ -113,11 +109,7 @@ class Rating(models.Model):
 
 class Cart(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=False)
-    products = models.ManyToManyField(Product)  # TODO: How to treat quantities
-
-    def find_products(self):
-        print("user: ", self.user_id.name)
-        return self.products
+    products = models.ManyToManyField(Product)
 
 
 class Bill(models.Model):
