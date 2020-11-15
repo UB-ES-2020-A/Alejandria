@@ -21,7 +21,6 @@ from datetime import datetime, timedelta
 from .models import Book, FAQ, Cart, Product, User, Address
 
 
-
 # Create your views here.
 
 """
@@ -137,7 +136,6 @@ class SearchView(generic.ListView):
 
         context['book_list'] = Book.objects.all()
 
-
         return context
 
 
@@ -173,9 +171,27 @@ class CartView(generic.ListView):
 
 class FaqsView(generic.ListView):
     model = FAQ
-    template_name = 'FAQs.html'  # TODO: Provisional file
+    template_name = 'faqs.html'  # TODO: Provisional file
+    context_object_name = 'faqs'
+
+    def get_queryset(self):
+        return FAQ.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        _range = list(range(len(FAQ.FAQ_CHOICES)))
+        context['category_names'] = dict(zip(_range, [a[1] for a in FAQ.FAQ_CHOICES]))
+        context['list_query'] = dict(zip(_range, [FAQ.objects.filter(category='DWLDBOOK'),
+                                                  FAQ.objects.filter(category='DEVOL'),
+                                                  FAQ.objects.filter(category='SELL'),
+                                                  FAQ.objects.filter(category='FACTU'),
+                                                  FAQ.objects.filter(category='CONTACT')]))
+        print(context)
+        return context
 
     # TODO: In next iterations has to have the option to make POSTs by the admin.
+    def post(self):
+        pass
 
 
 
@@ -226,15 +242,17 @@ def register(request):
         if 'trigger' in request.POST and 'register' in request.POST['trigger']:
             if validate_register(request.POST):
                 query = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
-                                       country=request.POST['country1'], zip=request.POST['zip1'])
+                                               country=request.POST['country1'], zip=request.POST['zip1'])
                 if query.exists():
                     user_address = query.first()
                 else:
                     user_address = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
-                                           country=request.POST['country1'], zip=request.POST['zip1'])
+                                                          country=request.POST['country1'], zip=request.POST['zip1'])
                     user_address.save()
 
-                if request.POST['city1'] == request.POST['city2'] and request.POST['street1'] == request.POST['street2'] and request.POST['country1'] == request.POST["country2"] and request.POST['zip1'] == request.POST["zip2"]:
+                if request.POST['city1'] == request.POST['city2'] and request.POST['street1'] == request.POST[
+                    'street2'] and request.POST['country1'] == request.POST["country2"] and request.POST['zip1'] == \
+                        request.POST["zip2"]:
                     fact_address = user_address
                 else:
                     fact_address = Address(city=request.POST['city2'], street=request.POST['street2'],
@@ -273,7 +291,8 @@ def login_user(request):
                 error = True
 
             return JsonResponse({"error": error})
-          
+
+
 # TODO: Not implemented yet
 class PaymentView(generic.TemplateView):
     model = Book
