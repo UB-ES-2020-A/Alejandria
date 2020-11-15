@@ -87,7 +87,7 @@ class HomeView(generic.ListView):
         today = datetime.today()
         context['new_books'] = Book.objects.filter(
             publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
-        context['novels'] = Book.objects.filter(genre__contains="Novel")
+        context['novels'] = Book.objects.filter(primary_genre__contains="Novel", secondary_genre__contains='Novel')
 
         return context
 

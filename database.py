@@ -67,7 +67,7 @@ print("BOOKS SAVED...OK")
 books = Book.objects.all()
 products = []   # TODO: Product.objects.all() doesn't work.
 for b in books:
-    product = Product(book=b, price=b.price)
+    product = Product(ISBN=b, price=b.price)
     products.append(product)
     product.save()
 
