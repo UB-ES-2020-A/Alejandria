@@ -58,21 +58,20 @@ class Book(models.Model):
     ISBN = models.CharField(primary_key=True, max_length=13, blank=False, null=False)  # Its a Char instead of Integer
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)  # Reference to the User that created it #TODO: on_delete=models.CASCADE
-    title = models.CharField(max_length=30, blank=False)
-    description = models.TextField(max_length=500, blank=True, null=True)  # Synopsis
-    saga = models.CharField(max_length=30, blank=True, null=True)
+    title = models.CharField(max_length=100, blank=False)
+    description = models.TextField(max_length=1000, blank=True, null=True)  # Synopsis
+    saga = models.CharField(max_length=100, blank=True, null=True)
     # authors = models.ManyToManyField(Author, max_length=10, blank=True, null=True,
     #                                  default=None)  # Un llibre pot tenir més d'un autor.
-    author = models.CharField(max_length=30, default="Anonymous")
+    author = models.CharField(max_length=50, default="Anonymous")
     # Has to be datetime.date
     # By default it's now.
     publication_date = models.DateField(null=True, blank=True, default=timezone.now)
     price = models.DecimalField(decimal_places=2, max_digits=8)
-    language = models.CharField(max_length=15, blank=False)  # TODO: Might have choices=<<languages it can be>>
-    primary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES,
-                                     default='OTHR')  # TODO: choices=<<all possible genres>>, also can have multiple choices
-    secondary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True)
-    publisher = models.CharField(max_length=30)
+    language = models.CharField(max_length=30, blank=False)  # TODO: Might have choices=<<languages it can be>>
+    primary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, default='OTHR')  # TODO: choices=<<all possible genres>>, also can have multiple choices
+    secondary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
+    publisher = models.CharField(max_length=50)
     num_pages = models.IntegerField(blank=False)
     num_sold = models.IntegerField(default=0)
     recommended_age = models.CharField(max_length=30, blank=True,
@@ -142,3 +141,10 @@ class FAQ(models.Model):
 
 ## TODO: If we decide to give the option to the admin to add the FAQ to a new category, categories shold be saved to the database
 # class FAQchoices(models.Model):
+
+
+class ResetMails(models.Model):
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
+                                blank=False)
+    activated = models.BooleanField(default=True)

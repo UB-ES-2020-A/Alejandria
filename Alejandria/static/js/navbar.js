@@ -58,7 +58,55 @@ $(document).ready(function () {
         })
     });
 
+    $("#forgot_btn_hidden").click(async function openForgotPasswordModal() {
 
+        const {value: forgotParams} = await Swal.fire({
+            title: "Forgot Password",
+            html:
+                '<input type="email" id="forgot_mail" class="swal2-input" placeholder="Enter email">'+
+                '<small style="margin-right: 40%;">A Password Reset Email will be sent.</small>',
+
+            showCancelButton: true,
+            focusConfirm: false,
+            preConfirm: () => {
+                return {
+                    mail: $("#forgot_mail").val(),
+                    trigger: "forgot"
+
+                }
+            }
+        })
+
+        if (forgotParams) {
+            var url = window.location.origin + "/forgot/";
+            setCSRF();
+            $.ajax(url, {
+                method: "POST",
+                data: forgotParams,
+                ContentType: 'application/x-www-form-urlencode',
+                success: function (response) {
+                    if (response.error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.msg,
+                        })
+                        $(".swal2-cancel").addClass("d-none")
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.msg,
+                            text: 'Mail sent to your address',
+                        })
+                        $(".swal2-confirm").click(function () {
+                            window.location.href = "";
+                        });
+                    }
+                }
+
+            })
+        }
+    });
 
     $("#login_btn").click(async function () {
         var url = window.location.origin + "/login/";
@@ -66,9 +114,15 @@ $(document).ready(function () {
         const {value: loginParams} = await Swal.fire({
             title: "Sign In",
             html:
-                '<input type="email" id="login_mail" class="swal2-input" placeholder="Enter email">' +
-                '<input type="password" id="login_password" class="swal2-input" placeholder="Enter password">' +
-                '<a id="forgot_password" href=""> <small> Forgot Password </small> <a>',
+                '<div class="form-group">'+
+                    '<label for="login_mail" style="margin-right: 100%;"><strong>Email</strong></label>'+
+                    '<input type="email" id="login_mail" class="swal2-input" placeholder="Enter email">' +
+                '</div>'+
+                '<div class="form-group">'+
+                    '<label for="login_password" style="margin-right: 100%;"><strong>Password</strong></label>'+
+                    '<input type="password" id="login_password" class="swal2-input" placeholder="Enter password">' +
+                '</div>'+
+                '<a id="forgot_password" href="#" style="color:#dc3545!important; margin-right: 73%;" onclick="forgot_btn_hidden.click();"> <small> Forgot Password </small> <a>',
             showCancelButton: true,
             focusConfirm: false,
             preConfirm: () => {
@@ -131,12 +185,40 @@ $(document).ready(function () {
             {
                 title: "Credentials and Personal Data",
                 html:
-                    '<input type="text" id="register_username" class="swal2-input" placeholder="Username">' +
-                    '<input type="text" id="register_firstname" class="swal2-input" placeholder="First Name">' +
-                    '<input type="text" id="register_lastname" class="swal2-input" placeholder="Last Name">' +
-                    '<input type="email" id="register_email" class="swal2-input" placeholder="Enter email">' +
-                    '<input type="password" id="register_password_1" class="swal2-input" placeholder="Enter password">' +
-                    '<input type="password" id="register_password_2" class="swal2-input" placeholder="Confirm password">',
+                    '<div class="form-group">'+
+                        '<label for="register_username" style="margin-right: 100%;"><strong>Username</strong></label>'+
+                        '<input type="text" id="register_username" class="swal2-input form-control" placeholder="Username">' +
+                        '<small id="usernameHelp" class="form-text text-muted" style="padding-right: 74%;">Displayed Name</small>'+
+                    '</div>'+
+
+                    '<div class="form-group">'+
+                        '<label for="register_firstname" style="margin-right: 77%;"><strong>First Name</strong></label>'+
+                        '<input type="text" id="register_firstname" class="swal2-input form-control" placeholder="First Name">' +
+                    '</div>'+
+
+                    '<div class="form-group">'+
+                        '<label for="register_lastname" style="margin-right: 77%;"><strong>Last Name</strong></label>'+
+                        '<input type="text" id="register_lastname" class="swal2-input form-control" placeholder="Last Name">' +
+                    '</div>'+
+
+                    '<div class="form-group">'+
+                        '<label for="register_email" style="margin-right: 69%;"><strong>Email Address</strong></label>'+
+                        '<input type="email" id="register_email" class="swal2-input form-control" placeholder="Enter email">' +
+                        '<small id="emailHelp" class="form-text text-muted" style="padding-right: 57%;">Enter a valid Email Address</small>'+
+                    '</div>'+
+
+                    '<div class="form-group">'+
+                        '<label for="register_password_1" style="margin-right: 100%;"><strong>Password</strong></label>'+
+                        '<input type="password" id="register_password_1" class="swal2-input form-control" placeholder="Enter password">' +
+                        '<small id="password1Help" class="form-text text-muted" style="padding-right: 32%;">Max. 50 characters. All characters are valid.</small>'+
+                    '</div>'+
+
+                    '<div class="form-group">'+
+                        '<label for="register_password_2" style="margin-right: 61%;"><strong>Confirm Password</strong></label>'+
+                        '<input type="password" id="register_password_2" class="swal2-input form-control" placeholder="Confirm password">'+
+                        '<small id="password2Help" class="form-text text-muted" style="padding-right: 55%;">Both Passwords must match.</small>'+
+                    '</div>',
+
                 preConfirm: () => {
                     data = {
                         username: $("#register_username").val(),
@@ -152,10 +234,26 @@ $(document).ready(function () {
             {
                 title: "User Address",
                 html:
+                '<div class="form-group">'+
+                    '<label for="register_country_1" style="margin-right: 100%;"><strong>Country</strong></label>'+
                     '<input type="text" id="register_country_1" class="swal2-input" placeholder="Country">' +
+                '</div>'+
+
+                '<div class="form-group">'+
+                    '<label for="register_city_1" style="margin-right: 100%;"><strong>City</strong></label>'+
                     '<input type="text" id="register_city_1" class="swal2-input" placeholder="City">' +
+                '</div>'+
+
+                '<div class="form-group">'+
+                    '<label for="register_street_1" style="margin-right: 100%;"><strong>Street</strong></label>'+
                     '<input type="text" id="register_street_1" class="swal2-input" placeholder="Street">' +
-                    '<input type="number" id="register_zip_1" class="swal2-input" placeholder="Zip Code">',
+                '</div>'+
+
+                '<div class="form-group">'+
+                    '<label for="register_zip_1" style="margin-right: 81%;"><strong>Zip Code</strong></label>'+
+                    '<input type="text" id="register_zip_1" class="swal2-input" placeholder="Zip Code">'+
+                '</div>',
+
                 preConfirm: () => {
                     data = {
                         country1: $("#register_country_1").val(),
@@ -169,10 +267,25 @@ $(document).ready(function () {
             {
                 title: "Facturation Address",
                 html:
-                    '<input type="text" id="register_country_2" class="swal2-input" placeholder="Country">' +
-                    '<input type="text" id="register_city_2" class="swal2-input" placeholder="City">' +
-                    '<input type="text" id="register_street_2" class="swal2-input" placeholder="Street">' +
-                    '<input type="number" id="register_zip_2" class="swal2-input" placeholder="Zip Code">',
+                    '<div class="form-group">'+
+                        '<label for="register_country_2" style="margin-right: 100%;"><strong>Country</strong></label>'+
+                        '<input type="text" id="register_country_2" class="swal2-input" placeholder="Country">' +
+                    '</div>'+
+
+                    '<div class="form-group">'+
+                        '<label for="register_city_2" style="margin-right: 100%;"><strong>City</strong></label>'+
+                        '<input type="text" id="register_city_2" class="swal2-input" placeholder="City">' +
+                    '</div>'+
+
+                    '<div class="form-group">'+
+                        '<label for="register_street_2" style="margin-right: 100%;"><strong>Street</strong></label>'+
+                        '<input type="text" id="register_street_2" class="swal2-input" placeholder="Street">' +
+                    '</div>'+
+
+                    '<div class="form-group">'+
+                        '<label for="register_zip_2" style="margin-right: 81%;"><strong>Zip Code</strong></label>'+
+                        '<input type="text" id="register_zip_2" class="swal2-input" placeholder="Zip Code">'+
+                    '</div>',
                 preConfirm: () => {
                     data = {
                         country2: $("#register_country_2").val(),
@@ -189,30 +302,30 @@ $(document).ready(function () {
             if(window.value){
                 setCSRF();
                 $.ajax(url, {
-                method: "POST",
-                data: window.value,
-                ContentType: 'application/x-www-form-urlencode',
-                success: function (response) {
-                    if (response.error) {
-                        window.value = ""
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!',
-                        })
-                    } else {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Registered Successfully',
-                            text: 'You can now Sign In to your account!',
-                        })
-                        $(".swal2-confirm").click(function () {
-                            window.location.href = "";
-                        });
+                    method: "POST",
+                    data: window.value,
+                    ContentType: 'application/x-www-form-urlencode',
+                    success: function (response) {
+                        if (response.error) {
+                            window.value = ""
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Registered Successfully',
+                                text: 'You can now Sign In to your account!',
+                            })
+                            $(".swal2-confirm").click(function () {
+                                window.location.href = "";
+                            });
+                        }
                     }
-                }
 
-            })
+                })
             }
 
         })

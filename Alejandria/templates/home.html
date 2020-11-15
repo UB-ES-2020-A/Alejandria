@@ -91,13 +91,13 @@
                     {% for book in book_list %}
                         <div class="item" style="width: 185px;">
                             <div class="card" style="width: 11rem;">
-                                <a href="/book/0123456789012" style="text-decoration: none; color: inherit;"> <!-- Change href -->
+                                <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;"> <!-- Change href -->
                                     <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap"> <!--TODO: Change to real book image -->
                                     <div class="card-body">
                                         <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
                                         <p class="card-text">{{ book.authors }}</p>
                                         <p class="card-text">Preu: {{ book.price }}€</p>
-                                        <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                        <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Afegir al carret</a>
                                     </div>
                                 </a>
                             </div>
@@ -119,13 +119,13 @@
                     <div class="item" style="width: 185px;">
                         {% for book in novels %}
                             <div class="card" style="width: 11rem;">
-                            <a href="/book/0123456789012" style="text-decoration: none; color: inherit;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
                                 <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
                                 <div class="card-body">
                                     <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
                                     <p class="card-text">{{ book.authors }}</p>
                                     <p class="card-text">Preu: {{ book.price }}€</p>
-                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Afegir al carret</a>
                                 </div>
                             </a>
                         </div>
@@ -147,13 +147,13 @@
                     {% for book in new_books %}
                         <div class="item" style="width: 185px;">
                         <div class="card" style="width: 11rem;">
-                            <a href="/book/0123456789012" style="text-decoration: none; color: inherit;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
                                 <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
                                 <div class="card-body">
                                     <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
                                     <p class="card-text">{{ book.authors }}</p>
                                     <p class="card-text">Preu: {{ book.price }}€</p>
-                                    <a href="#" class="btn btn-primary">Afegir al carret</a>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Afegir al carret</a>
                                 </div>
                             </a>
                         </div>

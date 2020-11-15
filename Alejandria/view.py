@@ -50,3 +50,9 @@ def delete_product(request, product_id):
     template = "delete_product.html"
     context = {product_id}
     return render(request, template, context)
+
+
+def add_product(request, view, book):
+    template = "add_product.html"
+    context = {view, book}
+    return render(request, template, context)

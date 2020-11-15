@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+
+<!--    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>-->
+<!--    <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>-->
+
+
+
+<!--    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">-->
+
+
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+    <!-- popper.js -->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>-->
+
+
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
+
+
+    <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font.css' %}">
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form-sell.css' %}">
+    <!-- Css files from static folder -->
+
+
+    <script src="//cdn.jsdelivr.net/npm/less" ></script>
+
+
+</head>
+<body>
+
+
+
+{% if messages %}
+  {% for msg in messages %}
+    <div class="alert alert-info alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{msg.message}}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<!--<div class="signup-container" style="margin:auto; margin-top:50px">
+  <div style="margin:auto;padding-right:30px;">
+    <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="width:110%">
+  </div>
+  <div class="right-container" style="width:auto">
+    <form method="POST"> {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Next" />
+</form>
+
+    </header>
+    <footer>
+      <div class="set">
+        <button id="next">Next</button>
+      </div>
+    </footer>
+  </div>
+</div>-->
+
+
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+<!--                <strong>{{ error }}</strong>-->
+                <strong>Hubo un problema en el campo "{{ field.name }}". {{ error|escape }}</strong>
+<!--                <strong>{{ error|escape }}</strong>-->
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!--<div id="myModal" class="modal fade" role="dialog">-->
+<!--  <div class="modal-dialog">-->
+
+<!--    &lt;!&ndash; Modal content&ndash;&gt;-->
+<!--    <div class="modal-content">-->
+<!--      <div class="modal-header">-->
+<!--        <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--        <h4 class="modal-title">Modal Header</h4>-->
+<!--      </div>-->
+<!--      <div class="modal-body">-->
+<!--        <p>Some text in the modal.</p>-->
+<!--      </div>-->
+<!--      <div class="modal-footer">-->
+<!--        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--  </div>-->
+<!--</div>-->
+
+<!--<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>-->
+
+
+<div class="signup-container" style="margin:auto; margin-top:50px">
+  <div style="margin:auto;padding-right:30px;">
+<!--    <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="width:110%">-->
+    <img id="blah" style="width:110%" src="https://i0.wp.com/www.pagoderiofrio.es/wp-content/uploads/2016/07/no-image.jpg?fit=450%2C450&ssl=1" />
+  </div>
+  <div class="right-container" style="width:auto">
+    <header>
+      <form method="POST"> {% csrf_token %}
+      <h1>Add a book to Alejandria</h1>
+<div class="set">
+        <div class="pets-name">
+          <label for="pets-name">* Title</label>
+          <input id="pets-name" name="title" placeholder="Title of book" type="text"></input>
+        </div>
+    <div class="pets-name">
+        <label for="user_id">*User ID</label>
+        <input id="user_id" name="user_id" placeholder="User ID" type="number" value="15"></input>
+      </div>
+
+</div>
+      <div class="set">
+        <div class="pets-breed">
+          <label for="author">* Author</label>
+          <input id="author" placeholder="Anonymous" name="author" type="text"></input>
+        </div>
+        <div class="pets-birthday">
+          <label for="price">* Price</label>
+          <input id="price" name="price" placeholder="12.99" type="number"></input>
+        </div>
+      </div>
+      <div class="set">
+        <div class="pets-gender">
+          <label for="isbn">* ISBN</label>
+          <input id="isbn" name="ISBN" placeholder="0123456789012" type="number"></input>
+        </div>
+        <div class="pets-gender">
+          <label for="saga">Saga</label>
+          <input id="saga" name="saga" placeholder="Saga of book" type="text"></input>
+        </div>
+      </div>
+
+        <div class="set">
+        <div class="pets-gender">
+          <label for="language">* Language</label>
+          <input id="language" name="language" placeholder="Spanish" type="text"></input>
+        </div>
+        <div class="pets-gender">
+          <label for="publisher">* Publisher</label>
+          <input id="publisher" name="publisher" placeholder="Publisher of book" type="text"></input>
+        </div>
+      </div>
+          <div class="set">
+      <div class="pets-name">
+        <label for="numpages">* Nº Pages</label>
+        <input id="numpages" name="num_pages" placeholder="100" type="number"></input>
+      </div>
+        <div class="pets-name">
+            <label for="numsold">* Nº Sells</label>
+            <input id="numsold" name="num_sold" placeholder="0" type="number"></input>
+      </div>
+
+      </div>
+
+      <div class="set">
+    <div class="pets-breed">
+      <label for="publi_date">Publication date</label>
+      <input id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="date"></input>
+    </div>
+    <div class="pets-birthday">
+      <label for="recommended_age">Recommended age</label>
+        <input id="recommended_age" name="recommended_age" placeholder="Adult" type="text"></input>
+    </div>
+  </div>
+
+
+
+      <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
+<!--          <button id="pets-upload">-->
+<!--            <i class="fas fa-camera-retro"></i>-->
+<!--          </button>-->
+<!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
+          <label for="thumbnail">* Thumbnail</label>
+          <input style="border:0px" id="thumbnail" type='file' name="thumbnail" accept="image/jpeg, image/png" onchange="readURL(this);" />
+
+
+        </div>
+
+       <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
+<!--          <button id="pets-upload">-->
+<!--            <i class="fas fa-camera-retro"></i>-->
+<!--          </button>-->
+<!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
+          <label for="file">* File eBook</label>
+          <input id="file" style="border:0px;" type='file' name="file" accept="application/pdf" />
+
+
+        </div>
+
+      <div class="pets-weight">
+        <label for="horror-p">* Primary genre</label>
+        <div class="radio-container" style="width: 101%">
+          <div class="row">
+            <input id="horror-p" name="primary_genre" type="radio" value="HORR"></input>
+            <label for="horror-p">Horror</label>
+            <input id="romance-p" name="primary_genre" type="radio" value="ROMA"></input>
+            <label for="romance-p">Romance</label>
+            <input id="crime-p" name="primary_genre" type="radio" value="CRIM"></input>
+            <label for="crime-p">Crime</label>
+            <input id="scfi-p" name="primary_genre" type="radio" value="SCFI"></input>
+            <label for="scfi-p">Sci-fi</label>
+            <input id="fantasy-p" name="primary_genre" type="radio" value="FANT"></input>
+            <label for="fantasy-p">Fantasy</label>
+            <input id="fiction-p" name="primary_genre" type="radio" value="FICT"></input>
+            <label for="fiction-p">Fiction</label>
+            <input id="teen-p" name="primary_genre" type="radio" value="TEEN"></input>
+            <label for="teen-p">Teen</label>
+            <input id="children-p" name="primary_genre" type="radio" value="KIDS"></input>
+            <label for="children-p">Children</label>
+            <input id="anime-p" name="primary_genre" type="radio" value="ANIM"></input>
+            <label for="anime-p">Anime</label>
+            <input id="other-p" name="primary_genre" type="radio" value="OTHR"></input>
+            <label for="other-p">Others</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="pets-weight" style="padding-top:20px;padding-bottom:20px;">
+        <label for="horror-s">Secondary genre</label>
+        <div class="radio-container" style="width: 101%">
+          <div class="row">
+            <input id="horror-s" name="secondary_genre" type="radio" value="HORR"></input>
+            <label for="horror-s">Horror</label>
+            <input id="romance-s" name="secondary_genre" type="radio" value="ROMA"></input>
+            <label for="romance-s">Romance</label>
+            <input id="crime-s" name="secondary_genre" type="radio" value="CRIM"></input>
+            <label for="crime-s">Crime</label>
+            <input id="scfi-s" name="secondary_genre" type="radio" value="SCFI"></input>
+            <label for="scfi-s">Sci-fi</label>
+            <input id="fantasy-s" name="secondary_genre" type="radio" value="FANT"></input>
+            <label for="fantasy-s">Fantasy</label>
+            <input id="fiction-s" name="secondary_genre" type="radio" value="FICT"></input>
+            <label for="fiction-s">Fiction</label>
+            <input id="teen-s" name="secondary_genre" type="radio" value="TEEN"></input>
+            <label for="teen-s">Teen</label>
+            <input id="children-s" name="secondary_genre" type="radio" value="KIDS"></input>
+            <label for="children-s">Children</label>
+            <input id="anime-s" name="secondary_genre" type="radio" value="ANIM"></input>
+            <label for="anime-s">Anime</label>
+            <input id="other-s" name="secondary_genre" type="radio" value="OTHR"></input>
+            <label for="other-s">Others</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="pets-breed">
+        <label for="description">Description</label>
+        <textarea  id="description" placeholder="Place here the description of book" type="text" style="height:200px; width:100%;"></textarea>
+      </div>
+
+        <input type="checkbox" style="vertical-align:middle;" id="terms" name="terms">
+        <label for="terms"> I accept the terms and conditions</label>
+
+        <div class="set" style="float: right;">
+        <input type="submit" data-toggle="modal" data-target="#myModal" value="Save" />
+        </div>
+</form>
+    </header>
+  </div>
+</div>
+
+
+</body>
+
+<script>
+    function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#blah')
+                        .attr('src', e.target.result)
+                        .width(150)
+                        .height(200);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+</script>
+{% endblock %}
+</html>
