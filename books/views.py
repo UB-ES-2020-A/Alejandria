@@ -86,7 +86,7 @@ class HomeView(generic.ListView):
         today = datetime.today()
         context['new_books'] = Book.objects.filter(
             publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
-        context['novels'] = Book.objects.filter(genre__contains="Novel")
+        context['novels'] = Book.objects.filter(primary_genre__contains="Novel", secondary_genre__contains='Novel')
 
         return context
 
@@ -140,33 +140,60 @@ class SearchView(generic.ListView):
 
 
 class CartView(generic.ListView):
-    model = Book
+    model = Cart
     template_name = 'cart.html'  # TODO: Provisional file
+    context_object_name = 'cart_list'
 
-    ## TODO: This is m aproach to Cart post method, but it shouldn't be done in this branch.
-    # def get_queryset(self):
-    #     if self.logged_in():
-    #         user = User.objects.get(username=super().request.POST['username'], password=super().request.POST['password'])
-    #         return User.objects.filter(username=user).products.all()
-    #     else:
-    #         ## TODO: What to do when visitant whants to see it's Cart @method_decorator??
-    #         return None ## TODO and error_message
-    #
-    # def post(self, request, *args, **kwargs):
-    #     ## TODO: Make form to check if the request for CartView is good.
-    #     auth = super().request.auth
-    #     print(auth)
-    #     if auth: ## https://www.django-rest-framework.org/api-guide/authentication/
-    #         user = super().request.user
-    #         if user: ## TODO User and auth is linked somehow? or request.user?
-    #             pass
-    #
-    #
-    #     #return render(request, self.template_name, {'form': form})
-    #
-    # ## TODO Check if the user is logged in. With tocken or userneme password or auth or user
-    # def logged_in(self):
-    #     return True
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.user_id = None
+
+    def get_queryset(self):
+        print("IM IN GET QUERYSET")
+        request = self.request
+        self.user_id = request.user.id or None
+        print("USER ID: ", self.user_id)
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            print("Cart: ", cart.products.all())
+            return cart.products.all()
+        return None
+
+        #if user:
+            #queryset = Cart.products  # TODO: Right now im giving all the Products created to the Cart.
+
+    # TODO: Should get books in User.Cart
+
+    # TODO: Manage POST METHODS URGENT *****************************************
+
+    #  TODO: Listen to Post from view, generate a response. To do that change genericView to a normal one.
+
+    """
+    Example:
+    
+    from django.http import HttpResponseRedirect
+    from django.shortcuts import render
+    from django.views import View
+    
+    from .forms import MyForm
+    
+    class MyFormView(View):
+        form_class = MyForm
+        initial = {'key': 'value'}
+        template_name = 'form_template.html'
+    
+        def get(self, request, *args, **kwargs):
+            form = self.form_class(initial=self.initial)
+            return render(request, self.template_name, {'form': form})
+    
+        def post(self, request, *args, **kwargs):
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                # <process form cleaned data>
+                return HttpResponseRedirect('/success/')
+    
+            return render(request, self.template_name, {'form': form})
+    """
 
 
 class FaqsView(generic.ListView):
