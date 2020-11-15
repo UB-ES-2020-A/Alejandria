@@ -58,12 +58,14 @@ $(document).ready(function () {
         })
     });
 
-    async function openForgotPasswordModal() {
+    $("#forgot_btn_hidden").click(async function openForgotPasswordModal() {
 
         const {value: forgotParams} = await Swal.fire({
             title: "Forgot Password",
             html:
-                '<input type="email" id="forgot_mail" class="swal2-input" placeholder="Enter email">' ,
+                '<input type="email" id="forgot_mail" class="swal2-input" placeholder="Enter email">'+
+                '<small style="margin-right: 40%;">A Password Reset Email will be sent.</small>',
+
             showCancelButton: true,
             focusConfirm: false,
             preConfirm: () => {
@@ -76,9 +78,35 @@ $(document).ready(function () {
         })
 
         if (forgotParams) {
+            var url = window.location.origin + "/forgot/";
             setCSRF();
+            $.ajax(url, {
+                method: "POST",
+                data: forgotParams,
+                ContentType: 'application/x-www-form-urlencode',
+                success: function (response) {
+                    if (response.error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.msg,
+                        })
+                        $(".swal2-cancel").addClass("d-none")
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.msg,
+                            text: 'Mail sent to your address',
+                        })
+                        $(".swal2-confirm").click(function () {
+                            window.location.href = "";
+                        });
+                    }
+                }
+
+            })
         }
-    }
+    });
 
     $("#login_btn").click(async function () {
         var url = window.location.origin + "/login/";
@@ -86,9 +114,15 @@ $(document).ready(function () {
         const {value: loginParams} = await Swal.fire({
             title: "Sign In",
             html:
-                '<input type="email" id="login_mail" class="swal2-input" placeholder="Enter email">' +
-                '<input type="password" id="login_password" class="swal2-input" placeholder="Enter password">' +
-                '<a id="forgot_password" href=""> <small> Forgot Password </small> <a>',
+                '<div class="form-group">'+
+                    '<label for="login_mail" style="margin-right: 100%;"><strong>Email</strong></label>'+
+                    '<input type="email" id="login_mail" class="swal2-input" placeholder="Enter email">' +
+                '</div>'+
+                '<div class="form-group">'+
+                    '<label for="login_password" style="margin-right: 100%;"><strong>Password</strong></label>'+
+                    '<input type="password" id="login_password" class="swal2-input" placeholder="Enter password">' +
+                '</div>'+
+                '<a id="forgot_password" href="#" style="color:#dc3545!important; margin-right: 73%;" onclick="forgot_btn_hidden.click();"> <small> Forgot Password </small> <a>',
             showCancelButton: true,
             focusConfirm: false,
             preConfirm: () => {
@@ -264,30 +298,30 @@ $(document).ready(function () {
             if(window.value){
                 setCSRF();
                 $.ajax(url, {
-                method: "POST",
-                data: window.value,
-                ContentType: 'application/x-www-form-urlencode',
-                success: function (response) {
-                    if (response.error) {
-                        window.value = ""
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!',
-                        })
-                    } else {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Registered Successfully',
-                            text: 'You can now Sign In to your account!',
-                        })
-                        $(".swal2-confirm").click(function () {
-                            window.location.href = "";
-                        });
+                    method: "POST",
+                    data: window.value,
+                    ContentType: 'application/x-www-form-urlencode',
+                    success: function (response) {
+                        if (response.error) {
+                            window.value = ""
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Registered Successfully',
+                                text: 'You can now Sign In to your account!',
+                            })
+                            $(".swal2-confirm").click(function () {
+                                window.location.href = "";
+                            });
+                        }
                     }
-                }
 
-            })
+                })
             }
 
         })
