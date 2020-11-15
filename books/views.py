@@ -8,7 +8,9 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.views import generic
 
 from .forms import RegisterForm, LoginForm
+
 from .models import Book, FAQ, Cart, Product, User, Address
+
 
 # Create your views here.
 
@@ -54,7 +56,12 @@ class BookView(generic.DetailView):
     model = Book
     template_name = 'details.html'
 
-    # TODO: Treat POST to add a book
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book_id = self.kwargs['pk']
+        context['review_list'] = Rating.objects.filter(product_id=book_id).all()[:5]
+        if self.request.user.id == Book.objects.filter(ISBN=book_id).first().user_id:
+            context['book_owner'] = True
 
 
 class HomeView(generic.ListView):
