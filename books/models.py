@@ -141,3 +141,10 @@ class FAQ(models.Model):
 
 ## TODO: If we decide to give the option to the admin to add the FAQ to a new category, categories shold be saved to the database
 # class FAQchoices(models.Model):
+
+
+class ResetMails(models.Model):
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
+                                blank=False)
+    activated = models.BooleanField(default=True)

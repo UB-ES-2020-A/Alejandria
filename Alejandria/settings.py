@@ -170,4 +170,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 AUTH_USER_MODEL = 'books.User'
 CRISPY_TEMPLATE_PACK="bootstrap4"
 
-
+# MAIL SETUP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'alejandria.books.2020@gmail.com'
+EMAIL_HOST_PASSWORD = 'alejandriaES2020'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'Alejandria Books <alejandria.books.2020@gmail.com>'

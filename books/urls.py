@@ -15,4 +15,7 @@ urlpatterns = [
     path('login/', views.login_user, name='login'),
     path('payment/', views.PaymentView.as_view(), name='payment'),
     path('sell/', views.SellView.add_book, name='sell'),
+    path('forgot/', views.forgot, name='forgot'),
+    path('forgot/<id>/', views.forgot, name='reset'),
+
 ]
