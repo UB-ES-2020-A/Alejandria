@@ -178,3 +178,7 @@ EMAIL_HOST_USER = 'alejandria.books.2020@gmail.com'
 EMAIL_HOST_PASSWORD = 'alejandriaES2020'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Alejandria Books <alejandria.books.2020@gmail.com>'
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
