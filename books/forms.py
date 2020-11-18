@@ -26,5 +26,6 @@ class BookForm(forms.ModelForm):
             "num_pages",
             "num_sold",
             "recommended_age",
-            "thumbnail"
+            "thumbnail",
+            "eBook"
         ]

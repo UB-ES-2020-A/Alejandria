@@ -1,7 +1,8 @@
 from django.urls import path
 
 from . import views
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'books'
 urlpatterns = [
@@ -20,4 +21,4 @@ urlpatterns = [
     path('forgot/', views.forgot, name='forgot'),
     path('forgot/<id>/', views.forgot, name='reset'),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

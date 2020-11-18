@@ -8,7 +8,27 @@ from django.utils import timezone
 """
 TODO: IF NECESSARY INTRODUCE help_text in some characteristics.
 """
-
+GENRE_CHOICES = [
+        ('FANT', 'Fantasy'),
+        ('CRIM', 'Crime & Thriller'),
+        ('FICT', 'Fiction'),
+        ('SCFI', 'Science Fiction'),
+        ('HORR', 'Horror'),
+        ('ROMA', 'Romance'),
+        ('TEEN', 'Teen & Young Adult'),
+        ('KIDS', "Children's Books"),
+        ('ANIM', 'Anime & Manga'),
+        ('OTHR', 'Others'),
+        ('ARTS', 'Art'),
+        ('BIOG', 'Biography'),
+        ('FOOD', 'Food'),
+        ('HIST', 'History'),
+        ('DICT', 'Dictionary'),
+        ('HEAL', 'Health'),
+        ('HUMO', 'Humor'),
+        ('SPOR', 'Sport'),
+        ('TRAV', 'Travel')
+    ]
 
 class Address(models.Model):
     street = models.CharField(max_length=50, null=False, blank=False)
@@ -28,6 +48,9 @@ class User(AbstractUser):
                                      related_name="user_address")
     fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
                                      related_name="fact_address")
+    genre_preference_1 = models.CharField(max_length=4, choices=GENRE_CHOICES, blank=False, null=False)
+    genre_preference_2 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=False, blank=False)
+    genre_preference_3 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=False, blank=False)
 
 
 # class Author(models.Model):
@@ -42,19 +65,6 @@ class User(AbstractUser):
 
 
 class Book(models.Model):
-    GENRE_CHOICES = [
-        ('FANT', 'Fantasy'),
-        ('CRIM', 'Crime & Thriller'),
-        ('FICT', 'Fiction'),
-        ('SCFI', 'Science Fiction'),
-        ('HORR', 'Horror'),
-        ('ROMA', 'Romance'),
-        ('TEEN', 'Teen & Young Adult'),
-        ('KIDS', "Children's Books"),
-        ('ANIM', 'Anime & Manga'),
-        ('OTHR', 'Others'),
-    ]
-
     ISBN = models.CharField(primary_key=True, max_length=13, blank=False, null=False)  # Its a Char instead of Integer
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)  # Reference to the User that created it #TODO: on_delete=models.CASCADE
@@ -77,8 +87,8 @@ class Book(models.Model):
     recommended_age = models.CharField(max_length=30, blank=True,
                                        null=True)  # TODO: choices=<<possible range recommendation>> example: Juvenile
     # Path to thumbnail(Thubnail identified by ISBN)
-    thumbnail = models.CharField(max_length=30)  # TODO:Should be blank=False in the Future
-
+    thumbnail = models.ImageField(blank=True, null=True, upload_to="thumbnails/")  # TODO:Should be blank=False in the Future
+    eBook = models.FileField(blank=True, null=True, upload_to="ebooks/")
     # pub_date = publication_date  # Abreviation
 
 
