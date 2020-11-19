@@ -27,7 +27,9 @@ GENRE_CHOICES = [
         ('HEAL', 'Health'),
         ('HUMO', 'Humor'),
         ('SPOR', 'Sport'),
-        ('TRAV', 'Travel')
+        ('TRAV', 'Travel'),
+        ('POET', 'Poetry')
+
     ]
 
 class Address(models.Model):
