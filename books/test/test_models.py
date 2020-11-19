@@ -2,7 +2,10 @@
 import pytest
 import os
 from django.core.wsgi import get_wsgi_application
+from django.core.files import File
 from django.test import TestCase
+
+from pathlib import Path
 
 # Build app
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
@@ -61,9 +64,10 @@ def test_address():
     # Test sucess if check is True
     assert check
 
-
+# TEST BOOK SIMPLE
 def test_book():
-    isbn = '0123456789032'
+
+    isbn = str(random.randint(0, 5156123423456015412))[:12]
     user = User.objects.all().last()
     title = 'THis is the TITLE'
     description = 'This is the description of a test book'
@@ -76,12 +80,11 @@ def test_book():
     num_pages = 100
     num_sold = 0
     recommended_age = 'Juvenile'
-    thumbnail = '/thumbnails/1234567.png'
 
     obj = Book(ISBN=isbn, user_id=user, title=title, description=description,
                saga=saga, price=price, language=language, primary_genre=primary_genre,
                publisher=publisher, num_pages=num_pages, num_sold=num_sold,
-               recommended_age=recommended_age, thumbnail=thumbnail)
+               recommended_age=recommended_age)
     obj.save()
 
     obj = Book.objects.all().filter(pk=isbn).first()
@@ -90,9 +93,76 @@ def test_book():
     check = all([isbn == obj.ISBN, user == obj.user_id, title == obj.title, description == obj.description,
                  saga == obj.saga, price == float(obj.price), language == obj.language, primary_genre == obj.primary_genre,
                  publisher == obj.publisher, num_pages == obj.num_pages, num_sold == obj.num_sold,
-                 recommended_age == obj.recommended_age, thumbnail == obj.thumbnail])
+                 recommended_age == obj.recommended_age])
 
     assert check
+
+# TEST BOOK ONLY MANDATORY ATTRIBUTES
+def test_book2():
+    isbn = str(random.randint(0, 5156123423456015412))[:12]
+    user = User.objects.all().last()
+    title = 'THis is the TITLE'
+    price = 23.45
+    language = 'Espanol'
+    primary_genre = 'FANT'
+    publisher = 'Alejandria'
+    num_pages = 100
+    obj = Book(ISBN=isbn, user_id=user, title=title, price=price, language=language, primary_genre=primary_genre,
+               publisher=publisher, num_pages=num_pages)
+    obj.save()
+
+    obj = Book.objects.all().filter(pk=isbn).first()
+
+    check = all([isbn == obj.ISBN, user == obj.user_id, title == obj.title, price == float(obj.price), language == obj.language,
+                 primary_genre == obj.primary_genre,
+                 publisher == obj.publisher, num_pages == obj.num_pages])
+
+    assert check
+
+
+# TEST BOOK WITH THUMBNAIL ( no se puede)
+# def test_book_thumbnail():
+#     isbn = '01234176532'
+#     user = User.objects.all().last()
+#     title = 'title2'
+#     description = 'description'
+#     saga = 'saga'
+#     author = "Author"
+#     price = 23.45
+#     language = 'Espanol'
+#     primary_genre = 'OTHR'
+#     publisher = 'Alejandria'
+#     num_pages = 100
+#     num_sold = 0
+#     recommended_age = 'Juvenile'
+#
+#     obj = Book(ISBN=isbn, user_id=user, title=title, description=description,
+#                saga=saga, price=price, language=language, primary_genre=primary_genre,
+#                publisher=publisher, num_pages=num_pages, num_sold=num_sold,
+#                recommended_age=recommended_age)
+#
+#     file_name = "202852714dec217e579db202a977be70.jpg"
+#     #BASE_DIR = Path(__file__).resolve().parent.parent
+#     #path_test_image = os.path.join(BASE_DIR,'test', file_name)
+#     # path_stored_thumb = os.path.join(BASE_DIR, 'media','thumbnails')
+#
+#     # thumb = File(open(path_test_image, 'rb'))
+#     # obj.thumbnail.save(file_name, thumb)
+#     obj.save()
+#     obj = Book.objects.all().filter(pk=isbn).first()
+#
+#     check = all([isbn == obj.ISBN, user == obj.user_id, title == obj.title, description == obj.description,
+#                  saga == obj.saga, price == float(obj.price), language == obj.language,
+#                  primary_genre == obj.primary_genre,
+#                  publisher == obj.publisher, num_pages == obj.num_pages, num_sold == obj.num_sold,
+#                  recommended_age == obj.recommended_age, file_name == obj.thumbnail])
+#
+#     #print(path_stored_thumb.isfile(file_name))
+#
+#     assert check
+
+
+
 
 
 
