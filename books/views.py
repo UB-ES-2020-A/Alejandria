@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
@@ -203,7 +204,8 @@ class SearchView(generic.ListView):
 
 
 class SellView(generic.ListView):
-    @staticmethod
+
+    @login_required
     def add_book(request):
         print(request.user.id)
         if request.method == "POST":
