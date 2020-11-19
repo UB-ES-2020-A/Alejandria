@@ -205,14 +205,16 @@ class SearchView(generic.ListView):
 class SellView(generic.ListView):
     @staticmethod
     def add_book(request):
+        print(request.user.id)
         if request.method == "POST":
-            #form = BookForm(request.POST)
             form = BookForm(request.POST, request.FILES)
             if form.is_valid():
-                print(request.FILES)
+                book = form.save(commit=False)
+                book.user_id = request.user
                 # messages.success(request, 'Form submission successful')
                 messages.info(request, 'Your book has been updated successfully!')
-                form.save()
+
+                book.save()
             # else:
             # print(form.errors)
             # return redirect("/")
