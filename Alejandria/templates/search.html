@@ -105,6 +105,7 @@
     <h3 style="color:#ffffff; padding:35px; padding-bottom:0px">Títols coincidents amb la teva cerca...</h3>
 
 
+
 {% if book_list %}
     <div class="container-fluid">
         <div class="row">
@@ -114,7 +115,11 @@
                         <div class="item" style="width: 185px;">
                             <div class="card" style="width: 11rem;">
                                 <a href="/book/{{obj.ISBN}}" style="text-decoration: none; color: inherit;">
-                              <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                              {% if obj.thumbnail %}
+                                <img class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                            {% else %}
+                                <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                            {% endif %}
                               <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
                                 <p class="card-text">Fernando Aramburu</p>
@@ -146,7 +151,11 @@
                         <div class="item" style="width: 185px;">
                             <div class="card" style="width: 11rem;">
                                 <a href="/book/{{obj.ISBN}}" style="text-decoration: none; color: inherit;">
-                              <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                              {% if obj.thumbnail %}
+                                  <img class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                              {% else %}
+                                  <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                              {% endif %}
                               <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
                                 <p class="card-text">Fernando Aramburu</p>

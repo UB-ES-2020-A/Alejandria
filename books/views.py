@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
@@ -201,16 +202,20 @@ class SearchView(generic.ListView):
 
 
 class SellView(generic.ListView):
-    @staticmethod
+
+    @login_required
     def add_book(request):
+        print(request.user.id)
         if request.method == "POST":
-            #form = BookForm(request.POST)
             form = BookForm(request.POST, request.FILES)
             if form.is_valid():
-                print(request.FILES)
+                book = form.save(commit=False)
+                book.user_id = request.user
+                book.num_sold = 0
                 # messages.success(request, 'Form submission successful')
                 messages.info(request, 'Your book has been updated successfully!')
-                form.save()
+
+                book.save()
             # else:
             # print(form.errors)
             # return redirect("/")
