@@ -3,7 +3,6 @@
 
 {% extends "navbar.html" %}
 {% load static %}
-
 {% block content %}
 
 
@@ -92,7 +91,11 @@
                         <div class="item" style="width: 185px;">
                             <div class="card" style="width: 11rem;">
                                 <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;"> <!-- Change href -->
-                                    <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap"> <!--TODO: Change to real book image -->
+                                    {% if book.thumbnail %}
+                                    <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                                    {% else %}
+                                    <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                                    {% endif %}
                                     <div class="card-body">
                                         <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
                                         <p class="card-text">{{ book.authors }}</p>
@@ -120,7 +123,11 @@
                     <div class="item" style="width: 185px;">
                         <div class="card" style="width: 11rem;">
                         <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                            <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                            {% if book.thumbnail %}
+                            <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                            {% else %}
+                            <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                            {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
                                 <p class="card-text">{{ book.authors }}</p>
@@ -148,7 +155,11 @@
                         <div class="item" style="width: 185px;">
                         <div class="card" style="width: 11rem;">
                             <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                                <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                                {% if book.thumbnail %}
+                                <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                                {% else %}
+                                <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
                                 <div class="card-body">
                                     <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
                                     <p class="card-text">{{ book.authors }}</p>
