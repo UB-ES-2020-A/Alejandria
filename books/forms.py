@@ -24,7 +24,6 @@ class BookForm(forms.ModelForm):
             "secondary_genre",
             "publisher",
             "num_pages",
-            "num_sold",
             "recommended_age",
             "thumbnail",
             "eBook"

@@ -205,8 +205,7 @@
 
 <div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
-<!--    <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="width:110%">-->
-    <img id="blah" style="width:110%" src="https://i0.wp.com/www.pagoderiofrio.es/wp-content/uploads/2016/07/no-image.jpg?fit=450%2C450&ssl=1" />
+    <img id="blah" style="width:110%" src="{% static 'no_available.jpg' %}" />
   </div>
   <div class="right-container" style="width:auto">
     <header>
@@ -217,11 +216,10 @@
           <label for="pets-name">* Title</label>
           <input id="pets-name" name="title" placeholder="Title of book" type="text"></input>
         </div>
-<!--    <div class="pets-name">-->
-<!--        <label for="user_id">*User ID</label>-->
-<!--        <input id="user_id" name="user_id" placeholder="User ID" type="number" value="15"></input>-->
-<!--      </div>-->
-
+        <div class="pets-breed">
+          <label for="publi_date">Publication date</label>
+          <input style="width: 204px;" id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="date"></input>
+        </div>
 </div>
       <div class="set">
         <div class="pets-breed">
@@ -259,23 +257,14 @@
         <label for="numpages">* Nº Pages</label>
         <input id="numpages" name="num_pages" placeholder="100" type="number"></input>
       </div>
-        <div class="pets-name">
-            <label for="numsold">* Nº Sells</label>
-            <input id="numsold" name="num_sold" placeholder="0" type="number"></input>
-      </div>
-
-      </div>
-
-      <div class="set">
-    <div class="pets-breed">
-      <label for="publi_date">Publication date</label>
-      <input id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="date"></input>
-    </div>
-    <div class="pets-birthday">
+               <div class="pets-birthday">
       <label for="recommended_age">Recommended age</label>
         <input id="recommended_age" name="recommended_age" placeholder="Adult" type="text"></input>
     </div>
-  </div>
+      </div>
+
+
+
 
 
 
@@ -284,7 +273,7 @@
 <!--            <i class="fas fa-camera-retro"></i>-->
 <!--          </button>-->
 <!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
-          <label for="thumbnail">* Thumbnail</label>
+          <label for="thumbnail">* Cover image</label>
           <input style="border:0px" id="thumbnail" type='file' name="thumbnail" accept="image/jpeg, image/png" onchange="readURL(this);" />
 
 

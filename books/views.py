@@ -211,6 +211,7 @@ class SellView(generic.ListView):
             if form.is_valid():
                 book = form.save(commit=False)
                 book.user_id = request.user
+                book.num_sold = 0
                 # messages.success(request, 'Form submission successful')
                 messages.info(request, 'Your book has been updated successfully!')
 
