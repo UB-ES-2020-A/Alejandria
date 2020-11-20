@@ -29,8 +29,8 @@ GENRE_CHOICES = [
         ('SPOR', 'Sport'),
         ('TRAV', 'Travel'),
         ('POET', 'Poetry')
-
     ]
+
 
 class Address(models.Model):
     street = models.CharField(max_length=50, null=False, blank=False)
@@ -53,6 +53,7 @@ class User(AbstractUser):
     genre_preference_1 = models.CharField(max_length=4, choices=GENRE_CHOICES, blank=False, null=False)
     genre_preference_2 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=False, blank=False)
     genre_preference_3 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=False, blank=False)
+    #device = models.CharField(max_length=200, null=False, blank=False)
 
 
 # class Author(models.Model):
