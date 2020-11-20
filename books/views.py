@@ -505,3 +505,39 @@ class PaymentView(generic.TemplateView):
     model = Book
     template_name = 'payment.html'
     queryset = Product.objects.all()
+
+
+class EditorLibrary(generic.ListView):
+    model = Book
+    template_name = 'editor_library.html'  # TODO: Provisional file
+    context_object_name = 'coincident'
+
+    def __init__(self):
+        super().__init__()
+        self.editorBooks = None
+        self.user_id = None
+
+    def get(self, request, *args, **kwargs):
+        print(request.GET)
+        print(request.user.id)
+        self.user_id = self.request.user.id or None
+
+        # if 'search_book' in request.GET:
+        #     self.searchBook = request.GET['search_book']
+        # else:
+        #     keys = request.GET.keys()
+        #     for key in keys:
+        #         self.genres.append(request.GET[key])
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
+        context = super().get_context_data(**kwargs)
+
+        # Filtering by title or author
+        print(self.user_id)
+        editor_books = Book.objects.filter(user_id=self.user_id)
+        print("editor books", editor_books)
+        context['editor_books'] = editor_books
+
+        return context
