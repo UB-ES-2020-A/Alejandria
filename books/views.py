@@ -202,6 +202,63 @@ class SearchView(generic.ListView):
 
 
 class SellView(generic.ListView):
+    model = Book
+    template_name = 'search.html'  # TODO: Provisional file
+    context_object_name = 'coincident'
+
+    def __init__(self):
+        super().__init__()
+        self.coincident = None
+        self.related = None
+        self.searchBook = None
+        self.genres = []
+        self.user_id = None
+
+    def get(self, request, *args, **kwargs):
+        print(request.GET)
+        self.user_id = self.request.user.id or None
+        if 'search_book' in request.GET:
+            self.searchBook = request.GET['search_book']
+        else:
+            keys = request.GET.keys()
+            for key in keys:
+                self.genres.append(request.GET[key])
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
+        context = super().get_context_data(**kwargs)
+
+        # Get number of cart products
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            products = cart.products.all()
+            items = len(products)
+            context['total_items'] = [items]
+
+        # Filtering by title or author
+        if self.searchBook:
+            filtered = Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))[
+                       :20]
+            context['book_list'] = filtered
+            genres_relation = []
+            for book in filtered:
+                if book.primary_genre not in genres_relation:
+                    genres_relation.append(book.primary_genre)
+
+            relation_book = Book.objects.filter(primary_genre__in=genres_relation)[:20]
+            if relation_book:
+                context['book_relation'] = relation_book
+                return context
+
+        if self.genres:
+            filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
+            context['book_list'] = filtered
+            return context
+
+        # TODO: Filtering by topseller and On Sale
+
+        return context
 
     @login_required
     def add_book(request):
@@ -223,6 +280,36 @@ class SellView(generic.ListView):
             form = BookForm()
 
         return render(request, "sell.html", {"form": form})
+
+class EditBookView(generic.DetailView):
+    model = Book
+    template_name = 'edit_book.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context["book"].price)
+        return context
+
+
+    # @login_required
+    # def edit_book(request):
+    #     if request.method == "POST":
+    #         form = BookForm(request.POST, request.FILES)
+    #         if form.is_valid():
+    #             book = form.save(commit=False)
+    #             book.user_id = request.user
+    #             book.num_sold = 0
+    #             # messages.success(request, 'Form submission successful')
+    #             messages.info(request, 'Your book has been updated successfully!')
+    #
+    #             book.save()
+    #         # else:
+    #         # print(form.errors)
+    #         # return redirect("/")
+    #     else:
+    #         form = BookForm()
+
+        # return render(request, "sell.html", {"form": form})
 
 
 class CartView(generic.ListView):

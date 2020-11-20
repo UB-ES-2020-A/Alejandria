@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+    <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font.css' %}">
+    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form-sell.css' %}">
+    <!-- Css files from static folder -->
+    <script src="//cdn.jsdelivr.net/npm/less" ></script>
+</head>
+<body>
+
+{% if messages %}
+  {% for msg in messages %}
+    <div class="alert alert-info alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{msg.message}}
+    </div>
+  {% endfor %}
+{% endif %}
+
+
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>Hubo un problema en el campo "{{ field.name }}". {{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+<div class="signup-container" style="margin:auto; margin-top:50px">
+  <div style="margin:auto;padding-right:30px;">
+    <img id="blah" style="width:110%" src="{% static 'no_available.jpg' %}" />
+  </div>
+  <div class="right-container" style="width:auto">
+    <header>
+      <form method="POST" enctype = "multipart/form-data"> {% csrf_token %}
+      <h1>Add a book to Alejandria</h1>
+<div class="set">
+        <div class="pets-name">
+          <label for="pets-name">* Title</label>
+          <input id="pets-name" name="title" placeholder="Title of book" type="text" value="{{ book.title }}"></input>
+        </div>
+        <div class="pets-breed">
+          <label for="publi_date">Publication date</label>
+          <input style="width: 204px;" id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="date" value="{{ book.publication_date }}"></input>
+        </div>
+</div>
+      <div class="set">
+        <div class="pets-breed">
+          <label for="author">* Author</label>
+          <input id="author" placeholder="Anonymous" name="author" type="text" value="{{ book.author }}"></input>
+        </div>
+        <div class="pets-birthday">
+          <label for="price">* Price</label>
+          <input id="price" value="{{ book.price }}" name="price" placeholder="12.99" type="number" ></input>
+        </div>
+      </div>
+      <div class="set">
+        <div class="pets-gender">
+          <label for="isbn">* ISBN</label>
+          <input id="isbn" name="ISBN" placeholder="0123456789012" type="number" value="{{ book.ISBN }}"></input>
+        </div>
+        <div class="pets-gender">
+          <label for="saga">Saga</label>
+          <input id="saga" name="saga" placeholder="Saga of book" type="text" value="{{ book.saga }}"></input>
+        </div>
+      </div>
+
+        <div class="set">
+        <div class="pets-gender">
+          <label for="language">* Language</label>
+          <input id="language" name="language" placeholder="Spanish" type="text" value="{{ book.language }}"></input>
+        </div>
+        <div class="pets-gender">
+          <label for="publisher">* Publisher</label>
+          <input id="publisher" name="publisher" placeholder="Publisher of book" type="text" value="{{ book.publisher }}"></input>
+        </div>
+      </div>
+          <div class="set">
+      <div class="pets-name">
+        <label for="numpages">* Nº Pages</label>
+        <input id="numpages" name="num_pages" placeholder="100" type="number" value="{{ book.num_pages }}"></input>
+      </div>
+               <div class="pets-birthday">
+      <label for="recommended_age">Recommended age</label>
+        <input id="recommended_age" name="recommended_age" placeholder="Adult" type="text" value="{{ book.recommended_age }}"></input>
+    </div>
+      </div>
+      <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
+<!--          <button id="pets-upload">-->
+<!--            <i class="fas fa-camera-retro"></i>-->
+<!--          </button>-->
+<!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
+          <label for="thumbnail">* Cover image</label>
+          <input style="border:0px" id="thumbnail" type='file' name="thumbnail" accept="image/jpeg, image/png" onchange="readURL(this);"  />
+
+
+        </div>
+
+       <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
+<!--          <button id="pets-upload">-->
+<!--            <i class="fas fa-camera-retro"></i>-->
+<!--          </button>-->
+<!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
+          <label for="file">* File eBook</label>
+          <input id="file" style="border:0px;" type='file' name="eBook" accept="application/pdf" />
+
+
+        </div>
+
+
+      <div class="pets-weight">
+        <label for="horror-p">* Primary genre</label>
+        <div class="radio-container" style="padding-left: 4%">
+          <div class="row">
+            <input id="horror-p" name="primary_genre" type="radio" value="HORR"></input>
+            <label for="horror-p">Horror</label>
+            <input id="romance-p" name="primary_genre" type="radio" value="ROMA"></input>
+            <label for="romance-p">Romance</label>
+            <input id="crime-p" name="primary_genre" type="radio" value="CRIM"></input>
+            <label for="crime-p">Crime</label>
+            <input id="scfi-p" name="primary_genre" type="radio" value="SCFI"></input>
+            <label for="scfi-p">Sci-fi</label>
+            <input id="fantasy-p" name="primary_genre" type="radio" value="FANT"></input>
+            <label for="fantasy-p">Fantasy</label>
+            <input id="fiction-p" name="primary_genre" type="radio" value="FICT"></input>
+            <label for="fiction-p">Fiction</label>
+            <input id="teen-p" name="primary_genre" type="radio" value="TEEN"></input>
+            <label for="teen-p">Teen</label>
+            <input id="children-p" name="primary_genre" type="radio" value="KIDS"></input>
+            <label for="children-p">Children</label>
+            <input id="anime-p" name="primary_genre" type="radio" value="ANIM"></input>
+            <label for="anime-p">Anime</label>
+            <input id="art-p" name="primary_genre" type="radio" value="ARTS"></input>
+            <label for="art-p">Art</label>
+            <input id="biography-p" name="primary_genre" type="radio" value="BIOG"></input>
+            <label for="biography-p">Biography</label>
+            <input id="food-p" name="primary_genre" type="radio" value="FOOD"></input>
+            <label for="food-p">Food</label>
+            <input id="history-p" name="primary_genre" type="radio" value="HIST"></input>
+            <label for="history-p">History</label>
+            <input id="dictionary-p" name="primary_genre" type="radio" value="DICT"></input>
+            <label for="dictionary-p">Dictionary</label>
+            <input id="health-p" name="primary_genre" type="radio" value="HEAL"></input>
+            <label for="health-p">Health</label>
+            <input id="humor-p" name="primary_genre" type="radio" value="HUMO"></input>
+            <label for="humor-p">Humor</label>
+            <input id="sport-p" name="primary_genre" type="radio" value="SPOR"></input>
+            <label for="sport-p">Sport</label>
+            <input id="travel-p" name="primary_genre" type="radio" value="TRAV"></input>
+            <label for="travel-p">Travel</label>
+            <input id="petry-p" name="primary_genre" type="radio" value="POET"></input>
+            <label for="petry-p">Petry</label>
+            <input id="other-p" name="primary_genre" type="radio" value="OTHR"></input>
+            <label for="other-p">Others</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="pets-weight" style="padding-top:20px;padding-bottom:20px;">
+        <label for="horror-s">Secondary genre</label>
+        <div class="radio-container" style="padding-left: 4%">
+          <div class="row">
+            <input id="horror-s" name="secondary_genre" type="radio" value="HORR"></input>
+            <label for="horror-s">Horror</label>
+            <input id="romance-s" name="secondary_genre" type="radio" value="ROMA"></input>
+            <label for="romance-s">Romance</label>
+            <input id="crime-s" name="secondary_genre" type="radio" value="CRIM"></input>
+            <label for="crime-s">Crime</label>
+            <input id="scfi-s" name="secondary_genre" type="radio" value="SCFI"></input>
+            <label for="scfi-s">Sci-fi</label>
+            <input id="fantasy-s" name="secondary_genre" type="radio" value="FANT"></input>
+            <label for="fantasy-s">Fantasy</label>
+            <input id="fiction-s" name="secondary_genre" type="radio" value="FICT"></input>
+            <label for="fiction-s">Fiction</label>
+            <input id="teen-s" name="secondary_genre" type="radio" value="TEEN"></input>
+            <label for="teen-s">Teen</label>
+            <input id="children-s" name="secondary_genre" type="radio" value="KIDS"></input>
+            <label for="children-s">Children</label>
+            <input id="anime-s" name="secondary_genre" type="radio" value="ANIM"></input>
+            <label for="anime-s">Anime</label>
+            <input id="art-s" name="secondary_genre" type="radio" value="ARTS"></input>
+            <label for="art-s">Art</label>
+            <input id="biography-s" name="secondary_genre" type="radio" value="BIOG"></input>
+            <label for="biography-s">Biography</label>
+            <input id="food-s" name="secondary_genre" type="radio" value="FOOD"></input>
+            <label for="food-s">Food</label>
+            <input id="history-s" name="secondary_genre" type="radio" value="HIST"></input>
+            <label for="history-s">History</label>
+            <input id="dictionary-s" name="secondary_genre" type="radio" value="DICT"></input>
+            <label for="dictionary-s">Dictionary</label>
+            <input id="health-s" name="secondary_genre" type="radio" value="HEAL"></input>
+            <label for="health-s">Health</label>
+            <input id="humor-s" name="secondary_genre" type="radio" value="HUMO"></input>
+            <label for="humor-s">Humor</label>
+            <input id="sport-s" name="secondary_genre" type="radio" value="SPOR"></input>
+            <label for="sport-s">Sport</label>
+            <input id="travel-s" name="secondary_genre" type="radio" value="TRAV"></input>
+            <label for="travel-s">Travel</label>
+            <input id="petry-s" name="secondary_genre" type="radio" value="POET"></input>
+            <label for="petry-s">Petry</label>
+            <input id="other-s" name="secondary_genre" type="radio" value="OTHR"></input>
+            <label for="other-s">Other</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="pets-breed">
+        <label for="description">Description</label>
+        <textarea  id="description" name="description" placeholder="Place here the description of book" type="text" style="padding: 2%;height:200px; width:100%;" value="{{ book.description }}"></textarea>
+      </div>
+
+        <input type="checkbox" style="vertical-align:middle;" id="terms" name="terms">
+          <label for="terms"> I accept the <a style="cursor: pointer;" data-toggle="modal" data-target="#myModal"><b><u>terms and conditions</u></b></a></label>
+
+        <div class="set" style="float: right;">
+        <input type="submit" value="Save" />
+        </div>
+</form>
+    </header>
+  </div>
+</div>
+
+
+</body>
+
+<script>
+    function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#blah')
+                        .attr('src', e.target.result)
+                        .width(150)
+                        .height(200);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+</script>
+{% endblock %}
+</html>
