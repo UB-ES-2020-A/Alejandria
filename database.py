@@ -13,7 +13,7 @@ user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain',
 fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 user_address.save()
 fact_address.save()
-
+# Pylint: disable=line-too-long
 thumb1 = File(open('Alejandria/static/images/cover-images/202852714dec217e579db202a977be70.jpg', 'rb'))
 thumb2 = File(open('Alejandria/static/images/cover-images/book_cover.jpg', 'rb'))
 thumb3 = File(open('Alejandria/static/images/cover-images/book_cover2.jpg', 'rb'))
