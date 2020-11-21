@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +41,7 @@ INSTALLED_APPS = [
     'Alejandria',
     # 'books',
     'books.apps.BooksConfig',
+    'test'
 ]
 
 MIDDLEWARE = [
@@ -166,7 +166,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
-#STATICFILES_DIRS = ['/static/']
+# STATICFILES_DIRS = ['/static/']
 AUTH_USER_MODEL = 'books.User'
 CRISPY_TEMPLATE_PACK="bootstrap4"
 
@@ -182,3 +182,8 @@ DEFAULT_FROM_EMAIL = 'Alejandria Books <alejandria.books.2020@gmail.com>'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# For print in tests
+# NOSE_ARGS = ['--nocapture',
+#             '--nologcapture',]
