@@ -240,9 +240,7 @@ class CartView(generic.ListView):
         total_price = 0
         items = len(products)
         for prod in products:
-            print(prod.price)
             total_price += prod.price
-            print("TOTAL_PRICE ", total_price)
         context['total_price'] = [total_price]
         context['total_items'] = [items]
 
@@ -427,18 +425,10 @@ def register(request):
                 cart_user = Cart(user_id=user)
                 cart_user.save()
                 cart_user = Cart.objects.get(user_id=user)
-
-                print("------------------------------------------")
-                print("CAAART ANTES", cart_user.products.all())
                 for product in cart_guest.products.all():
-                    print("PRODUCT", product)
                     cart_user.products.add(product)
-
-                print("CAAART DESPUES", cart_user.products.all())
-                print("------------------------------------------")
                 cart_guest.products.clear()
                 cart_guest.save()
-                print("CAAART DESPUES", cart_user.products.all())
                 cart_user.save()
 
                 return JsonResponse({"error": False})
@@ -514,18 +504,10 @@ def login_user(request):
                 guest = Guest.objects.get(device=device)
                 cart_guest = Cart.objects.get(guest_id=guest)
                 cart_user = Cart.objects.get(user_id=user)
-
-                print("------------------------------------------")
-                print("CAAART ANTES", cart_user.products.all())
                 for product in cart_guest.products.all():
-                    print("PRODUCT", product)
                     cart_user.products.add(product)
-
-                print("CAAART DESPUES", cart_user.products.all())
-                print("------------------------------------------")
                 cart_guest.products.clear()
                 cart_guest.save()
-                print("CAAART DESPUES", cart_user.products.all())
                 cart_user.save()
 
                 return JsonResponse({"name": user.name, "error": False})
