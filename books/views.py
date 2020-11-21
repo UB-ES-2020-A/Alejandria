@@ -13,7 +13,7 @@ from django.views import generic
 
 from Alejandria.settings import EMAIL_HOST_USER
 from .forms import BookForm
-from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
+from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails, Guest
 
 # Create your views here.
 
@@ -101,8 +101,8 @@ class HomeView(generic.ListView):
             cart = Cart.objects.get(user_id=self.user_id)
         else:
             device = self.request.COOKIES['device']
-            user, created = User.objects.get_or_create(device=device)
-            cart = Cart.objects.get(user_id=user.id)
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
 
         products = cart.products.all()
         items = len(products)
@@ -144,8 +144,8 @@ class SearchView(generic.ListView):
             cart = Cart.objects.get(user_id=self.user_id)
         else:
             device = self.request.COOKIES['device']
-            user, created = User.objects.get_or_create(device=device)
-            cart = Cart.objects.get(user_id=user.id)
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
 
         products = cart.products.all()
         items = len(products)
@@ -221,8 +221,8 @@ class CartView(generic.ListView):
             cart = Cart.objects.get(user_id=self.user_id)
         else:
             device = request.COOKIES['device']
-            user, created = User.objects.get_or_create(device=device)
-            cart = Cart.objects.get(user_id=user.id)
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
 
         return cart.products.all()
 
@@ -233,8 +233,8 @@ class CartView(generic.ListView):
             cart = Cart.objects.get(user_id=self.user_id)
         else:
             device = self.request.COOKIES['device']
-            user, created = User.objects.get_or_create(device=device)
-            cart = Cart.objects.get(user_id=user.id)
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
 
         products = cart.products.all()
         total_price = 0
@@ -256,8 +256,8 @@ def delete_product(request, product_id):
         cart = Cart.objects.get(user_id=user_id)
     else:
         device = request.COOKIES['device']
-        user, created = User.objects.get_or_create(device=device)
-        cart = Cart.objects.get(user_id=user.id)
+        user, created = Guest.objects.get_or_create(device=device)
+        cart, created = Cart.objects.get_or_create(guest_id=user)
 
     product = cart.products.get(ID=product_id)
     print("DELETE BOOK ", product)
@@ -273,8 +273,8 @@ def add_product(request, view, book):
         cart = Cart.objects.get(user_id=user_id)
     else:
         device = request.COOKIES['device']
-        user, created = User.objects.get_or_create(device=device)
-        cart = Cart.objects.get(user_id=user.id)
+        user, created = Guest.objects.get_or_create(device=device)
+        cart, created = Cart.objects.get_or_create(guest_id=user)
 
     products = Product.objects.all()
     for product in products:
@@ -316,8 +316,8 @@ class FaqsView(generic.ListView):
             cart = Cart.objects.get(user_id=self.user_id)
         else:
             device = self.request.COOKIES['device']
-            user, created = User.objects.get_or_create(device=device)
-            cart = Cart.objects.get(user_id=user.id)
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
 
         products = cart.products.all()
         items = len(products)
@@ -421,8 +421,25 @@ def register(request):
                 user.save()
 
                 # Create user's cart
-                cart = Cart(user_id=user)
-                cart.save()
+                device = request.COOKIES['device']
+                guest = Guest.objects.get(device=device)
+                cart_guest = Cart.objects.get(guest_id=guest)
+                cart_user = Cart(user_id=user)
+                cart_user.save()
+                cart_user = Cart.objects.get(user_id=user)
+
+                print("------------------------------------------")
+                print("CAAART ANTES", cart_user.products.all())
+                for product in cart_guest.products.all():
+                    print("PRODUCT", product)
+                    cart_user.products.add(product)
+
+                print("CAAART DESPUES", cart_user.products.all())
+                print("------------------------------------------")
+                cart_guest.products.clear()
+                cart_guest.save()
+                print("CAAART DESPUES", cart_user.products.all())
+                cart_user.save()
 
                 return JsonResponse({"error": False})
 
@@ -491,6 +508,26 @@ def login_user(request):
             if user:
                 user = user.first()
                 login(request, user, backend='books.backend.EmailAuthBackend')
+
+                # Update cart
+                device = request.COOKIES['device']
+                guest = Guest.objects.get(device=device)
+                cart_guest = Cart.objects.get(guest_id=guest)
+                cart_user = Cart.objects.get(user_id=user)
+
+                print("------------------------------------------")
+                print("CAAART ANTES", cart_user.products.all())
+                for product in cart_guest.products.all():
+                    print("PRODUCT", product)
+                    cart_user.products.add(product)
+
+                print("CAAART DESPUES", cart_user.products.all())
+                print("------------------------------------------")
+                cart_guest.products.clear()
+                cart_guest.save()
+                print("CAAART DESPUES", cart_user.products.all())
+                cart_user.save()
+
                 return JsonResponse({"name": user.name, "error": False})
             else:
                 return JsonResponse({"error": True})
