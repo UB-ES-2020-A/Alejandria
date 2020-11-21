@@ -61,7 +61,7 @@
         </div>
         <div class="pets-breed">
           <label for="publi_date">Publication date</label>
-          <input style="width: 204px;" id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="date" value="{{ book.publication_date }}"></input>
+          <input style="width: 204px;" value="{{date}}" id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="date"></input>
         </div>
 </div>
       <div class="set">
@@ -71,7 +71,7 @@
         </div>
         <div class="pets-birthday">
           <label for="price">* Price</label>
-          <input id="price" value="{{ book.price }}" name="price" placeholder="12.99" type="number" ></input>
+          <input id="price" name="price" type="number" ></input>
         </div>
       </div>
       <div class="set">
@@ -177,15 +177,15 @@
       </div>
 
       <div class="pets-weight" style="padding-top:20px;padding-bottom:20px;">
-        <label for="horror-s">Secondary genre</label>
+        <label for="HORR-s">Secondary genre</label>
         <div class="radio-container" style="padding-left: 4%">
           <div class="row">
-            <input id="horror-s" name="secondary_genre" type="radio" value="HORR"></input>
-            <label for="horror-s">Horror</label>
-            <input id="romance-s" name="secondary_genre" type="radio" value="ROMA"></input>
-            <label for="romance-s">Romance</label>
-            <input id="crime-s" name="secondary_genre" type="radio" value="CRIM"></input>
-            <label for="crime-s">Crime</label>
+            <input id="HORR-s" name="secondary_genre" type="radio" value="HORR"></input>
+            <label for="HORR-s">Horror</label>
+            <input id="ROMA-s" name="secondary_genre" type="radio" value="ROMA"></input>
+            <label for="ROMA-s">Romance</label>
+            <input id="CRIM-s" name="secondary_genre" type="radio" value="CRIM"></input>
+            <label for="CRIM-s">Crime</label>
             <input id="scfi-s" name="secondary_genre" type="radio" value="SCFI"></input>
             <label for="scfi-s">Sci-fi</label>
             <input id="fantasy-s" name="secondary_genre" type="radio" value="FANT"></input>
@@ -226,7 +226,7 @@
 
       <div class="pets-breed">
         <label for="description">Description</label>
-        <textarea  id="description" name="description" placeholder="Place here the description of book" type="text" style="padding: 2%;height:200px; width:100%;" value="{{ book.description }}"></textarea>
+        <textarea  id="description" name="description" placeholder="Place here the description of book" type="text" style="padding: 2%;height:200px; width:100%;">{{ book.description }}</textarea>
       </div>
 
         <input type="checkbox" style="vertical-align:middle;" id="terms" name="terms">
@@ -244,6 +244,18 @@
 </body>
 
 <script>
+$( document ).ready(function() {
+    $(price).val({{ book.price }});
+    $("input[name=primary_genre][value='{{book.primary_genre}}']").prop("checked",true);
+
+    {% if book.secondary_genre %}
+        $("input[name=secondary_genre][value='{{book.secondary_genre}}']").prop("checked",true);
+    {% endif %}
+
+
+
+});
+
     function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();

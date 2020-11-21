@@ -287,7 +287,8 @@ class EditBookView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context["book"].price)
+        context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+        print(context['date'])
         return context
 
 
