@@ -6,7 +6,7 @@ $(document).ready(function () {
         var titles = ['The Arrivals', 'The King of Drugs', 'No Place Like Here'];
         var prices = [15.95, 13.95, 24.95];
         for (i = 0; i < titles.length; i++) {
-          create_info_price(titles[i], prices[i], '#', container);
+          create_info_price(titles[i], prices[i], container);
           total_price += prices[i];
         }
 
@@ -30,15 +30,15 @@ $(document).ready(function () {
     }
 );
 
-function create_info_price(title, price, url, container){
-    var p_book = document.createElement('P');
+function create_info_price(title, price, container){
+    var p_book = document.createElement('DIV');
 
-    var a_book = document.createElement('A');
-    a_book.href = url;
+    var a_book = document.createElement('P');
     a_book.innerHTML = title;
 
     var span_book = document.createElement('SPAN');
     span_book.className = 'price';
+    span_book.style.color = 'black';
     span_book.innerHTML = price + ' €';
 
     p_book.appendChild(a_book);
