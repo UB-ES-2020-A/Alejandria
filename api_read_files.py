@@ -9,11 +9,14 @@ from random import randint
 
 import django
 import requests
-# pylint: disable=import-error
-from books.models import Address, User, Book, GENRE_CHOICES
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
+
+from django.db.utils import IntegrityError
+
+# pylint: disable=import-error
+from books.models import Address, User, Book, GENRE_CHOICES
 
 try:
     adress = Address(street="anonimous", city="Terraplana", country="Illuminados", zip=12345)
@@ -21,7 +24,7 @@ try:
     user = User(role="Admin", name="admin", password="admin", email="admin@mail.com",
                 user_address=adress, fact_address=adress)
     user.save()
-except (LookupError, AttributeError):
+except IntegrityError:
     user = User.objects.filter(name="admin").first()
 
 
@@ -39,38 +42,56 @@ def _isbn10_to_isbn13(isbn_10):
     return str_isbn_12 + str(last_digit)
 
 
-responses = list()
+verbose = False
+verboseprint = print if verbose else lambda *a, **k: None
 
+responses = list()
+i = 0
 for _, genre in GENRE_CHOICES:
-    print("GENRE: ", genre)
+    verboseprint("GENRE: ", genre)
     for word in genre.split(" "):
         params = {'query': r'{"type":"\/type\/edition", "genres":' + "\"{}\"".format(word) + '}'}
         responses.append(requests.get('http://openlibrary.org/api/things', params=params))
-    print("RESPONSES: ", responses)
+    verboseprint("RESPONSES: ", responses)
+
     for response in responses:
+        j = 0
+        i += 1
         json = response.json()
+        num_books = len(json["result"])
         for book in json["result"]:
-            time.sleep(0.5)
+            j += 1
+            print("Genre {}    Book {}/{}".format(i, j, num_books))
+            time.sleep(0.1)
             params = {"key": book, "prettyprint": "true"}
             request = requests.get('http://openlibrary.org/api/get', params=params)
             json = request.json()["result"]
             try:
+                # ISBN
                 isbn = json["isbn_13"][0] if "isbn_13" in json \
                     else _isbn10_to_isbn13(json["isbn_10"])
-                print('ISBN: ', isbn)
+                verboseprint('ISBN: ', isbn)
+                # In case isbn does not have the exact necessary length, the book is expeled
+                if len(isbn) != 13:
+                    continue
+                # TITLE
                 title = json["title"] or "Unknown Title"
-                print('title: ', title)
+                verboseprint('title: ', title)
+                # DESCRIPTION
                 description = json["description"] if "description" in json else None
                 if not isinstance(description, str) and description is not None:
                     description = description["value"]
-                print('dessc: ', description)
+                verboseprint('dessc: ', description)
+                # SAGA
                 saga = json['series'][0] if 'series' in json else None
-                print('saga: ', saga)
+                verboseprint('saga: ', saga)
+                # PUBLICATION DATE
                 # publication_date = json["publish_date"]
                 # TODO, modify incomming format to YYY-MM-DD or accept multiple formats
                 # print('publication date: ', publication_date)
+                # PUBLISHER
                 publisher = json["publishers"][0] if "publishers" in json else None
-                print('publisher: ', publisher)
+                verboseprint('publisher: ', publisher)
 
                 # #TODO authors = json['authors'][0] if 'authors' in json else None
 
@@ -80,11 +101,16 @@ for _, genre in GENRE_CHOICES:
                             description=description,
                             saga=saga,
                             publication_date=None,
-                            primary_genre=_, price=randint(5, 75),
-                            publisher=publisher, user_id=user)
-                print('BOOK: ', book)
+                            primary_genre=_,
+                            price=randint(5, 75),
+                            publisher=publisher[:50],
+                            user_id=user)
+
+                verboseprint('BOOK: ', book)
                 book.save()
-            except (LookupError, AttributeError):
+
+            except KeyError:
+                print("One of the keys is not in this Book.")
                 traceback.print_exc()
 
     # Reset list for the next genre
