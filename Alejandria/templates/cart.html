@@ -30,11 +30,17 @@
 
                     {% for product in cart_list %}
                     <div class="info-book">
-                        <img class="book-cover" src="/static/images/cover-images/book_cover.jpg" alt="Card image cap">
+                        {% if product.ISBN.thumbnail %}
+                        <img class="book-cover" src="{{ product.ISBN.thumbnail.url }}" alt="Card image cap">
+                        <!--TODO: Change to real book image -->
+                        {% else %}
+                        <img class="book-cover" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                        {% endif %}
                         <div style="margin-left:1%;">
                             <div class="row horizontal">
                                 <div class="col-md-8">
-                                    <p class="book-title"><a href="#">{{ product.ISBN.title }}, {{ product.ISBN.author }}</a></p>
+                                    <p class="book-title"><a href="#">{{ product.ISBN.title }}, {{ product.ISBN.author
+                                        }}</a></p>
                                 </div>
                                 <div class="col">
                                     <p class="text" style="text-align:right;"><span>{{ product.price }}</span>€</p>
@@ -147,7 +153,7 @@
             <div style="margin-top:10%;"></div>
             <div class="text" style="margin-left: 5%; margin-bottom: 2%">Related of books you have viewed</div>
 
-            <!--Carousel Wrapper-->
+
             <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
 
                 <!--Slides-->
@@ -158,49 +164,132 @@
                         <div class="col-md-2" style="margin-left:5%;">
                             <!-- Button left -->
                             <button class="btn btn-outline-light leftLst" href="#multi-item-example" data-slide="prev">
-                                <i
-                                        class="fas fa-chevron-left fa-7x"></i></button>
+                                <i class="fas fa-chevron-left fa-7x"></i></button>
                             <!-- ./Button left -->
                         </div>
 
                         <div class="col">
                             <!--First slide-->
-                            {% for book in books_from_cart_view %}
                             <div class="carousel-item active">
                                 <div class="row">
+                                    {% for book in books_from_cart_view_1 %}
                                     <div class="col-md-4">
                                         <div class="card mb-2">
                                             <div class="card" style="width: 11rem;">
-                                                <img class="card-img-top"
-                                                     src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg"
+                                                {% if book.thumbnail %}
+                                                <img class="card-img-top" src="{{ book.thumbnail.url }}"
+                                                     alt="Card image cap"> <!--TODO: Change to real book image -->
+                                                {% else %}
+                                                <img class="card-img-top" src="{% static 'no_available.jpg' %}"
                                                      alt="Card image cap">
+                                                {% endif %}
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
                                                     <h5 class="book-title" style="padding-top:15px">{{ book.title
                                                         }}</h5>
                                                     <p class="text-card" style="font-size: 14px; color:white">{{
                                                         book.author }}</p>
-                                                    <span onclick="createRating(this.id, 62)" id="rating-car"></span>
 
                                                     <p class="text-card" style="font-size: 14px; color:white">{{
                                                         book.price }}€</p>
 
-                                                    <a href="{% url 'books:add_product' 'cart' book.ISBN %}"
-                                                       class="btn btn-success">Add to cart</a>
+                                                    <button class="btn btn-success"
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)">
+                                                        Add to cart
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    {% endfor %}
                                 </div>
                             </div>
 
-                            {% endfor %}
+
                             <!-- ./First slide -->
+
+                            <!-- Second slide -->
+
+                            <div class="carousel-item">
+                                <div class="row">
+                                    {% for book in books_from_cart_view_2 %}
+                                    <div class="col-md-4">
+                                        <div class="card mb-2">
+                                            <div class="card" style="width: 11rem;">
+                                                {% if book.thumbnail %}
+                                                <img class="card-img-top" src="{{ book.thumbnail.url }}"
+                                                     alt="Card image cap"> <!--TODO: Change to real book image -->
+                                                {% else %}
+                                                <img class="card-img-top" src="{% static 'no_available.jpg' %}"
+                                                     alt="Card image cap">
+                                                {% endif %}
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">{{ book.title
+                                                        }}</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{
+                                                        book.author }}</p>
+
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{
+                                                        book.price }}€</p>
+
+                                                    <button class="btn btn-success"
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)">
+                                                        Add to cart
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- ./Second slide -->
+
+                            <!-- Third slide -->
+                            <div class="carousel-item">
+                                <div class="row">
+                                    {% for book in books_from_cart_view_3 %}
+
+                                    <div class="col-md-4">
+                                        <div class="card mb-2">
+                                            <div class="card" style="width: 11rem;">
+                                                {% if book.thumbnail %}
+                                                <img class="card-img-top" src="{{ book.thumbnail.url }}"
+                                                     alt="Card image cap"> <!--TODO: Change to real book image -->
+                                                {% else %}
+                                                <img class="card-img-top" src="{% static 'no_available.jpg' %}"
+                                                     alt="Card image cap">
+                                                {% endif %}
+                                                <div class="card-body"
+                                                     style="background-color:black;border:1px solid white;">
+                                                    <h5 class="book-title" style="padding-top:15px">{{ book.title
+                                                        }}</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{
+                                                        book.author }}</p>
+
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{
+                                                        book.price }}€</p>
+
+                                                    <button class="btn btn-success"
+                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)">
+                                                        Add to cart
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- ./Third slide -->
                         </div>
+
                         <div class="col-md-2" style="align:center">
                             <!-- Button Right -->
-                            <button class="btn btn-outline-light rightLst" href="#multi-item-example"
-                                    data-slide="next">
+                            <button class="btn btn-outline-light rightLst" href="#multi-item-example" data-slide="next">
                                 <i class="fas fa-chevron-right fa-7x"></i></button>
                             <!-- ./Button Right -->
                         </div>
@@ -278,7 +367,12 @@
                     {% for book in books_from_cart_view %}
 
                     <div class="col-md-5" style="margin-top:5%">
-                        <img src="/static/images/cover-images/book_cover5.jpg" style="width: 100%" alt="book">
+                        {% if book.thumbnail %}
+                        <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                        <!--TODO: Change to real book image -->
+                        {% else %}
+                        <img class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                        {% endif %}
                     </div>
 
                     <div class="col" style="margin-left:-6%; margin-top:5%">

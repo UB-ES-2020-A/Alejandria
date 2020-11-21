@@ -248,6 +248,9 @@ class CartView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
         context['books_from_cart_view'] = Book.objects.all()[:6]
+        context['books_from_cart_view_1'] = Book.objects.all()[:3]
+        context['books_from_cart_view_2'] = Book.objects.all()[3:6]
+        context['books_from_cart_view_3'] = Book.objects.all()[6:9]
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
             products = cart.products.all()
