@@ -4,6 +4,7 @@ before_script:
   - "psql -c 'create database travis_ci_test;' -U postgres"
   - "python manage.py makemigrations"
   - "python manage.py migrate"
+  - "pylint Alejandria books *.py"
 cache: pip
 env:
   - "DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test"
