@@ -25,6 +25,7 @@ NUM_COINCIDENT = 10
 NUM_RELATED = 5
 MONTHS_TO_CONSIDER_TOP_SELLER = 6
 
+
 #
 # def book(request):  # TODO: this function is not linked to the frontend
 #     if request.method == 'GET' and request['']:
@@ -69,7 +70,6 @@ class BookView(generic.DetailView):
             context['book_relation'] = Book.objects.all()[:20]
 
         return context
-
 
 class HomeView(generic.ListView):
     template_name = 'home.html'
@@ -166,7 +166,6 @@ class SearchView(generic.ListView):
                 context['book_relation'] = relation_book
                 return context
 
-
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
@@ -229,6 +228,9 @@ class CartView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
         context['books_from_cart_view'] = Book.objects.all()[:6]
+        context['books_from_cart_view_1'] = Book.objects.all()[:3]
+        context['books_from_cart_view_2'] = Book.objects.all()[3:6]
+        context['books_from_cart_view_3'] = Book.objects.all()[6:9]
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
         else:
@@ -385,10 +387,37 @@ class AddView(generic.ListView):
 def register(request):
     def validate_register(data):
         # No Blank Data
-        data_answered = all([len(data[key]) > 0 for key in data])
+        data_answered = all([len(data[key]) > 0 for key in data if 'taste' not in key])
         exists = User.objects.filter(email=request.POST["email"]).exists()
         validation = data_answered and not exists
         return validation
+
+    def encode_genre(taste):
+
+        genres = {
+            'Fantasy': 'FANT',
+            'Crime & Thriller': 'CRIM',
+            'Fiction': 'FICT',
+            'Science Fiction': 'SCFI',
+            'Horror': 'HORR',
+            'Romance': 'ROMA',
+            'Teen & Young Adult': 'TEEN',
+            "Children's Books": 'KIDS',
+            'Anime & Manga': 'ANIM',
+            'Others': 'OTHR',
+            'Art': 'ARTS',
+            'Biography': 'BIOG',
+            'Food': 'FOOD',
+            'History': 'HIST',
+            'Dictionary': 'DICT',
+            'Health': 'HEAL',
+            'Humor': 'HUMO',
+            'Sport': 'SPOR',
+            'Travel': 'TRAV',
+            'Poetry': 'POET'
+        }
+
+        return genres[taste]
 
     if request.method == 'POST':
         if 'trigger' in request.POST and 'register' in request.POST['trigger']:
@@ -416,6 +445,17 @@ def register(request):
                             last_name=request.POST['lastname'], password=request.POST['password1'],
                             email=request.POST['email'], user_address=user_address,
                             fact_address=fact_address)
+
+                if request.POST['tastes']:
+                    if request.POST["taste1"] != "Choose":
+                        user.genre_preference_1 = encode_genre(request.POST["taste1"])
+
+                    if request.POST["taste2"] != "Choose":
+                        user.genre_preference_2 = encode_genre(request.POST["taste2"])
+
+                    if request.POST["taste3"] != "Choose":
+                        user.genre_preference_3 = encode_genre(request.POST["taste3"])
+
                 user.save()
 
                 # Create user's cart
@@ -529,3 +569,39 @@ class PaymentView(generic.TemplateView):
     model = Book
     template_name = 'payment.html'
     queryset = Product.objects.all()
+
+
+class EditorLibrary(generic.ListView):
+    model = Book
+    template_name = 'editor_library.html'  # TODO: Provisional file
+    context_object_name = 'coincident'
+
+    def __init__(self):
+        super().__init__()
+        self.editorBooks = None
+        self.user_id = None
+
+    def get(self, request, *args, **kwargs):
+        print(request.GET)
+        print(request.user.id)
+        self.user_id = self.request.user.id or None
+
+        # if 'search_book' in request.GET:
+        #     self.searchBook = request.GET['search_book']
+        # else:
+        #     keys = request.GET.keys()
+        #     for key in keys:
+        #         self.genres.append(request.GET[key])
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
+        context = super().get_context_data(**kwargs)
+
+        # Filtering by title or author
+        print(self.user_id)
+        editor_books = Book.objects.filter(user_id=self.user_id)
+        print("editor books", editor_books)
+        context['editor_books'] = editor_books
+
+        return context
