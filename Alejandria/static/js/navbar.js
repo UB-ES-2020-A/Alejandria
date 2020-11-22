@@ -9,6 +9,10 @@ $(document).ready(function () {
         window.location.href = window.location.origin;
     });
 
+    $("#performLogout").click(function () {
+        $("#logout_btn").click();
+    })
+
     $("#buttonSearch").click(function () {
             book_name = document.getElementById('textSearch').value;
             if(book_name!=""){
