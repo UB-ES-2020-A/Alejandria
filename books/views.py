@@ -583,3 +583,11 @@ class EditorLibrary(generic.ListView):
         context['editor_books'] = editor_books
 
         return context
+
+
+def view_profile(request):
+    if request.method == "POST":
+        pass
+
+    elif request.method == "GET":
+        return render(request, "view_profile.html")

@@ -21,5 +21,6 @@ urlpatterns = [
     path('forgot/', views.forgot, name='forgot'),
     path('forgot/<id>/', views.forgot, name='reset'),
     path('editor/', views.EditorLibrary.as_view(), name='editor_library'),
+    path('profile/', views.view_profile, name="view_profile")
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
