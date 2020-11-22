@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="{% static 'css/payment-page/chooseMethod.css' %}">
 </html>
 
-<body>
+<body style="background-color:black">
 
 <!-- Container -->
 <div class="row" style="margin-left: 3%; margin-top: 2%; margin-right: 3%">
@@ -22,260 +22,285 @@
                 <!-- For demo purpose -->
                 <div class="row mb-4">
                     <div class="col-lg-8 mx-auto text-center">
-                        <h3 class="display-4">Payment</h3>
+                        <h3 class="display-4" style="color: white">Payment</h3>
                     </div>
                 </div> <!-- End -->
 
 
                 <div class="row">
-                    <div class="col-lg-9 mx-auto">
-                        <div class="card">
+                    <div class="col-lg-9 mx-auto rounded" style="border-color: #d9534f; box-shadow: 0 0 4px 2px #d9534f;">
+                        <div class="card" style="background-color: black">
                             <div class="card-header">
                                 <!-- Credit card form content -->
                                 <div class="tab-content">
 
                                     <div class="py-5">
-                                        <div class="container" id="container-products">
+                                        <div class="container" id="container-products" style="border-color: #d9534f; box-shadow: 0 0 2px 1px #d9534f;">
                                             <h3 style="margin-bottom:2%">Cart
                                                 <span class="price" style="color:black">
                                                   <i class="fa fa-shopping-cart fa-sm"></i>
                                                   <b id="number-products">3</b>
                                                 </span>
                                             </h3>
+                                            <div class="row">
+                                                <div class="col"><p>The Arrivals</p></div>
+                                                <div class="col-2" style="text-align:right"><span>15.00 €</span></div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col"><p>The Arrivals</p></div>
+                                                <div class="col-2" style="text-align:right"><span>15.00 €</span></div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col"><p>The Arrivals</p></div>
+                                                <div class="col-2" style="text-align:right"><span>15.00 €</span></div>
+                                            </div>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col"><b>Total</b></div>
+                                                <div class="col-2" style="text-align:right"><b>45.00 €</b></div>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <!-- credit card info-->
-                                    <div id="bill-address" class="tab-pane fade show active pt-3">
-                                        <form role="form">
+                                        <!-- credit card info-->
+                                        <div id="bill-address" class="tab-pane fade show active pt-3">
+                                            <form role="form">
 
-                                            <div class="form-group">
-                                                <label for="fullname">Full name</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="username" id="fullname"
-                                                           placeholder="John Cena" required
-                                                           class="form-control ">
-                                                    <div class="input-group-append">
-                                                    <span class="input-group-text text-muted">
-                                                    <i class="fa fa-user"></i>
+                                                <div class="form-group">
+                                                    <label for="fullname" style="color:white">Full name</label>
+                                                    <div class="input-group">
+                                                        <input type="text" name="username" id="fullname"
+                                                               placeholder="John Cena" required
+                                                               class="form-control ">
+                                                        <div class="input-group-append">
+                                                    <span class="input-group-text text-muted bg-dark">
+                                                    <i class="fa fa-user" style="color:white"></i>
                                                     </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="email">Email</label>
-                                                <div class="input-group"><input type="text"
-                                                                                id="email"
-                                                                                placeholder="john@example.com"
-                                                                                class="form-control " required>
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text text-muted">
-                                                            <i class="fa fa-address-card-o"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row" style="margin-bottom:4%;">
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label for="address">Address</label>
-                                                        <div class="input-group"><input type="text"
-                                                                                        id="address"
-                                                                                        placeholder="Calle Alcalá, 48"
-                                                                                        class="form-control " required>
-                                                            <div class="input-group-append">
-                                                        <span class="input-group-text text-muted">
-                                                            <i class="fa fa-address-card-o"></i>
-                                                        </span>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-4">
-                                                    <div class="form-group">
-                                                        <label for="city">City</label>
-                                                        <div class="input-group"><input type="text"
-                                                                                        id="city"
-                                                                                        placeholder="Madrid"
-                                                                                        class="form-control " required>
-                                                            <div class="input-group-append">
-                                                        <span class="input-group-text text-muted">
-                                                            <i class="fa fa-institution"></i>
+
+                                                <div class="form-group">
+                                                    <label for="email" style="color:white">Email</label>
+                                                    <div class="input-group"><input type="text"
+                                                                                    id="email"
+                                                                                    placeholder="john@example.com"
+                                                                                    class="form-control " required>
+                                                        <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-dark">
+                                                            <i class="fa fa-address-card-o" style="color:white"></i>
                                                         </span>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-2">
-                                                    <div class="form-group">
-                                                        <label for="zip">Zip</label>
-                                                        <div class="input-group"><input type="text"
-                                                                                        id="zip"
-                                                                                        placeholder="00000"
-                                                                                        class="form-control " required>
-                                                            <div class="input-group-append">
-                                                        <span class="input-group-text text-muted">
-                                                            <i class="fas fa-map-pin"></i>
+
+                                                <div class="row" style="margin-bottom:4%;">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="address" style="color:white">Address</label>
+                                                            <div class="input-group"><input type="text"
+                                                                                            id="address"
+                                                                                            placeholder="Calle Alcalá, 48"
+                                                                                            class="form-control "
+                                                                                            required>
+                                                                <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-dark">
+                                                            <i class="fa fa-address-card-o" style="color:white"></i>
                                                         </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </form>
-                                    </div>
-                                </div>
-                                <!-- ./Bill Address -->
-
-                                            <!-- Credit card form tabs -->
-                                            <ul role="tablist" class="nav bg-light nav-pills rounded nav-fill mb-3">
-                                                <li class="nav-item"><a data-toggle="pill" href="#credit-card"
-                                                                        class="nav-link active "> <i
-                                                        class="fas fa-credit-card mr-2"></i> Credit Card </a></li>
-                                                <li class="nav-item"><a data-toggle="pill" href="#paypal"
-                                                                        class="nav-link "> <i
-                                                        class="fab fa-paypal mr-2"></i> Paypal </a></li>
-                                                <li class="nav-item"><a data-toggle="pill" href="#net-banking"
-                                                                        class="nav-link "> <i
-                                                        class="fas fa-mobile-alt mr-2"></i> Net Banking </a></li>
-                                            </ul>
-                                        <!-- End -->
-
-                                        <!-- Credit card form content -->
-                                        <div class="tab-content">
-
-                                            <!-- credit card info-->
-                                            <div id="credit-card" class="tab-pane fade show active pt-3">
-                                                <form role="form">
-                                                    <div class="form-group"><label for="username">
-                                                        Card Owner
-                                                    </label> <input type="text" name="username" id="username"
-                                                                    placeholder="Card Owner Name" required
-                                                                    class="form-control ">
-                                                    </div>
-                                                    <div class="form-group"><label for="cardNumber">
-                                                        Card number
-                                                    </label>
-                                                        <div class="input-group"><input type="text" name="cardNumber"
-                                                                                        id="cardNumber"
-                                                                                        placeholder="Valid card number"
-                                                                                        class="form-control " required>
-                                                            <div class="input-group-append"><span
-                                                                    class="input-group-text text-muted"> <i
-                                                                    class="fab fa-cc-visa mx-1"></i> <i
-                                                                    class="fab fa-cc-mastercard mx-1"></i> <i
-                                                                    class="fab fa-cc-amex mx-1"></i> </span></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-sm-8">
-                                                            <div class="form-group"><label><span class="hidden-xs">
-                                                    Expiration Date
-                                                </span></label>
-                                                                <div class="input-group">
-                                                                    <input type="number" pattern="\d*" maxlength="2"
-                                                                           placeholder="MM" class="form-control"
-                                                                           required>
-                                                                    <input type="number" pattern="\d*" minlength="4"
-                                                                           maxlength="4" placeholder="YY"
-                                                                           class="form-control"
-                                                                           required>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-sm-4">
-                                                            <div class="form-group mb-4"><label data-toggle="tooltip"
-                                                                                                title="Three digit CV code on the back of your card">
-                                                                CVV <i class="fa fa-question-circle d-inline"></i>
-                                                            </label> <input type="text" required class="form-control">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label for="city" style="color:white">City</label>
+                                                            <div class="input-group"><input type="text"
+                                                                                            id="city"
+                                                                                            placeholder="Madrid"
+                                                                                            class="form-control "
+                                                                                            required>
+                                                                <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-dark">
+                                                            <i class="fa fa-institution" style="color:white"></i>
+                                                        </span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-
-                                                    <!-- Don't close DIV -->
-                                                    <div style="margin-left:10%; margin-right:10%">
-                                                        <button type="button"
-                                                                class="subscribe btn btn-success btn-block shadow-sm">
-                                                            <i class="fas fa-lock mr-2"></i>Confirm Payment
-                                                        </button>
-                                                </form>
-                                            </div>
-                                        </div> <!-- End -->
-
-                                        <!-- Paypal info -->
-                                        <div id="paypal" class="tab-pane fade pt-3">
-                                            <h6 class="pb-2">Select your paypal account type</h6>
-                                            <div class="form-group row">
-                                                <div class="col">
-                                                    <label class="radio-inline">
-                                                        <input type="radio" name="optradio" checked>
-                                                        Domestic
-                                                    </label>
+                                                    <div class="col-sm-2">
+                                                        <div class="form-group">
+                                                            <label for="zip" style="color:white">Zip</label>
+                                                            <div class="input-group"><input type="text"
+                                                                                            id="zip"
+                                                                                            placeholder="00000"
+                                                                                            class="form-control "
+                                                                                            required>
+                                                                <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-dark">
+                                                            <i class="fas fa-map-pin" style="color:white"></i>
+                                                        </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col">
-                                                    <label class="radio-inline">
-                                                        <input type="radio" name="optradio">
-                                                        International
-                                                    </label>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!-- ./Bill Address -->
+
+                                    <!-- Credit card form tabs -->
+                                    <ul role="tablist" class="nav bg-light nav-pills rounded nav-fill mb-3" style="border-color: #d9534f; box-shadow: 0 0 4px 2px #e9534f;">
+                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill" href="#credit-card"
+                                                                class="nav-link active"> <i
+                                                class="fas fa-credit-card mr-2"></i> Credit Card </a></li>
+                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill" href="#paypal"
+                                                                class="nav-link "> <i
+                                                class="fab fa-paypal mr-2"></i> Paypal </a></li>
+                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill" href="#net-banking"
+                                                                class="nav-link "> <i
+                                                class="fas fa-mobile-alt mr-2"></i> Net Banking </a></li>
+                                    </ul>
+                                    <!-- End -->
+
+                                    <!-- Credit card form content -->
+                                    <div class="tab-content">
+
+                                        <!-- credit card info-->
+                                        <div id="credit-card" class="tab-pane fade show active pt-3">
+                                            <form role="form">
+                                                <div class="form-group"><label for="username" style="color:white">
+                                                    Card Owner
+                                                </label> <input type="text" name="username" id="username"
+                                                                placeholder="Card Owner Name" required
+                                                                class="form-control ">
                                                 </div>
+                                                <div class="form-group"><label for="cardNumber" style="color:white">
+                                                    Card number
+                                                </label>
+                                                    <div class="input-group"><input type="text" name="cardNumber"
+                                                                                    id="cardNumber"
+                                                                                    placeholder="Valid card number"
+                                                                                    class="form-control " required>
+                                                        <div class="input-group-append"><span
+                                                                class="input-group-text text-muted bg-dark"> <i
+                                                                class="fab fa-cc-visa mx-1" style="color:white"></i> <i
+                                                                class="fab fa-cc-mastercard mx-1" style="color:white"></i> <i
+                                                                class="fab fa-cc-amex mx-1" style="color:white"></i> </span></div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-8">
+                                                        <div class="form-group"><label style="color:white"><span
+                                                                class="hidden-xs">
+                                                    Expiration Date
+                                                </span></label>
+                                                            <div class="input-group">
+                                                                <input type="number" pattern="\d*" maxlength="2"
+                                                                       placeholder="MM" class="form-control"
+                                                                       required>
+                                                                <input type="number" pattern="\d*" minlength="4"
+                                                                       maxlength="4" placeholder="YY"
+                                                                       class="form-control"
+                                                                       required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group mb-4"><label data-toggle="tooltip"
+                                                                                            style="color:white"
+                                                                                            title="Three digit CV code on the back of your card">
+                                                            CVV <i class="fa fa-question-circle d-inline"></i>
+                                                        </label> <input type="text" placeholder="XXX" required class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Don't close DIV -->
+                                                <div style="margin-left:10%; margin-right:10%; margin-bottom:2%">
+                                                    <button type="button"
+                                                            class="subscribe btn btn-success btn-block shadow-sm">
+                                                        <i class="fas fa-lock mr-2"></i>Confirm Payment
+                                                    </button>
+                                            </form>
+                                        </div>
+                                    </div> <!-- End -->
+
+                                    <!-- Paypal info -->
+                                    <div id="paypal" class="tab-pane fade pt-3">
+                                        <h6 class="pb-2" style="color:white">Select your paypal account type</h6>
+                                        <div class="form-group row">
+                                            <div class="col">
+                                                <label class="radio-inline" style="color:white">
+                                                    <input type="radio" name="optradio" checked>
+                                                    Domestic
+                                                </label>
                                             </div>
+                                            <div class="col">
+                                                <label class="radio-inline" style="color:white">
+                                                    <input type="radio" name="optradio">
+                                                    International
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            <button type="button" class="btn btn-success"><i
+                                                    class="fab fa-paypal mr-2"></i>
+                                                Log into my Paypal
+                                            </button>
+                                        </p>
+                                        <p class="text-muted" style="color:white"> Note: After clicking the button, you
+                                            will be directed
+                                            to a
+                                            secure gateway for payment. After completing the payment process, you
+                                            will be
+                                            redirected back to the website to view details of your order. </p>
+                                    </div> <!-- ./Paypal info -->
+
+                                    <!-- bank transfer info -->
+                                    <div id="net-banking" class="tab-pane fade pt-3">
+                                        <div class="form-group "><label for="ccmonth" style="color:white">
+                                            Select your Bank
+                                        </label> <select class="form-control" id="ccmonth">
+                                            <option value="" selected disabled>--Please select your Bank--</option>
+                                            <option>Bankia</option>
+                                            <option>Bankinter</option>
+                                            <option>BBVA</option>
+                                            <option>EVO</option>
+                                            <option>Imagin</option>
+                                            <option>ING</option>
+                                            <option>Openbank</option>
+                                        </select></div>
+                                        <div class="form-group">
                                             <p>
                                                 <button type="button" class="btn btn-success"><i
-                                                        class="fab fa-paypal mr-2"></i>
-                                                    Log into my Paypal
+                                                        class="fas fa-mobile-alt mr-2"></i> Proceed Payment
                                                 </button>
                                             </p>
-                                            <p class="text-muted"> Note: After clicking the button, you will be directed
-                                                to a
-                                                secure gateway for payment. After completing the payment process, you
-                                                will be
-                                                redirected back to the website to view details of your order. </p>
-                                        </div> <!-- ./Paypal info -->
-
-                                        <!-- bank transfer info -->
-                                        <div id="net-banking" class="tab-pane fade pt-3">
-                                            <div class="form-group "><label for="ccmonth">
-                                                Select your Bank
-                                            </label> <select class="form-control" id="ccmonth">
-                                                <option value="" selected disabled>--Please select your Bank--</option>
-                                                <option>Bankia</option>
-                                                <option>Bankinter</option>
-                                                <option>BBVA</option>
-                                                <option>EVO</option>
-                                                <option>Imagin</option>
-                                                <option>ING</option>
-                                                <option>Openbank</option>
-                                            </select></div>
-                                            <div class="form-group">
-                                                <p>
-                                                    <button type="button" class="btn btn-success"><i
-                                                            class="fas fa-mobile-alt mr-2"></i> Proceed Payment
-                                                    </button>
-                                                </p>
-                                            </div>
-                                            <p class="text-muted">Note: After clicking the button, you will be directed
-                                                to a
-                                                secure gateway for payment. After completing the payment process, you
-                                                will be
-                                                redirected back to the website to view details of your order. </p>
                                         </div>
-                                        <!-- ./bank transfer info -->
+                                        <p class="text-muted" style="color:white">Note: After clicking the button, you
+                                            will be directed
+                                            to a
+                                            secure gateway for payment. After completing the payment process, you
+                                            will be
+                                            redirected back to the website to view details of your order. </p>
                                     </div>
-                                    <!-- ./Credit card form content -->
+                                    <!-- ./bank transfer info -->
                                 </div>
+                                <!-- ./Credit card form content -->
+                            </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- JavaScript files from static folder -->
-<script src="/static/js/payment-page/showproducts.js"></script>
-<!-- ./JavaScript files from static folder -->
+    <!-- JavaScript files from static folder -->
+    <!-- script src="/static/js/payment-page/showproducts.js"></script -->
+    <!-- ./JavaScript files from static folder -->
 
 </body>
 {% endblock %}
