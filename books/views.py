@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import Permission
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
@@ -128,11 +129,11 @@ class HomeView(generic.ListView):
         #    publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
-            products = cart.products.all()
-            items = len(products)
-            context['total_items'] = [items]
+        # if self.user_id:
+        #     cart = Cart.objects.get(user_id=self.user_id)
+        #     products = cart.products.all()
+        #     items = len(products)
+        #     context['total_items'] = [items]
 
         return context
 
@@ -260,9 +261,9 @@ class SellView(generic.ListView):
 
         return context
 
-    @login_required
+    @permission_required('Alejandria.add_book')
     def add_book(request):
-        print(request.user.id)
+        print(request.user.user_permissions.all() | Permission.objects.filter(group__user=request.user))
         if request.method == "POST":
             form = BookForm(request.POST, request.FILES)
             if form.is_valid():
@@ -272,8 +273,9 @@ class SellView(generic.ListView):
                 messages.info(request, 'Your book has been created successfully!')
 
                 book.save()
+            else:
+                messages.info(request, 'Oops.. something is wrong')
         else:
-            messages.info(request, 'Oops.. something is wrong')
             form = BookForm()
 
         return render(request, "sell.html", {"form": form})
