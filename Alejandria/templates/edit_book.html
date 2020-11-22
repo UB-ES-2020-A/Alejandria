@@ -57,7 +57,8 @@
   <div class="right-container" style="width:auto">
     <header>
       <form method="POST" enctype = "multipart/form-data"> {% csrf_token %}
-      <h1>Add a book to Alejandria</h1>
+      <h1>Update you're book</h1>
+          <h6 style="color:black;">ISBN: {{book.ISBN}}</h6>
 <div class="set">
         <div class="pets-name">
           <label for="pets-name">* Title</label>

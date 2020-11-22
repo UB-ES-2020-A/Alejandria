@@ -269,14 +269,11 @@ class SellView(generic.ListView):
                 book = form.save(commit=False)
                 book.user_id = request.user
                 book.num_sold = 0
-                # messages.success(request, 'Form submission successful')
-                messages.info(request, 'Your book has been updated successfully!')
+                messages.info(request, 'Your book has been created successfully!')
 
                 book.save()
-            # else:
-            # print(form.errors)
-            # return redirect("/")
         else:
+            messages.info(request, 'Oops.. something is wrong')
             form = BookForm()
 
         return render(request, "sell.html", {"form": form})
@@ -288,7 +285,6 @@ class EditBookView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
-        # print(context['book'].eBook)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -298,44 +294,13 @@ class EditBookView(generic.DetailView):
             if form.is_valid():
                 book = form.save(commit=False)
                 book.user_id = request.user
-                #book.num_sold = 0
-                #book.ISBN = self.kwargs['pk']
-                # messages.success(request, 'Form submission successful')
                 messages.info(request, 'Your book has been updated successfully!')
                 book.save()
-                #print(form)
-
-            # messages.success(request, 'Form submission successful')
-            #messages.info(request, 'Your book has been updated successfully!')
-
-            #book.save()
-        # else:
-        # print(form.errors)
-        # return redirect("/")
+            else:
+                messages.info(request, 'Oops.. something is wrong')
         else:
-            form = BookForm()
+            form = UpdateBookForm()
         return render(request, "edit_book.html", {"form": form})
-
-
-    # @login_required
-    # def edit_book(request):
-    #     if request.method == "POST":
-    #         form = BookForm(request.POST, request.FILES)
-    #         if form.is_valid():
-    #             book = form.save(commit=False)
-    #             book.user_id = request.user
-    #             book.num_sold = 0
-    #             # messages.success(request, 'Form submission successful')
-    #             messages.info(request, 'Your book has been updated successfully!')
-    #
-    #             book.save()
-    #         # else:
-    #         # print(form.errors)
-    #         # return redirect("/")
-    #     else:
-    #         form = BookForm()
-
-        # return render(request, "sell.html", {"form": form})
 
 
 class CartView(generic.ListView):
