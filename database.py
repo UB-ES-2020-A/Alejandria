@@ -1,19 +1,23 @@
+"""
+This file was used to add initial lines in the DataBase,
+but might be changed for a future mor professional implementation.
+"""
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 import django
-
-django.setup()
+import random
 
 from books.models import Book, User, Address, Product, Cart, FAQ
 from django.core.files import File
 
-import random
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
+django.setup()
+
 
 user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 user_address.save()
 fact_address.save()
-# Pylint: disable=line-too-long
+# pylint: disable=line-too-long
 thumb1 = File(open('Alejandria/static/images/cover-images/202852714dec217e579db202a977be70.jpg', 'rb'))
 thumb2 = File(open('Alejandria/static/images/cover-images/book_cover.jpg', 'rb'))
 thumb3 = File(open('Alejandria/static/images/cover-images/book_cover2.jpg', 'rb'))
@@ -21,11 +25,12 @@ thumb4 = File(open('Alejandria/static/images/cover-images/book_cover3.jpg', 'rb'
 thumb5 = File(open('Alejandria/static/images/cover-images/book_cover4.jpg', 'rb'))
 thumb6 = File(open('Alejandria/static/images/cover-images/book_cover5.jpg', 'rb'))
 thumb7 = File(open('Alejandria/static/images/cover-images/book_cover7.jpg', 'rb'))
-thumb8 = File(open('Alejandria/static/images/cover-images/canva-white-bold-text-thriller-mystery-book-cover-CejxvxrTCyg.jpg', 'rb'))
+thumb8 = File(
+    open('Alejandria/static/images/cover-images/canva-white-bold-text-thriller-mystery-book-cover-CejxvxrTCyg.jpg',
+         'rb'))
 thumb9 = File(open('Alejandria/static/images/cover-images/Night_pb-eb-des2.jpg', 'rb'))
-thumb10 = File(open('Alejandria/static/images/cover-images/design-for-writers-book-cover-tf-2-a-million-to-one.jpg', 'rb'))
-
-
+thumb10 = File(
+    open('Alejandria/static/images/cover-images/design-for-writers-book-cover-tf-2-a-million-to-one.jpg', 'rb'))
 
 print("ADDRESS SAVED...OK")
 
@@ -107,6 +112,7 @@ print("CART SAVED...OK")
 ## TO GENEREATE FAQS, CAN BE CREATED FROM A FILE faqs.txt OR WRITTEN IN TERMINAL. ALSO DELETE ALL OR SEE WHAT IS IN THE DATABASE
 
 def write_some_faqs():
+    """ Asks to introduce FAQs by hand in terminal"""
     while True:
         n = input("Number of faqs you whant to write:")
         if n.isdigit():

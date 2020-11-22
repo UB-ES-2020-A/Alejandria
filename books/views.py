@@ -15,6 +15,7 @@ from Alejandria.settings import EMAIL_HOST_USER
 from .forms import BookForm
 from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
 
+
 # Create your views here.
 
 """
@@ -204,6 +205,7 @@ class SearchView(generic.ListView):
 class SellView(generic.ListView):
 
     @login_required
+    @staticmethod
     def add_book(request):
         print(request.user.id)
         if request.method == "POST":
