@@ -19,7 +19,7 @@
     <script src="//cdn.jsdelivr.net/npm/less" ></script>
 </head>
 <body>
-
+<a href="/media/{{book.eBook}}" download>XXXXXXXXXXXX</a>
 {% if messages %}
   {% for msg in messages %}
     <div class="alert alert-info alert-dismissable">
@@ -48,7 +48,11 @@
 
 <div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
-    <img id="blah" style="width:110%" src="{% static 'no_available.jpg' %}" />
+      {% if book.thumbnail %}
+        <img id="blah" style="width:110%" src="/media/{{ book.thumbnail }}" />
+      {% else %}
+        <img id="blah" style="width:110%" src="{% static 'no_available.jpg' %}" />
+      {% endif %}
   </div>
   <div class="right-container" style="width:auto">
     <header>

@@ -288,8 +288,26 @@ class EditBookView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
-        print(context['date'])
+        # print(context['book'].eBook)
         return context
+
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            s = get_object_or_404(Book, pk=request.POST['ISBN'])
+            form = BookForm(request.POST, instance=s)
+            if form.is_valid():
+                print(form)
+
+            # messages.success(request, 'Form submission successful')
+            #messages.info(request, 'Your book has been updated successfully!')
+
+            #book.save()
+        # else:
+        # print(form.errors)
+        # return redirect("/")
+        else:
+            form = BookForm()
+        return render(request, "edit_book.html", {"form": form})
 
 
     # @login_required
