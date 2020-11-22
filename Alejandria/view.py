@@ -8,17 +8,6 @@ def home(request):
     return render(request, template, context)
 
 
-def search0(request):
-    template = "searchresult.html"
-    # book0 = Book(title="Song of Ice and Fire", author="George R. R. Martin", price=24.95)
-    # book1 = Book(title="The Mist", author="Stephen King", price=19.99)
-    # coincidents = [book0, book1]
-    #context = {"coincidents": coincidents}
-    context = {}
-
-    return render(request, template, context)
-
-
 def showDetails(request, isbn):
     template = "details.html"
     context = {"isbn": isbn}

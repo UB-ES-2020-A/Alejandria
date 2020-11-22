@@ -15,7 +15,6 @@ from Alejandria.settings import EMAIL_HOST_USER
 from .forms import BookForm
 from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
 
-
 # Create your views here.
 
 """
@@ -25,6 +24,7 @@ This is my custom response to get to a book by it's ISBN. The ISBN is passed by 
 NUM_COINCIDENT = 10
 NUM_RELATED = 5
 MONTHS_TO_CONSIDER_TOP_SELLER = 6
+
 
 #
 # def book(request):  # TODO: this function is not linked to the frontend
@@ -71,8 +71,6 @@ class BookView(generic.DetailView):
 
         return context
 
-
-
     # TODO: Treat POST methods to add to cart, etc.
 
     """
@@ -104,6 +102,7 @@ class BookView(generic.DetailView):
 
     """
 
+
 class HomeView(generic.ListView):
     template_name = 'home.html'
     context_object_name = 'book_list'
@@ -118,14 +117,14 @@ class HomeView(generic.ListView):
 
         today = datetime.today()
         self.user_id = self.request.user.id or None
-        #return Book.objects.all() # TODO: Replace with the one below when ready to test with a full database.
+        # return Book.objects.all() # TODO: Replace with the one below when ready to test with a full database.
         return Book.objects.order_by('-num_sold')[:20]
-        #.filter(publication_date__range=[str(today)[:10],str(today - timedelta(days=30 * MONTHS_TO_CONSIDER_TOP_SELLER))[:10]])[:10]
+        # .filter(publication_date__range=[str(today)[:10],str(today - timedelta(days=30 * MONTHS_TO_CONSIDER_TOP_SELLER))[:10]])[:10]
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         today = datetime.today()
-        #context['new_books'] = Book.objects.filter(
+        # context['new_books'] = Book.objects.filter(
         #    publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
@@ -188,7 +187,6 @@ class SearchView(generic.ListView):
                 context['book_relation'] = relation_book
                 return context
 
-
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
@@ -205,7 +203,6 @@ class SearchView(generic.ListView):
 class SellView(generic.ListView):
 
     @login_required
-    @staticmethod
     def add_book(request):
         print(request.user.id)
         if request.method == "POST":
@@ -389,10 +386,37 @@ class AddView(generic.ListView):
 def register(request):
     def validate_register(data):
         # No Blank Data
-        data_answered = all([len(data[key]) > 0 for key in data])
+        data_answered = all([len(data[key]) > 0 for key in data if 'taste' not in key])
         exists = User.objects.filter(email=request.POST["email"]).exists()
         validation = data_answered and not exists
         return validation
+
+    def encode_genre(taste):
+
+        genres = {
+            'Fantasy': 'FANT',
+            'Crime & Thriller': 'CRIM',
+            'Fiction': 'FICT',
+            'Science Fiction': 'SCFI',
+            'Horror': 'HORR',
+            'Romance': 'ROMA',
+            'Teen & Young Adult': 'TEEN',
+            "Children's Books": 'KIDS',
+            'Anime & Manga': 'ANIM',
+            'Others': 'OTHR',
+            'Art': 'ARTS',
+            'Biography': 'BIOG',
+            'Food': 'FOOD',
+            'History': 'HIST',
+            'Dictionary': 'DICT',
+            'Health': 'HEAL',
+            'Humor': 'HUMO',
+            'Sport': 'SPOR',
+            'Travel': 'TRAV',
+            'Poetry': 'POET'
+        }
+
+        return genres[taste]
 
     if request.method == 'POST':
         if 'trigger' in request.POST and 'register' in request.POST['trigger']:
@@ -420,6 +444,17 @@ def register(request):
                             last_name=request.POST['lastname'], password=request.POST['password1'],
                             email=request.POST['email'], user_address=user_address,
                             fact_address=fact_address)
+
+                if request.POST['tastes']:
+                    if request.POST["taste1"] != "Choose":
+                        user.genre_preference_1 = encode_genre(request.POST["taste1"])
+
+                    if request.POST["taste2"] != "Choose":
+                        user.genre_preference_2 = encode_genre(request.POST["taste2"])
+
+                    if request.POST["taste3"] != "Choose":
+                        user.genre_preference_3 = encode_genre(request.POST["taste3"])
+
                 user.save()
 
                 # Create user's cart
