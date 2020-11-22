@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views import generic
 
 from Alejandria.settings import EMAIL_HOST_USER
-from .forms import BookForm
+from .forms import BookForm, UpdateBookForm
 from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
 
 # Create your views here.
@@ -293,10 +293,17 @@ class EditBookView(generic.DetailView):
 
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
-            s = get_object_or_404(Book, pk=request.POST['ISBN'])
-            form = BookForm(request.POST, instance=s)
+            s = get_object_or_404(Book, pk=self.kwargs['pk'])
+            form = UpdateBookForm(request.POST, instance=s)
             if form.is_valid():
-                print(form)
+                book = form.save(commit=False)
+                book.user_id = request.user
+                #book.num_sold = 0
+                #book.ISBN = self.kwargs['pk']
+                # messages.success(request, 'Form submission successful')
+                messages.info(request, 'Your book has been updated successfully!')
+                book.save()
+                #print(form)
 
             # messages.success(request, 'Form submission successful')
             #messages.info(request, 'Your book has been updated successfully!')

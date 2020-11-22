@@ -19,7 +19,7 @@
     <script src="//cdn.jsdelivr.net/npm/less" ></script>
 </head>
 <body>
-<a href="/media/{{book.eBook}}" download>XXXXXXXXXXXX</a>
+
 {% if messages %}
   {% for msg in messages %}
     <div class="alert alert-info alert-dismissable">
@@ -78,16 +78,16 @@
           <input id="price" name="price" type="number" ></input>
         </div>
       </div>
-      <div class="set">
-        <div class="pets-gender">
-          <label for="isbn">* ISBN</label>
-          <input id="isbn" name="ISBN" placeholder="0123456789012" type="number" value="{{ book.ISBN }}"></input>
-        </div>
+<!--      <div class="set">-->
+<!--        <div class="pets-gender">-->
+<!--          <label for="isbn">* ISBN</label>-->
+<!--          <input id="isbn" name="ISBN" placeholder="0123456789012" type="number" value="{{ book.ISBN }}"></input>-->
+<!--        </div>-->
         <div class="pets-gender">
           <label for="saga">Saga</label>
           <input id="saga" name="saga" placeholder="Saga of book" type="text" value="{{ book.saga }}"></input>
         </div>
-      </div>
+<!--      </div>-->
 
         <div class="set">
         <div class="pets-gender">
@@ -129,7 +129,12 @@
           <input id="file" style="border:0px;" type='file' name="eBook" accept="application/pdf" />
 
 
+
         </div>
+          <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
+              <a style="color:black; padding-left: 5px;" href="/media/{{book.eBook}}"> Download eBook</a>
+          </div>
+
 
 
       <div class="pets-weight">
