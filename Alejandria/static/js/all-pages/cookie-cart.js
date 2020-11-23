@@ -13,7 +13,7 @@ $(document).ready(function () {
                 }
             }
         }
-    return cookieValue;
+        return cookieValue;
 }
 
     function generate_id() {

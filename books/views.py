@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
+import random
 
 from Alejandria.settings import EMAIL_HOST_USER
 from .forms import BookForm
@@ -97,18 +98,34 @@ class HomeView(generic.ListView):
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
 
+        return context
+
+    def render_to_response(self, context, **response_kwargs):
+        response = super(HomeView, self).render_to_response(context, **response_kwargs)
+
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
         else:
-            device = self.request.COOKIES['device']
+            device = self.request.COOKIES.get('device')
+            if not device:
+                device = self.generate_id()
+                response.set_cookie('device', device)
+
             user, created = Guest.objects.get_or_create(device=device)
             cart, created = Cart.objects.get_or_create(guest_id=user)
+        if cart:
+            products = cart.products.all()
+            items = len(products)
+            context['total_items'] = [items]
 
-        products = cart.products.all()
-        items = len(products)
-        context['total_items'] = [items]
+        return response
 
-        return context
+    def generate_id(self):
+        temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+        list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
+        id = "".join(list_id)
+        print('ID', id)
+        return id
 
 
 class SearchView(generic.ListView):
