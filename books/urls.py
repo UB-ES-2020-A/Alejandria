@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.urls import path
 
 from . import views
@@ -20,7 +21,9 @@ urlpatterns = [
     path('sell/', views.SellView.add_book, name='sell'),
     path('forgot/', views.forgot, name='forgot'),
     path('forgot/<id>/', views.forgot, name='reset'),
+    #path('editor/', permission_required('add_book', raise_exception=True)(views.EditorLibrary.as_view()), name='editor_library'),
     path('editor/', views.EditorLibrary.as_view(), name='editor_library'),
+    #path('editBook/<slug:pk>/', permission_required('Alejandria.add_book', raise_exception=True)(views.EditBookView.as_view()), name='edit_book'),
     path('editBook/<slug:pk>/', views.EditBookView.as_view(), name='edit_book'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

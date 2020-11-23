@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Permission
 from django.core.mail import send_mail
 from django.db.models import Q
@@ -152,7 +153,6 @@ class SearchView(generic.ListView):
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
-        print(request.GET)
         self.user_id = self.request.user.id or None
         if 'search_book' in request.GET:
             self.searchBook = request.GET['search_book']
@@ -202,68 +202,11 @@ class SearchView(generic.ListView):
         # TODO: Filtering by topseller and On Sale
 
 
-class SellView(generic.ListView):
-    model = Book
-    template_name = 'search.html'  # TODO: Provisional file
-    context_object_name = 'coincident'
+class SellView(PermissionRequiredMixin, generic.ListView):
+    permission_required = ('books.add_book',)
 
-    def __init__(self):
-        super().__init__()
-        self.coincident = None
-        self.related = None
-        self.searchBook = None
-        self.genres = []
-        self.user_id = None
-
-    def get(self, request, *args, **kwargs):
-        print(request.GET)
-        self.user_id = self.request.user.id or None
-        if 'search_book' in request.GET:
-            self.searchBook = request.GET['search_book']
-        else:
-            keys = request.GET.keys()
-            for key in keys:
-                self.genres.append(request.GET[key])
-
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
-        context = super().get_context_data(**kwargs)
-
-        # Get number of cart products
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
-            products = cart.products.all()
-            items = len(products)
-            context['total_items'] = [items]
-
-        # Filtering by title or author
-        if self.searchBook:
-            filtered = Book.objects.filter(Q(title__icontains=self.searchBook) | Q(author__icontains=self.searchBook))[
-                       :20]
-            context['book_list'] = filtered
-            genres_relation = []
-            for book in filtered:
-                if book.primary_genre not in genres_relation:
-                    genres_relation.append(book.primary_genre)
-
-            relation_book = Book.objects.filter(primary_genre__in=genres_relation)[:20]
-            if relation_book:
-                context['book_relation'] = relation_book
-                return context
-
-        if self.genres:
-            filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
-            context['book_list'] = filtered
-            return context
-
-        # TODO: Filtering by topseller and On Sale
-
-        return context
-
-    @permission_required('Alejandria.add_book')
     def add_book(request):
-        print(request.user.user_permissions.all() | Permission.objects.filter(group__user=request.user))
+
         if request.method == "POST":
             form = BookForm(request.POST, request.FILES)
             if form.is_valid():
@@ -275,21 +218,28 @@ class SellView(generic.ListView):
                 book.save()
             else:
                 messages.info(request, 'Oops.. something is wrong')
+
         else:
             form = BookForm()
 
         return render(request, "sell.html", {"form": form})
 
-class EditBookView(generic.DetailView):
+
+class EditBookView(PermissionRequiredMixin, generic.DetailView):
     model = Book
     template_name = 'edit_book.html'
+    permission_required = ('books.add_book',)
 
+    # @permission_required('Alejandria.view_book', raise_exception=True)
     def get_context_data(self, **kwargs):
+        # print(self.request.user.user_permissions.all() | Permission.objects.filter(group__user=self.request.user))
         context = super().get_context_data(**kwargs)
         context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
         return context
 
+    #@permission_required('Alejandria.change_book', raise_exception=True)
     def post(self, request, *args, **kwargs):
+        # print(self.request.user.user_permissions.all() | Permission.objects.filter(group__user=self.request.user))
         if request.method == 'POST':
             s = get_object_or_404(Book, pk=self.kwargs['pk'])
             form = UpdateBookForm(request.POST, instance=s)
@@ -316,11 +266,9 @@ class CartView(generic.ListView):
 
     def get_queryset(self):
         request = self.request
-        print(request.GET)
         self.user_id = request.user.id or None
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
-            print(cart)
             if cart:
                 return cart.products.all()
         return None
@@ -592,10 +540,12 @@ class PaymentView(generic.TemplateView):
     queryset = Product.objects.all()
 
 
-class EditorLibrary(generic.ListView):
+class EditorLibrary(PermissionRequiredMixin, generic.ListView):
     model = Book
     template_name = 'editor_library.html'  # TODO: Provisional file
     context_object_name = 'coincident'
+    permission_required = ('books.add_book',)
+    #permission_required = 'Alejandria.view_book'
 
     def __init__(self):
         super().__init__()
@@ -603,8 +553,6 @@ class EditorLibrary(generic.ListView):
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
-        print(request.GET)
-        print(request.user.id)
         self.user_id = self.request.user.id or None
 
         # if 'search_book' in request.GET:
