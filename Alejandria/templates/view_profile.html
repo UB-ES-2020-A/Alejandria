@@ -29,7 +29,7 @@
                       <h4>{{ user.username }}</h4>
                       <p class="text-secondary mb-1">{{ user.name }}</p>
                       <p class="text-muted font-size-sm">{{ user.user_address.city }} , {{ user.user_address.zip }}</p>
-                      <button class="btn btn-danger">Edit Profile</button>
+                      <button class="btn btn-danger" id="edit_btn">Edit Profile</button>
                     </div>
                   </div>
                 </div>
@@ -46,7 +46,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">Username</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_username">
                       {{ user.username }}
                     </div>
                   </div>
@@ -55,7 +55,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">Full Name</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_name">
                       {{ user.name }} {{ user.last_name }}
                     </div>
                   </div>
@@ -64,7 +64,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">Email</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_email">
                       {{ user.email }}
                     </div>
                   </div>
@@ -73,7 +73,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">Street</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_street1">
                       {{ user.user_address.street }}
                     </div>
                   </div>
@@ -82,7 +82,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">City</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_city1">
                       {{ user.user_address.city }}
                     </div>
                   </div>
@@ -91,7 +91,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">Country</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_country1">
                       {{ user.user_address.country }}
                     </div>
                   </div>
@@ -100,7 +100,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">Zip Code</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_zip1">
                       {{ user.user_address.zip }}
                     </div>
                   </div>
@@ -120,7 +120,7 @@
                         <div class="col-sm-4">
                           <h6 class="mb-0">Taste 1</h6>
                         </div>
-                        <div class="col-sm-6 text-secondary">
+                        <div class="col-sm-6 text-secondary" id="id_taste1">
                           {{ user.get_genre_preference_1_display }}
                         </div>
                       </div>
@@ -129,7 +129,7 @@
                         <div class="col-sm-4">
                           <h6 class="mb-0">Taste 2</h6>
                         </div>
-                        <div class="col-sm-6 text-secondary">
+                        <div class="col-sm-6 text-secondary" id="id_taste2">
                           {{ user.get_genre_preference_2_display }}
                         </div>
                       </div>
@@ -138,7 +138,7 @@
                         <div class="col-sm-4">
                           <h6 class="mb-0">Taste 3</h6>
                         </div>
-                        <div class="col-sm-6 text-secondary">
+                        <div class="col-sm-6 text-secondary" id="id_taste3">
                           {{ user.get_genre_preference_3_display }}
                         </div>
                       </div>
@@ -159,7 +159,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">Street</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_street2">
                       {{ user.user_address.street }}
                     </div>
                   </div>
@@ -168,7 +168,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">City</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_city2">
                       {{ user.user_address.city }}
                     </div>
                   </div>
@@ -177,7 +177,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">Country</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_country2">
                       {{ user.user_address.country }}
                     </div>
                   </div>
@@ -186,7 +186,7 @@
                     <div class="col-sm-3">
                       <h6 class="mb-0">Zip Code</h6>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary" id="id_zip2">
                       {{ user.user_address.zip }}
                     </div>
                   </div>
