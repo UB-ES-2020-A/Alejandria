@@ -15,6 +15,6 @@ python:
   - 3.8
 script:
   - pytest --cov
-sudo: false
 after_success:
   - coveralls
+sudo: false
