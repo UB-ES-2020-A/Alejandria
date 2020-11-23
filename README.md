@@ -1,5 +1,7 @@
 # Alejandria
 
+[![Build Status](https://travis-ci.com/UB-ES-2020/Alejandria.svg?branch=main)](https://travis-ci.com/UB-ES-2020/Alejandria)
+
 ### Primeros pasos
 
 Una vez bajado el proyecto teneis que crear un virtual environment e instalar los requirements con:
