@@ -193,64 +193,47 @@
           <input id="price" name="price" type="number" ></input>
         </div>
       </div>
-<!--      <div class="set">-->
-<!--        <div class="pets-gender">-->
-<!--          <label for="isbn">* ISBN</label>-->
-<!--          <input id="isbn" name="ISBN" placeholder="0123456789012" type="number" value="{{ book.ISBN }}"></input>-->
-<!--        </div>-->
+          <div class="set">
         <div class="pets-gender">
           <label for="saga">Saga</label>
           <input id="saga" name="saga" placeholder="Saga of book" type="text" value="{{ book.saga }}"></input>
         </div>
-<!--      </div>-->
+
+          <div class="pets-gender">
+          <label for="publisher">* Publisher</label>
+          <input id="publisher" name="publisher" placeholder="Publisher of book" type="text" value="{{ book.publisher }}"></input>
+        </div>
+        </div>
 
         <div class="set">
         <div class="pets-gender">
           <label for="language">* Language</label>
           <input id="language" name="language" placeholder="Spanish" type="text" value="{{ book.language }}"></input>
         </div>
-        <div class="pets-gender">
-          <label for="publisher">* Publisher</label>
-          <input id="publisher" name="publisher" placeholder="Publisher of book" type="text" value="{{ book.publisher }}"></input>
-        </div>
+            <div class="pets-birthday">
+              <label for="recommended_age">Recommended age</label>
+                <input id="recommended_age" name="recommended_age" placeholder="Adult" type="text" value="{{ book.recommended_age }}"></input>
+            </div>
       </div>
-          <div class="set">
+       <div class="set">
       <div class="pets-name">
         <label for="numpages">* Nº Pages</label>
         <input id="numpages" name="num_pages" placeholder="100" type="number" value="{{ book.num_pages }}"></input>
       </div>
-               <div class="pets-birthday">
-      <label for="recommended_age">Recommended age</label>
-        <input id="recommended_age" name="recommended_age" placeholder="Adult" type="text" value="{{ book.recommended_age }}"></input>
-    </div>
+
       </div>
       <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
-<!--          <button id="pets-upload">-->
-<!--            <i class="fas fa-camera-retro"></i>-->
-<!--          </button>-->
-<!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
           <label for="thumbnail">* Cover image</label>
           <input style="border:0px" id="thumbnail" type='file' name="thumbnail" accept="image/jpeg, image/png" onchange="readURL(this);"  />
-
-
         </div>
 
        <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
-<!--          <button id="pets-upload">-->
-<!--            <i class="fas fa-camera-retro"></i>-->
-<!--          </button>-->
-<!--          <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg, image/png">-->
           <label for="file">* File eBook</label>
           <input id="file" style="border:0px;" type='file' name="eBook" accept="application/pdf" />
-
-
-
         </div>
           <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
               <a style="color:black; padding-left: 5px;" href="/media/{{book.eBook}}"> Download eBook</a>
           </div>
-
-
 
       <div class="pets-weight">
         <label for="horror-p">* Primary genre</label>

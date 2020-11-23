@@ -119,6 +119,37 @@ def test_book2():
 
     assert check
 
+# MODIFY A BOOK
+def test_modify_book():
+    isbn = '85632698545'
+    user = User.objects.all().last()
+    title = 'title'
+    price = 1
+    language = 'Espanol'
+    primary_genre = 'FANT'
+    secondary_genre = 'CRIM'
+    publisher = 'publi'
+    num_pages = 1
+    recommended_age = 'Juvenile'
+
+    # creation of book
+    book_pre = Book(ISBN=isbn, user_id=user, title=title, price=price, language=language, primary_genre=primary_genre,
+               secondary_genre=secondary_genre, publisher=publisher, num_pages=num_pages, recommended_age=recommended_age)
+    book_pre.save()
+
+    # update of field title
+    Book.objects.filter(pk=isbn).update(title='title updated')
+
+    # get the book
+    book_upd = Book.objects.all().filter(pk=isbn).first()
+
+    # chack that change is saved correctly
+    check = all(
+        [isbn == book_upd.ISBN, user == book_upd.user_id, 'title updated' == book_upd.title, price == float(book_upd.price),
+         language == book_upd.language, primary_genre == book_upd.primary_genre,
+         publisher == book_upd.publisher, num_pages == book_upd.num_pages])
+
+    assert check
 
 # TEST BOOK WITH THUMBNAIL ( no se puede)
 # def test_book_thumbnail():

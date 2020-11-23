@@ -203,16 +203,24 @@ class SearchView(generic.ListView):
 
 
 class SellView(PermissionRequiredMixin, generic.ListView):
+    model = Book
+    template_name = 'sell.html'
     permission_required = ('books.add_book',)
 
-    def add_book(request):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
+    # post (update) of book
+    def post(self, request, *args, **kwargs):
         if request.method == "POST":
             form = BookForm(request.POST, request.FILES)
             if form.is_valid():
                 book = form.save(commit=False)
+                # intern fields (not showed to user)
                 book.user_id = request.user
                 book.num_sold = 0
+
                 messages.info(request, 'Your book has been created successfully!')
 
                 book.save()
@@ -230,21 +238,21 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
     template_name = 'edit_book.html'
     permission_required = ('books.add_book',)
 
-    # @permission_required('Alejandria.view_book', raise_exception=True)
     def get_context_data(self, **kwargs):
-        # print(self.request.user.user_permissions.all() | Permission.objects.filter(group__user=self.request.user))
         context = super().get_context_data(**kwargs)
+        # format data to suit frontend requirements
         context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
         return context
 
-    #@permission_required('Alejandria.change_book', raise_exception=True)
+    # post (update) of book
     def post(self, request, *args, **kwargs):
-        # print(self.request.user.user_permissions.all() | Permission.objects.filter(group__user=self.request.user))
         if request.method == 'POST':
+            # get the instance to modify
             s = get_object_or_404(Book, pk=self.kwargs['pk'])
             form = UpdateBookForm(request.POST, instance=s)
             if form.is_valid():
                 book = form.save(commit=False)
+                # intern field (not shown to user)
                 book.user_id = request.user
                 messages.info(request, 'Your book has been updated successfully!')
                 book.save()
