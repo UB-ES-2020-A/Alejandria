@@ -15,10 +15,10 @@ urlpatterns = [
     path('faqs/', views.FaqsView.as_view(), name='faqs'),
     path('register/', views.register, name='register'),
     path('login/', views.login_user, name='login'),
-    path('upload/', views.AddView.as_view(), name='add'),
     path('payment/', views.PaymentView.as_view(), name='payment'),
     path('sell/', views.SellView.add_book, name='sell'),
     path('forgot/', views.forgot, name='forgot'),
     path('forgot/<id>/', views.forgot, name='reset'),
+    path('review/', views.leave_review, name='post_review')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

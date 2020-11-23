@@ -12,7 +12,7 @@ from django.views import generic
 
 from Alejandria.settings import EMAIL_HOST_USER
 from .forms import BookForm
-from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
+from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails, Bill
 
 # Create your views here.
 
@@ -23,6 +23,7 @@ This is my custom response to get to a book by it's ISBN. The ISBN is passed by 
 NUM_COINCIDENT = 10
 NUM_RELATED = 5
 MONTHS_TO_CONSIDER_TOP_SELLER = 6
+
 
 #
 # def book(request):  # TODO: this function is not linked to the frontend
@@ -59,17 +60,28 @@ class BookView(generic.DetailView):
     template_name = 'details.html'
 
     def get_context_data(self, **kwargs):
+        print(kwargs)
         context = super().get_context_data(**kwargs)
         relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
+        review_list = Rating.objects.filter(product_id=context['object'])
+        # Devuelve todos los PRODUCTS del usuario
+        # Necesito buscar el libro actual en estos products
+        owned = Product.objects.filter(cart__in=Cart.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first()
 
         if relation_book:
             context['book_relation'] = relation_book
         else:
             context['book_relation'] = Book.objects.all()[:20]
 
+        if review_list:
+            context['review_list'] = review_list
+
+        if owned:
+            context['owned'] = "true"
+        else:
+            context['owned'] = "false"
+
         return context
-
-
 
     # TODO: Treat POST methods to add to cart, etc.
 
@@ -102,6 +114,7 @@ class BookView(generic.DetailView):
 
     """
 
+
 class HomeView(generic.ListView):
     template_name = 'home.html'
     context_object_name = 'book_list'
@@ -116,19 +129,19 @@ class HomeView(generic.ListView):
 
         today = datetime.today()
         self.user_id = self.request.user.id or None
-        #return Book.objects.all() # TODO: Replace with the one below when ready to test with a full database.
+        # return Book.objects.all() # TODO: Replace with the one below when ready to test with a full database.
         return Book.objects.order_by('-num_sold')[:20]
-        #.filter(publication_date__range=[str(today)[:10],str(today - timedelta(days=30 * MONTHS_TO_CONSIDER_TOP_SELLER))[:10]])[:10]
+        # .filter(publication_date__range=[str(today)[:10],str(today - timedelta(days=30 * MONTHS_TO_CONSIDER_TOP_SELLER))[:10]])[:10]
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         today = datetime.today()
-        #context['new_books'] = Book.objects.filter(
+        # context['new_books'] = Book.objects.filter(
         #    publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
         if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
+            cart = Cart.objects.filter(user_id=self.user_id).first()
             products = cart.products.all()
             items = len(products)
             context['total_items'] = [items]
@@ -166,7 +179,7 @@ class SearchView(generic.ListView):
 
         # Get number of cart products
         if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
+            cart = Cart.objects.filter(user_id=self.user_id).first()
             products = cart.products.all()
             items = len(products)
             context['total_items'] = [items]
@@ -186,7 +199,6 @@ class SearchView(generic.ListView):
                 context['book_relation'] = relation_book
                 return context
 
-
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
@@ -204,7 +216,7 @@ class SellView(generic.ListView):
     @staticmethod
     def add_book(request):
         if request.method == "POST":
-            #form = BookForm(request.POST)
+            # form = BookForm(request.POST)
             form = BookForm(request.POST, request.FILES)
             if form.is_valid():
                 print(request.FILES)
@@ -234,7 +246,7 @@ class CartView(generic.ListView):
         print(request.GET)
         self.user_id = request.user.id or None
         if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
+            cart = Cart.objects.filter(user_id=self.user_id).first()
             print(cart)
             if cart:
                 return cart.products.all()
@@ -244,7 +256,7 @@ class CartView(generic.ListView):
         context = super(CartView, self).get_context_data(**kwargs)
         context['books_from_cart_view'] = Book.objects.all()[:6]
         if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
+            cart = Cart.objects.filter(user_id=self.user_id).first()
             products = cart.products.all()
             total_price = 0
             items = len(products)
@@ -265,7 +277,7 @@ def delete_product(request, product_id):
     user_id = request.user.id or None
     print(request.GET)
     if user_id:
-        cart = Cart.objects.get(user_id=user_id)
+        cart = Cart.objects.filter(user_id=user_id).first()
         product = cart.products.get(ID=product_id)
         print("Delete Product ", product)
         cart.products.remove(product)
@@ -277,7 +289,7 @@ def add_product(request, view, book):
     user_id = request.user.id or None
     print(request.POST)
     if user_id:
-        cart = Cart.objects.get(user_id=user_id)
+        cart = Cart.objects.filter(user_id=user_id).first()
         products = Product.objects.all()
         for product in products:
             if product.ISBN.ISBN == book:
@@ -314,7 +326,7 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='CONTACT')]))
         print(context)
         if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
+            cart = Cart.objects.filter(user_id=self.user_id).first()
             products = cart.products.all()
             items = len(products)
             context['total_items'] = [items]
@@ -505,3 +517,23 @@ class PaymentView(generic.TemplateView):
     model = Book
     template_name = 'payment.html'
     queryset = Product.objects.all()
+
+
+def leave_review(request, **kwargs):
+    if request.method == 'POST':
+        if int(request.POST['score']) < 0 or int(request.POST['score']) > 5:
+            return JsonResponse({"error": "You must provide a valid score (between 0 and 5)."})
+        if len(request.POST['text']) > 500:
+            return JsonResponse({"error": "The maximum text length is 500 characters."})
+
+        book = Book.objects.filter(ISBN=request.POST['book']).first()
+        review = Rating(product_id=book,
+                        user_id=request.user,
+                        text=request.POST['text'],
+                        score=request.POST['score'])
+
+        review.save()
+        print("Your review was added successfully!")
+        return JsonResponse({"message": "Your review was added successfully!"})
+
+

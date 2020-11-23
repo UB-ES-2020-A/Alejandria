@@ -106,7 +106,7 @@ class Product(models.Model):
 
 class Rating(models.Model):
     ID = models.AutoField(primary_key=True, blank=False, null=False)
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
+    product_id = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
                                 blank=False)  # TODO: on_delete
     text = models.TextField(max_length=500, null=False, blank=True)
@@ -117,6 +117,7 @@ class Rating(models.Model):
 
 
 class Cart(models.Model):
+    id = models.AutoField(primary_key=True, blank=False, null=False)
     user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=False)
     products = models.ManyToManyField(Product)
 
