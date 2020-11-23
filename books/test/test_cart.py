@@ -53,6 +53,23 @@ def get_or_create_products(books):
     return products
 
 
+def test_add_product():
+    user = get_or_create_user()
+    cart = Cart.objects.get(user_id=user)
+    product = Product.objects.filter().last()
+
+    body = {
+        'user': user
+    }
+    print('PRODUCT', product)
+    req = RequestFactory().post("/cart/", body)
+    guest = Guest.objects.all().first()
+    req.COOKIES['device'] = guest.device
+    req.user = user
+    add_product(req, 'cart', product.ID)
+    assert cart.products.filter(ID=product.ID).last().ID == product.ID
+
+
 def test_delete_product():
     user = get_or_create_user()
     cart = Cart.objects.get(user_id=user)
@@ -70,18 +87,31 @@ def test_delete_product():
     assert cart.products.filter(ID=product.ID).last() is None
 
 
-def test_add_product():
-    user = get_or_create_user()
-    cart = Cart.objects.get(user_id=user)
+def test_add_product_guest():
+    guest = Guest.objects.all().first()
+    cart = Cart.objects.get(guest_id=guest)
     product = Product.objects.filter().last()
 
-    body = {
-        'user': user
-    }
-    print('PRODUCT', product)
+    body = {}
+
+    print('product', product.ISBN.ISBN)
+    print('cart test', cart)
     req = RequestFactory().post("/cart/", body)
-    guest = Guest.objects.all().first()
     req.COOKIES['device'] = guest.device
-    req.user = user
-    add_product(req, 'cart', product.ID)
-    assert cart.products.filter(ID=product.ID).last().ID == product.ID
+    req.user = User()
+    add_product(req, 'cart', product.ISBN.ISBN)
+    assert cart.products.filter(ID=product.ID).last().ISBN.ISBN == product.ISBN.ISBN
+
+
+def test_delete_product_guest():
+    guest = Guest.objects.all().first()
+    cart = Cart.objects.get(guest_id=guest)
+    product = cart.products.all()[0]
+
+    body = {}
+
+    req = RequestFactory().post("/cart/", body)
+    req.COOKIES['device'] = guest.device
+    req.user = User()
+    delete_product(req, product.ID)
+    assert cart.products.filter(ID=product.ID).last() is None

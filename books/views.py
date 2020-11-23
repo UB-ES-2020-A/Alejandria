@@ -292,9 +292,12 @@ def add_product(request, view, book):
         device = request.COOKIES['device']
         user, created = Guest.objects.get_or_create(device=device)
         cart, created = Cart.objects.get_or_create(guest_id=user)
+        print('Cart', cart)
 
     products = Product.objects.all()
+    print(products)
     for product in products:
+        print('product it: ', product.ISBN.ISBN)
         if product.ISBN.ISBN == book:
             print("ADD BOOK ", book)
             cart.products.add(product)
