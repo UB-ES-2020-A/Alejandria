@@ -29,8 +29,8 @@ GENRE_CHOICES = [
         ('SPOR', 'Sport'),
         ('TRAV', 'Travel'),
         ('POET', 'Poetry')
-
     ]
+
 
 class Address(models.Model):
     street = models.CharField(max_length=50, null=False, blank=False)
@@ -53,6 +53,11 @@ class User(AbstractUser):
     genre_preference_1 = models.CharField(max_length=4, choices=GENRE_CHOICES, blank=True, null=True)
     genre_preference_2 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
     genre_preference_3 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
+
+
+class Guest(models.Model):
+    id = models.AutoField(primary_key=True, null=False, blank=True)
+    device = models.CharField(max_length=200, null=False, blank=False)
 
 
 # class Author(models.Model):
@@ -119,7 +124,8 @@ class Rating(models.Model):
 
 
 class Cart(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=False)
+    user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=True)
+    guest_id = models.ForeignKey(Guest, on_delete=models.PROTECT, blank=False, null=True)
     products = models.ManyToManyField(Product)
 
 

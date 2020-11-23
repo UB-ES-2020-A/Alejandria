@@ -206,7 +206,6 @@ def test_modify_book():
 
     assert check
 
-
 # TEST BOOK WITH THUMBNAIL ( no se puede)
 # def test_book_thumbnail():
 #     isbn = '01234176532'
@@ -238,20 +237,19 @@ def test_modify_book():
 #     obj.save()
 #     obj = Book.objects.all().filter(pk=isbn).first()
 #
-#     check = all([isbn == obj.ISBN,
-#     user == obj.user_id, title == obj.title,
-#     description == obj.description,
-#                  saga == obj.saga, price == float(obj.price),
-#                  language == obj.language,
+
+#     check = all([isbn == obj.ISBN, user == obj.user_id, title == obj.title, description == obj.description,
+#                  saga == obj.saga, price == float(obj.price), language == obj.language,
 #                  primary_genre == obj.primary_genre,
-#                  publisher == obj.publisher, num_pages == obj.num_pages,
-#                  num_sold == obj.num_sold,
-#                  recommended_age == obj.recommended_age,
-#                  file_name == obj.thumbnail])
+#                  publisher == obj.publisher, num_pages == obj.num_pages, num_sold == obj.num_sold,
+#                  recommended_age == obj.recommended_age, file_name == obj.thumbnail])
 #
 #     #print(path_stored_thumb.isfile(file_name))
 #
 #     assert check
+
+
+
 
 # def test_product():
 #     isbn = '0123456789012'  # 13 digits
@@ -262,25 +260,14 @@ def test_modify_book():
 #     password = 'password1'
 #     username = str(random.randint(0, 5156123423456015412))
 #     email = 'fakemail@gmail.com'
-#     user_address = Address(city='Barcelona',
-#     street='C/ Test, 112',
-#     country='Spain',
-#     zip='08942')
-#     fact_address = Address(city='Barcelona',
-#     street='C/ Test, 112',
-#     country='Spain',
-#     zip='08942')
+#     user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
+#     fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 #     user_address.save()
 #     fact_address.save()
 #
 #     # Model creation
-#     user_id = User(id=id,
-#     role=role, name=name,
-#     username=username,
-#     password=password,
-#     email=email,
-#     user_address=user_address,
-#     fact_address=fact_address)
+#     user_id = User(id=id, role=role, name=name, username=username, password=password, email=email, user_address=user_address,
+#                fact_address=fact_address)
 #     user_id.save()
 #
 #     #user_id.save()
@@ -321,10 +308,7 @@ def test_modify_book():
 #         pass
 #
 #     obj = Product.objects.all().last()
-#     check = all([ISBN == obj.ISBN,
-#     price == float(obj.price),
-#     fees == float(obj.fees),
-#     discount == float(obj.discount)])
+#     check = all([ISBN == obj.ISBN, price == float(obj.price), fees == float(obj.fees), discount == float(obj.discount)])
 #
 #     assert check
 
@@ -337,26 +321,14 @@ def test_modify_book():
 #     password = 'password1'
 #     username = str(random.randint(0, 5156123423456015412))
 #     email = 'faketmail@gmail.com'
-#     user_address = Address(city='Barcelona',
-#     street='C/ Test, 112',
-#     country='Spain',
-#     zip='08942')
-#     fact_address = Address(city='Barcelona',
-#     street='C/ Test, 112',
-#     country='Spain',
-#     zip='08942')
+#     user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
+#     fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 #     user_address.save()
 #     fact_address.save()
 #
 #     # Model creation
-#     user_id = User(id=id,
-#     role=role,
-#     name=name,
-#     username=username,
-#     password=password,
-#     email=email,
-#     user_address=user_address,
-#     fact_address=fact_address)
+#     user_id = User(id=id, role=role, name=name, username=username, password=password, email=email, user_address=user_address,
+#                    fact_address=fact_address)
 #     user_id.save()
 #
 #     # user_id.save()
@@ -416,46 +388,105 @@ def test_modify_book():
 #                  text == str(obj.text), score == int(obj.score)])
 #     assert check
 
-# def test_cart():
-#     # TODO
-#     ISBN1 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits
-#     price1 = 22.40
-#     fees1 = 21.00
-#     discount1 = 5.00
-#     prod_1 = Product(ISBN=ISBN1, price=price1, fees=fees1, discount=discount1)
-#
-#     try:
-#         prod_1.save()
-#     except:
-#         pass
+
 """
-ISBN2 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits
-price2 = 23.40
-fees2 = 0.00
-discount2 = 0.00
-prod_2 = Product(ISBN=ISBN2, price=price2, fees=fees2, discount=discount2)
-prod_2.save()
-try:
-    prod_2.save()
-except:
-    pass
+class CartTestCase(TestCase):
+
+    def setUp(self):
+        self.user = self.create_user()
+        self.ISBN1 = self.create_book(ISBN='01234565', user=self.user, price=30.00, primary_genre='FANT', saga='Potter')
+        self.ISBN2 = self.create_book(ISBN='01234567852', user=self.user, price=30.00, primary_genre='FANT', saga='Harry Potter')
+        print('ISBN1: ', self.ISBN1)
+        print('ISBN2: ', self.ISBN2)
+
+        products = [self.create_prod(ISBN=self.ISBN1, price=30.00),
+                    self.create_prod(ISBN=self.ISBN2, price=30.00)]
+        print('Products: ', products)
+        self.add_to_cart(products)
+
+    def create_user(self):
+        user = User(id=15, role='Admin', username=str(random.randint(0, 5156123423456015412)), name='Josep',
+                    password='password1', email='fakemail@gmail.com', user_address=self.create_address(),
+                    genre_preference_1='CRIM',
+                    genre_preference_2='FANT', genre_preference_3='KIDS', fact_address=self.create_fact())
+        try:
+            user.save()
+        except:
+            print("ERROR TEST CART: Couldn't create User.")
+        return user
+
+    @staticmethod
+    def create_address():
+        user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
+        try:
+            user_address.save()
+        except:
+            print("ERROR TEST CART: Couldn't create User Address.")
+        return user_address
+
+    @staticmethod
+    def create_fact():
+        fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
+        try:
+            fact_address.save()
+        except:
+            print("ERROR TEST CART: Couldn't create Fact Address.")
+        return fact_address
+
+    @staticmethod
+    def create_book(ISBN, user, price, primary_genre, saga):
+        book = Book(ISBN=ISBN, user_id=user, price=price, primary_genre=primary_genre, saga=saga)
+        try:
+            book.save()
+        except:
+            print("ERROR TEST CART: Couldn't create Book.")
+        return book
+
+    @staticmethod
+    def create_prod(ISBN, price):
+        product = Product(ISBN=ISBN, price=price)
+        print(product)
+        try:
+            product.save()
+        except:
+            print("ERROR TEST CART: Couldn't create Product.")
+        return product
+
+    def add_to_cart(self, products):
+        cart = Cart.objects.create(user_id=self.user)
+        print("cart: ", cart)
+        # cart = Cart.objects.get(user_id=self.user)
+
+        # print("cart: ", cart)
+        for product in products:
+            cart.products.add(product)
+        try:
+            print("cart: ", cart)
+            cart.save()
+        except:
+            print("ERROR TEST CART: Couldn't create Cart.")
+
+    def test_cart(self):
+        p1 = Product.objects.get(ISBN=self.ISBN1)
+        p2 = Product.objects.get(ISBN=self.ISBN2)
+        print('Product 1: ', p1)
+        print('Product 2: ', p2)
+        obj = Cart.objects.get(user_id=self.user)
+        product_test_1 = obj.products.get(self.ISBN1)
+        product_test_2 = obj.products.get(self.ISBN2)
+
+        assert product_test_1.ISBN == p1.ISBN
+        assert product_test_1.price == p1.price
+        assert product_test_1.ISBN.primary_genre == p1.ISBN.primary_genre
+        assert product_test_1.ISBN.saga == p1.ISBN.saga
+
+        assert product_test_2.ISBN == p2.ISBN
+        assert product_test_2.price == p2.price
+        assert product_test_2.ISBN.primary_genre == p2.ISBN.primary_genre
+        assert product_test_2.ISBN.saga == p2.ISBN.saga
 """
 
 
-#     product = Product.objects.all().last()
-#     #print(products[0])
-#     obj = Cart()
-#     obj.save()
-#     obj.products.add(product)
-#     obj.save()
-#     obj = Cart.objects.all().last()
-#     assert obj.products.last().ISBN == product.ISBN
-#     assert obj.products.last().price== product.price
-#     assert obj.products.last().fees == product.fees
-#     assert obj.products.last().discount == product.discount
-#
-#
-#
 # def test_bill():
 #     # TODO
 #     ISBN1 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits

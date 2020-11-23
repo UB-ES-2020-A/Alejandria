@@ -12,10 +12,13 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
+import random
 
 from Alejandria.settings import EMAIL_HOST_USER
+
 from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
+from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails, Guest
+
 
 # Create your views here.
 
@@ -73,38 +76,6 @@ class BookView(generic.DetailView):
 
         return context
 
-    # TODO: Treat POST methods to add to cart, etc.
-
-    """
-      Right now im passing all the books, but in the next iteration 
-      Ill only pass the necessary book info, required by POST during the search.
-      #  TODO: Pass only necessary lists with get_queryset(self) and get_context_data()
-      In this case I might use get_object().
-
-      Example:
-        # views.py
-        from django.shortcuts import get_object_or_404
-        from django.views.generic import ListView
-        from books.models import Book, Publisher
-
-        class PublisherBookList(ListView):
-
-            template_name = 'books/books_by_publisher.html'
-
-            def get_queryset(self):
-                self.publisher = get_object_or_404(Publisher, name=self.kwargs['publisher'])
-                return Book.objects.filter(publisher=self.publisher)
-
-            def get_context_data(self, **kwargs):
-                # Call the base implementation first to get a context
-                context = super().get_context_data(**kwargs)
-                # Add in the publisher
-                context['publisher'] = self.publisher
-                return context
-
-    """
-
-
 class HomeView(generic.ListView):
     template_name = 'home.html'
     context_object_name = 'book_list'
@@ -130,13 +101,35 @@ class HomeView(generic.ListView):
         #    publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
-        # if self.user_id:
-        #     cart = Cart.objects.get(user_id=self.user_id)
-        #     products = cart.products.all()
-        #     items = len(products)
-        #     context['total_items'] = [items]
-
         return context
+
+    def render_to_response(self, context, **response_kwargs):
+        response = super(HomeView, self).render_to_response(context, **response_kwargs)
+
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+        else:
+            device = self.request.COOKIES.get('device')
+            if not device:
+                device = self.generate_id()
+                response.set_cookie('device', device)
+
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
+        if cart:
+            products = cart.products.all()
+            items = len(products)
+            context['total_items'] = [items]
+
+
+        return response
+
+    def generate_id(self):
+        temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+        list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
+        id = "".join(list_id)
+        print('ID', id)
+        return id
 
 
 class SearchView(generic.ListView):
@@ -169,9 +162,14 @@ class SearchView(generic.ListView):
         # Get number of cart products
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
-            products = cart.products.all()
-            items = len(products)
-            context['total_items'] = [items]
+        else:
+            device = self.request.COOKIES['device']
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
+
+        products = cart.products.all()
+        items = len(products)
+        context['total_items'] = [items]
 
         # Filtering by title or author
         if self.searchBook:
@@ -264,7 +262,7 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
 
 class CartView(generic.ListView):
     model = Cart
-    template_name = 'cart.html'  # TODO: Provisional file
+    template_name = 'cart.html'
     context_object_name = 'cart_list'
 
     def __init__(self, **kwargs):
@@ -276,9 +274,13 @@ class CartView(generic.ListView):
         self.user_id = request.user.id or None
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
-            if cart:
-                return cart.products.all()
-        return None
+        else:
+            device = request.COOKIES['device']
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
+
+        return cart.products.all()
+
 
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
@@ -288,18 +290,18 @@ class CartView(generic.ListView):
         context['books_from_cart_view_3'] = Book.objects.all()[6:9]
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
-            products = cart.products.all()
-            total_price = 0
-            items = len(products)
-            for prod in products:
-                print(prod.price)
-                total_price += prod.price
-                print("TOTAL_PRICE ", total_price)
-            context['total_price'] = [total_price]
-            context['total_items'] = [items]
         else:
-            context['total_price'] = [0.00]
-            context['total_items'] = [0]
+            device = self.request.COOKIES['device']
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
+
+        products = cart.products.all()
+        total_price = 0
+        items = len(products)
+        for prod in products:
+            total_price += prod.price
+        context['total_price'] = [total_price]
+        context['total_items'] = [items]
 
         return context
 
@@ -309,10 +311,15 @@ def delete_product(request, product_id):
     print(request.GET)
     if user_id:
         cart = Cart.objects.get(user_id=user_id)
-        product = cart.products.get(ID=product_id)
-        print("Delete Product ", product)
-        cart.products.remove(product)
-        cart.save()
+    else:
+        device = request.COOKIES['device']
+        user, created = Guest.objects.get_or_create(device=device)
+        cart, created = Cart.objects.get_or_create(guest_id=user)
+
+    product = cart.products.get(ID=product_id)
+    print("DELETE BOOK ", product)
+    cart.products.remove(product)
+    cart.save()
     return HttpResponseRedirect('/cart')
 
 
@@ -321,12 +328,21 @@ def add_product(request, view, book):
     print(request.POST)
     if user_id:
         cart = Cart.objects.get(user_id=user_id)
-        products = Product.objects.all()
-        for product in products:
-            if product.ISBN.ISBN == book:
-                print("ADD BOOK ", book)
-                cart.products.add(product)
-                cart.save()
+    else:
+        device = request.COOKIES['device']
+        user, created = Guest.objects.get_or_create(device=device)
+        cart, created = Cart.objects.get_or_create(guest_id=user)
+        print('Cart', cart)
+
+    products = Product.objects.all()
+    print(products)
+    for product in products:
+        print('product it: ', product.ISBN.ISBN)
+        if product.ISBN.ISBN == book:
+            print("ADD BOOK ", book)
+            cart.products.add(product)
+            cart.save()
+
     if view == 'home':
         return HttpResponseRedirect('/')
     if view == 'cart':
@@ -355,12 +371,18 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='SELL'),
                                                   FAQ.objects.filter(category='FACTU'),
                                                   FAQ.objects.filter(category='CONTACT')]))
-        print(context)
+
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
-            products = cart.products.all()
-            items = len(products)
-            context['total_items'] = [items]
+        else:
+            device = self.request.COOKIES['device']
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
+
+        products = cart.products.all()
+        items = len(products)
+        context['total_items'] = [items]
+
         return context
 
     # TODO: In next iterations has to have the option to make POSTs by the admin.
@@ -497,8 +519,17 @@ def register(request):
                 user.save()
 
                 # Create user's cart
-                cart = Cart(user_id=user)
-                cart.save()
+                device = request.COOKIES['device']
+                guest = Guest.objects.get(device=device)
+                cart_guest = Cart.objects.get(guest_id=guest)
+                cart_user = Cart(user_id=user)
+                cart_user.save()
+                cart_user = Cart.objects.get(user_id=user)
+                for product in cart_guest.products.all():
+                    cart_user.products.add(product)
+                cart_guest.products.clear()
+                cart_guest.save()
+                cart_user.save()
 
                 return JsonResponse({"error": False})
 
@@ -567,6 +598,18 @@ def login_user(request):
             if user:
                 user = user.first()
                 login(request, user, backend='books.backend.EmailAuthBackend')
+
+                # Update cart
+                device = request.COOKIES['device']
+                guest = Guest.objects.get(device=device)
+                cart_guest = Cart.objects.get(guest_id=guest)
+                cart_user = Cart.objects.get(user_id=user)
+                for product in cart_guest.products.all():
+                    cart_user.products.add(product)
+                cart_guest.products.clear()
+                cart_guest.save()
+                cart_user.save()
+
                 return JsonResponse({"name": user.name, "error": False})
             else:
                 return JsonResponse({"error": True})
