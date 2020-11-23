@@ -28,38 +28,38 @@
 
 
                 <div class="row">
-                    <div class="col-lg-9 mx-auto rounded" style="border-color: #d9534f; box-shadow: 0 0 4px 2px #d9534f;">
+                    <div class="col-lg-9 mx-auto rounded"
+                         style="border-color: #d9534f; box-shadow: 0 0 4px 2px #d9534f;">
                         <div class="card" style="background-color: black">
                             <div class="card-header">
                                 <!-- Credit card form content -->
                                 <div class="tab-content">
 
                                     <div class="py-5">
-                                        <div class="container" id="container-products" style="border-color: #d9534f; box-shadow: 0 0 2px 1px #d9534f;">
+                                        <div class="container" id="container-products"
+                                             style="border-color: #d9534f; box-shadow: 0 0 2px 1px #d9534f;">
                                             <h3 style="margin-bottom:2%">Cart
                                                 <span class="price" style="color:black">
                                                   <i class="fa fa-shopping-cart fa-sm"></i>
-                                                  <b id="number-products">3</b>
+                                                  <b id="number-products">{{ total_items }}</b>
                                                 </span>
                                             </h3>
-                                            <div class="row">
-                                                <div class="col"><p>The Arrivals</p></div>
-                                                <div class="col-2" style="text-align:right"><span>15.00 €</span></div>
-                                            </div>
+                                            <div style="height: 200px; overflow:auto; border-color: none; box-shadow: 0 0 3px 0px black;">
+                                                {% for product in cart_list %}
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <p class="col">{{ product.ISBN.title }}</p>
+                                                        <div class="col-2" style="text-align:right"><span>{{ product.ISBN.price }} €</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
 
-                                            <div class="row">
-                                                <div class="col"><p>The Arrivals</p></div>
-                                                <div class="col-2" style="text-align:right"><span>15.00 €</span></div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col"><p>The Arrivals</p></div>
-                                                <div class="col-2" style="text-align:right"><span>15.00 €</span></div>
                                             </div>
                                             <hr>
                                             <div class="row">
                                                 <div class="col"><b>Total</b></div>
-                                                <div class="col-2" style="text-align:right"><b>45.00 €</b></div>
+                                                <div class="col-2" style="text-align:right"><b>{{ total_price }} €</b></div>
                                             </div>
                                         </div>
 
@@ -152,15 +152,20 @@
                                     <!-- ./Bill Address -->
 
                                     <!-- Credit card form tabs -->
-                                    <ul role="tablist" class="nav bg-light nav-pills rounded nav-fill mb-3" style="border-color: #d9534f; box-shadow: 0 0 4px 2px #e9534f;">
-                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill" href="#credit-card"
-                                                                class="nav-link active"> <i
-                                                class="fas fa-credit-card mr-2"></i> Credit Card </a></li>
-                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill" href="#paypal"
-                                                                class="nav-link "> <i
+                                    <ul role="tablist" class="nav bg-light nav-pills rounded nav-fill mb-3"
+                                        style="border-color: #d9534f; box-shadow: 0 0 4px 2px #e9534f;">
+                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill"
+                                                                                               href="#credit-card"
+                                                                                               class="nav-link active">
+                                            <i
+                                                    class="fas fa-credit-card mr-2"></i> Credit Card </a></li>
+                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill"
+                                                                                               href="#paypal"
+                                                                                               class="nav-link "> <i
                                                 class="fab fa-paypal mr-2"></i> Paypal </a></li>
-                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill" href="#net-banking"
-                                                                class="nav-link "> <i
+                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill"
+                                                                                               href="#net-banking"
+                                                                                               class="nav-link "> <i
                                                 class="fas fa-mobile-alt mr-2"></i> Net Banking </a></li>
                                     </ul>
                                     <!-- End -->
@@ -187,8 +192,10 @@
                                                         <div class="input-group-append"><span
                                                                 class="input-group-text text-muted bg-dark"> <i
                                                                 class="fab fa-cc-visa mx-1" style="color:white"></i> <i
-                                                                class="fab fa-cc-mastercard mx-1" style="color:white"></i> <i
-                                                                class="fab fa-cc-amex mx-1" style="color:white"></i> </span></div>
+                                                                class="fab fa-cc-mastercard mx-1"
+                                                                style="color:white"></i> <i
+                                                                class="fab fa-cc-amex mx-1"
+                                                                style="color:white"></i> </span></div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -213,7 +220,8 @@
                                                                                             style="color:white"
                                                                                             title="Three digit CV code on the back of your card">
                                                             CVV <i class="fa fa-question-circle d-inline"></i>
-                                                        </label> <input type="text" placeholder="XXX" required class="form-control">
+                                                        </label> <input type="text" placeholder="XXX" required
+                                                                        class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>

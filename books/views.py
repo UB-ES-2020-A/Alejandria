@@ -132,7 +132,7 @@ class HomeView(generic.ListView):
             cart = Cart.objects.get(user_id=self.user_id)
             products = cart.products.all()
             items = len(products)
-            context['total_items'] = [items]
+            context['total_items'] = items
 
         return context
 
@@ -170,7 +170,7 @@ class SearchView(generic.ListView):
             cart = Cart.objects.get(user_id=self.user_id)
             products = cart.products.all()
             items = len(products)
-            context['total_items'] = [items]
+            context['total_items'] = items
 
         # Filtering by title or author
         if self.searchBook:
@@ -259,11 +259,11 @@ class CartView(generic.ListView):
                 print(prod.price)
                 total_price += prod.price
                 print("TOTAL_PRICE ", total_price)
-            context['total_price'] = [total_price]
-            context['total_items'] = [items]
+            context['total_price'] = total_price
+            context['total_items'] = items
         else:
-            context['total_price'] = [0.00]
-            context['total_items'] = [0]
+            context['total_price'] = 0.00
+            context['total_items'] = 0
 
         return context
 
@@ -324,7 +324,7 @@ class FaqsView(generic.ListView):
             cart = Cart.objects.get(user_id=self.user_id)
             products = cart.products.all()
             items = len(products)
-            context['total_items'] = [items]
+            context['total_items'] = items
         return context
 
     # TODO: In next iterations has to have the option to make POSTs by the admin.
@@ -546,10 +546,44 @@ def login_user(request):
 
 
 # TODO: Not implemented yet
-class PaymentView(generic.TemplateView):
-    model = Book
+class PaymentView(generic.ListView):
+    # model = Account
     template_name = 'payment.html'
-    queryset = Product.objects.all()
+    context_object_name = 'cart_list'
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.user_id = None
+
+    def get_queryset(self):
+        request = self.request
+        print(request.GET)
+        self.user_id = request.user.id or None
+        print("GEEEET PAYMENTTTTTTT", self.user_id)
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            print(cart)
+            if cart:
+                return cart.products.all()
+        return None
+
+    def get_context_data(self, **kwargs):
+        context = super(PaymentView, self).get_context_data(**kwargs)
+        if self.user_id:
+            cart = Cart.objects.get(user_id=self.user_id)
+            products = cart.products.all()
+            total_price = 0
+            items = len(products)
+            for prod in products:
+                print(prod.price)
+                total_price += prod.price
+            print("TOTAL_PRICE PAYMENT", total_price)
+            context['total_price'] = total_price
+            context['total_items'] = items
+        else:
+            context['total_items'] = 0
+
+        return context
 
 
 class EditorLibrary(generic.ListView):
