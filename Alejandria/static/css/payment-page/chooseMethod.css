@@ -3,19 +3,41 @@ body {
 }
 
 .rounded {
-    border-radius: 1rem
+    border-radius: 1rem;
 }
 
-.nav-pills .nav-link {
-    color: #555
+.nav-item .nav-link {
+  background-color: black;
+  color: #FFF;
 }
 
-.nav-pills .nav-link.active {
-    color: white
+.nav-item .nav-link.active {
+  background-color: #d9534f;
+  border-color: #d9534f;
+  box-shadow: 0 0 6px 0px #d9534f;
+  color: black;
 }
 
 input[type="radio"] {
     margin-right: 5px
+}
+
+input[type=text]:focus{
+  outline: none;     /* oranges! yey */
+  border-color: #d9534f;
+  box-shadow: 0 0 4px 2px #d9534f;
+}
+
+input[type=number]:focus{
+  outline: none;     /* oranges! yey */
+  border-color: #d9534f;
+  box-shadow: 0 0 4px 2px #d9534f;
+}
+
+bd-color{
+  outline: none;     /* oranges! yey */
+  border-color: #d9534f;
+  box-shadow: 0 0 4px 2px #d9534f;
 }
 
 .bold {
