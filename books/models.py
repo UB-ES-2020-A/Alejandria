@@ -6,7 +6,7 @@ from django.utils import timezone
 # Create your models here.
 
 """
-TODO: IF NECESSARY INTRODUCE help_text in some characteristics.
+IF NECESSARY INTRODUCE help_text in some characteristics.
 """
 GENRE_CHOICES = [
         ('FANT', 'Fantasy'),
