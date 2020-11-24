@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '56&@1#k_scqs8ymk&24hm@f4z=g!*5b#%_tgk)zmny(hh__-#d'
-
+LOGIN_URL = '/'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
