@@ -201,8 +201,7 @@ $(document).ready(function () {
                             window.location.href = "";
                         },2000);
                 }
-
-            })
+            });
 
         }
 
