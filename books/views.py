@@ -144,9 +144,13 @@ class SearchView(generic.ListView):
         self.searchBook = None
         self.genres = []
         self.user_id = None
+        self.genres_preferences = []
 
     def get(self, request, *args, **kwargs):
         self.user_id = self.request.user.id or None
+        self.genres_preferences.append(request.user.genre_preference_1)
+        self.genres_preferences.append(request.user.genre_preference_2)
+        self.genres_preferences.append(request.user.genre_preference_3)
         if 'search_book' in request.GET:
             self.searchBook = request.GET['search_book']
         else:
@@ -189,14 +193,20 @@ class SearchView(generic.ListView):
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
-            return context
 
-        # TODO: Filtering by topseller and On Sale
+        recommended_books = Book.objects.filter(
+            (Q(primary_genre__in=self.genres_preferences) | Q(primary_genre__in=self.genres_preferences) | Q(
+                primary_genre__in=self.genres_preferences))
+            | (Q(secondary_genre__in=self.genres_preferences) | Q(secondary_genre__in=self.genres_preferences) | Q(
+                secondary_genre__in=self.genres_preferences)))
+        recommended_books_list = []
+        for book in recommended_books:
+            recommended_books_list.append(book)
+
+        recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
+        context['recommended_books'] = recommended_books_list
 
         return context
-        # Filtering by genre (primary and secondary) using checkbox from frontend
-
-        # TODO: Filtering by topseller and On Sale
 
 
 class SellView(PermissionRequiredMixin, generic.ListView):
