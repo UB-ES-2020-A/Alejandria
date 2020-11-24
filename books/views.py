@@ -1,5 +1,5 @@
 import re
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -8,13 +8,13 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
 from django.views import generic
 import random
 
 from Alejandria.settings import EMAIL_HOST_USER
 from .forms import BookForm
-from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails, Guest
+from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails, Guest, BankAccount, Bill
 
 # Create your views here.
 
@@ -649,3 +649,46 @@ class EditorLibrary(generic.ListView):
         context['editor_books'] = editor_books
 
         return context
+
+
+def complete_purchase(request):
+
+    print(request.POST)
+
+    user = request.user.id or None
+
+    if user:
+
+        user_bank_account, created = BankAccount.objects.get_or_create(user_id=user)
+        current_money = float(user_bank_account.money)
+
+        cart = Cart.objects.get(user_id=user)
+        products = cart.products.all()
+        total_price = 0
+        for p in products:
+            total_price += p.price
+        total_price = float(total_price)
+
+        if current_money - total_price >= 0:
+            bill, created = Bill.objects.get_or_create(user_id_id=user)
+            setattr(bill, 'total_money_spent', total_price)
+            setattr(bill, 'payment_method', 'Credit card')
+            for p in products:
+                bill.products.add(p)
+            bill.save()
+            cart.products.clear()
+            cart.save()
+            user_bank_account.money = current_money - total_price
+            user_bank_account.name = request.POST.get('username')
+            user_bank_account.month_exp = request.POST.get('month_exp')
+            user_bank_account.year_exp = request.POST.get('year_exp')
+            user_bank_account.card_number = request.POST.get('cardNumber')
+            user_bank_account.cvv = request.POST.get('cvv')
+
+            user_bank_account.save()
+        else:
+            messages.error(request, "You can't complete the purchase, you haven't enough money!")
+            return HttpResponseRedirect('/error_money')
+
+    return HttpResponseRedirect('/payment')
+
