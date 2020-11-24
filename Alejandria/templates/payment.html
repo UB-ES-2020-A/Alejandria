@@ -72,6 +72,7 @@
                                                     <div class="input-group">
                                                         <input type="text" name="username" id="fullname"
                                                                placeholder="John Cena" required
+                                                                value="{{ user.name }}"
                                                                class="form-control ">
                                                         <div class="input-group-append">
                                                     <span class="input-group-text text-muted bg-dark">
@@ -86,6 +87,7 @@
                                                     <div class="input-group"><input type="text"
                                                                                     id="email"
                                                                                     placeholder="john@example.com"
+                                                                                    value="{{ user.email }}"
                                                                                     class="form-control " required>
                                                         <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -102,7 +104,8 @@
                                                             <div class="input-group"><input type="text"
                                                                                             id="address"
                                                                                             placeholder="Calle Alcalá, 48"
-                                                                                            class="form-control "
+                                                                                            class="form-control"
+                                                                                            value="{{ user.fact_address.street }}"
                                                                                             required>
                                                                 <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -118,7 +121,8 @@
                                                             <div class="input-group"><input type="text"
                                                                                             id="city"
                                                                                             placeholder="Madrid"
-                                                                                            class="form-control "
+                                                                                            class="form-control"
+                                                                                            value="{{ user.fact_address.city }}"
                                                                                             required>
                                                                 <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -134,7 +138,8 @@
                                                             <div class="input-group"><input type="text"
                                                                                             id="zip"
                                                                                             placeholder="00000"
-                                                                                            class="form-control "
+                                                                                            class="form-control"
+                                                                                            value="{{ user.fact_address.zip }}"
                                                                                             required>
                                                                 <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">

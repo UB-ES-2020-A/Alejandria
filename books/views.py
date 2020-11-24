@@ -124,7 +124,6 @@ class HomeView(generic.ListView):
         temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
         list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
         id = "".join(list_id)
-        print('ID', id)
         return id
 
 
@@ -199,8 +198,7 @@ class SearchView(generic.ListView):
 class SellView(generic.ListView):
 
     @login_required
-    def add_book(request):
-        print(request.user.id)
+    def add_book(self, request):
         if request.method == "POST":
             form = BookForm(request.POST, request.FILES)
             if form.is_valid():
@@ -292,12 +290,9 @@ def add_product(request, view, book):
         device = request.COOKIES['device']
         user, created = Guest.objects.get_or_create(device=device)
         cart, created = Cart.objects.get_or_create(guest_id=user)
-        print('Cart', cart)
 
     products = Product.objects.all()
-    print(products)
     for product in products:
-        print('product it: ', product.ISBN.ISBN)
         if product.ISBN.ISBN == book:
             print("ADD BOOK ", book)
             cart.products.add(product)
@@ -598,10 +593,8 @@ class PaymentView(generic.ListView):
         request = self.request
         print(request.GET)
         self.user_id = request.user.id or None
-        print("GEEEET PAYMENTTTTTTT", self.user_id)
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
-            print(cart)
             if cart:
                 return cart.products.all()
         return None
@@ -614,9 +607,7 @@ class PaymentView(generic.ListView):
             total_price = 0
             items = len(products)
             for prod in products:
-                print(prod.price)
                 total_price += prod.price
-            print("TOTAL_PRICE PAYMENT", total_price)
             context['total_price'] = total_price
             context['total_items'] = items
         else:
@@ -637,7 +628,6 @@ class EditorLibrary(generic.ListView):
 
     def get(self, request, *args, **kwargs):
         print(request.GET)
-        print(request.user.id)
         self.user_id = self.request.user.id or None
 
         # if 'search_book' in request.GET:
