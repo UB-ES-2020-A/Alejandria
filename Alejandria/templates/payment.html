@@ -97,7 +97,7 @@
                                                     <div class="input-group">
                                                         <input type="text" name="username" id="fullname"
                                                                placeholder="John Cena" required
-                                                               value="{{ user.name }}"
+                                                               value="{{ user.name }} {{user.last_name}}"
                                                                class="form-control ">
                                                         <div class="input-group-append">
                                                     <span class="input-group-text text-muted bg-dark">
@@ -212,6 +212,7 @@
                                                     Card Owner
                                                 </label> <input type="text" name="username" id="username"
                                                                 placeholder="Card Owner Name" required
+                                                                value="{{ card_owner }}"
                                                                 class="form-control ">
                                                 </div>
                                                 <div class="form-group"><label for="cardNumber" style="color:white">
@@ -220,6 +221,7 @@
                                                     <div class="input-group"><input type="text" name="cardNumber"
                                                                                     id="cardNumber"
                                                                                     placeholder="Valid card number"
+                                                                                    value="{{ card_number }}"
                                                                                     class="form-control " required>
                                                         <div class="input-group-append"><span
                                                                 class="input-group-text text-muted bg-dark"> <i
@@ -239,9 +241,11 @@
                                                             <div class="input-group">
                                                                 <input type="number" pattern="\d*" maxlength="2"
                                                                        placeholder="MM" class="form-control"
+                                                                       value="{{ month }}"
                                                                        name="month_exp" required>
                                                                 <input type="number" pattern="\d*" minlength="4"
                                                                        maxlength="4" placeholder="YY"
+                                                                       value="{{ year }}"
                                                                        class="form-control" name="year_exp"
                                                                        required>
                                                             </div>
@@ -253,6 +257,7 @@
                                                                                             title="Three digit CV code on the back of your card">
                                                             CVV <i class="fa fa-question-circle d-inline"></i>
                                                         </label><input type="text" placeholder="XXX" required
+                                                                       value="{{ cvv }}"
                                                                         class="form-control" name="cvv">
                                                         </div>
                                                     </div>
@@ -264,7 +269,6 @@
                                                             class="subscribe btn btn-success btn-block shadow-sm">
                                                         <i class="fas fa-lock mr-2"></i>Confirm Payment
                                                     </button>
-                                                </div>
                                             </form>
                                         </div>
                                     </div> <!-- End -->

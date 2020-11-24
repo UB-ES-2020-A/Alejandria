@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
@@ -603,6 +604,7 @@ class PaymentView(generic.ListView):
         context = super(PaymentView, self).get_context_data(**kwargs)
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
+            user_bank_account = BankAccount.objects.filter(user_id=self.user_id).first() or None
             products = cart.products.all()
             total_price = 0
             items = len(products)
@@ -610,6 +612,12 @@ class PaymentView(generic.ListView):
                 total_price += prod.price
             context['total_price'] = total_price
             context['total_items'] = items
+            if user_bank_account is not None:
+                context['card_owner'] = user_bank_account.name
+                context['card_number'] = user_bank_account.card_number
+                context['month'] = user_bank_account.month_exp
+                context['year'] = user_bank_account.year_exp
+                context['cvv'] = user_bank_account.cvv
         else:
             context['total_items'] = 0
 
@@ -670,25 +678,34 @@ def complete_purchase(request):
         total_price = float(total_price)
 
         if current_money - total_price >= 0:
-            bill, created = Bill.objects.get_or_create(user_id_id=user)
-            setattr(bill, 'total_money_spent', total_price)
-            setattr(bill, 'payment_method', 'Credit card')
-            for p in products:
-                bill.products.add(p)
-            bill.save()
-            cart.products.clear()
-            cart.save()
             user_bank_account.money = current_money - total_price
             user_bank_account.name = request.POST.get('username')
             user_bank_account.month_exp = request.POST.get('month_exp')
             user_bank_account.year_exp = request.POST.get('year_exp')
             user_bank_account.card_number = request.POST.get('cardNumber')
             user_bank_account.cvv = request.POST.get('cvv')
+            try:
+                user_bank_account.full_clean()
+            except ValidationError:
+                # Do something when validation is not passing
+                print("ERROR VALIDATION")
+                messages.error(request, "An error has occurred, check that all data is in the correct format.")
+                return HttpResponseRedirect('/payment')
+            else:
+                # Validation is ok we will save the instance
+                user_bank_account.save()
 
-            user_bank_account.save()
+                bill, created = Bill.objects.get_or_create(user_id_id=user)
+                setattr(bill, 'total_money_spent', total_price)
+                setattr(bill, 'payment_method', 'Credit card')
+                for p in products:
+                    bill.products.add(p)
+                bill.save()
+                cart.products.clear()
+                cart.save()
         else:
             messages.error(request, "You can't complete the purchase, you haven't enough money!")
-            return HttpResponseRedirect('/error_money')
+            return HttpResponseRedirect('/payment')
 
     return HttpResponseRedirect('/payment')
 
