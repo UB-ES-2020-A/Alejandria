@@ -215,8 +215,11 @@
                                                                 value="{{ card_owner }}"
                                                                 class="form-control ">
                                                 </div>
-                                                <div class="form-group"><label for="cardNumber" style="color:white">
-                                                    Card number
+                                                <div class="form-group"><label for="cardNumber" style="color:white"
+                                                                               data-toggle="tooltip"
+                                                                               style="color:white"
+                                                                               title="Your credit card number must have 16 digits">
+                                                    Card number <i class="fa fa-question-circle d-inline"></i>
                                                 </label>
                                                     <div class="input-group"><input type="text" name="cardNumber"
                                                                                     id="cardNumber"
@@ -244,7 +247,7 @@
                                                                        value="{{ month }}"
                                                                        name="month_exp" required>
                                                                 <input type="number" pattern="\d*" minlength="4"
-                                                                       maxlength="4" placeholder="YY"
+                                                                       maxlength="4" placeholder="YYYY"
                                                                        value="{{ year }}"
                                                                        class="form-control" name="year_exp"
                                                                        required>
@@ -254,7 +257,7 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group mb-4"><label data-toggle="tooltip"
                                                                                             style="color:white"
-                                                                                            title="Three digit CV code on the back of your card">
+                                                                                            title="Three or four digit CV code on the back of your card">
                                                             CVV <i class="fa fa-question-circle d-inline"></i>
                                                         </label><input type="text" placeholder="XXX" required
                                                                        value="{{ cvv }}"

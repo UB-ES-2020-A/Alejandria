@@ -526,6 +526,7 @@ def register(request):
                     cart_user.products.add(product)
                 cart_guest.products.clear()
                 cart_guest.save()
+                cart_guest.delete()
                 cart_user.save()
 
                 return JsonResponse({"error": False})
@@ -595,17 +596,6 @@ def login_user(request):
             if user:
                 user = user.first()
                 login(request, user, backend='books.backend.EmailAuthBackend')
-
-                # Update cart
-                device = request.COOKIES['device']
-                guest = Guest.objects.get(device=device)
-                cart_guest = Cart.objects.get(guest_id=guest)
-                cart_user = Cart.objects.get(user_id=user)
-                for product in cart_guest.products.all():
-                    cart_user.products.add(product)
-                cart_guest.products.clear()
-                cart_guest.save()
-                cart_user.save()
 
                 return JsonResponse({"name": user.name, "error": False})
             else:
