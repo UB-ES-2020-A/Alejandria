@@ -20,7 +20,6 @@ $(document).ready(function () {
                 var url = new URL(urlname);
                 url.searchParams.append('search_book', document.getElementById('textSearch').value);
                 window.location.href = url;
-                //window.location.href = "/search/" + document.getElementById('textSearch').value; //window.location.origin+"/login";
             }
             else{ //TODO: Falta fer el search buit...
                 console.log("NULL");
@@ -168,10 +167,6 @@ $(document).ready(function () {
         }
     });
 
-    /*return {
-
-
-                }*/
 
     $("#faqs_btn").click(function () {
         window.location.href = "/faqs/";
