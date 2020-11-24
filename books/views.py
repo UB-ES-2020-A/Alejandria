@@ -4,7 +4,9 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import Permission
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
@@ -13,8 +15,10 @@ from django.views import generic
 import random
 
 from Alejandria.settings import EMAIL_HOST_USER
-from .forms import BookForm
+
+from .forms import BookForm, UpdateBookForm
 from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails, Guest
+
 
 # Create your views here.
 
@@ -97,7 +101,6 @@ class HomeView(generic.ListView):
         #    publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
-
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -117,6 +120,7 @@ class HomeView(generic.ListView):
             products = cart.products.all()
             items = len(products)
             context['total_items'] = items
+
 
         return response
 
@@ -142,7 +146,6 @@ class SearchView(generic.ListView):
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
-        print(request.GET)
         self.user_id = self.request.user.id or None
         if 'search_book' in request.GET:
             self.searchBook = request.GET['search_book']
@@ -196,28 +199,65 @@ class SearchView(generic.ListView):
         # TODO: Filtering by topseller and On Sale
 
 
-class SellView(generic.ListView):
+class SellView(PermissionRequiredMixin, generic.ListView):
+    model = Book
+    template_name = 'sell.html'
+    permission_required = ('books.add_book',)
 
-    @login_required
-    def add_book(request):
-        print(request.user.id)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    # post (update) of book
+    def post(self, request, *args, **kwargs):
         if request.method == "POST":
             form = BookForm(request.POST, request.FILES)
             if form.is_valid():
                 book = form.save(commit=False)
+                # intern fields (not showed to user)
                 book.user_id = request.user
                 book.num_sold = 0
-                # messages.success(request, 'Form submission successful')
-                messages.info(request, 'Your book has been updated successfully!')
+
+                messages.info(request, 'Your book has been created successfully!')
 
                 book.save()
-            # else:
-            # print(form.errors)
-            # return redirect("/")
+            else:
+                messages.info(request, 'Oops.. something is wrong')
+
         else:
             form = BookForm()
 
         return render(request, "sell.html", {"form": form})
+
+
+class EditBookView(PermissionRequiredMixin, generic.DetailView):
+    model = Book
+    template_name = 'edit_book.html'
+    permission_required = ('books.add_book',)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # format data to suit frontend requirements
+        context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+        return context
+
+    # post (update) of book
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            # get the instance to modify
+            s = get_object_or_404(Book, pk=self.kwargs['pk'])
+            form = UpdateBookForm(request.POST, instance=s)
+            if form.is_valid():
+                book = form.save(commit=False)
+                # intern field (not shown to user)
+                book.user_id = request.user
+                messages.info(request, 'Your book has been updated successfully!')
+                book.save()
+            else:
+                messages.info(request, 'Oops.. something is wrong')
+        else:
+            form = UpdateBookForm()
+        return render(request, "edit_book.html", {"form": form})
 
 
 class CartView(generic.ListView):
@@ -231,7 +271,6 @@ class CartView(generic.ListView):
 
     def get_queryset(self):
         request = self.request
-        print(request.GET)
         self.user_id = request.user.id or None
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
@@ -241,6 +280,7 @@ class CartView(generic.ListView):
             cart, created = Cart.objects.get_or_create(guest_id=user)
 
         return cart.products.all()
+
 
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
@@ -625,10 +665,12 @@ class PaymentView(generic.ListView):
         return context
 
 
-class EditorLibrary(generic.ListView):
+class EditorLibrary(PermissionRequiredMixin, generic.ListView):
     model = Book
     template_name = 'editor_library.html'  # TODO: Provisional file
     context_object_name = 'coincident'
+    permission_required = ('books.add_book',)
+    #permission_required = 'Alejandria.view_book'
 
     def __init__(self):
         super().__init__()
@@ -636,8 +678,6 @@ class EditorLibrary(generic.ListView):
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
-        print(request.GET)
-        print(request.user.id)
         self.user_id = self.request.user.id or None
 
         # if 'search_book' in request.GET:
