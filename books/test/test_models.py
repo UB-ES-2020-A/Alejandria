@@ -1,26 +1,34 @@
+"""
+This file has the porpouse to test all classes defined in models
+"""
 # Django and 3rd party libs
-import pytest
 import os
+import random
+
+from pathlib import Path
+
+import pytest
+
 from django.core.wsgi import get_wsgi_application
 from django.core.files import File
 from django.test import TestCase
 
-from pathlib import Path
+
 
 # Build app
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 
-import random
 # Then load own libs
-from books.models import Book, Product, Rating, Bill, FAQ, Cart, Address, User
+from books.models import Book, Product, Rating, Bill, FAQ, Cart, Address, User # pylint: disable=wrong-import-position import-error
 
 
 # TODO: Make test "en cadena". If we have to test something before try one test, do it.
 # Decorator to enable DB at test function
 def test_user():
+    """ Test if creation of Users has any error, creating or storing the information"""
     # Data to test
-    id = 15
+    _id = 15
     role = 'Admin'
     name = 'Josep'
     username = str(random.randint(0, 5156123423456015412))
@@ -32,23 +40,34 @@ def test_user():
     fact_address.save()
 
     # Model creation
-    obj = User(id=id, role=role,username=username, name=name, password=password, email=email, user_address=user_address,
+    obj = User(id=_id, role=role,
+               username=username,
+               name=name,
+               password=password,
+               email=email,
+               user_address=user_address,
                fact_address=fact_address)
     obj.save()
     # Retrieve model to check correct creation
     obj = User.objects.all().last()
-    print([id == obj.id, role == obj.role, name == obj.name, password == obj.password, email == obj.email,
-                 user_address == obj.user_address, fact_address == obj.fact_address])
-    check = all([id == obj.id, role == obj.role, name == obj.name, password == obj.password, email == obj.email,
+    print([_id == obj.id,
+           role == obj.role,
+           name == obj.name,
+           password == obj.password,
+           email == obj.email,
+           user_address == obj.user_address,
+           fact_address == obj.fact_address])
+    check = all([_id == obj.id,
+                 role == obj.role, name == obj.name, password == obj.password, email == obj.email,
                  user_address == obj.user_address, fact_address == obj.fact_address])
 
     # Test sucess if check is True
     assert check
 
 
-
 # Decorator to enable DB at test function
 def test_address():
+    """ Tests Adress model, creation and the correct storage of the information"""
     # Data to test
     street = 'C/ Test, 112'
     city = 'Barcelona'
@@ -59,14 +78,18 @@ def test_address():
     obj.save()
     # Retrieve model to check correct creation
     obj = Address.objects.all().last()
-    check = all([street == obj.street, city == obj.city, country == obj.country, zip_code == obj.zip])
+    check = all([street == obj.street,
+                 city == obj.city,
+                 country == obj.country,
+                 zip_code == obj.zip])
 
     # Test sucess if check is True
     assert check
 
+
 # TEST BOOK SIMPLE
 def test_book():
-
+    """ Tests Book model, creation and the correct storage of the information"""
     isbn = str(random.randint(0, 5156123423456015412))[:12]
     user = User.objects.all().last()
     title = 'THis is the TITLE'
@@ -81,24 +104,44 @@ def test_book():
     num_sold = 0
     recommended_age = 'Juvenile'
 
-    obj = Book(ISBN=isbn, user_id=user, title=title, description=description,
-               saga=saga, price=price, language=language, primary_genre=primary_genre,
-               publisher=publisher, num_pages=num_pages, num_sold=num_sold,
+    obj = Book(ISBN=isbn,
+               user_id=user,
+               title=title,
+               description=description,
+               saga=saga,
+               price=price,
+               language=language,
+               primary_genre=primary_genre,
+               publisher=publisher,
+               num_pages=num_pages,
+               num_sold=num_sold,
                recommended_age=recommended_age)
     obj.save()
 
     obj = Book.objects.all().filter(pk=isbn).first()
 
-
-    check = all([isbn == obj.ISBN, user == obj.user_id, title == obj.title, description == obj.description,
-                 saga == obj.saga, price == float(obj.price), language == obj.language, primary_genre == obj.primary_genre,
-                 publisher == obj.publisher, num_pages == obj.num_pages, num_sold == obj.num_sold,
+    check = all([isbn == obj.ISBN,
+                 user == obj.user_id,
+                 title == obj.title,
+                 description == obj.description,
+                 saga == obj.saga,
+                 price == float(obj.price),
+                 language == obj.language,
+                 primary_genre == obj.primary_genre,
+                 publisher == obj.publisher,
+                 num_pages == obj.num_pages,
+                 num_sold == obj.num_sold,
                  recommended_age == obj.recommended_age])
 
     assert check
 
+
 # TEST BOOK ONLY MANDATORY ATTRIBUTES
 def test_book2():
+    """
+    Tests Book model, creation and the correct storage of the information.
+    This time only with mandatory information
+    """
     isbn = str(random.randint(0, 5156123423456015412))[:12]
     user = User.objects.all().last()
     title = 'THis is the TITLE'
@@ -107,18 +150,29 @@ def test_book2():
     primary_genre = 'FANT'
     publisher = 'Alejandria'
     num_pages = 100
-    obj = Book(ISBN=isbn, user_id=user, title=title, price=price, language=language, primary_genre=primary_genre,
-               publisher=publisher, num_pages=num_pages)
+    obj = Book(ISBN=isbn,
+               user_id=user,
+               title=title,
+               price=price,
+               language=language,
+               primary_genre=primary_genre,
+               publisher=publisher,
+               num_pages=num_pages)
     obj.save()
 
     obj = Book.objects.all().filter(pk=isbn).first()
 
-    check = all([isbn == obj.ISBN, user == obj.user_id, title == obj.title, price == float(obj.price), language == obj.language,
-                 primary_genre == obj.primary_genre,
-                 publisher == obj.publisher, num_pages == obj.num_pages])
+    check = all(
+        [isbn == obj.ISBN,
+         user == obj.user_id,
+         title == obj.title,
+         price == float(obj.price),
+         language == obj.language,
+         primary_genre == obj.primary_genre,
+         publisher == obj.publisher,
+         num_pages == obj.num_pages])
 
     assert check
-
 
 # TEST BOOK WITH THUMBNAIL ( no se puede)
 # def test_book_thumbnail():
@@ -160,9 +214,6 @@ def test_book2():
 #     #print(path_stored_thumb.isfile(file_name))
 #
 #     assert check
-
-
-
 
 
 
@@ -304,45 +355,104 @@ def test_book2():
 #     assert check
 
 
+"""
+class CartTestCase(TestCase):
 
-# def test_cart():
-#     # TODO
-#     ISBN1 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits
-#     price1 = 22.40
-#     fees1 = 21.00
-#     discount1 = 5.00
-#     prod_1 = Product(ISBN=ISBN1, price=price1, fees=fees1, discount=discount1)
-#
-#     try:
-#         prod_1.save()
-#     except:
-#         pass
-    """
-    ISBN2 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits
-    price2 = 23.40
-    fees2 = 0.00
-    discount2 = 0.00
-    prod_2 = Product(ISBN=ISBN2, price=price2, fees=fees2, discount=discount2)
-    prod_2.save()
-    try:
-        prod_2.save()
-    except:
-        pass
-    """
-#     product = Product.objects.all().last()
-#     #print(products[0])
-#     obj = Cart()
-#     obj.save()
-#     obj.products.add(product)
-#     obj.save()
-#     obj = Cart.objects.all().last()
-#     assert obj.products.last().ISBN == product.ISBN
-#     assert obj.products.last().price== product.price
-#     assert obj.products.last().fees == product.fees
-#     assert obj.products.last().discount == product.discount
-#
-#
-#
+    def setUp(self):
+        self.user = self.create_user()
+        self.ISBN1 = self.create_book(ISBN='01234565', user=self.user, price=30.00, primary_genre='FANT', saga='Potter')
+        self.ISBN2 = self.create_book(ISBN='01234567852', user=self.user, price=30.00, primary_genre='FANT', saga='Harry Potter')
+        print('ISBN1: ', self.ISBN1)
+        print('ISBN2: ', self.ISBN2)
+
+        products = [self.create_prod(ISBN=self.ISBN1, price=30.00),
+                    self.create_prod(ISBN=self.ISBN2, price=30.00)]
+        print('Products: ', products)
+        self.add_to_cart(products)
+
+    def create_user(self):
+        user = User(id=15, role='Admin', username=str(random.randint(0, 5156123423456015412)), name='Josep',
+                    password='password1', email='fakemail@gmail.com', user_address=self.create_address(),
+                    genre_preference_1='CRIM',
+                    genre_preference_2='FANT', genre_preference_3='KIDS', fact_address=self.create_fact())
+        try:
+            user.save()
+        except:
+            print("ERROR TEST CART: Couldn't create User.")
+        return user
+
+    @staticmethod
+    def create_address():
+        user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
+        try:
+            user_address.save()
+        except:
+            print("ERROR TEST CART: Couldn't create User Address.")
+        return user_address
+
+    @staticmethod
+    def create_fact():
+        fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
+        try:
+            fact_address.save()
+        except:
+            print("ERROR TEST CART: Couldn't create Fact Address.")
+        return fact_address
+
+    @staticmethod
+    def create_book(ISBN, user, price, primary_genre, saga):
+        book = Book(ISBN=ISBN, user_id=user, price=price, primary_genre=primary_genre, saga=saga)
+        try:
+            book.save()
+        except:
+            print("ERROR TEST CART: Couldn't create Book.")
+        return book
+
+    @staticmethod
+    def create_prod(ISBN, price):
+        product = Product(ISBN=ISBN, price=price)
+        print(product)
+        try:
+            product.save()
+        except:
+            print("ERROR TEST CART: Couldn't create Product.")
+        return product
+
+    def add_to_cart(self, products):
+        cart = Cart.objects.create(user_id=self.user)
+        print("cart: ", cart)
+        # cart = Cart.objects.get(user_id=self.user)
+
+        # print("cart: ", cart)
+        for product in products:
+            cart.products.add(product)
+        try:
+            print("cart: ", cart)
+            cart.save()
+        except:
+            print("ERROR TEST CART: Couldn't create Cart.")
+
+    def test_cart(self):
+        p1 = Product.objects.get(ISBN=self.ISBN1)
+        p2 = Product.objects.get(ISBN=self.ISBN2)
+        print('Product 1: ', p1)
+        print('Product 2: ', p2)
+        obj = Cart.objects.get(user_id=self.user)
+        product_test_1 = obj.products.get(self.ISBN1)
+        product_test_2 = obj.products.get(self.ISBN2)
+
+        assert product_test_1.ISBN == p1.ISBN
+        assert product_test_1.price == p1.price
+        assert product_test_1.ISBN.primary_genre == p1.ISBN.primary_genre
+        assert product_test_1.ISBN.saga == p1.ISBN.saga
+
+        assert product_test_2.ISBN == p2.ISBN
+        assert product_test_2.price == p2.price
+        assert product_test_2.ISBN.primary_genre == p2.ISBN.primary_genre
+        assert product_test_2.ISBN.saga == p2.ISBN.saga
+"""
+
+
 # def test_bill():
 #     # TODO
 #     ISBN1 = Book.objects.filter(ISBN='0123456789012').last()  # 13 digits
@@ -395,6 +505,7 @@ def test_book2():
 
 
 def test_faq():
+    """ Tests FAQ model, creation and the correct storage of the information"""
     question = 'How is this Sprint going?'
     answer = 'Perfectly'
 
@@ -404,4 +515,3 @@ def test_faq():
     obj = FAQ.objects.all().last()
 
     check = all([question == obj.question, answer == obj.answer])
-
