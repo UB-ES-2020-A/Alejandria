@@ -8,9 +8,9 @@ from django.test import RequestFactory
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 
-from books.models import User, Address, Cart, Book, Product, Guest
+from books.models import User, Address, Cart, Book, Product, Guest, BankAccount, Bill
 from books.test.test_register import random_char
-from books.views import delete_product, add_product
+from books.views import delete_product, add_product, complete_purchase
 
 
 def get_or_create_user():
@@ -134,3 +134,32 @@ def test_delete_product_guest():
     req.user = User()
     delete_product(req, product.ID)
     assert cart.products.filter(ID=product.ID).last() is None
+
+
+def push_some_products(user):
+    cart = Cart.objects.get(user_id=user)
+    products = Product.objects.all()
+    cart.products.add(products[0])
+    cart.products.add(products[1])
+    cart.save()
+    return products[0].price + products[1].price
+
+
+def test_complete_purchase():
+    user = get_or_create_user()
+    total_price = push_some_products(user)
+    user_bank_account, created = BankAccount.objects.get_or_create(user_id=user)
+    user_bank_account.money = 1000
+    user_bank_account.save()
+
+    body = {
+        'user': user, 'username': 'User Name Test', 'month_exp': 11, 'year_exp': 2021, 'cardNumber': '1234567890123456',
+        'cvv': 111
+    }
+
+    req = RequestFactory().post("/payment/", body)
+    req.user = user
+    complete_purchase(req)
+    cart = Cart.objects.get(user_id=user.id)
+    bill = Bill.objects.filter(user_id=user).last()
+    assert cart.products.count() == 0 and user_bank_account.cvv == 111 and bill.total_money_spent == total_price
