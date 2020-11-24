@@ -1,10 +1,8 @@
 import os
-from random import random
+import random as rand
 
 from django.core.wsgi import get_wsgi_application
 from django.test import RequestFactory
-
-import json
 
 # Build up
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
@@ -15,18 +13,33 @@ from books.test.test_register import random_char
 from books.views import delete_product, add_product
 
 
-
 def get_or_create_user():
     user = User.objects.all().last() or None
     if user is None:
         user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
         fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
-        user = User(id=15, role='Admin', username=str(random.randint(0, 5156123423456015412)), name='Josep',
+        user = User(id=15, role='Admin', username=str(rand.randint(0, 5156123423456015412)), name='Josep',
                     password='password1', email='fakemail@gmail.com', user_address=user_address,
                     genre_preference_1='CRIM', genre_preference_2='FANT', genre_preference_3='KIDS',
                     fact_address=fact_address)
         user.save()
     return user
+
+
+def generate_id():
+    temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+    list_id = [str(rand.randint(0, 16)) if character == 'x' else character for character in temp]
+    id = "".join(list_id)
+    print('ID', id)
+    return id
+
+
+def get_or_create_guest():
+    guest = Guest.objects.all().first() or None
+    if guest is None:
+        guest = Guest(device=generate_id())
+        guest.save()
+    return guest
 
 
 def get_or_create_books(user, n):
@@ -53,6 +66,14 @@ def get_or_create_products(books):
     return products
 
 
+def get_or_create_guest_cart(guest):
+    cart = Cart.objects.filter(guest_id=guest).first() or None
+    if cart is None:
+        cart = Cart(guest_id=guest)
+        cart.save()
+    return cart
+
+
 def test_add_product():
     user = get_or_create_user()
     cart = Cart.objects.get(user_id=user)
@@ -61,12 +82,12 @@ def test_add_product():
     body = {
         'user': user
     }
-    print('PRODUCT', product)
+
     req = RequestFactory().post("/cart/", body)
-    guest = Guest.objects.all().first()
+    guest = get_or_create_guest()
     req.COOKIES['device'] = guest.device
     req.user = user
-    add_product(req, 'cart', product.ID)
+    add_product(req, 'cart', product.ISBN.ISBN)
     assert cart.products.filter(ID=product.ID).last().ID == product.ID
 
 
@@ -80,7 +101,7 @@ def test_delete_product():
     }
 
     req = RequestFactory().post("/cart/", body)
-    guest = Guest.objects.all().first()
+    guest = get_or_create_guest()
     req.COOKIES['device'] = guest.device
     req.user = user
     delete_product(req, product.ID)
@@ -88,14 +109,12 @@ def test_delete_product():
 
 
 def test_add_product_guest():
-    guest = Guest.objects.all().first()
-    cart = Cart.objects.get(guest_id=guest)
+    guest = get_or_create_guest()
+    cart = get_or_create_guest_cart(guest)
     product = Product.objects.filter().last()
 
     body = {}
 
-    print('product', product.ISBN.ISBN)
-    print('cart test', cart)
     req = RequestFactory().post("/cart/", body)
     req.COOKIES['device'] = guest.device
     req.user = User()
@@ -104,8 +123,8 @@ def test_add_product_guest():
 
 
 def test_delete_product_guest():
-    guest = Guest.objects.all().first()
-    cart = Cart.objects.get(guest_id=guest)
+    guest = get_or_create_guest()
+    cart = get_or_create_guest_cart(guest)
     product = cart.products.all()[0]
 
     body = {}
