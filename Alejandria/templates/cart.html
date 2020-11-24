@@ -39,8 +39,7 @@
                         <div style="margin-left:1%;">
                             <div class="row horizontal">
                                 <div class="col-md-8">
-                                    <p class="book-title"><a href="#">{{ product.ISBN.title }}, {{ product.ISBN.author
-                                        }}</a></p>
+                                    <p class="book-title"><a href="#">{{ product.ISBN.title }}, {{ product.ISBN.author }}</a></p>
                                 </div>
                                 <div class="col">
                                     <p class="text" style="text-align:right;"><span>{{ product.price }}</span>€</p>
@@ -320,19 +319,15 @@
             <div class="info-box" style="border-color: #d9534f; box-shadow: 0 0 2px 1px #d9534f;">
 
                 <div class="row">
-                    {% for v in total_items %}
                     <div class="col" style="margin-left:4%">
-                        <div class="text" style="font-size:20px">Subtotal&nbsp;(<span id="subtotal_products">{{ v }}
+                        <div class="text" style="font-size:20px">Subtotal&nbsp;(<span id="subtotal_products">{{ total_items }}
                                 </span>&nbsp;<span id="items">items</span>)
                         </div>
                     </div>
-                    {% endfor %}
 
-                    {% for v in total_price %}
                     <div class="col-4">
-                        <span class="text" style="font-size:20px" id="priceSubtotal">{{ v }}€</span>
+                        <span class="text" style="font-size:20px" id="priceSubtotal">{{ total_price }}€</span>
                     </div>
-                    {% endfor %}
                 </div>
 
                 <div class="custom-control custom-checkbox" style="margin-left:4%; margin-bottom: 3%">
