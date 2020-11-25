@@ -266,6 +266,8 @@ class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
     permission_required = ('books.delete_book',)
     success_url = '/editor'
 
+    # this is a push test
+
     def get_object(self, queryset=None):
         book = get_object_or_404(Book, pk=self.kwargs['pk'])
         if self.request.user == book.user_id:
