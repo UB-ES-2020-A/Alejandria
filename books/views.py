@@ -97,9 +97,10 @@ class HomeView(generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        today = datetime.today()
-        # context['new_books'] = Book.objects.filter(
-        #    publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
+        today = datetime.today().strftime("%Y-%m-%d")
+        last_day = (datetime.today() - timedelta(days=7)).strftime("%Y-%m-%d")
+
+        context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
         return context
