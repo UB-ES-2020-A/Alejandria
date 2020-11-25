@@ -274,7 +274,10 @@ class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
             return book
         else:
             print('Are you trying to delete a book that is not yours?')
-            raise HttpResponseForbidden
+            try:
+                raise HttpResponseForbidden
+            except HttpResponseForbidden:
+                print('Exception')
 
 
 
