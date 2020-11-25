@@ -6,7 +6,7 @@ from django.utils import timezone
 # Create your models here.
 
 """
-TODO: IF NECESSARY INTRODUCE help_text in some characteristics.
+IF NECESSARY INTRODUCE help_text in some characteristics.
 """
 GENRE_CHOICES = [
         ('FANT', 'Fantasy'),
@@ -29,8 +29,8 @@ GENRE_CHOICES = [
         ('SPOR', 'Sport'),
         ('TRAV', 'Travel'),
         ('POET', 'Poetry')
-
     ]
+
 
 class Address(models.Model):
     street = models.CharField(max_length=50, null=False, blank=False)
@@ -44,15 +44,20 @@ class User(AbstractUser):
     # TODO: ADD USERNAME AS A PK
     role = models.CharField(max_length=10, null=False, blank=False)
     name = models.CharField(max_length=50, null=False, blank=False)
-    password = models.CharField(max_length=50, null=False, blank=False)
+    password = models.CharField(max_length=150, null=False, blank=False)
     email = models.EmailField(max_length=50, null=False, blank=False)
-    user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
+    user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
                                      related_name="user_address")
-    fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
+    fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
                                      related_name="fact_address")
-    genre_preference_1 = models.CharField(max_length=4, choices=GENRE_CHOICES, blank=False, null=False)
-    genre_preference_2 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=False, blank=False)
-    genre_preference_3 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=False, blank=False)
+    genre_preference_1 = models.CharField(max_length=4, choices=GENRE_CHOICES, blank=True, null=True)
+    genre_preference_2 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
+    genre_preference_3 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
+
+
+class Guest(models.Model):
+    id = models.AutoField(primary_key=True, null=False, blank=True)
+    device = models.CharField(max_length=200, null=False, blank=False)
 
 
 # class Author(models.Model):
@@ -119,7 +124,8 @@ class Rating(models.Model):
 
 
 class Cart(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=False)
+    user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=True)
+    guest_id = models.ForeignKey(Guest, on_delete=models.PROTECT, blank=False, null=True)
     products = models.ManyToManyField(Product)
 
 

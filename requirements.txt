@@ -25,7 +25,11 @@ requests==2.25.0
 six==1.15.0
 sqlparse==0.4.1
 toml==0.10.1
+django_crispy_forms==1.9.2
+gunicorn==20.0.4
 tqdm==4.53.0
 urllib3==1.26.2
 validate-email==1.3
 whitenoise==5.2.0
+requests==2.25.0
+Pillow==8.0.1
