@@ -18,7 +18,8 @@
     left: 0;
     right: 0;
     height: 0px; /* espai balnc pel titol  */
-    background-color: #fff;
+    background-color: #343a40;
+    color: #fff;
     transition: 1.5s ease;
     overflow: hidden;
     padding-top: 0px; /* separació titol / imatge */
@@ -35,6 +36,6 @@
 }
 
 .card:hover .card-body{
-     height:185px;  /* el que puja en total*/
+      height:70%;   /* el que puja en total*/
 }
 
