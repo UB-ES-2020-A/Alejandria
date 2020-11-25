@@ -7,12 +7,13 @@ import json
 import string
 import random
 
+
 # Build app
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 
 # Then load own libs
-from books.models import User
+from books.models import User, Guest
 from books.views import register
 
 
@@ -27,15 +28,14 @@ def test_register():
         "username": username, "firstname": "Josep", "lastname": "Lopez",
         "email": email, "password1": "password123", "password2": "password123",
         "country1": "España", "city1": "Sant Adria del Besos", "street1": "c/Mare de deu del carme 116 4B",
-        "zip1": "08930",
-        "country2": "España", "city2": "Sant Adria del Besos", "street2": "c/Mare de deu del carme 116 4B",
-        "zip2": "08930",
-        "trigger": "register", "taste1": "Fiction", "taste2": "Crime & Thriller", "taste3": "Science Fiction",
-        "tastes": True
+        "zip1": "08930", "country2": "España", "city2": "Sant Adria del Besos",
+        "street2": "c/Mare de deu del carme 116 4B", "zip2": "08930", "trigger": "register", "taste1": "Fiction",
+        "taste2": "Crime & Thriller", "taste3": "Science Fiction", "tastes": True
     }
 
+    guest = Guest.objects.all().first()
     req = RequestFactory().post("/register/", body)
+    req.COOKIES['device'] = guest.device
     response = register(req)
     response_json = json.loads(response.content.decode("utf-8"))
-    assert response.status_code == 200 and not response_json["error"] and User.objects.filter(email=email,
-                                                                                              username=username).exists()
+    assert response.status_code == 200 and response_json["error"] == False and User.objects.filter(email=email, username=username).exists()
