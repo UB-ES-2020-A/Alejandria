@@ -14,6 +14,7 @@ from django.views import generic
 from Alejandria.settings import EMAIL_HOST_USER
 from .forms import BookForm
 from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails
+from .utils import *
 
 # Create your views here.
 
@@ -384,43 +385,9 @@ class AddView(generic.ListView):
 
 
 def register(request):
-    def validate_register(data):
-        # No Blank Data
-        data_answered = all([len(data[key]) > 0 for key in data if 'taste' not in key])
-        exists = User.objects.filter(email=request.POST["email"]).exists()
-        validation = data_answered and not exists
-        return validation
-
-    def encode_genre(taste):
-
-        genres = {
-            'Fantasy': 'FANT',
-            'Crime & Thriller': 'CRIM',
-            'Fiction': 'FICT',
-            'Science Fiction': 'SCFI',
-            'Horror': 'HORR',
-            'Romance': 'ROMA',
-            'Teen & Young Adult': 'TEEN',
-            "Children's Books": 'KIDS',
-            'Anime & Manga': 'ANIM',
-            'Others': 'OTHR',
-            'Art': 'ARTS',
-            'Biography': 'BIOG',
-            'Food': 'FOOD',
-            'History': 'HIST',
-            'Dictionary': 'DICT',
-            'Health': 'HEAL',
-            'Humor': 'HUMO',
-            'Sport': 'SPOR',
-            'Travel': 'TRAV',
-            'Poetry': 'POET'
-        }
-
-        return genres[taste]
-
     if request.method == 'POST':
         if 'trigger' in request.POST and 'register' in request.POST['trigger']:
-            if validate_register(request.POST):
+            if validate_register(request):
                 query = Address.objects.filter(city=request.POST['city1'], street=request.POST['street1'],
                                                country=request.POST['country1'], zip=request.POST['zip1'])
                 if query.exists():
@@ -587,7 +554,64 @@ class EditorLibrary(generic.ListView):
 
 def view_profile(request):
     if request.method == "POST":
-        pass
+        if validate_data(request):
+            try:
+                user = request.user
+
+                # Let's process modified data
+                # User Address
+                query = Address.objects.filter(street=request.POST["street1"], city=request.POST["city1"],
+                                               country=request.POST["country1"], zip=request.POST['zip1'])
+                if query.exists():
+                    user_address = query.first()
+                else:
+                    user_address = Address(street=request.POST["street1"], city=request.POST["city1"],
+                                           country=request.POST["country1"], zip=request.POST['zip1'])
+
+                # Facturation address
+                query = Address.objects.filter(street=request.POST["street2"], city=request.POST["city2"],
+                                               country=request.POST["country2"], zip=request.POST['zip2'])
+                if query.exists():
+                    fact_address = query.first()
+                else:
+                    fact_address = Address(street=request.POST["street2"], city=request.POST["city2"],
+                                           country=request.POST["country2"], zip=request.POST['zip2'])
+
+                # Process full name
+                tokens = tokenize(request.POST["full_name"])
+                first_name = " ".join(tokens[:-1])
+                last_name = " ".join(tokens[-1:])
+
+                # Process tastes
+                if request.POST["taste1"]:
+                    genre_preference_1 = encode_genre(request.POST["taste1"])
+
+                if request.POST["taste2"]:
+                    genre_preference_2 = encode_genre(request.POST["taste2"])
+
+                if request.POST["taste3"]:
+                    genre_preference_3 = encode_genre(request.POST["taste3"])
+
+                # Apply changes
+                user.username = request.POST["username"]
+                user.email = request.POST["email"]
+                user.user_address = user_address
+                user.fact_address = fact_address
+                user.name = first_name
+                user.first_name = first_name
+                user.last_name = last_name
+                user.genre_preference_1 = genre_preference_1
+                user.genre_preference_2 = genre_preference_2
+                user.genre_preference_3 = genre_preference_3
+
+                user.save()
+
+                return JsonResponse({"error": False})
+
+            except Exception as err:
+                return JsonResponse({"error": True, "msg": "Unexpected error, please try it again"})
+
+        return JsonResponse({"error": True, "msg": "Invalid data!"})
 
     elif request.method == "GET":
         return render(request, "view_profile.html")
