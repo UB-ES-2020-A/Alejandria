@@ -22,7 +22,7 @@ urlpatterns = [
     path('forgot/', views.forgot, name='forgot'),
     path('forgot/<id>/', views.forgot, name='reset'),
     path('editor/', views.EditorLibrary.as_view(), name='editor_library'),
-    path('profile/', views.view_profile, name="view_profile")
+    path('profile/', views.view_profile, name="view_profile"),
     path('editBook/<slug:pk>/', views.EditBookView.as_view(), name='edit_book'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
