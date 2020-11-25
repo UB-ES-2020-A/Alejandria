@@ -6,7 +6,6 @@ import string
 from django.core.wsgi import get_wsgi_application
 from django.test.client import RequestFactory
 
-# Build app
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 
@@ -14,6 +13,18 @@ import random
 # Then load own libs
 from books.models import User, Guest
 from books.views import register
+
+
+def get_or_create_guest():
+    device = '123456789'
+    guest_query = Guest.objects.filter(device=device)
+    if guest_query.count() == 0:
+        guest = Guest(device=device)
+        guest.save()
+    else:
+        guest = guest_query.first()
+    return guest
+
 
 
 def random_char(y):
@@ -33,7 +44,7 @@ def test_register():
         "taste2": "Crime & Thriller", "taste3": "Science Fiction", "tastes": True
     }
 
-    guest = Guest.objects.all().first()
+    guest = get_or_create_guest()
     req = RequestFactory().post("/register/", body)
     req.COOKIES['device'] = guest.device
     response = register(req)

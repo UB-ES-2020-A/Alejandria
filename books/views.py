@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -307,10 +308,10 @@ class CartView(generic.ListView):
 
 
 def delete_product(request, product_id):
-    user_id = request.user.id or None
+    user = request.user or None
     print(request.GET)
-    if user_id:
-        cart = Cart.objects.get(user_id=user_id)
+    if user:
+        cart = Cart.objects.get(user_id=user.id)
     else:
         device = request.COOKIES['device']
         user, created = Guest.objects.get_or_create(device=device)
@@ -324,10 +325,10 @@ def delete_product(request, product_id):
 
 
 def add_product(request, view, book):
-    user_id = request.user.id or None
+    user = request.user or None
     print(request.POST)
-    if user_id:
-        cart = Cart.objects.get(user_id=user_id)
+    if user:
+        cart = Cart.objects.get(user_id=user.id)
     else:
         device = request.COOKIES['device']
         user, created = Guest.objects.get_or_create(device=device)
@@ -517,18 +518,18 @@ def register(request):
                 user.save()
 
                 # Create user's cart
-                device = request.COOKIES['device']
+                device = request.COOKIES.get('device')
                 guest = Guest.objects.get(device=device)
-                cart_guest = Cart.objects.get(guest_id=guest)
-                cart_user = Cart(user_id=user)
-                cart_user.save()
-                cart_user = Cart.objects.get(user_id=user)
-                for product in cart_guest.products.all():
-                    cart_user.products.add(product)
-                cart_guest.products.clear()
-                cart_guest.save()
-                cart_guest.delete()
-                cart_user.save()
+                cart_user, created = Cart.objects.get_or_create(user_id=user)
+                if device:
+                    cart_guest_query = Cart.objects.filter(guest_id=guest)
+                    if cart_guest_query.count() != 0:
+                        cart_guest = cart_guest_query.first()
+                        for product in cart_guest.products.all():
+                            cart_user.products.add(product)
+                        cart_guest.products.clear()
+                        cart_guest.save()
+                        cart_user.save()
 
                 return JsonResponse({"error": False})
 
@@ -712,7 +713,8 @@ def complete_purchase(request):
         total_price = float(total_price)
 
         if current_money - total_price >= 0:
-            user_bank_account.money = current_money - total_price
+
+            user_bank_account.money = str(round(current_money - total_price, 2))
             user_bank_account.name = request.POST.get('username')
             user_bank_account.month_exp = request.POST.get('month_exp')
             user_bank_account.year_exp = request.POST.get('year_exp')
@@ -723,6 +725,12 @@ def complete_purchase(request):
             except ValidationError:
                 # Do something when validation is not passing
                 print("ERROR VALIDATION")
+                print(user_bank_account.name)
+                print(user_bank_account.money)
+                print(user_bank_account.month_exp)
+                print(user_bank_account.year_exp)
+                print(user_bank_account.card_number)
+                print(user_bank_account.cvv)
                 user_bank_account.delete()
                 messages.error(request, "An error has occurred, check that all data is in the correct format.")
                 return HttpResponseRedirect('/payment')

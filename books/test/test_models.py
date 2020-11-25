@@ -28,10 +28,10 @@ from books.models import Book, Product, Rating, Bill, FAQ, Cart, Address, User #
 def test_user():
     """ Test if creation of Users has any error, creating or storing the information"""
     # Data to test
-    _id = 15
+    _id = 30
     role = 'Admin'
     name = 'Josep'
-    username = str(random.randint(0, 5156123423456015412))
+    username = 'Test User'
     password = 'password1'
     email = 'fakemail@gmail.com'
     user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
