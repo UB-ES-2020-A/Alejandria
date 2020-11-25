@@ -106,7 +106,7 @@ class Product(models.Model):
 
 class Rating(models.Model):
     ID = models.AutoField(primary_key=True, blank=False, null=False)
-    product_id = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
                                 blank=False)  # TODO: on_delete
     text = models.TextField(max_length=500, null=False, blank=True)

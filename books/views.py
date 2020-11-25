@@ -63,10 +63,10 @@ class BookView(generic.DetailView):
         print(kwargs)
         context = super().get_context_data(**kwargs)
         relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
-        review_list = Rating.objects.filter(product_id=context['object'])
+        review_list = Rating.objects.filter(book=context['object'])
         # Devuelve todos los PRODUCTS del usuario
         # Necesito buscar el libro actual en estos products
-        owned = Product.objects.filter(cart__in=Cart.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first()
+        owned = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first()
 
         if relation_book:
             context['book_relation'] = relation_book
@@ -141,7 +141,7 @@ class HomeView(generic.ListView):
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
         if self.user_id:
-            cart = Cart.objects.filter(user_id=self.user_id).first()
+            cart = Cart.objects.get(user_id=self.user_id)
             products = cart.products.all()
             items = len(products)
             context['total_items'] = [items]
@@ -179,7 +179,7 @@ class SearchView(generic.ListView):
 
         # Get number of cart products
         if self.user_id:
-            cart = Cart.objects.filter(user_id=self.user_id).first()
+            cart = Cart.objects.get(user_id=self.user_id)
             products = cart.products.all()
             items = len(products)
             context['total_items'] = [items]
@@ -246,7 +246,7 @@ class CartView(generic.ListView):
         print(request.GET)
         self.user_id = request.user.id or None
         if self.user_id:
-            cart = Cart.objects.filter(user_id=self.user_id).first()
+            cart = Cart.objects.get(user_id=self.user_id)
             print(cart)
             if cart:
                 return cart.products.all()
@@ -256,7 +256,7 @@ class CartView(generic.ListView):
         context = super(CartView, self).get_context_data(**kwargs)
         context['books_from_cart_view'] = Book.objects.all()[:6]
         if self.user_id:
-            cart = Cart.objects.filter(user_id=self.user_id).first()
+            cart = Cart.objects.get(user_id=self.user_id)
             products = cart.products.all()
             total_price = 0
             items = len(products)
@@ -277,7 +277,7 @@ def delete_product(request, product_id):
     user_id = request.user.id or None
     print(request.GET)
     if user_id:
-        cart = Cart.objects.filter(user_id=user_id).first()
+        cart = Cart.objects.get(user_id=user_id)
         product = cart.products.get(ID=product_id)
         print("Delete Product ", product)
         cart.products.remove(product)
@@ -289,7 +289,7 @@ def add_product(request, view, book):
     user_id = request.user.id or None
     print(request.POST)
     if user_id:
-        cart = Cart.objects.filter(user_id=user_id).first()
+        cart = Cart.objects.get(user_id=user_id)
         products = Product.objects.all()
         for product in products:
             if product.ISBN.ISBN == book:
@@ -326,7 +326,7 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='CONTACT')]))
         print(context)
         if self.user_id:
-            cart = Cart.objects.filter(user_id=self.user_id).first()
+            cart = Cart.objects.get(user_id=self.user_id)
             products = cart.products.all()
             items = len(products)
             context['total_items'] = [items]
@@ -527,7 +527,7 @@ def leave_review(request, **kwargs):
             return JsonResponse({"error": "The maximum text length is 500 characters."})
 
         book = Book.objects.filter(ISBN=request.POST['book']).first()
-        review = Rating(product_id=book,
+        review = Rating(book=book,
                         user_id=request.user,
                         text=request.POST['text'],
                         score=request.POST['score'])
