@@ -206,6 +206,38 @@ def test_modify_book():
 
     assert check
 
+
+# MODIFY A BOOK
+def test_delete_book():
+    isbn = '85632693145'
+    user = User.objects.all().last()
+    title = 'title'
+    price = 1
+    language = 'Espanol'
+    primary_genre = 'FANT'
+    secondary_genre = 'CRIM'
+    publisher = 'publi'
+    num_pages = 1
+    recommended_age = 'Juvenile'
+
+    # creation of book
+    book = Book(ISBN=isbn, user_id=user, title=title, price=price, language=language, primary_genre=primary_genre,
+               secondary_genre=secondary_genre, publisher=publisher, num_pages=num_pages, recommended_age=recommended_age)
+    book.save()
+
+    # get the book
+    book_to_delete = Book.objects.all().filter(pk=isbn)
+
+    # deleting the book
+    book_to_delete.delete()
+
+    # simulatin of getting the book (that no longer exists)
+
+    non_existent_book = Book.objects.all().filter(pk=isbn)
+
+    # chack that change is saved correctly
+    assert not non_existent_book
+
 # TEST BOOK WITH THUMBNAIL ( no se puede)
 # def test_book_thumbnail():
 #     isbn = '01234176532'

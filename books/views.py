@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseForbidden
 from django.views import generic
 import random
 
@@ -265,6 +266,24 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
         else:
             form = UpdateBookForm()
         return render(request, "edit_book.html", {"form": form})
+
+class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
+    model = Book
+    template_name = 'delete_book.html'
+    permission_required = ('books.delete_book',)
+    success_url = '/editor'
+
+    # this is a push test
+
+    def get_object(self, queryset=None):
+        book = get_object_or_404(Book, pk=self.kwargs['pk'])
+        if self.request.user == book.user_id:
+            return book
+        else:
+            print('Are you trying to delete a book that is not yours?')
+            return HttpResponseForbidden()
+
+
 
 
 class CartView(generic.ListView):

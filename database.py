@@ -103,9 +103,12 @@ for b in books:
 print("PRODUCTS SAVED...OK")
 
 # Create Cart
-cart = Cart(user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
-cart.save()
-cart = Cart(id=1, user_id=user)
+cart = Cart(id=1, user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
+pk_cart = cart.pk
+#cart.save()
+
+#cart = Cart.objects.filter(pk=pk_cart)
+#cart = Cart(id=1, user_id=user)
 
 for p in products:
     cart.products.add(p)
