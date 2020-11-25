@@ -40,7 +40,7 @@ class Address(models.Model):
 
 
 class User(AbstractUser):
-    id = models.AutoField(primary_key=True, null=True, blank=True)
+    id = models.AutoField(primary_key=True, null=False, blank=True)
     # TODO: ADD USERNAME AS A PK
     role = models.CharField(max_length=10, null=False, blank=False)
     name = models.CharField(max_length=50, null=False, blank=False)
@@ -56,7 +56,7 @@ class User(AbstractUser):
 
 
 class Guest(models.Model):
-    id = models.AutoField(primary_key=True, null=True, blank=True)
+    id = models.AutoField(primary_key=True, null=False, blank=True)
     device = models.CharField(max_length=200, null=False, blank=False)
 
 

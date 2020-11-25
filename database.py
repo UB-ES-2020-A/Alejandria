@@ -2,13 +2,18 @@
 This file was used to add initial lines in the DataBase,
 but might be changed for a future mor professional implementation.
 """
-from books.models import Book, User, Address, Product, Cart, FAQ
-from django.core.files import File
 import os
 import django
 import random
+from books.models import Book, User, Address, Product, Cart, FAQ
+from django.core.files import File
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
+
+
+
+
+
 
 
 
