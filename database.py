@@ -4,7 +4,7 @@ but might be changed for a future mor professional implementation.
 """
 import os
 import django
-import random
+import random as random
 
 from books.models import Book, User, Address, Product, Cart, FAQ
 from django.core.files import File
