@@ -148,7 +148,7 @@ class SearchView(generic.ListView):
 
     def get(self, request, *args, **kwargs):
         self.user_id = self.request.user.id or None
-        if(self.user_id):
+        if self.user_id:
             self.genres_preferences.append(request.user.genre_preference_1)
             self.genres_preferences.append(request.user.genre_preference_2)
             self.genres_preferences.append(request.user.genre_preference_3)
@@ -194,7 +194,7 @@ class SearchView(generic.ListView):
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
-        if(self.user_id):
+        if self.user_id:
             recommended_books = Book.objects.filter(
                 (Q(primary_genre__in=self.genres_preferences)
                 |  Q(secondary_genre__in=self.genres_preferences)))
