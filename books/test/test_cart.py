@@ -1,5 +1,5 @@
 import os
-from random import random
+import random as rand
 
 from django.core.wsgi import get_wsgi_application
 from django.test import RequestFactory
@@ -21,7 +21,7 @@ def get_or_create_user():
     if user is None:
         user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
         fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
-        user = User(id=15, role='Admin', username=str(random.randint(0, 5156123423456015412)), name='Josep',
+        user = User(id=15, role='Admin', username=str(rand.randint(0, 5156123423456015412)), name='Josep',
                     password='password1', email='fakemail@gmail.com', user_address=user_address,
                     genre_preference_1='CRIM', genre_preference_2='FANT', genre_preference_3='KIDS',
                     fact_address=fact_address)
