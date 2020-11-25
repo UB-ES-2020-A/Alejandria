@@ -12,7 +12,7 @@ from django.contrib.auth.models import Permission
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 import random
 
@@ -722,6 +722,7 @@ def complete_purchase(request):
             except ValidationError:
                 # Do something when validation is not passing
                 print("ERROR VALIDATION")
+                user_bank_account.delete()
                 messages.error(request, "An error has occurred, check that all data is in the correct format.")
                 return HttpResponseRedirect('/payment')
             else:
