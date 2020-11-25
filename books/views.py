@@ -387,6 +387,7 @@ class FaqsView(generic.ListView):
         pass
 
 
+
 class AddView(generic.ListView):
     model = Book
     template_name = 'createbook.html'
