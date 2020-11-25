@@ -125,14 +125,14 @@ class Rating(models.Model):
 
 
 class Cart(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=True)
-    guest_id = models.ForeignKey(Guest, on_delete=models.PROTECT, blank=False, null=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
+    guest_id = models.ForeignKey(Guest, on_delete=models.CASCADE, blank=False, null=True)
     products = models.ManyToManyField(Product)
 
 
 class Bill(models.Model):
     num_factura = models.AutoField(primary_key=True, blank=False, null=False)
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE())
     date = models.DateField(null=True, blank=True, default=timezone.now)
     payment_method = models.CharField(max_length=30)
     products = models.ManyToManyField(Product)
