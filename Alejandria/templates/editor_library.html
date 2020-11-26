@@ -36,7 +36,7 @@
                                      </div>
                                      <div class="column" style="position: absolute; right: 30%">
                                          <h6 class="card-title"><b>ISBN:</b> {{ book.ISBN }}</h6>
-                                         <h6 class="card-title"><b>Genre:</b> {{ book.primary_genre }}, {{ book.secondary_genre }} </h6>
+                                         <h6 class="card-title"><b>Genre:</b> {{ book.get_primary_genre_display }}, {{ book.get_secondary_genre_display }}</h6>
                                          <h6 class="card-title"><b>Language:</b> {{ book.language }} </h6>
                                          <h6 class="card-title"><b>Publication date:</b> {{ book.publication_date }} </h6>
                                      </div>
@@ -48,13 +48,13 @@
                                           </div>
                                          <div clas="row" style="margin-top:5%;">
                                              <form action="/editBook/{{book.ISBN}}">
-<!--                                                 TODO: ADD EDITOR PAGE -->
                                                 <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Edit" type="submit"><i class="fas fa-edit"></i></button>
                                              </form>
                                           </div>
                                          <div clas="row" style="margin-top: 5%;" >
-<!--                                                 TODO: DELETE BUTTON TO DB-->
+                                             <form action="/deleteBook/{{book.ISBN}}">
                                                 <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Delete" type="submit"><i class="fas fa-trash-alt"></i></button>
+                                             </form>
                                          </div>
                                      </div>
                                  </div>

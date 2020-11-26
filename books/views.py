@@ -1,26 +1,22 @@
+import random
 import re
-from datetime import datetime
-from decimal import Decimal
+from datetime import datetime, timedelta
 
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
-from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.auth.models import Permission
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
+from django.http import HttpResponseForbidden
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views import generic
-import random
 
 from Alejandria.settings import EMAIL_HOST_USER
 from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails, Guest, BankAccount, Bill
-
+from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill
 
 # Create your views here.
 
@@ -98,9 +94,10 @@ class HomeView(generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        today = datetime.today()
-        # context['new_books'] = Book.objects.filter(
-        #    publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
+        today = datetime.today().strftime("%Y-%m-%d")
+        last_day = (datetime.today() - timedelta(days=7)).strftime("%Y-%m-%d")
+
+        context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
         return context
@@ -145,9 +142,14 @@ class SearchView(generic.ListView):
         self.searchBook = None
         self.genres = []
         self.user_id = None
+        self.genres_preferences = []
 
     def get(self, request, *args, **kwargs):
         self.user_id = self.request.user.id or None
+        if self.user_id:
+            self.genres_preferences.append(request.user.genre_preference_1)
+            self.genres_preferences.append(request.user.genre_preference_2)
+            self.genres_preferences.append(request.user.genre_preference_3)
         if 'search_book' in request.GET:
             self.searchBook = request.GET['search_book']
         else:
@@ -190,14 +192,16 @@ class SearchView(generic.ListView):
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
-            return context
+        if self.user_id:
+            recommended_books = Book.objects.filter(
+                (Q(primary_genre__in=self.genres_preferences)
+                |  Q(secondary_genre__in=self.genres_preferences)))
 
-        # TODO: Filtering by topseller and On Sale
+            recommended_books_list = list(recommended_books)
+            recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
+            context['recommended_books'] = recommended_books_list
 
         return context
-        # Filtering by genre (primary and secondary) using checkbox from frontend
-
-        # TODO: Filtering by topseller and On Sale
 
 
 class SellView(PermissionRequiredMixin, generic.ListView):
@@ -259,6 +263,24 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
         else:
             form = UpdateBookForm()
         return render(request, "edit_book.html", {"form": form})
+
+class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
+    model = Book
+    template_name = 'delete_book.html'
+    permission_required = ('books.delete_book',)
+    success_url = '/editor'
+
+    # this is a push test
+
+    def get_object(self, queryset=None):
+        book = get_object_or_404(Book, pk=self.kwargs['pk'])
+        if self.request.user == book.user_id:
+            return book
+        else:
+            print('Are you trying to delete a book that is not yours?')
+            return HttpResponseForbidden()
+
+
 
 
 class CartView(generic.ListView):

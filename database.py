@@ -5,12 +5,11 @@ but might be changed for a future mor professional implementation.
 import os
 import django
 import random
-
 from books.models import Book, User, Address, Product, Cart, FAQ
 from django.core.files import File
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
+
 
 user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
@@ -96,9 +95,12 @@ for b in books:
 print("PRODUCTS SAVED...OK")
 
 # Create Cart
-cart = Cart(user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
-cart.save()
-cart = Cart(id=1, user_id=user)
+cart = Cart(id=1, user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
+pk_cart = cart.pk
+#cart.save()
+
+#cart = Cart.objects.filter(pk=pk_cart)
+#cart = Cart(id=1, user_id=user)
 
 for p in products:
     cart.products.add(p)
