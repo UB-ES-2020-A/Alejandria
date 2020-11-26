@@ -98,10 +98,14 @@
                             <img class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
                             {% endif %}
                             <div class="card-body">
+                                {% if book.title|length > 18 %}
+                                <h5 class="card-title" style="padding-top:15px">{{ book.title|slice:18 }}...</h5>
+                                {% else %}
                                 <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.authors }}</p>
+                                {% endif %}
+                                <p class="card-text">{{ book.author }}</p>
                                 <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Add to
+                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
                                     cart</a>
                             </div>
                         </a>
@@ -114,6 +118,47 @@
         </div>
     </div>
 </div>
+
+
+
+<!--  SCROLL  -->
+{% if recent %}
+<h3 class="scroll-title">Recently added</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel3" data-interval="1000">
+            <div class="MultiCarousel-inner">
+                {% for book in recent %}
+                <div class="item" style="width: 185px;">
+                    <div class="card" style="width: 11rem;">
+                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                            <!-- Change href -->
+                            {% if book.thumbnail %}
+                            <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                            <!--TODO: Change to real book image -->
+                            {% else %}
+                            <img class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                <p class="card-text">{{ book.author }}</p>
+                                <p class="card-text">Preu: {{ book.price }}€</p>
+                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                    cart</a>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
 
 <!--  SCROLL  -->
 <h3 class="scroll-title">Fantasy</h3>
@@ -133,9 +178,9 @@
                             {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.authors }}</p>
+                                <p class="card-text">{{ book.author }}</p>
                                 <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Add to
+                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
                                     cart</a>
                             </div>
                         </a>
@@ -167,9 +212,9 @@
                             {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.authors }}</p>
+                                <p class="card-text">{{ book.author }}</p>
                                 <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-primary">Add to
+                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
                                     cart</a>
                             </div>
                         </a>
@@ -211,6 +256,7 @@
 
 
     <script src="//cdn.jsdelivr.net/npm/less"></script>
+
 
 
 </head>

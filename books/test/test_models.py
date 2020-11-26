@@ -5,22 +5,14 @@ This file has the porpouse to test all classes defined in models
 import os
 import random
 
-from pathlib import Path
-
-import pytest
-
 from django.core.wsgi import get_wsgi_application
-from django.core.files import File
-from django.test import TestCase
-
-
 
 # Build app
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 
 # Then load own libs
-from books.models import Book, Product, Rating, Bill, FAQ, Cart, Address, User # pylint: disable=wrong-import-position import-error
+from books.models import Book, FAQ, Address, User # pylint: disable=wrong-import-position import-error
 
 
 # TODO: Make test "en cadena". If we have to test something before try one test, do it.
@@ -28,10 +20,10 @@ from books.models import Book, Product, Rating, Bill, FAQ, Cart, Address, User #
 def test_user():
     """ Test if creation of Users has any error, creating or storing the information"""
     # Data to test
-    _id = 15
+    _id = 30
     role = 'Admin'
     name = 'Josep'
-    username = str(random.randint(0, 5156123423456015412))
+    username = 'Test User'
     password = 'password1'
     email = 'fakemail@gmail.com'
     user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
@@ -205,6 +197,38 @@ def test_modify_book():
          publisher == book_upd.publisher, num_pages == book_upd.num_pages])
 
     assert check
+
+
+# MODIFY A BOOK
+def test_delete_book():
+    isbn = '85632693145'
+    user = User.objects.all().last()
+    title = 'title'
+    price = 1
+    language = 'Espanol'
+    primary_genre = 'FANT'
+    secondary_genre = 'CRIM'
+    publisher = 'publi'
+    num_pages = 1
+    recommended_age = 'Juvenile'
+
+    # creation of book
+    book = Book(ISBN=isbn, user_id=user, title=title, price=price, language=language, primary_genre=primary_genre,
+               secondary_genre=secondary_genre, publisher=publisher, num_pages=num_pages, recommended_age=recommended_age)
+    book.save()
+
+    # get the book
+    book_to_delete = Book.objects.all().filter(pk=isbn)
+
+    # deleting the book
+    book_to_delete.delete()
+
+    # simulatin of getting the book (that no longer exists)
+
+    non_existent_book = Book.objects.all().filter(pk=isbn)
+
+    # chack that change is saved correctly
+    assert not non_existent_book
 
 # TEST BOOK WITH THUMBNAIL ( no se puede)
 # def test_book_thumbnail():

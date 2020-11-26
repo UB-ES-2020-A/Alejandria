@@ -299,12 +299,21 @@
 
             <!--Bottom of the page-->
             <div style="margin-top:5%; padding-bottom:5%; width:100%; text-align: center;">
+                {% if user.is_authenticated %}
                 <button class="btn btn-success my-2 my-sm-0"
                         style="width:200px;"
                         type="submit"
                         id="btn_purchase"
                 >Complete purchase
                 </button>
+                {% else %}
+                <button class="btn btn-success my-2 my-sm-0"
+                        style="width:200px;"
+                        type="submit"
+                        disabled
+                >Complete purchase
+                </button>
+                {% endif %}
                 <p class="text" style="font-size:12px">New client? &nbsp;<a href="#">Register here</a></p>
             </div>
             <!-- ./Bottom of the page -->
@@ -338,12 +347,21 @@
                 </div>
 
                 <div style="text-align: center; margin-bottom:2%">
+                    {% if user.is_authenticated %}
                     <button class="btn btn-success my-2 my-sm-0"
                             style="width:80%;"
                             type="submit"
                             id="btn_checkout"
                     >Proceed to Checkout
                     </button>
+                    {% else %}
+                    <button class="btn btn-success my-2 my-sm-0"
+                            style="width:80%;"
+                            type="submit"
+                            disabled
+                    >Proceed to Checkout
+                    </button>
+                    {% endif %}
                 </div>
             </div>
             <!-- ./Total Payment -->

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+<html lang="en">
+<link rel="stylesheet" href="{% static 'css/editor-page/card.css' %}">
+<head>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+</head>
+<style>
+input[type=submit]{
+    background-color: #4CAF50;
+    color: #fff;
+    background-color: #bd2130;
+    border-color: #b21f2d;
+    padding: 8px 32px;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+</style>
+
+<body>
+<div class="container-fluid">
+        <div class="row" >
+            <div class="col-12 mt-5"  >
+                <div class="card" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
+                     <div class="card-horizontal" >
+                         {% if book.thumbnail %}
+                                <img src="{{ book.thumbnail.url }}" alt="Card image cap" style="width:180px; height:250px;">
+                                {% else %}
+                                <img src= "{% static 'no_available.jpg' %}" alt="Card image cap" style="width:180px; height:250px;">
+                            {% endif %}
+                         <div class="card-body" style="color:white;" >
+                             <h2 class="card-title" style="color:#141414">Deleting a book</h2>
+
+                             <form action="." method="POST">{% csrf_token %}
+                                <h3>Do you really want to delete the book "{{ object.title }}" ?</h3>
+                                 <h6>Keep in mind, once is deleted, there is no turning back.</h6>
+                                 <div style="margin-top:5%">
+                                     <p><input type="submit" value="Delete"/> <a href="/editor" style="color:black">Cancel</a></p>
+                                 </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+{% endblock %}

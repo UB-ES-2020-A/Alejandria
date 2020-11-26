@@ -13,6 +13,30 @@
 
 <body style="background-color:black">
 
+{% if messages %}
+{% for message in messages %}
+{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">Error!</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+      <div class="modal-body">
+          <a class="custom-close"> {{ message }} </a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endif %}
+{% endfor %}
+{% endif %}
+
 <!-- Container -->
 <div class="row" style="margin-left: 3%; margin-top: 2%; margin-right: 3%">
     <div class="col-75 body-card">
@@ -59,7 +83,8 @@
                                             <hr>
                                             <div class="row">
                                                 <div class="col"><b>Total</b></div>
-                                                <div class="col-2" style="text-align:right"><b>{{ total_price }} €</b></div>
+                                                <div class="col-2" style="text-align:right"><b>{{ total_price }} €</b>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -72,6 +97,7 @@
                                                     <div class="input-group">
                                                         <input type="text" name="username" id="fullname"
                                                                placeholder="John Cena" required
+                                                               value="{{ user.name }} {{user.last_name}}"
                                                                class="form-control ">
                                                         <div class="input-group-append">
                                                     <span class="input-group-text text-muted bg-dark">
@@ -86,6 +112,7 @@
                                                     <div class="input-group"><input type="text"
                                                                                     id="email"
                                                                                     placeholder="john@example.com"
+                                                                                    value="{{ user.email }}"
                                                                                     class="form-control " required>
                                                         <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -102,7 +129,8 @@
                                                             <div class="input-group"><input type="text"
                                                                                             id="address"
                                                                                             placeholder="Calle Alcalá, 48"
-                                                                                            class="form-control "
+                                                                                            class="form-control"
+                                                                                            value="{{ user.fact_address.street }}"
                                                                                             required>
                                                                 <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -118,7 +146,8 @@
                                                             <div class="input-group"><input type="text"
                                                                                             id="city"
                                                                                             placeholder="Madrid"
-                                                                                            class="form-control "
+                                                                                            class="form-control"
+                                                                                            value="{{ user.fact_address.city }}"
                                                                                             required>
                                                                 <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -133,8 +162,10 @@
                                                             <label for="zip" style="color:white">Zip</label>
                                                             <div class="input-group"><input type="text"
                                                                                             id="zip"
+                                                                                            name="zip"
                                                                                             placeholder="00000"
-                                                                                            class="form-control "
+                                                                                            class="form-control"
+                                                                                            value="{{ user.fact_address.zip }}"
                                                                                             required>
                                                                 <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -175,19 +206,25 @@
 
                                         <!-- credit card info-->
                                         <div id="credit-card" class="tab-pane fade show active pt-3">
-                                            <form role="form">
+                                            <form action="{% url 'books:purchase' %}" method="post">
+                                                {% csrf_token %}
                                                 <div class="form-group"><label for="username" style="color:white">
                                                     Card Owner
                                                 </label> <input type="text" name="username" id="username"
                                                                 placeholder="Card Owner Name" required
+                                                                value="{{ card_owner }}"
                                                                 class="form-control ">
                                                 </div>
-                                                <div class="form-group"><label for="cardNumber" style="color:white">
-                                                    Card number
+                                                <div class="form-group"><label for="cardNumber" style="color:white"
+                                                                               data-toggle="tooltip"
+                                                                               style="color:white"
+                                                                               title="Your credit card number must have 16 digits">
+                                                    Card number <i class="fa fa-question-circle d-inline"></i>
                                                 </label>
                                                     <div class="input-group"><input type="text" name="cardNumber"
                                                                                     id="cardNumber"
                                                                                     placeholder="Valid card number"
+                                                                                    value="{{ card_number }}"
                                                                                     class="form-control " required>
                                                         <div class="input-group-append"><span
                                                                 class="input-group-text text-muted bg-dark"> <i
@@ -207,10 +244,12 @@
                                                             <div class="input-group">
                                                                 <input type="number" pattern="\d*" maxlength="2"
                                                                        placeholder="MM" class="form-control"
-                                                                       required>
+                                                                       value="{{ month }}"
+                                                                       name="month_exp" required>
                                                                 <input type="number" pattern="\d*" minlength="4"
-                                                                       maxlength="4" placeholder="YY"
-                                                                       class="form-control"
+                                                                       maxlength="4" placeholder="YYYY"
+                                                                       value="{{ year }}"
+                                                                       class="form-control" name="year_exp"
                                                                        required>
                                                             </div>
                                                         </div>
@@ -218,17 +257,18 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group mb-4"><label data-toggle="tooltip"
                                                                                             style="color:white"
-                                                                                            title="Three digit CV code on the back of your card">
+                                                                                            title="Three or four digit CV code on the back of your card">
                                                             CVV <i class="fa fa-question-circle d-inline"></i>
-                                                        </label> <input type="text" placeholder="XXX" required
-                                                                        class="form-control">
+                                                        </label><input type="text" placeholder="XXX" required
+                                                                       value="{{ cvv }}"
+                                                                        class="form-control" name="cvv">
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <!-- Don't close DIV -->
                                                 <div style="margin-left:10%; margin-right:10%; margin-bottom:2%">
-                                                    <button type="button"
+                                                    <button type="submit"
                                                             class="subscribe btn btn-success btn-block shadow-sm">
                                                         <i class="fas fa-lock mr-2"></i>Confirm Payment
                                                     </button>
@@ -308,6 +348,7 @@
     </div>
     <!-- JavaScript files from static folder -->
     <!-- script src="/static/js/payment-page/showproducts.js"></script -->
+    <script src="/static/js/payment-page/modal.js"></script>
     <!-- ./JavaScript files from static folder -->
 
 </body>

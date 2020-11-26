@@ -1,25 +1,24 @@
+import random
 import re
 from datetime import datetime, timedelta
 
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.auth.models import Permission
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
+from django.http import HttpResponseForbidden
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
-import random
 
 from Alejandria.settings import EMAIL_HOST_USER
+
 from .utils import *
-
 from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails, Guest
-
+from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill
 
 # Create your views here.
 
@@ -97,9 +96,10 @@ class HomeView(generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        today = datetime.today()
-        # context['new_books'] = Book.objects.filter(
-        #    publication_date__range=[str(today)[:10], str(today - timedelta(days=10))[:10]])[:10]
+        today = datetime.today().strftime("%Y-%m-%d")
+        last_day = (datetime.today() - timedelta(days=7)).strftime("%Y-%m-%d")
+
+        context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
         return context
@@ -129,7 +129,6 @@ class HomeView(generic.ListView):
         temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
         list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
         id = "".join(list_id)
-        print('ID', id)
         return id
 
 
@@ -145,9 +144,14 @@ class SearchView(generic.ListView):
         self.searchBook = None
         self.genres = []
         self.user_id = None
+        self.genres_preferences = []
 
     def get(self, request, *args, **kwargs):
         self.user_id = self.request.user.id or None
+        if self.user_id:
+            self.genres_preferences.append(request.user.genre_preference_1)
+            self.genres_preferences.append(request.user.genre_preference_2)
+            self.genres_preferences.append(request.user.genre_preference_3)
         if 'search_book' in request.GET:
             self.searchBook = request.GET['search_book']
         else:
@@ -190,14 +194,16 @@ class SearchView(generic.ListView):
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
-            return context
+        if self.user_id:
+            recommended_books = Book.objects.filter(
+                (Q(primary_genre__in=self.genres_preferences)
+                |  Q(secondary_genre__in=self.genres_preferences)))
 
-        # TODO: Filtering by topseller and On Sale
+            recommended_books_list = list(recommended_books)
+            recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
+            context['recommended_books'] = recommended_books_list
 
         return context
-        # Filtering by genre (primary and secondary) using checkbox from frontend
-
-        # TODO: Filtering by topseller and On Sale
 
 
 class SellView(PermissionRequiredMixin, generic.ListView):
@@ -260,6 +266,24 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             form = UpdateBookForm()
         return render(request, "edit_book.html", {"form": form})
 
+class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
+    model = Book
+    template_name = 'delete_book.html'
+    permission_required = ('books.delete_book',)
+    success_url = '/editor'
+
+    # this is a push test
+
+    def get_object(self, queryset=None):
+        book = get_object_or_404(Book, pk=self.kwargs['pk'])
+        if self.request.user == book.user_id:
+            return book
+        else:
+            print('Are you trying to delete a book that is not yours?')
+            return HttpResponseForbidden()
+
+
+
 
 class CartView(generic.ListView):
     model = Cart
@@ -308,10 +332,10 @@ class CartView(generic.ListView):
 
 
 def delete_product(request, product_id):
-    user_id = request.user.id or None
+    user = request.user or None
     print(request.GET)
-    if user_id:
-        cart = Cart.objects.get(user_id=user_id)
+    if user:
+        cart = Cart.objects.get(user_id=user.id)
     else:
         device = request.COOKIES['device']
         user, created = Guest.objects.get_or_create(device=device)
@@ -325,20 +349,17 @@ def delete_product(request, product_id):
 
 
 def add_product(request, view, book):
-    user_id = request.user.id or None
+    user = request.user or None
     print(request.POST)
-    if user_id:
-        cart = Cart.objects.get(user_id=user_id)
+    if user:
+        cart = Cart.objects.get(user_id=user.id)
     else:
         device = request.COOKIES['device']
         user, created = Guest.objects.get_or_create(device=device)
         cart, created = Cart.objects.get_or_create(guest_id=user)
-        print('Cart', cart)
 
     products = Product.objects.all()
-    print(products)
     for product in products:
-        print('product it: ', product.ISBN.ISBN)
         if product.ISBN.ISBN == book:
             print("ADD BOOK ", book)
             cart.products.add(product)
@@ -389,6 +410,7 @@ class FaqsView(generic.ListView):
     # TODO: In next iterations has to have the option to make POSTs by the admin.
     def post(self):
         pass
+
 
 
 class AddView(generic.ListView):
@@ -486,17 +508,18 @@ def register(request):
                 user.save()
 
                 # Create user's cart
-                device = request.COOKIES['device']
+                device = request.COOKIES.get('device')
                 guest = Guest.objects.get(device=device)
-                cart_guest = Cart.objects.get(guest_id=guest)
-                cart_user = Cart(user_id=user)
-                cart_user.save()
-                cart_user = Cart.objects.get(user_id=user)
-                for product in cart_guest.products.all():
-                    cart_user.products.add(product)
-                cart_guest.products.clear()
-                cart_guest.save()
-                cart_user.save()
+                cart_user, created = Cart.objects.get_or_create(user_id=user)
+                if device:
+                    cart_guest_query = Cart.objects.filter(guest_id=guest)
+                    if cart_guest_query.count() != 0:
+                        cart_guest = cart_guest_query.first()
+                        for product in cart_guest.products.all():
+                            cart_user.products.add(product)
+                        cart_guest.products.clear()
+                        cart_guest.save()
+                        cart_user.save()
 
                 return JsonResponse({"error": False})
 
@@ -566,17 +589,6 @@ def login_user(request):
                 user = user.first()
                 login(request, user, backend='books.backend.EmailAuthBackend')
 
-                # Update cart
-                device = request.COOKIES['device']
-                guest = Guest.objects.get(device=device)
-                cart_guest = Cart.objects.get(guest_id=guest)
-                cart_user = Cart.objects.get(user_id=user)
-                for product in cart_guest.products.all():
-                    cart_user.products.add(product)
-                cart_guest.products.clear()
-                cart_guest.save()
-                cart_user.save()
-
                 return JsonResponse({"name": user.name, "error": False})
             else:
                 return JsonResponse({"error": True})
@@ -605,10 +617,8 @@ class PaymentView(generic.ListView):
         request = self.request
         print(request.GET)
         self.user_id = request.user.id or None
-        print("GEEEET PAYMENTTTTTTT", self.user_id)
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
-            print(cart)
             if cart:
                 return cart.products.all()
         return None
@@ -617,15 +627,20 @@ class PaymentView(generic.ListView):
         context = super(PaymentView, self).get_context_data(**kwargs)
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
+            user_bank_account = BankAccount.objects.filter(user_id=self.user_id).first() or None
             products = cart.products.all()
             total_price = 0
             items = len(products)
             for prod in products:
-                print(prod.price)
                 total_price += prod.price
-            print("TOTAL_PRICE PAYMENT", total_price)
             context['total_price'] = total_price
             context['total_items'] = items
+            if user_bank_account is not None:
+                context['card_owner'] = user_bank_account.name
+                context['card_number'] = user_bank_account.card_number
+                context['month'] = user_bank_account.month_exp
+                context['year'] = user_bank_account.year_exp
+                context['cvv'] = user_bank_account.cvv
         else:
             context['total_items'] = 0
 
@@ -645,6 +660,7 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
+        print(request.GET)
         self.user_id = self.request.user.id or None
 
         # if 'search_book' in request.GET:
@@ -666,8 +682,7 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
         context['editor_books'] = editor_books
 
         return context
-
-
+      
 def view_profile(request):
     if request.method == "POST":
         if validate_data(request):
@@ -731,3 +746,61 @@ def view_profile(request):
 
     elif request.method == "GET":
         return render(request, "view_profile.html")
+
+def complete_purchase(request):
+
+    print(request.POST)
+
+    user = request.user.id or None
+
+    if user:
+
+        user_bank_account, created = BankAccount.objects.get_or_create(user_id=user)
+        current_money = float(user_bank_account.money)
+
+        cart = Cart.objects.get(user_id=user)
+        products = cart.products.all()
+        total_price = 0
+        for p in products:
+            total_price += p.price
+        total_price = float(total_price)
+
+        if current_money - total_price >= 0:
+
+            user_bank_account.money = str(round(current_money - total_price, 2))
+            user_bank_account.name = request.POST.get('username')
+            user_bank_account.month_exp = request.POST.get('month_exp')
+            user_bank_account.year_exp = request.POST.get('year_exp')
+            user_bank_account.card_number = request.POST.get('cardNumber')
+            user_bank_account.cvv = request.POST.get('cvv')
+            try:
+                user_bank_account.full_clean()
+            except ValidationError:
+                # Do something when validation is not passing
+                print("ERROR VALIDATION")
+                print(user_bank_account.name)
+                print(user_bank_account.money)
+                print(user_bank_account.month_exp)
+                print(user_bank_account.year_exp)
+                print(user_bank_account.card_number)
+                print(user_bank_account.cvv)
+                user_bank_account.delete()
+                messages.error(request, "An error has occurred, check that all data is in the correct format.")
+                return HttpResponseRedirect('/payment')
+            else:
+                # Validation is ok we will save the instance
+                user_bank_account.save()
+
+                bill, created = Bill.objects.get_or_create(user_id_id=user)
+                setattr(bill, 'total_money_spent', total_price)
+                setattr(bill, 'payment_method', 'Credit card')
+                for p in products:
+                    bill.products.add(p)
+                bill.save()
+                cart.products.clear()
+                cart.save()
+        else:
+            messages.error(request, "You can't complete the purchase, you haven't enough money!")
+            return HttpResponseRedirect('/payment')
+
+    return HttpResponseRedirect('/payment')

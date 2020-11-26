@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -124,18 +125,18 @@ class Rating(models.Model):
 
 
 class Cart(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=True)
-    guest_id = models.ForeignKey(Guest, on_delete=models.PROTECT, blank=False, null=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
+    guest_id = models.ForeignKey(Guest, on_delete=models.CASCADE, blank=False, null=True)
     products = models.ManyToManyField(Product)
 
 
 class Bill(models.Model):
-    num_factura = models.AutoField(primary_key=True, blank=False, null=False)  # TODO: auto field
-    cart = models.ManyToManyField(Cart)  # TODO: How to treat quantities
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    num_factura = models.AutoField(primary_key=True, blank=False, null=False)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(null=True, blank=True, default=timezone.now)
-    seller_info = models.TextField(blank=True, null=False)  # TODO: This is provisional
-    payment_method = models.CharField(max_length=30)  # TODO: Define choices.
+    payment_method = models.CharField(max_length=30)
+    products = models.ManyToManyField(Product)
+    total_money_spent = models.DecimalField(decimal_places=2, max_digits=8, null=True)
 
 
 class FAQ(models.Model):
@@ -163,6 +164,16 @@ class FAQ(models.Model):
 
 class ResetMails(models.Model):
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
-                                blank=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False, blank=False)
     activated = models.BooleanField(default=True)
+
+
+class BankAccount(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    name = models.CharField(max_length=100)
+    money = models.DecimalField(decimal_places=2, max_digits=8, default=500.00)
+    card_number = models.CharField(validators=[RegexValidator(regex='^[0-9]{16}$', message='Length has to be 16',
+                                                              code='nomatch')], max_length=16, null=True)
+    month_exp = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)], null=True)
+    year_exp = models.IntegerField(validators=[MinValueValidator(2020)], null=True)
+    cvv = models.IntegerField(validators=[MinValueValidator(000), MaxValueValidator(9999)], null=True)  # 3 or 4 digits
