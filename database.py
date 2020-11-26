@@ -6,12 +6,11 @@ import os
 import django
 import random
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
-django.setup()
-
 from books.models import Book, User, Address, Product, Cart, FAQ
 from django.core.files import File
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
+django.setup()
 
 user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
