@@ -14,7 +14,7 @@ from books.models import User, Address, Cart, Book, Product, Guest, BankAccount,
 from books.test.test_register import random_char
 from books.views import delete_product, add_product, complete_purchase
 
-"""
+
 def get_or_create_user():
     user_query = User.objects.filter(id=1000)
     if user_query.count() == 0:
@@ -218,4 +218,3 @@ def test_complete_purchase():
     bill = Bill.objects.filter(user_id=user).last()
     user_bank_account = get_or_create_user_bank_account(user)
     assert cart.products.count() == 0 and user_bank_account.cvv == 111 and bill.total_money_spent == total_price
-"""

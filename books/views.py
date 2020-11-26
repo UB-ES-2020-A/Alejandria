@@ -350,7 +350,15 @@ def add_product(request, view, book):
     user = request.user or None
     print(request.POST)
     if user:
-        cart = Cart.objects.get(user_id=user.id)
+        user_id = user.id
+        print('USER -> ', user.id)
+        if user_id:
+            cart = Cart.objects.get(user_id=user_id)
+        else:
+            device = request.COOKIES['device']
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
+
     else:
         device = request.COOKIES['device']
         user, created = Guest.objects.get_or_create(device=device)
