@@ -21,7 +21,7 @@
                     <div class="card" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
                          <div class="card-horizontal" >
                              {% if book.thumbnail %}
-                                <img src="{{ book.thumbnail.url }}" alt="Card image cap" style="width:180px; height:250px;"> <!--TODO: Change to real book image -->
+                                <img src="{{ book.thumbnail.url }}" alt="Card image cap" style="width:180px; height:250px;">
                                 {% else %}
                                 <img src= "{% static 'no_available.jpg' %}" alt="Card image cap" style="width:180px; height:250px;">
                             {% endif %}
@@ -47,7 +47,7 @@
                                             </form>
                                           </div>
                                          <div clas="row" style="margin-top:5%;">
-                                             <form action="/book/{{book.ISBN}}">
+                                             <form action="/editBook/{{book.ISBN}}">
 <!--                                                 TODO: ADD EDITOR PAGE -->
                                                 <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Edit" type="submit"><i class="fas fa-edit"></i></button>
                                              </form>
@@ -63,6 +63,16 @@
                         </div>
                     </div>
                         {% endfor %}
+                <a style="text-decoration: none;" href="/sell">
+                <div class="card-add" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
+                         <div class="card-horizontal" >
+
+                             <div class="card-body" style="color:white;" >
+                                 <h3 class="card-title" style="text-align:center">Add new book</h3>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
