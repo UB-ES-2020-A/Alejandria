@@ -1,15 +1,16 @@
 # Django and 3rd party libs
-import json
+import pytest
 import os
-import string
-
 from django.core.wsgi import get_wsgi_application
 from django.test.client import RequestFactory
+import json
+import string
+import random
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 
-import random
 # Then load own libs
 from books.models import User, Guest
 from books.views import register
@@ -32,7 +33,6 @@ def random_char(y):
 
 
 def test_register():
-    url = "http://localhost:8000/register"
     email = random_char(7) + "@gmail.com"
     username = random_char(5)
     body = {

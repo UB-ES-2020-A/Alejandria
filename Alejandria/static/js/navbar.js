@@ -9,6 +9,10 @@ $(document).ready(function () {
         window.location.href = window.location.origin;
     });
 
+    $("#performLogout").click(function () {
+        $("#logout_btn").click();
+    })
+
     $("#buttonSearch").click(function () {
             book_name = document.getElementById('textSearch').value;
             if(book_name!=""){
@@ -16,7 +20,6 @@ $(document).ready(function () {
                 var url = new URL(urlname);
                 url.searchParams.append('search_book', document.getElementById('textSearch').value);
                 window.location.href = url;
-                //window.location.href = "/search/" + document.getElementById('textSearch').value; //window.location.origin+"/login";
             }
             else{ //TODO: Falta fer el search buit...
                 console.log("NULL");
@@ -164,10 +167,6 @@ $(document).ready(function () {
         }
     });
 
-    /*return {
-
-
-                }*/
 
     $("#faqs_btn").click(function () {
         window.location.href = "/faqs/";
@@ -199,6 +198,7 @@ $(document).ready(function () {
                     '<div class="form-group">'+
                         '<label for="register_lastname" style="margin-right: 77%;"><strong>Last Name</strong></label>'+
                         '<input type="text" id="register_lastname" class="swal2-input form-control" placeholder="Last Name">' +
+                        '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">Please enter just 1 last name</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
@@ -211,12 +211,6 @@ $(document).ready(function () {
                         '<label for="register_password_1" style="margin-right: 100%;"><strong>Password</strong></label>'+
                         '<input type="password" id="register_password_1" class="swal2-input form-control" placeholder="Enter password">' +
                         '<small id="password1Help" class="form-text text-muted" style="padding-right: 32%;">Max. 50 characters. All characters are valid.</small>'+
-                    '</div>'+
-
-                    '<div class="form-group">'+
-                        '<label for="register_password_2" style="margin-right: 61%;"><strong>Confirm Password</strong></label>'+
-                        '<input type="password" id="register_password_2" class="swal2-input form-control" placeholder="Confirm password">'+
-                        '<small id="password2Help" class="form-text text-muted" style="padding-right: 55%;">Both Passwords must match.</small>'+
                     '</div>',
 
                 preConfirm: () => {
@@ -225,9 +219,9 @@ $(document).ready(function () {
                         firstname: $("#register_firstname").val(),
                         lastname: $("#register_lastname").val(),
                         email: $("#register_email").val(),
-                        password1: $("#register_password_1").val(),
-                        password2: $("#register_password_2").val()
+                        password1: $("#register_password_1").val()
                     }
+
                     window.value = data;
                 }
             },
