@@ -316,8 +316,8 @@ def delete_product(request, product_id):
             cart = Cart.objects.get(guest_id=user)
     else:
         device = request.COOKIES['device']
-        user = Guest.objects.get_or_create(device=device)
-        cart = Cart.objects.get_or_create(guest_id=user)
+        user = Guest.objects.get(device=device)
+        cart = Cart.objects.get(guest_id=user)
 
     product = cart.products.get(ID=product_id)
     print("DELETE BOOK ", product)
@@ -493,7 +493,7 @@ def register(request):
 
                 # Create user's cart
                 device = request.COOKIES.get('device')
-                guest = Guest.objects.get(device=device)
+                guest, created = Guest.objects.get_or_create(device=device)
                 cart_user, created = Cart.objects.get_or_create(user_id=user)
                 if device:
                     cart_guest_query = Cart.objects.filter(guest_id=guest)
@@ -673,7 +673,8 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
         context['editor_books'] = editor_books
 
         return context
-      
+
+
 def view_profile(request):
     if request.method == "POST":
         if validate_data(request):
@@ -689,6 +690,7 @@ def view_profile(request):
                 else:
                     user_address = Address(street=request.POST["street1"], city=request.POST["city1"],
                                            country=request.POST["country1"], zip=request.POST['zip1'])
+                    user_address.save()
 
                 # Facturation address
                 query = Address.objects.filter(street=request.POST["street2"], city=request.POST["city2"],
@@ -698,6 +700,7 @@ def view_profile(request):
                 else:
                     fact_address = Address(street=request.POST["street2"], city=request.POST["city2"],
                                            country=request.POST["country2"], zip=request.POST['zip2'])
+                    fact_address.save()
 
                 # Process full name
                 tokens = tokenize(request.POST["full_name"])
@@ -736,7 +739,16 @@ def view_profile(request):
         return JsonResponse({"error": True, "msg": "Invalid data!"})
 
     elif request.method == "GET":
-        return render(request, "view_profile.html")
+        user = request.user.id
+        if user:
+            cart = Cart.objects.get(user_id=user)
+            products = cart.products.all()
+            items = len(products)
+            context = {
+                'total_items': items
+            }
+        return render(request, "view_profile.html", context)
+
 
 def complete_purchase(request):
     print(request.POST)
@@ -852,7 +864,7 @@ def generate_pdf(request):
             'Username: ' + str(User.objects.filter(id=user.id).first().username),
             'Name: ' + user_bill.name,
             'Date: ' + str(user_bill.date),
-            'Total: ' + str(user_bill.total_money_spent),
+            'Total: ' + str(user_bill.total_money_spent) + '€',
             'Products: ' + ', '.join(products_titles)
         ]
 
