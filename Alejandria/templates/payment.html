@@ -34,25 +34,6 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 {% endif %}
-{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-          <h4 class="modal-title" id="myModalLabel2">Success!</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      </div>
-      <div class="modal-body">
-          <a class="custom-close"> {{ message }} </a>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        <a class="btn btn-success" href="{% url 'books:generate_bill' %}">Download</a>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-{% endif %}
 {% endfor %}
 {% endif %}
 
@@ -117,6 +98,7 @@
                                                         <input type="text" name="username" id="fullname"
                                                                placeholder="John Cena" required
                                                                value="{{ user.name }} {{user.last_name}}"
+                                                               readonly="readonly"
                                                                class="form-control ">
                                                         <div class="input-group-append">
                                                     <span class="input-group-text text-muted bg-dark">
@@ -132,6 +114,7 @@
                                                                                     id="email"
                                                                                     placeholder="john@example.com"
                                                                                     value="{{ user.email }}"
+                                                                                    readonly="readonly"
                                                                                     class="form-control " required>
                                                         <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -149,6 +132,7 @@
                                                                                             id="address"
                                                                                             placeholder="Calle Alcalá, 48"
                                                                                             class="form-control"
+                                                                                            readonly="readonly"
                                                                                             value="{{ user.fact_address.street }}"
                                                                                             required>
                                                                 <div class="input-group-append">
@@ -164,6 +148,7 @@
                                                             <label for="city" style="color:white">City</label>
                                                             <div class="input-group"><input type="text"
                                                                                             id="city"
+                                                                                            readonly="readonly"
                                                                                             placeholder="Madrid"
                                                                                             class="form-control"
                                                                                             value="{{ user.fact_address.city }}"
@@ -182,6 +167,7 @@
                                                             <div class="input-group"><input type="text"
                                                                                             id="zip"
                                                                                             name="zip"
+                                                                                            readonly="readonly"
                                                                                             placeholder="00000"
                                                                                             class="form-control"
                                                                                             value="{{ user.fact_address.zip }}"
@@ -231,7 +217,9 @@
                                                     Card Owner
                                                 </label> <input type="text" name="username" id="username"
                                                                 placeholder="Card Owner Name" required
-                                                                value="{{ card_owner }}"
+                                                                value="{{ user.name }} {{ user.last_name }}"
+                                                                pattern="[A-Za-z]{4-30}"
+                                                                title="Please insert the name of the card owner."
                                                                 class="form-control ">
                                                 </div>
                                                 <div class="form-group"><label for="cardNumber" style="color:white"
@@ -243,7 +231,6 @@
                                                     <div class="input-group"><input type="text" name="cardNumber"
                                                                                     id="cardNumber"
                                                                                     placeholder="Valid card number"
-                                                                                    value="{{ card_number }}"
                                                                                     class="form-control " required>
                                                         <div class="input-group-append"><span
                                                                 class="input-group-text text-muted bg-dark"> <i
@@ -263,11 +250,9 @@
                                                             <div class="input-group">
                                                                 <input type="number" pattern="\d*" maxlength="2"
                                                                        placeholder="MM" class="form-control"
-                                                                       value="{{ month }}"
                                                                        name="month_exp" required>
                                                                 <input type="number" pattern="\d*" minlength="4"
                                                                        maxlength="4" placeholder="YYYY"
-                                                                       value="{{ year }}"
                                                                        class="form-control" name="year_exp"
                                                                        required>
                                                             </div>
@@ -279,7 +264,6 @@
                                                                                             title="Three or four digit CV code on the back of your card">
                                                             CVV <i class="fa fa-question-circle d-inline"></i>
                                                         </label><input type="text" placeholder="XXX" required
-                                                                       value="{{ cvv }}"
                                                                         class="form-control" name="cvv">
                                                         </div>
                                                     </div>

@@ -1,9 +1,8 @@
 import random
 import re
 from datetime import datetime, timedelta
+from io import BytesIO
 
-# import pdfkit as pdfkit
-from io import BytesIO, StringIO
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
@@ -14,17 +13,12 @@ from django.db.models import Q
 from django.http import HttpResponseForbidden, HttpResponse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
-from django.template.loader import get_template
 from django.views import generic
-# from weasyprint import HTML
-from xhtml2pdf import pisa
-# from django_xhtml2pdf.utils import generate_pdf
-from reportlab.lib import colors
 from reportlab.pdfgen import canvas
 
 from Alejandria.settings import EMAIL_HOST_USER
 from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill
+from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills
 
 # Create your views here.
 
@@ -35,36 +29,6 @@ This is my custom response to get to a book by it's ISBN. The ISBN is passed by 
 NUM_COINCIDENT = 10
 NUM_RELATED = 5
 MONTHS_TO_CONSIDER_TOP_SELLER = 6
-
-
-#
-# def book(request):  # TODO: this function is not linked to the frontend
-#     if request.method == 'GET' and request['']:
-#         try:
-#             req_book = get_object_or_404(Book, pk=request.GET['ISBN'])  # I get ISBN set in frontend form ajax
-#         except(KeyError, Book.DoesNotExist):
-#             return render(request, 'search.html', {  # TODO: Provisional
-#                 'error_message': 'Alejandria can not find this book.'
-#             })
-#         else:
-#             return render(request, 'details.html', {'book': req_book})
-#
-#     elif request.method == 'POST':
-#         """
-#         Here we can treat different situations,
-#             Is it an admin, who wants to add a book?
-#             Is it an editor?
-#             What information do we need?
-#         """
-#         # TODO: Treat POST methods to save new Books
-#         return render(request, 'search.html', {'error_message': 'Not Implemented Yet'})  # TODO: Provisional
-#
-#
-# # This one works in theory when using the url with the pk inside # TODO: The idea is to use something like that
-# def book_pk(request, pk):
-#     req_book = get_object_or_404(Book, pk=pk)
-#     return render(request, 'details.html', {'book': req_book})
-
 
 # This one is the same but uses a generic Model, lso should work with the primary key
 class BookView(generic.DetailView):
@@ -81,6 +45,7 @@ class BookView(generic.DetailView):
             context['book_relation'] = Book.objects.all()[:20]
 
         return context
+
 
 class HomeView(generic.ListView):
     template_name = 'home.html'
@@ -128,10 +93,11 @@ class HomeView(generic.ListView):
             items = len(products)
             context['total_items'] = items
 
-
         return response
 
-    def generate_id(self):
+
+    @staticmethod
+    def generate_id():
         temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
         list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
         id = "".join(list_id)
@@ -203,7 +169,7 @@ class SearchView(generic.ListView):
         if self.user_id:
             recommended_books = Book.objects.filter(
                 (Q(primary_genre__in=self.genres_preferences)
-                |  Q(secondary_genre__in=self.genres_preferences)))
+                 | Q(secondary_genre__in=self.genres_preferences)))
 
             recommended_books_list = list(recommended_books)
             recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
@@ -272,6 +238,7 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             form = UpdateBookForm()
         return render(request, "edit_book.html", {"form": form})
 
+
 class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
     model = Book
     template_name = 'delete_book.html'
@@ -287,8 +254,6 @@ class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
         else:
             print('Are you trying to delete a book that is not yours?')
             return HttpResponseForbidden()
-
-
 
 
 class CartView(generic.ListView):
@@ -311,7 +276,6 @@ class CartView(generic.ListView):
             cart, created = Cart.objects.get_or_create(guest_id=user)
 
         return cart.products.all()
-
 
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
@@ -341,11 +305,17 @@ def delete_product(request, product_id):
     user = request.user or None
     print(request.GET)
     if user:
-        cart = Cart.objects.get(user_id=user.id)
+        user_id = user.id
+        if user_id:
+            cart = Cart.objects.get(user_id=user_id)
+        else:
+            device = request.COOKIES['device']
+            user = Guest.objects.get(device=device)
+            cart = Cart.objects.get(guest_id=user)
     else:
         device = request.COOKIES['device']
-        user, created = Guest.objects.get_or_create(device=device)
-        cart, created = Cart.objects.get_or_create(guest_id=user)
+        user = Guest.objects.get_or_create(device=device)
+        cart = Cart.objects.get_or_create(guest_id=user)
 
     product = cart.products.get(ID=product_id)
     print("DELETE BOOK ", product)
@@ -359,7 +329,6 @@ def add_product(request, view, book):
     print(request.POST)
     if user:
         user_id = user.id
-        print('USER -> ', user.id)
         if user_id:
             cart = Cart.objects.get(user_id=user_id)
         else:
@@ -424,7 +393,6 @@ class FaqsView(generic.ListView):
     # TODO: In next iterations has to have the option to make POSTs by the admin.
     def post(self):
         pass
-
 
 
 class AddView(generic.ListView):
@@ -700,73 +668,14 @@ class PaymentView(generic.ListView):
 
         return context
 
-    """
-    @staticmethod
-    
-    
-    
-    def export_pdf(self, request):
-
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename=Expenses' + str(datetime.datetime.now()) + '.pdf'
-        response['Content-Transfer-Encoding'] = 'binary'
-
-        html_string = render_to_string('bill_pdf.html')
-        html = HTML(string=html_string)
-        result = html.write_pdf()
-
-        with tempfile.NamedTemporaryFile(delete=True) as output:
-            output.write(result)
-            output.flush()
-            output = open(output.name, 'rb')
-            response.write(output.read())
-
-        return response
-        
-
-    def download_pdf(self, request):
-
-        resp = HttpResponse(content_type='application/pdf')
-
-        context = {
-            'total': self.total,
-            'name': request.POST.get('username'),
-            'card_number': '**** **** **** ' + self.card_number[12:],
-            'date': datetime.date.today(),
-            'products': self.products
-        }
-
-        result = generate_pdf('bill_pdf.html', context)
-
-        return result
-
-
-    def document_pdf(self, request):
-        options = {
-            'page-size': 'Letter',
-            'margin-top': 'lin',
-            'margin-bottom': 'lin',
-            'margin-left': 'lin',
-            'margin-right': 'lin',
-            'encoding': "UTF-8"
-        }
-
-        pdf = pdfkit.from_url('/pdf', options=options)
-        response = HttpResponse(pdf, content_type='application/pdf')
-
-        response['Content-Disposition'] = 'attachment; filename=expenses.pdf'
-        response['Content-Transfer-Encoding'] = 'binary'
-
-        return response
-    """
-
 
 class EditorLibrary(PermissionRequiredMixin, generic.ListView):
     model = Book
     template_name = 'editor_library.html'  # TODO: Provisional file
     context_object_name = 'coincident'
     permission_required = ('books.add_book',)
-    #permission_required = 'Alejandria.view_book'
+
+    # permission_required = 'Alejandria.view_book'
 
     def __init__(self):
         super().__init__()
@@ -799,7 +708,6 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
 
 
 def complete_purchase(request):
-
     print(request.POST)
 
     user = request.user.id or None
@@ -815,8 +723,6 @@ def complete_purchase(request):
         for p in products:
             total += p.price
         total = float(total)
-
-        print('TOTAL MONEY: ', current_money - total)
 
         if current_money - total >= 0:
 
@@ -840,25 +746,36 @@ def complete_purchase(request):
                 # Validation is ok we will save the instance
                 user_bank_account.save()
 
-                bill, created = Bill.objects.get_or_create(user_id_id=user)
+                bill = Bill(user_id_id=user)
+                bill.save()
+                lib_of_bills, created = LibraryBills.objects.get_or_create(user_id=request.user)
                 setattr(bill, 'total_money_spent', total)
                 setattr(bill, 'payment_method', 'Credit card')
                 setattr(bill, 'name', user_bank_account.name)
                 for p in products:
                     bill.products.add(p)
                 bill.save()
+                lib_of_bills.bills.add(bill)
+                lib_of_bills.save()
                 cart.products.clear()
                 cart.save()
 
-                # Comment this when testing
+                # Add fail_silently=True when testing
                 messages.success(request,
                                  "Your payment has been processed successfully. Please check your email for "
-                                 "payment details, you can also download the bill.")
+                                 "payment details, you can also download the bill.", fail_silently=True)
 
-                # Uncomment this when testing
-                #messages.success(request,
-                #                 "Your payment has been processed successfully. Please check your email for "
-                #                 "payment details, you can also download the bill.", fail_silently=True)
+                subject = 'Alejandria, Thank you for buying through our website'
+                msg = 'Dear ' + request.user.username + ",\nThank you for buying through our website. \nHere you" \
+                                                        " will find a copy with the details of your purchase." \
+                                                        "\nRemember that you can also find all your bills in your " \
+                                                        "profile on our website. " \
+                                                        "\n\n Name: " + bill.name + "\n Date: " + str(bill.date) + "\n" \
+                                                        " Total: " + str(total) + "€" + "\n\nAlejandria Team."
+
+                send_mail(subject, msg, EMAIL_HOST_USER, [request.user.email], fail_silently=True)
+
+                return HttpResponseRedirect('/')
         else:
             messages.error(request, "You can't complete the purchase, you haven't enough money!")
 
@@ -883,12 +800,12 @@ def draw_my_ruler(pdf):
 
 
 def generate_pdf(request):
-
     user = request.user or None
 
     if user:
 
-        user_bill = Bill.objects.get(user_id=user)
+        user_bills = LibraryBills.objects.get(user_id=user)
+        user_bill = user_bills.bills.filter(user_id=user).last()
 
         products = user_bill.products.all()
 
@@ -917,14 +834,14 @@ def generate_pdf(request):
         pdf = canvas.Canvas(tmp)
 
         # Set title
+        pdf.setFillColorRGB(0, 0, 255)
         pdf.setTitle(document_title)
         pdf.drawCentredString(300, 770, title)
-        pdf.setFont('Helvetica-Bold', 36)
+        pdf.setFont('Courier-Bold', 36)
         # self.draw_my_ruler(pdf)
 
         # Set subtitle
-        pdf.setFillColorRGB(0, 0, 255)
-        pdf.setFont('Courier-Bold', 24)
+        pdf.setFont('Courier', 24)
         pdf.drawCentredString(290, 720, subtitle)
 
         # Set line
@@ -933,11 +850,10 @@ def generate_pdf(request):
         # Set body text
         text = pdf.beginText(40, 680)
         text.setFont('Courier', 18)
-        pdf.setFillColor(colors.red)
+        # pdf.setFillColor(colors.red)
         for line in text_lines:
             text.textLine(line)
         pdf.drawText(text)
-
 
         # Draw image
         # pdf.drawInlineImage(image, 130, 400)
@@ -953,48 +869,3 @@ def generate_pdf(request):
         # Get StringIO's body and write it out to the response.
         response.write(pdf)
         return response
-
-
-def render_to_pdf(template_src, context_dict=None):
-    print('RENDER TO PDF')
-    if context_dict is None:
-        context_dict = {}
-    template = get_template(template_src)
-    html = template.render(context_dict)
-    result = BytesIO()
-    pdf = pisa.pisaDocument(BytesIO(html.encode("cp1252")), result)
-    if not pdf.err:
-        print('NO ERRORS IN PDF PISA')
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
-    return None
-
-
-def download_pdf(request):
-
-    print('DOWNLOAD PDF')
-
-    user = request.user or None
-
-    if user:
-        print('YES USER')
-        user_bill = Bill.objects.get(user_id=user)
-        user_bank_account = BankAccount.objects.get(user=user)
-
-        products = user_bill.products.all()
-
-        products_titles = [p.ISBN.title for p in products]
-
-        context = {
-            'total': user_bill.total_money_spent,
-            'name': user_bill.name,
-            'card_number': '**** **** **** ' + user_bank_account.card_number[12:],
-            'date': str(user_bill.date),
-            'products': products_titles
-        }
-
-        pdf = render_to_pdf('bill_pdf.html', context)
-
-        print('ALL GOOD')
-        return HttpResponse(pdf, 'application/pdf')
-
-    print('NO USER')

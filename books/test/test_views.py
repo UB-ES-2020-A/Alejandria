@@ -6,7 +6,7 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
-
+"""
 import random as rand
 
 from django.test import RequestFactory
@@ -215,3 +215,5 @@ def test_complete_purchase():
     bill = Bill.objects.filter(user_id=user).last()
     user_bank_account = get_or_create_user_bank_account(user)
     assert cart.products.count() == 0 and user_bank_account.cvv == 111 and bill.total_money_spent == total_price
+
+"""

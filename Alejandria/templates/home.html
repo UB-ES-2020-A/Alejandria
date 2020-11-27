@@ -7,62 +7,29 @@
 
 <html lang="en">
 <body>
-
-<!--  NAVBAR  -->
-<!--
-<div>
-    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
-
-        <a class="navbar-brand" href="#">Alejandría</a>
-        <div class="collapse navbar-collapse" id="navbarSearch">
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
-
-        <div class="collapse navbar-collapse" style="position: absolute; right: 5%;">
-            <div style="margin-left:-10%"></div>
-            <button class="button-navbar" type="submit">About</button>
-            <button class="button-navbar" type="submit">Ayuda</button>
-            <button class="button-navbar" type="submit">FAQs</button>
-            <div style="margin-left:10%"></div>
-            <button class="btn btn-danger my-2 my-sm-0" type="submit">Sign In</button>
-            <div style="margin-left:5%"></div>
-            <button class="btn btn-danger my-2 my-sm-0" type="submit">Register</button>
-        </div>
-
-    </nav>
-
-    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-danger bg-danger" style="height:50px">
-
-        <div style="margin-left:5%"></div>
-        <button class="button-sub-navbar" type="submit">Home</button>
-        <div style="margin-left:1%"></div>
-        <button class="button-sub-navbar" type="submit">eBooks</button>
-        <div style="margin-left:1%"></div>
-        <button class="button-sub-navbar" type="submit">Más vendidos</button>
-        <div style="margin-left:1%"></div>
-        <button class="button-sub-navbar" type="submit">Recomendados</button>
-        <div style="margin-left:1%"></div>
-        <button class="button-sub-navbar" type="submit">Novedades</button>
-        <div style="margin-left:1%"></div>
-
-        <div class="dropdown">
-            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Más
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background-color:#dc3545">
-                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;" href="#">Ayuda</a>
-                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;" href="#">Blog</a>
-                <a class="dropdown-item bg-danger" style="color:white; font-size: 14px; letter-spacing: 0.1em;" href="#">FAQs</a>
-            </div>
-        </div>
-    </nav>
-</div>
--->
-
+{% if messages %}
+{% for message in messages %}
+{% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel2">Success!</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+      <div class="modal-body">
+          <a class="custom-close"> {{ message }} </a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <a class="btn btn-success" href="{% url 'books:generate_bill' %}">Download</a>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endif %}
+{% endfor %}
+{% endif %}
 
 <!--  HEADER MAIN PAGE  -->
 <div class="container-fluid" style="padding-right:0px; padding-left:0px">
@@ -227,6 +194,8 @@
         </div>
     </div>
 </div>
+
+<script src="/static/js/home-page/modal.js"></script>
 
 </body>
 <head>
