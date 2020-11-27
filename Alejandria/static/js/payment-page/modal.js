@@ -1,5 +1,5 @@
-mod = $('#myModal')
-var btn = $("#closeBtn");
+mod_error = $('#myModal');
+
 $(window).on('load',function(){
-       mod.modal('show');
+       mod_error.modal('show');
 });

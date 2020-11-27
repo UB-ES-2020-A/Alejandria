@@ -1,6 +1,7 @@
 import random
 import re
 from datetime import datetime, timedelta
+from io import BytesIO
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -9,16 +10,17 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
+from reportlab.pdfgen import canvas
 
 from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
 from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill
+from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills
 
 # Create your views here.
 
@@ -29,36 +31,6 @@ This is my custom response to get to a book by it's ISBN. The ISBN is passed by 
 NUM_COINCIDENT = 10
 NUM_RELATED = 5
 MONTHS_TO_CONSIDER_TOP_SELLER = 6
-
-
-#
-# def book(request):  # TODO: this function is not linked to the frontend
-#     if request.method == 'GET' and request['']:
-#         try:
-#             req_book = get_object_or_404(Book, pk=request.GET['ISBN'])  # I get ISBN set in frontend form ajax
-#         except(KeyError, Book.DoesNotExist):
-#             return render(request, 'search.html', {  # TODO: Provisional
-#                 'error_message': 'Alejandria can not find this book.'
-#             })
-#         else:
-#             return render(request, 'details.html', {'book': req_book})
-#
-#     elif request.method == 'POST':
-#         """
-#         Here we can treat different situations,
-#             Is it an admin, who wants to add a book?
-#             Is it an editor?
-#             What information do we need?
-#         """
-#         # TODO: Treat POST methods to save new Books
-#         return render(request, 'search.html', {'error_message': 'Not Implemented Yet'})  # TODO: Provisional
-#
-#
-# # This one works in theory when using the url with the pk inside # TODO: The idea is to use something like that
-# def book_pk(request, pk):
-#     req_book = get_object_or_404(Book, pk=pk)
-#     return render(request, 'details.html', {'book': req_book})
-
 
 # This one is the same but uses a generic Model, lso should work with the primary key
 class BookView(generic.DetailView):
@@ -75,6 +47,7 @@ class BookView(generic.DetailView):
             context['book_relation'] = Book.objects.all()[:20]
 
         return context
+
 
 class HomeView(generic.ListView):
     template_name = 'home.html'
@@ -122,10 +95,11 @@ class HomeView(generic.ListView):
             items = len(products)
             context['total_items'] = items
 
-
         return response
 
-    def generate_id(self):
+
+    @staticmethod
+    def generate_id():
         temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
         list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
         id = "".join(list_id)
@@ -197,7 +171,7 @@ class SearchView(generic.ListView):
         if self.user_id:
             recommended_books = Book.objects.filter(
                 (Q(primary_genre__in=self.genres_preferences)
-                |  Q(secondary_genre__in=self.genres_preferences)))
+                 | Q(secondary_genre__in=self.genres_preferences)))
 
             recommended_books_list = list(recommended_books)
             recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
@@ -266,6 +240,7 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             form = UpdateBookForm()
         return render(request, "edit_book.html", {"form": form})
 
+
 class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
     model = Book
     template_name = 'delete_book.html'
@@ -281,8 +256,6 @@ class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
         else:
             print('Are you trying to delete a book that is not yours?')
             return HttpResponseForbidden()
-
-
 
 
 class CartView(generic.ListView):
@@ -305,7 +278,6 @@ class CartView(generic.ListView):
             cart, created = Cart.objects.get_or_create(guest_id=user)
 
         return cart.products.all()
-
 
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
@@ -335,11 +307,17 @@ def delete_product(request, product_id):
     user = request.user or None
     print(request.GET)
     if user:
-        cart = Cart.objects.get(user_id=user.id)
+        user_id = user.id
+        if user_id:
+            cart = Cart.objects.get(user_id=user_id)
+        else:
+            device = request.COOKIES['device']
+            user = Guest.objects.get(device=device)
+            cart = Cart.objects.get(guest_id=user)
     else:
         device = request.COOKIES['device']
-        user, created = Guest.objects.get_or_create(device=device)
-        cart, created = Cart.objects.get_or_create(guest_id=user)
+        user = Guest.objects.get_or_create(device=device)
+        cart = Cart.objects.get_or_create(guest_id=user)
 
     product = cart.products.get(ID=product_id)
     print("DELETE BOOK ", product)
@@ -352,7 +330,14 @@ def add_product(request, view, book):
     user = request.user or None
     print(request.POST)
     if user:
-        cart = Cart.objects.get(user_id=user.id)
+        user_id = user.id
+        if user_id:
+            cart = Cart.objects.get(user_id=user_id)
+        else:
+            device = request.COOKIES['device']
+            user, created = Guest.objects.get_or_create(device=device)
+            cart, created = Cart.objects.get_or_create(guest_id=user)
+
     else:
         device = request.COOKIES['device']
         user, created = Guest.objects.get_or_create(device=device)
@@ -410,7 +395,6 @@ class FaqsView(generic.ListView):
     # TODO: In next iterations has to have the option to make POSTs by the admin.
     def post(self):
         pass
-
 
 
 class AddView(generic.ListView):
@@ -603,7 +587,6 @@ def login_user(request):
             return JsonResponse({"error": error})
 
 
-# TODO: Not implemented yet
 class PaymentView(generic.ListView):
     # model = Account
     template_name = 'payment.html'
@@ -612,6 +595,13 @@ class PaymentView(generic.ListView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.user_id = None
+        self.username = ''
+        self.card_number = ''
+        self.total = 0
+        self.products = None
+        self.year = None
+        self.month = None
+        self.cvv = None
 
     def get_queryset(self):
         request = self.request
@@ -636,11 +626,11 @@ class PaymentView(generic.ListView):
             context['total_price'] = total_price
             context['total_items'] = items
             if user_bank_account is not None:
-                context['card_owner'] = user_bank_account.name
-                context['card_number'] = user_bank_account.card_number
-                context['month'] = user_bank_account.month_exp
-                context['year'] = user_bank_account.year_exp
-                context['cvv'] = user_bank_account.cvv
+                context['card_owner'] = self.username
+                context['card_number'] = self.card_number
+                context['month'] = self.month
+                context['year'] = self.year
+                context['cvv'] = self.cvv
         else:
             context['total_items'] = 0
 
@@ -652,7 +642,8 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
     template_name = 'editor_library.html'  # TODO: Provisional file
     context_object_name = 'coincident'
     permission_required = ('books.add_book',)
-    #permission_required = 'Alejandria.view_book'
+
+    # permission_required = 'Alejandria.view_book'
 
     def __init__(self):
         super().__init__()
@@ -748,7 +739,6 @@ def view_profile(request):
         return render(request, "view_profile.html")
 
 def complete_purchase(request):
-
     print(request.POST)
 
     user = request.user.id or None
@@ -760,47 +750,153 @@ def complete_purchase(request):
 
         cart = Cart.objects.get(user_id=user)
         products = cart.products.all()
-        total_price = 0
+        total = 0
         for p in products:
-            total_price += p.price
-        total_price = float(total_price)
+            total += p.price
+        total = float(total)
 
-        if current_money - total_price >= 0:
+        if current_money - total >= 0:
 
-            user_bank_account.money = str(round(current_money - total_price, 2))
+            user_bank_account.money = str(round(current_money - total, 2))
             user_bank_account.name = request.POST.get('username')
             user_bank_account.month_exp = request.POST.get('month_exp')
             user_bank_account.year_exp = request.POST.get('year_exp')
             user_bank_account.card_number = request.POST.get('cardNumber')
             user_bank_account.cvv = request.POST.get('cvv')
+
             try:
                 user_bank_account.full_clean()
+
             except ValidationError:
                 # Do something when validation is not passing
                 print("ERROR VALIDATION")
-                print(user_bank_account.name)
-                print(user_bank_account.money)
-                print(user_bank_account.month_exp)
-                print(user_bank_account.year_exp)
-                print(user_bank_account.card_number)
-                print(user_bank_account.cvv)
                 user_bank_account.delete()
                 messages.error(request, "An error has occurred, check that all data is in the correct format.")
-                return HttpResponseRedirect('/payment')
+
             else:
                 # Validation is ok we will save the instance
                 user_bank_account.save()
 
-                bill, created = Bill.objects.get_or_create(user_id_id=user)
-                setattr(bill, 'total_money_spent', total_price)
+                bill = Bill(user_id_id=user)
+                bill.save()
+                lib_of_bills, created = LibraryBills.objects.get_or_create(user_id=request.user)
+                setattr(bill, 'total_money_spent', total)
                 setattr(bill, 'payment_method', 'Credit card')
+                setattr(bill, 'name', user_bank_account.name)
                 for p in products:
                     bill.products.add(p)
                 bill.save()
+                lib_of_bills.bills.add(bill)
+                lib_of_bills.save()
                 cart.products.clear()
                 cart.save()
+
+                # Add fail_silently=True when testing
+                messages.success(request,
+                                 "Your payment has been processed successfully. Please check your email for "
+                                 "payment details, you can also download the bill.", fail_silently=True)
+
+                subject = 'Alejandria, Thank you for buying through our website'
+                msg = 'Dear ' + request.user.username + ",\nThank you for buying through our website. \nHere you" \
+                                                        " will find a copy with the details of your purchase." \
+                                                        "\nRemember that you can also find all your bills in your " \
+                                                        "profile on our website. " \
+                                                        "\n\n Name: " + bill.name + "\n Date: " + str(bill.date) + "\n" \
+                                                        " Total: " + str(total) + "€" + "\n\nAlejandria Team."
+
+                send_mail(subject, msg, EMAIL_HOST_USER, [request.user.email], fail_silently=True)
+
+                return HttpResponseRedirect('/')
         else:
             messages.error(request, "You can't complete the purchase, you haven't enough money!")
-            return HttpResponseRedirect('/payment')
 
     return HttpResponseRedirect('/payment')
+
+
+def draw_my_ruler(pdf):
+    pdf.drawString(100, 810, 'x100')
+    pdf.drawString(200, 810, 'x200')
+    pdf.drawString(300, 810, 'x300')
+    pdf.drawString(400, 810, 'x400')
+    pdf.drawString(500, 810, 'x500')
+
+    pdf.drawString(10, 100, 'y100')
+    pdf.drawString(10, 200, 'y200')
+    pdf.drawString(10, 300, 'y300')
+    pdf.drawString(10, 400, 'y400')
+    pdf.drawString(10, 500, 'y500')
+    pdf.drawString(10, 600, 'y600')
+    pdf.drawString(10, 700, 'y700')
+    pdf.drawString(10, 800, 'y800')
+
+
+def generate_pdf(request):
+    user = request.user or None
+
+    if user:
+
+        user_bills = LibraryBills.objects.get(user_id=user)
+        user_bill = user_bills.bills.filter(user_id=user).last()
+
+        products = user_bill.products.all()
+
+        products_titles = [p.ISBN.title for p in products]
+
+        # Content
+        filename = 'Expenses.pdf'
+        document_title = 'Expenses'
+        title = 'Alejanria'
+        subtitle = 'Thank you for buying through our website!'
+
+        text_lines = [
+            'Username: ' + str(User.objects.filter(id=user.id).first().username),
+            'Name: ' + user_bill.name,
+            'Date: ' + str(user_bill.date),
+            'Total: ' + str(user_bill.total_money_spent),
+            'Products: ' + ', '.join(products_titles)
+        ]
+
+        # Make your response and prep to attach
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        tmp = BytesIO()
+
+        # Create pdf
+        pdf = canvas.Canvas(tmp)
+
+        # Set title
+        pdf.setFillColorRGB(0, 0, 255)
+        pdf.setTitle(document_title)
+        pdf.drawCentredString(300, 770, title)
+        pdf.setFont('Courier-Bold', 36)
+        # self.draw_my_ruler(pdf)
+
+        # Set subtitle
+        pdf.setFont('Courier', 24)
+        pdf.drawCentredString(290, 720, subtitle)
+
+        # Set line
+        pdf.line(30, 710, 550, 710)
+
+        # Set body text
+        text = pdf.beginText(40, 680)
+        text.setFont('Courier', 18)
+        # pdf.setFillColor(colors.red)
+        for line in text_lines:
+            text.textLine(line)
+        pdf.drawText(text)
+
+        # Draw image
+        # pdf.drawInlineImage(image, 130, 400)
+
+        # Save changes
+        pdf.showPage()
+        pdf.save()
+
+        # Get the data out and close the buffer cleanly
+        pdf = tmp.getvalue()
+        tmp.close()
+
+        # Get StringIO's body and write it out to the response.
+        response.write(pdf)
+        return response
