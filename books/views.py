@@ -3,8 +3,7 @@ import re
 from datetime import datetime, timedelta
 
 # import pdfkit as pdfkit
-from io import BytesIO
-
+from io import BytesIO, StringIO
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
@@ -909,8 +908,13 @@ def generate_pdf(request):
             'Products: ' + ', '.join(products_titles)
         ]
 
+        # Make your response and prep to attach
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        tmp = BytesIO()
+
         # Create pdf
-        pdf = canvas.Canvas(filename)
+        pdf = canvas.Canvas(tmp)
 
         # Set title
         pdf.setTitle(document_title)
@@ -939,9 +943,16 @@ def generate_pdf(request):
         # pdf.drawInlineImage(image, 130, 400)
 
         # Save changes
+        pdf.showPage()
         pdf.save()
 
-        return pdf
+        # Get the data out and close the buffer cleanly
+        pdf = tmp.getvalue()
+        tmp.close()
+
+        # Get StringIO's body and write it out to the response.
+        response.write(pdf)
+        return response
 
 
 def render_to_pdf(template_src, context_dict=None):
