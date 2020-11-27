@@ -25,5 +25,6 @@ urlpatterns = [
     path('purchase/', views.complete_purchase, name='purchase'),
     path('editBook/<slug:pk>/', views.EditBookView.as_view(), name='edit_book'),
     path('deleteBook/<slug:pk>/', views.DeleteBookView.as_view(), name='delete_book'),
+    path('pdf/', views.download_pdf, name='generate_bill'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

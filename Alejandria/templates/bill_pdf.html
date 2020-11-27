@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+{% load static %}
+<html lang="en">
+<head>
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css/bill-pdf/template.css' %}">
+</head>
+
+<body>
+    <div class='wrapper'>
+        <div class='header'>
+            <p class='title'>Alejandria</p>
+        </div>
+
+        <div>
+            <div class='details'>
+                Bill to: {{ name }}<br/>
+                Total: {{ total }} € <br/>
+                Date: {{ date }} <br/>
+                Card number: {{ card_number }} <br/>
+                Products: {% for product in products %}
+                {{ product }}
+                {% endfor %}
+                <hr class='hrItem'>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

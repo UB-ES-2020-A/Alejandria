@@ -2,6 +2,9 @@ import random
 import re
 from datetime import datetime, timedelta
 
+# import pdfkit as pdfkit
+from io import BytesIO
+
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
@@ -9,10 +12,16 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.template.loader import get_template
 from django.views import generic
+# from weasyprint import HTML
+from xhtml2pdf import pisa
+# from django_xhtml2pdf.utils import generate_pdf
+from reportlab.lib import colors
+from reportlab.pdfgen import canvas
 
 from Alejandria.settings import EMAIL_HOST_USER
 from .forms import BookForm, UpdateBookForm
@@ -643,7 +652,6 @@ def login_user(request):
             return JsonResponse({"error": error})
 
 
-# TODO: Not implemented yet
 class PaymentView(generic.ListView):
     # model = Account
     template_name = 'payment.html'
@@ -652,6 +660,13 @@ class PaymentView(generic.ListView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.user_id = None
+        self.username = ''
+        self.card_number = ''
+        self.total = 0
+        self.products = None
+        self.year = None
+        self.month = None
+        self.cvv = None
 
     def get_queryset(self):
         request = self.request
@@ -676,15 +691,75 @@ class PaymentView(generic.ListView):
             context['total_price'] = total_price
             context['total_items'] = items
             if user_bank_account is not None:
-                context['card_owner'] = user_bank_account.name
-                context['card_number'] = user_bank_account.card_number
-                context['month'] = user_bank_account.month_exp
-                context['year'] = user_bank_account.year_exp
-                context['cvv'] = user_bank_account.cvv
+                context['card_owner'] = self.username
+                context['card_number'] = self.card_number
+                context['month'] = self.month
+                context['year'] = self.year
+                context['cvv'] = self.cvv
         else:
             context['total_items'] = 0
 
         return context
+
+    """
+    @staticmethod
+    
+    
+    
+    def export_pdf(self, request):
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename=Expenses' + str(datetime.datetime.now()) + '.pdf'
+        response['Content-Transfer-Encoding'] = 'binary'
+
+        html_string = render_to_string('bill_pdf.html')
+        html = HTML(string=html_string)
+        result = html.write_pdf()
+
+        with tempfile.NamedTemporaryFile(delete=True) as output:
+            output.write(result)
+            output.flush()
+            output = open(output.name, 'rb')
+            response.write(output.read())
+
+        return response
+        
+
+    def download_pdf(self, request):
+
+        resp = HttpResponse(content_type='application/pdf')
+
+        context = {
+            'total': self.total,
+            'name': request.POST.get('username'),
+            'card_number': '**** **** **** ' + self.card_number[12:],
+            'date': datetime.date.today(),
+            'products': self.products
+        }
+
+        result = generate_pdf('bill_pdf.html', context)
+
+        return result
+
+
+    def document_pdf(self, request):
+        options = {
+            'page-size': 'Letter',
+            'margin-top': 'lin',
+            'margin-bottom': 'lin',
+            'margin-left': 'lin',
+            'margin-right': 'lin',
+            'encoding': "UTF-8"
+        }
+
+        pdf = pdfkit.from_url('/pdf', options=options)
+        response = HttpResponse(pdf, content_type='application/pdf')
+
+        response['Content-Disposition'] = 'attachment; filename=expenses.pdf'
+        response['Content-Transfer-Encoding'] = 'binary'
+
+        return response
+    """
 
 
 class EditorLibrary(PermissionRequiredMixin, generic.ListView):
@@ -737,48 +812,178 @@ def complete_purchase(request):
 
         cart = Cart.objects.get(user_id=user)
         products = cart.products.all()
-        total_price = 0
+        total = 0
         for p in products:
-            total_price += p.price
-        total_price = float(total_price)
+            total += p.price
+        total = float(total)
 
-        if current_money - total_price >= 0:
+        print('TOTAL MONEY: ', current_money - total)
 
-            user_bank_account.money = str(round(current_money - total_price, 2))
+        if current_money - total >= 0:
+
+            user_bank_account.money = str(round(current_money - total, 2))
             user_bank_account.name = request.POST.get('username')
             user_bank_account.month_exp = request.POST.get('month_exp')
             user_bank_account.year_exp = request.POST.get('year_exp')
             user_bank_account.card_number = request.POST.get('cardNumber')
             user_bank_account.cvv = request.POST.get('cvv')
+
             try:
                 user_bank_account.full_clean()
+
             except ValidationError:
                 # Do something when validation is not passing
                 print("ERROR VALIDATION")
-                print(user_bank_account.name)
-                print(user_bank_account.money)
-                print(user_bank_account.month_exp)
-                print(user_bank_account.year_exp)
-                print(user_bank_account.card_number)
-                print(user_bank_account.cvv)
                 user_bank_account.delete()
                 messages.error(request, "An error has occurred, check that all data is in the correct format.")
-                return HttpResponseRedirect('/payment')
+
             else:
                 # Validation is ok we will save the instance
                 user_bank_account.save()
 
                 bill, created = Bill.objects.get_or_create(user_id_id=user)
-                setattr(bill, 'total_money_spent', total_price)
+                setattr(bill, 'total_money_spent', total)
                 setattr(bill, 'payment_method', 'Credit card')
+                setattr(bill, 'name', user_bank_account.name)
                 for p in products:
                     bill.products.add(p)
                 bill.save()
                 cart.products.clear()
                 cart.save()
+
+                # Comment this when testing
+                messages.success(request,
+                                 "Your payment has been processed successfully. Please check your email for "
+                                 "payment details, you can also download the bill.")
+
+                # Uncomment this when testing
+                #messages.success(request,
+                #                 "Your payment has been processed successfully. Please check your email for "
+                #                 "payment details, you can also download the bill.", fail_silently=True)
         else:
             messages.error(request, "You can't complete the purchase, you haven't enough money!")
-            return HttpResponseRedirect('/payment')
 
     return HttpResponseRedirect('/payment')
 
+
+def draw_my_ruler(pdf):
+    pdf.drawString(100, 810, 'x100')
+    pdf.drawString(200, 810, 'x200')
+    pdf.drawString(300, 810, 'x300')
+    pdf.drawString(400, 810, 'x400')
+    pdf.drawString(500, 810, 'x500')
+
+    pdf.drawString(10, 100, 'y100')
+    pdf.drawString(10, 200, 'y200')
+    pdf.drawString(10, 300, 'y300')
+    pdf.drawString(10, 400, 'y400')
+    pdf.drawString(10, 500, 'y500')
+    pdf.drawString(10, 600, 'y600')
+    pdf.drawString(10, 700, 'y700')
+    pdf.drawString(10, 800, 'y800')
+
+
+def generate_pdf(request):
+
+    user = request.user or None
+
+    if user:
+
+        user_bill = Bill.objects.get(user_id=user)
+
+        products = user_bill.products.all()
+
+        products_titles = [p.ISBN.title for p in products]
+
+        # Content
+        filename = 'Expenses.pdf'
+        document_title = 'Expenses'
+        title = 'Alejanria'
+        subtitle = 'Thank you for buying through our website!'
+
+        text_lines = [
+            'Username: ' + str(User.objects.filter(id=user.id).first().username),
+            'Name: ' + user_bill.name,
+            'Date: ' + str(user_bill.date),
+            'Total: ' + str(user_bill.total_money_spent),
+            'Products: ' + ', '.join(products_titles)
+        ]
+
+        # Create pdf
+        pdf = canvas.Canvas(filename)
+
+        # Set title
+        pdf.setTitle(document_title)
+        pdf.drawCentredString(300, 770, title)
+        pdf.setFont('Helvetica-Bold', 36)
+        # self.draw_my_ruler(pdf)
+
+        # Set subtitle
+        pdf.setFillColorRGB(0, 0, 255)
+        pdf.setFont('Courier-Bold', 24)
+        pdf.drawCentredString(290, 720, subtitle)
+
+        # Set line
+        pdf.line(30, 710, 550, 710)
+
+        # Set body text
+        text = pdf.beginText(40, 680)
+        text.setFont('Courier', 18)
+        pdf.setFillColor(colors.red)
+        for line in text_lines:
+            text.textLine(line)
+        pdf.drawText(text)
+
+
+        # Draw image
+        # pdf.drawInlineImage(image, 130, 400)
+
+        # Save changes
+        pdf.save()
+
+        return pdf
+
+
+def render_to_pdf(template_src, context_dict=None):
+    print('RENDER TO PDF')
+    if context_dict is None:
+        context_dict = {}
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("cp1252")), result)
+    if not pdf.err:
+        print('NO ERRORS IN PDF PISA')
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+
+def download_pdf(request):
+
+    print('DOWNLOAD PDF')
+
+    user = request.user or None
+
+    if user:
+        print('YES USER')
+        user_bill = Bill.objects.get(user_id=user)
+        user_bank_account = BankAccount.objects.get(user=user)
+
+        products = user_bill.products.all()
+
+        products_titles = [p.ISBN.title for p in products]
+
+        context = {
+            'total': user_bill.total_money_spent,
+            'name': user_bill.name,
+            'card_number': '**** **** **** ' + user_bank_account.card_number[12:],
+            'date': str(user_bill.date),
+            'products': products_titles
+        }
+
+        pdf = render_to_pdf('bill_pdf.html', context)
+
+        print('ALL GOOD')
+        return HttpResponse(pdf, 'application/pdf')
+
+    print('NO USER')

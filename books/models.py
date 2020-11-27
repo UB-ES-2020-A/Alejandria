@@ -133,6 +133,7 @@ class Cart(models.Model):
 class Bill(models.Model):
     num_factura = models.AutoField(primary_key=True, blank=False, null=False)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
     date = models.DateField(null=True, blank=True, default=timezone.now)
     payment_method = models.CharField(max_length=30)
     products = models.ManyToManyField(Product)

@@ -36,7 +36,6 @@ def generate_id():
     temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
     list_id = [str(rand.randint(0, 16)) if character == 'x' else character for character in temp]
     id = "".join(list_id)
-    print('ID', id)
     return id
 
 
@@ -204,7 +203,6 @@ def test_complete_purchase():
     user_bank_account = get_or_create_user_bank_account(user)
     user_bank_account.save()
 
-    print('USER', user, '\n')
     body = {
         'user': user, 'username': 'User Name Test', 'month_exp': 11, 'year_exp': 2021, 'cardNumber': '1234567890123456',
         'cvv': 111
@@ -213,8 +211,7 @@ def test_complete_purchase():
     req = RequestFactory().post("/payment/", body)
     req.user = user
     cart = Cart.objects.get(user_id=user.id)
-    print('CART -> ', cart.products.all())
-    complete_purchase(req)
+    complete_purchase(request=req)
     bill = Bill.objects.filter(user_id=user).last()
     user_bank_account = get_or_create_user_bank_account(user)
     assert cart.products.count() == 0 and user_bank_account.cvv == 111 and bill.total_money_spent == total_price
