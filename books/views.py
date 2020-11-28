@@ -17,15 +17,10 @@ from django.views import generic
 from reportlab.pdfgen import canvas
 
 from Alejandria.settings import EMAIL_HOST_USER
-<<<<<<< HEAD
-from .forms import BookForm
-from .models import Book, FAQ, Cart, Product, User, Address, Rating, ResetMails, Bill
-=======
 
 from .utils import *
 from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills
->>>>>>> develop
+from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
 
 # Create your views here.
 
