@@ -3,3 +3,4 @@ omit =
     # omit anything in the venv
     */venv/*
     */virtualenvironment/*
+    */virtualenv/*
