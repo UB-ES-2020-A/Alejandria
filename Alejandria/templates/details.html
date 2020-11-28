@@ -249,12 +249,16 @@
     });
 
     $('#review-form').on('submit', function () {
-        if({{ owned }} == false){
-            alert("You need to buy the book first to review it.")
-            return false
+        if(typeof {{ user.id }} == undefined){
+            alert("You need to log in to leave a review");
+            return false;
         }
 
-        console.log("Review posting");
+        if({{ owned }} == false){
+            alert("You need to buy the book first to review it.");
+            return false;
+        }
+
         var post_url = '../../review/';
 
         var form = $('#review-form')[0];

@@ -39,13 +39,13 @@ class BookView(generic.DetailView):
     template_name = 'details.html'
 
     def get_context_data(self, **kwargs):
-        print(kwargs)
         context = super().get_context_data(**kwargs)
         relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
         review_list = Rating.objects.filter(book=context['object'])
-        # Devuelve todos los PRODUCTS del usuario
-        # Necesito buscar el libro actual en estos products
-        owned = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first()
+        if self.request.user.id != None:
+            owned = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first()
+            if owned:
+                context['owned'] = "true"
 
         if relation_book:
             context['book_relation'] = relation_book
@@ -55,10 +55,8 @@ class BookView(generic.DetailView):
         if review_list:
             context['review_list'] = review_list
 
-        if owned:
-            context['owned'] = "true"
-        else:
-            context['owned'] = "false"
+        if 'owned' not in context.keys():
+            context['owned'] = 'false'
 
         return context
 
