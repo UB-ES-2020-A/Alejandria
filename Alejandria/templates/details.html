@@ -14,6 +14,8 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 
+    <link rel="stylesheet" href="{% static 'css/review.css' %}">
+
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
     <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
@@ -21,6 +23,7 @@
     <link rel="stylesheet" href="{% static 'css/font.css' %}">
     <link rel="stylesheet" href="{% static 'css/card.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel=”stylesheet” href=”https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>
 
 
@@ -105,82 +108,85 @@
   </div>
 
 
-
-
     <div class="row">
         <div class="col-12">
-            <div style="margin-top: 2%; border-top: 1px solid gray; border-bottom: 1px solid gray">
-                <p style="margin-top: 50px; margin-bottom: 50px; margin-left: 50px; color: white"> There are no reviews for this product. </p>
+            {% if review_list %}
+            <div style="margin-top: 2%; border-top: 1px solid gray;">
+                {% for review in review_list %}
+                <div class="container" style="border-bottom: 1px solid gray;">
+                    <div style="margin-left: 2px; margin-top: 15px" class="row">
+                        <img style="height: 20px; width: 20px;" src="https://www.vhv.rs/dpng/d/312-3120300_default-profile-hd-png-download.png">
+                        <p style="color: white; margin-left: 10px; margin-right: 65%"> {{ review.user_id.username }} </p>
+                        <p style="color: white"> {{ review.date }} </p>
+                    </div>
+                    <div class="main">
+                        {% if review.score == 0 %}
+                            <i class="fa fa-star unchecked" id="one_review"></i>
+                            <i class="fa fa-star unchecked" id="two_review"></i>
+                            <i class="fa fa-star unchecked" id="three_review"></i>
+                            <i class="fa fa-star unchecked" id="four_review"></i>
+                            <i class="fa fa-star unchecked" id="five_review"></i>
+                        {% elif review.score == 1 %}
+                            <i class="fa fa-star checked" id="one_review"></i>
+                            <i class="fa fa-star unchecked" id="two_review"></i>
+                            <i class="fa fa-star unchecked" id="three_review"></i>
+                            <i class="fa fa-star unchecked" id="four_review"></i>
+                            <i class="fa fa-star unchecked" id="five_review"></i>
+                        {% elif review.score == 2 %}
+                            <i class="fa fa-star checked" id="one_review"></i>
+                            <i class="fa fa-star checked" id="two_review"></i>
+                            <i class="fa fa-star unchecked" id="three_review"></i>
+                            <i class="fa fa-star unchecked" id="four_review"></i>
+                            <i class="fa fa-star unchecked" id="five_review"></i>
+                        {% elif review.score == 3 %}
+                            <i class="fa fa-star checked" id="one_review"></i>
+                            <i class="fa fa-star checked" id="two_review"></i>
+                            <i class="fa fa-star checked" id="three_review"></i>
+                            <i class="fa fa-star unchecked" id="four_review"></i>
+                            <i class="fa fa-star unchecked" id="five_review"></i>
+                        {% elif review.score == 4 %}
+                            <i class="fa fa-star checked" id="one_review"></i>
+                            <i class="fa fa-star checked" id="two_review"></i>
+                            <i class="fa fa-star checked" id="three_review"></i>
+                            <i class="fa fa-star checked" id="four_review"></i>
+                            <i class="fa fa-star unchecked" id="five_review"></i>
+                        {% elif review.score == 5 %}
+                            <i class="fa fa-star checked" id="one_review"></i>
+                            <i class="fa fa-star checked" id="two_review"></i>
+                            <i class="fa fa-star checked" id="three_review"></i>
+                            <i class="fa fa-star checked" id="four_review"></i>
+                            <i class="fa fa-star checked" id="five_review"></i>
+                        {% endif %}
+                    </div>
+                    <p style="color: white; margin-top: 10px; overflow-wrap: break-word"> {{ review.text }} </p>
+                </div>
+                {% endfor %}
             </div>
+            {% else %}
+            <div style="margin-top: 2%; border-top: 1px solid gray; border-bottom: 1px solid gray">
+                <p style="margin-top: 50px; margin-bottom: 50px; margin-left: 50px; color: #ffffff"> There are no reviews for this product. </p>
+            </div>
+            {% endif %}
         </div>
     </div>
 
 </div>
 
-
-
-
-
-
-<!--
-
-
-<div style="margin-left: 200px; margin-top: 50px;">
-    <div>
-        <div>
-            <h1 style="color: #dc3545"> {{book.title}} </h1>
-            <h3 style="color: white"> {{book.author}} </h3>
-            <h6 style="color:white"> Category: {{book.get_primary_genre_display }}, {{book.get_secondary_genre_display}} </h6>
+<div class="container" style="margin-left: 8%; margin-top: 20px;">
+    <h4 style="color: white">Have you read this book? Leave a review!</h4>
+    <form class="form-group" id="review-form" post_url="review/">
+        {% csrf_token %}
+        <div class="main">
+            <i class="fa fa-star unchecked" id="one"></i>
+            <i class="fa fa-star unchecked" id="two"></i>
+            <i class="fa fa-star unchecked" id="three"></i>
+            <i class="fa fa-star unchecked" id="four"></i>
+            <i class="fa fa-star unchecked" id="five"></i>
         </div>
-
-        <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="float: left; height:400px; margin-top:20px">
-        <p style="color: white; text-align: justify; text-justify: inter-word;">
-            {{book.description}}
-        </p>
-
-    </div>
-
-    <form class="form-inline my-2 my-lg-0" style="float:left; margin-left:75px">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Add to cart</button>
+        <textarea id="review-text-input" style="height: 100px; margin-top: 20px; margin-bottom: 20px;" type="text" class="form-control mr-sm-2" placeholder="Submit your review here"></textarea>
+        <button type="submit" class="btn btn-danger">Submit</button>
     </form>
 </div>
-
-
--->
-
-<!--
-{% if not book_owner %}
-<div style="margin-left: 200px; margin-right: 200px; margin-top: 350px; border-top: 1px solid gray; border-bottom: 1px solid gray">
-    {% if review_list %}
-        {% for review in review_list %}
-            <div style="color: white">
-                <p> {{ review.score }} / 5 </p>
-                <p> {{ review.text }} </p>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p style="margin-top: 50px; margin-bottom: 50px; margin-left: 50px; color: white"> There are no reviews for this product. </p>
-    {% endif %}
-</div>
-
-{% else %}
-<div style="margin-left: 200px; margin-right: 200px; margin-top: 100px; border-top: 1px solid gray; border-bottom: 1px solid gray">
-    {% if review_list %}
-        {% for review in review_list %}
-            <div style="color: white">
-                <p> {{ review.score }} / 5 </p>
-                <p> {{ review.text }} </p>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p style="margin-top: 50px; margin-bottom: 50px; margin-left: 50px; color: white"> There are no reviews for this product. </p>
-    {% endif %}
-</div>
-
-{% endif %}
-
-<h2 style="color:white; margin-top: 50px; margin-left: 25px;">Títols relacionats a la teva cerca...</h2>>
--->
 
 
 <!--<h2 style="color:white; margin-left: 25px;">Títols relacionats a la teva cerca...</h2>-->
@@ -218,8 +224,75 @@
 
 <script>
 
+    var rating = 0;
+    var list=['one','two','three','four','five'];
+    list.forEach(function(element) {
+        document.getElementById(element).addEventListener("click", function(){
+
+            for(let i=0; i < list.length; i++){
+                document.getElementById(list[i]).classList.remove("checked");
+                document.getElementById(list[i]).classList.add("unchecked");
+            }
+
+            for(i=0; i < list.length; i++) {
+                if(list[i] !== element) {
+                    document.getElementById(list[i]).classList.remove("unchecked");
+                    document.getElementById(list[i]).classList.add("checked");
+                }else{
+                    document.getElementById(list[i]).classList.remove("unchecked");
+                    document.getElementById(list[i]).classList.add("checked");
+                    rating = i + 1;
+                    break;
+                }
+            }
+        });
+    });
+
+    $('#review-form').on('submit', function () {
+        if({{ owned }} == false){
+            alert("You need to buy the book first to review it.")
+            return false
+        }
+
+        console.log("Review posting");
+        var post_url = '../../review/';
+
+        var form = $('#review-form')[0];
+        var formData = new FormData(form);
+        var book = {{ book.ISBN }};
+        var user_id = {{ user.id }};
+        formData.append('book', book);
+        formData.append('user_id', user_id);
+        formData.append('text', document.getElementById('review-text-input').value);
+        formData.append('score', rating);
+
+        $.ajax({
+            url: post_url,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:function(response){
+                console.log("response");
+                console.log(response.message);
+                alert(response.message);
+                window.location.reload();
+            },
+            error:function(response){
+                console.log("response");
+                console.log(response.responseJSON.message);
+                console.log(response.status);
+                alert(response.responseJSON.message);
+            }
+        });
+
+        return false;
+    });
+
 
 $(document).ready(function () {
+
+
     var itemsMainDiv = ('.MultiCarousel');
     var itemsDiv = ('.MultiCarousel-inner');
     var itemWidth = "";
@@ -234,9 +307,6 @@ $(document).ready(function () {
     });
 
     ResCarouselSize();
-
-
-
 
     $(window).resize(function () {
         ResCarouselSize();

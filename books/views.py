@@ -20,7 +20,7 @@ from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
 from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills
+from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
 
 # Create your views here.
 
@@ -32,19 +32,33 @@ NUM_COINCIDENT = 10
 NUM_RELATED = 5
 MONTHS_TO_CONSIDER_TOP_SELLER = 6
 
+
 # This one is the same but uses a generic Model, lso should work with the primary key
 class BookView(generic.DetailView):
     model = Book
     template_name = 'details.html'
 
     def get_context_data(self, **kwargs):
+        print(kwargs)
         context = super().get_context_data(**kwargs)
         relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
+        review_list = Rating.objects.filter(book=context['object'])
+        # Devuelve todos los PRODUCTS del usuario
+        # Necesito buscar el libro actual en estos products
+        owned = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first()
 
         if relation_book:
             context['book_relation'] = relation_book
         else:
             context['book_relation'] = Book.objects.all()[:20]
+
+        if review_list:
+            context['review_list'] = review_list
+
+        if owned:
+            context['owned'] = "true"
+        else:
+            context['owned'] = "false"
 
         return context
 
@@ -590,6 +604,7 @@ def login_user(request):
 class PaymentView(generic.ListView):
     # model = Account
     template_name = 'payment.html'
+    queryset = Product.objects.all()
     context_object_name = 'cart_list'
 
     def __init__(self, **kwargs):
@@ -673,6 +688,24 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
         context['editor_books'] = editor_books
 
         return context
+
+
+def leave_review(request, **kwargs):
+    if request.method == 'POST':
+        if int(request.POST['score']) < 0 or int(request.POST['score']) > 5:
+            return JsonResponse({"error": "You must provide a valid score (between 0 and 5)."})
+        if len(request.POST['text']) > 500:
+            return JsonResponse({"error": "The maximum text length is 500 characters."})
+
+        book = Book.objects.filter(ISBN=request.POST['book']).first()
+        review = Rating(book=book,
+                        user_id=request.user,
+                        text=request.POST['text'],
+                        score=request.POST['score'])
+
+        review.save()
+        print("Your review was added successfully!")
+        return JsonResponse({"message": "Your review was added successfully!"})
 
 
 def view_profile(request):
