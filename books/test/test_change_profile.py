@@ -12,8 +12,19 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 
 # Then load own libs
-from books.models import User
+from books.models import User, Guest
 from books.views import view_profile, register
+
+
+def get_or_create_guest():
+    device = '123456789'
+    guest_query = Guest.objects.filter(device=device)
+    if guest_query.count() == 0:
+        guest = Guest(device=device)
+        guest.save()
+    else:
+        guest = guest_query.first()
+    return guest
 
 
 def random_char(y):
@@ -34,7 +45,9 @@ def test_register():
         "tastes": True
     }
 
+    guest = get_or_create_guest()
     req = RequestFactory().post("/register/", body1)
+    req.COOKIES['device'] = guest.device
     response = register(req)
 
     email2 = random_char(7) + "@gmail.com"
