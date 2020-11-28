@@ -44,6 +44,10 @@ Vamos a utilizar la librería ``pytest`` para la creación y comprobación de nu
 
 - Por último comprobar que el estado de la ejecución es PASSED.
 
+Durante el proyecto también se ha añadido code coverage con `pytest-cov + coveralls` ambos se han añadido al fichero de `requirements.txt`
+y poseis ejecutar `pytest --cov` para obtener también la información de la cantidad de codigo testeado actualmente.
+
+
 ### Configuración Pylint
 
 La libreria de ``pylint`` ya se encuentra en los requirements del proyecto, sí los has instalado podreis ejecutar los 
