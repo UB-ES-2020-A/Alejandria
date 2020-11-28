@@ -6,11 +6,11 @@ import os
 import django
 import random
 
-from books.models import Book, User, Address, Product, Cart, FAQ
-from django.core.files import File
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
+
+from books.models import Book, User, Address, Product, Cart, FAQ
+from django.core.files import File
 
 
 user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
@@ -109,72 +109,106 @@ cart.save()
 print("CART SAVED...OK")
 
 
-## TO GENEREATE FAQS, CAN BE CREATED FROM A FILE faqs.txt OR WRITTEN IN TERMINAL. ALSO DELETE ALL OR SEE WHAT IS IN THE DATABASE
-
-def write_some_faqs():
-    """ Asks to introduce FAQs by hand in terminal"""
-    while True:
-        n = input("Number of faqs you whant to write:")
-        if n.isdigit():
-            n = int(n)
-            break
-        else:
-            print("Introduce number")
-
-    questions = list()
-    answers = list()
-    categories = list()
-
-    for i in range(n):
-        loop = True
-        category = "DEFAULT"
-        while loop:
-            category = input("CATEGORY (DWLDBOOK, DEVOL, SELL, FACTU, CONTACT):")
-            loop = False
-        question = input("Question:")
-        answer = input("Answer")
-
-        categories.append(category)
-        questions.append(question)
-        answers.append(answer)
-
-    faqs_list = list(zip(categories, questions, answers))
-    print("Faqs:", faqs_list)
-    create_faqs(faqs_list)
-
-
 def read_faqs_from_file():
+    """
+    READS FAQs FROM A FILE:
+    THE FILE FORMAT IS DEFFINED IN faqs.txt
+    """
     # Using readlines()
     print("READING FILE...")
     filename = 'faqs.txt'
-    file1 = open(filename, 'r')
-    lines = file1.readlines()
-
-    questions = list()
-    answers = list()
-    categories = list()
+    file_faqs = open(filename, 'r')
+    lines = file_faqs.readlines()
+    
+    print(lines)
 
     # Strips the newline character
-    for line in lines:
-        print(line)
-        category, question, answer = line.strip().split('///')
-        questions.append(question)
-        answers.append(answer)
-        categories.append(category)
+    i = 0  # Line we are reading
+    more_faqs = True if len(lines) > 0 else False
+    while more_faqs:
+        cat = None
+        q = list()
+        a = list()
+        first_q_line = True
+        first_a_line = True
+        line = lines[i]
+        if "<cat>" in line and "</cat>" in line:
+            print(line[5:-7])
+            if line[5:-7] in [cat[0] for cat in FAQ.FAQ_CHOICES]:
+                cat = line[5:-7]
+                inprocess = True
+                i += 1
+            else:
+                raise Exception("File format error")
+            while inprocess:
+                line = lines[i]
+                if "<q>" in line:
+                    # We found the question
+                    q.append(line[3:])
+                    while True:
+                        if "</q>" in line:
+                            #Ends the question
+                            q.pop()
+                            if first_q_line:
+                                q.append(line[3:-5])
+                            else:
+                                q.append("<br>")
+                                q.append(line[:-5])
+                            break
+                        else:
+                            # We are in a middle line
+                            q.append("<br>")
+                            q.append(line)
+                            first_q_line = False
+                        i += 1
+                    
+                if "<a>" in line:
+                    #Answer
+                    # We found the question
+                    while True:
+                        line = lines[i]
+                        if "</a>" in line:
+                            #Ends the question
+                            if first_a_line:
+                                a.append(line[3:-5])
+                            else:
+                                a.append("<br>")
+                                a.append(line[:-5])
+                            save_faq(cat, q, a)
+                            inprocess = False
+                            more_faqs = True if len(lines) > i+2 else False
+                            break
+                        else:
+                            # We are in a middle line
+                            if first_a_line:
+                                a.append(line[3:-1])
+                            else:
+                                a.append("<br>")
+                                a.append(line[:-1])
+                            first_a_line = False
+                        i += 1
+                    i += 1
+                i += 1
+        else:
+            i += 1
+            print(i)
 
-    print("ALL FAQS READ...OK")
-    faqs_list = list(zip(categories, questions, answers))
-    create_faqs(faqs_list)
+    print("ALL FAQS CREATED...OK")
 
 
-def create_faqs(faqs_to_create):
-    print("SAVING FAQS...OK")
-    for faq_element in faqs_to_create:
-        print("### FAQ ---->", faq_element)
-        to_save = FAQ(question=faq_element[1], answer=faq_element[2], category=faq_element[0])
-        print(to_save)
-        to_save.save()
-    print("ALL FAQS SAVED...OK")
+def save_faq(cat, q, a):
+    """
+    Saves a faq passing
+    Parameters:
+        cat : category
+        q: question
+        a: answer
+    """
+    question = "".join(q)
+    answer = "".join(a)
+    faq = FAQ(question=question, answer=answer, category=cat)
+    faq.save()
+    print("FAQ SAVED: " + str(faq))
 
 
 what = input("Chose option, insert manually, read in file information, see whats in database or delete all FAQ"
