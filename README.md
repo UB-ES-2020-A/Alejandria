@@ -1,5 +1,8 @@
 # Alejandria
 
+[![Build Status](https://travis-ci.com/UB-ES-2020-A/Alejandria.svg?branch=main)](https://travis-ci.com/UB-ES-2020-A/Alejandria)
+[![Coverage Status](https://coveralls.io/repos/github/UB-ES-2020-A/Alejandria/badge.svg?branch=main)](https://coveralls.io/github/UB-ES-2020-A/Alejandria?branch=main)
+
 ### Primeros pasos
 
 Una vez bajado el proyecto teneis que crear un virtual environment e instalar los requirements con:
