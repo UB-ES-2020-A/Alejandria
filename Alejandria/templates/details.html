@@ -70,10 +70,18 @@
     <div class="col-12">
         <h1 style="color: #dc3545"> {{book.title}} </h1>
         <h3 style="color: white"> {{book.author}} </h3>
-        <h6 style="color:white"> Category: {{book.get_primary_genre_display }}, {{book.get_secondary_genre_display}} </h6>
+        {% if book.get_secondary_genre_display %}
+            <h6 style="color:white"> Category: {{book.get_primary_genre_display}}, {{book.get_secondary_genre_display}} </h6>
+        {% else %}
+            <h6 style="color:white"> Category: {{book.get_primary_genre_display}}</h6>
+        {% endif %}
     </div>
     <div class="col-4">
-      <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="float: left; height:400px; margin-top:20px">
+        {% if book.thumbnail %}
+            <img src="{{ book.thumbnail.url }}" style="float: left; height:400px; margin-top:20px">
+        {% else %}
+            <img src="{% static 'no_available.jpg' %}" style="float: left; height:400px; margin-top:20px">
+        {% endif %}
     </div>
     <div class="col-8" style="margin-top:20px">
         <h3 style="color: white"> Summary: </h3>
@@ -192,12 +200,16 @@
                     <div class="item" style="width: 185px;">
                         <div class="card" style="width: 11rem;">
                             <a href="/book/{{obj.ISBN}}" style="text-decoration: none; color: inherit;">
-                          <img class="card-img-top" src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" alt="Card image cap">
+                          {% if obj.thumbnail %}
+                            <img class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                            {% else %}
+                            <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                            {% endif %}
                           <div class="card-body">
                             <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
                             <p class="card-text">{{obj.author}}</p>
                               <p class="card-text">Preu: {{obj.price}}€</p>
-                            <a href="#" class="btn btn-danger">Add to cart</a>
+                            <a href="#" class="btn btn-danger my-2 my-sm-0">Add to cart</a>
                           </div>
                             </a>
                         </div>

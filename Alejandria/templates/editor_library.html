@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+<html lang="en">
+
+<link rel="stylesheet" href="{% static 'css/editor-page/card.css' %}">
+<head>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row" >
+            <div class="col-12 mt-3"  >
+                {% for book in editor_books %}
+
+                    <div class="card" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
+                         <div class="card-horizontal" >
+                             {% if book.thumbnail %}
+                                <img src="{{ book.thumbnail.url }}" alt="Card image cap" style="width:180px; height:250px;">
+                                {% else %}
+                                <img src= "{% static 'no_available.jpg' %}" alt="Card image cap" style="width:180px; height:250px;">
+                            {% endif %}
+                             <div class="card-body" style="color:white;" >
+                                 <h3 class="card-title">{{ book.title }}</h3>
+                                 <div class="row" style="margin-top:2%;">
+                                     <div class="column" style="margin-left:5%;" >
+                                         <h6 class="card-title"><b>Author:</b> {{ book.author }} </h6>
+                                         <h6 class="card-title"><b>Saga:</b> {{ book.saga }} </h6>
+                                         <h6 class="card-title"><b>Price:</b> {{ book.price }} $</h6>
+                                         <h6 class="card-title"><b>Num sold:</b> {{ book.num_sold }} </h6>
+                                     </div>
+                                     <div class="column" style="position: absolute; right: 30%">
+                                         <h6 class="card-title"><b>ISBN:</b> {{ book.ISBN }}</h6>
+                                         <h6 class="card-title"><b>Genre:</b> {{ book.get_primary_genre_display }}, {{ book.get_secondary_genre_display }}</h6>
+                                         <h6 class="card-title"><b>Language:</b> {{ book.language }} </h6>
+                                         <h6 class="card-title"><b>Publication date:</b> {{ book.publication_date }} </h6>
+                                     </div>
+                                     <div class="column" style="position: absolute; right: 5%; " >
+                                        <div clas="row" style="margin-top: 5%;">
+                                            <form action="/book/{{book.ISBN}}">
+                                                <button class="btn btn-danger my-2 my-sm-0"  style="width:100%" title="Show"  type="submit"><i class="fas fa-search"></i></button>
+                                            </form>
+                                          </div>
+                                         <div clas="row" style="margin-top:5%;">
+                                             <form action="/editBook/{{book.ISBN}}">
+                                                <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Edit" type="submit"><i class="fas fa-edit"></i></button>
+                                             </form>
+                                          </div>
+                                         <div clas="row" style="margin-top: 5%;" >
+                                             <form action="/deleteBook/{{book.ISBN}}">
+                                                <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Delete" type="submit"><i class="fas fa-trash-alt"></i></button>
+                                             </form>
+                                         </div>
+                                     </div>
+                                 </div>
+
+                            </div>
+                        </div>
+                    </div>
+                        {% endfor %}
+                <a style="text-decoration: none;" href="/sell">
+                <div class="card-add" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
+                         <div class="card-horizontal" >
+
+                             <div class="card-body" style="color:white;" >
+                                 <h3 class="card-title" style="text-align:center">Add new book</h3>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+{% endblock %}
+
+
+
+
+
+
+

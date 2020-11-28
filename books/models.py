@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -6,7 +7,7 @@ from django.utils import timezone
 # Create your models here.
 
 """
-TODO: IF NECESSARY INTRODUCE help_text in some characteristics.
+IF NECESSARY INTRODUCE help_text in some characteristics.
 """
 GENRE_CHOICES = [
         ('FANT', 'Fantasy'),
@@ -27,8 +28,10 @@ GENRE_CHOICES = [
         ('HEAL', 'Health'),
         ('HUMO', 'Humor'),
         ('SPOR', 'Sport'),
-        ('TRAV', 'Travel')
+        ('TRAV', 'Travel'),
+        ('POET', 'Poetry')
     ]
+
 
 class Address(models.Model):
     street = models.CharField(max_length=50, null=False, blank=False)
@@ -42,15 +45,20 @@ class User(AbstractUser):
     # TODO: ADD USERNAME AS A PK
     role = models.CharField(max_length=10, null=False, blank=False)
     name = models.CharField(max_length=50, null=False, blank=False)
-    password = models.CharField(max_length=50, null=False, blank=False)
+    password = models.CharField(max_length=150, null=False, blank=False)
     email = models.EmailField(max_length=50, null=False, blank=False)
-    user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
+    user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
                                      related_name="user_address")
-    fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
+    fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
                                      related_name="fact_address")
-    genre_preference_1 = models.CharField(max_length=4, choices=GENRE_CHOICES, blank=False, null=False)
-    genre_preference_2 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=False, blank=False)
-    genre_preference_3 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=False, blank=False)
+    genre_preference_1 = models.CharField(max_length=4, choices=GENRE_CHOICES, blank=True, null=True)
+    genre_preference_2 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
+    genre_preference_3 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
+
+
+class Guest(models.Model):
+    id = models.AutoField(primary_key=True, null=False, blank=True)
+    device = models.CharField(max_length=200, null=False, blank=False)
 
 
 # class Author(models.Model):
@@ -117,18 +125,24 @@ class Rating(models.Model):
 
 
 class Cart(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=False)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
+    guest_id = models.ForeignKey(Guest, on_delete=models.CASCADE, blank=False, null=True)
     products = models.ManyToManyField(Product)
 
 
 class Bill(models.Model):
-    num_factura = models.AutoField(primary_key=True, blank=False, null=False)  # TODO: auto field
-    cart = models.ManyToManyField(Cart)  # TODO: How to treat quantities
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    num_bill = models.AutoField(primary_key=True, blank=False, null=False)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
     date = models.DateField(null=True, blank=True, default=timezone.now)
-    seller_info = models.TextField(blank=True, null=False)  # TODO: This is provisional
-    payment_method = models.CharField(max_length=30)  # TODO: Define choices.
+    payment_method = models.CharField(max_length=50)
+    products = models.ManyToManyField(Product)
+    total_money_spent = models.DecimalField(decimal_places=2, max_digits=8, null=True)
+
+
+class LibraryBills(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    bills = models.ManyToManyField(Bill)
 
 
 class FAQ(models.Model):
@@ -155,7 +169,16 @@ class FAQ(models.Model):
 
 
 class ResetMails(models.Model):
-
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
-                                blank=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False, blank=False)
     activated = models.BooleanField(default=True)
+
+
+class BankAccount(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    name = models.CharField(max_length=100)
+    money = models.DecimalField(decimal_places=2, max_digits=8, default=500.00)
+    card_number = models.CharField(validators=[RegexValidator(regex='^[0-9]{16}$', message='Length has to be 16',
+                                                              code='nomatch')], max_length=16, null=True)
+    month_exp = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)], null=True)
+    year_exp = models.IntegerField(validators=[MinValueValidator(2020)], null=True)
+    cvv = models.IntegerField(validators=[MinValueValidator(000), MaxValueValidator(9999)], null=True)  # 3 or 4 digits

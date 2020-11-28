@@ -10,7 +10,6 @@ select:focus > option:checked {
 }
 .body-structure{
     background-color: black;
-    /*#162221;*/
 }
 
 .body-right{
@@ -27,7 +26,6 @@ select:focus > option:checked {
 }
 
 .info-total{
-    margin-right: 5%;
     width: 100%;
 }
 
@@ -36,13 +34,18 @@ select:focus > option:checked {
     width: 100%;
     display: flex;
     flex-direction: row;
-    border:1px solid white
+    outline: none;     /* oranges! yey */
+    border-color: #d9534f;
+    box-shadow: 0 0 2px 1px #d9534f;
 }
 
 .info-box{
     margin-top: 30%;
     width: 100%;
-    border:1px solid white
+    border:1px solid white;
+    outline: none;     /* oranges! yey */
+    border-color: #d9534f;
+    box-shadow: 0 0 2px 1px #d9534f;
 }
 
 .horizontal{
@@ -65,7 +68,7 @@ select:focus > option:checked {
 
 .reviews{
     color: white;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .book-title{

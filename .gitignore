@@ -5,3 +5,5 @@ books/__pycache__
 books/migrations/__pycache__
 Alejandria/__pycache__
 books/migrations/0*
+media/thumbnails/*
+media/ebooks/*

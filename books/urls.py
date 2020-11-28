@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.urls import path
 
 from . import views
@@ -16,9 +17,15 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login_user, name='login'),
     path('payment/', views.PaymentView.as_view(), name='payment'),
-    path('sell/', views.SellView.add_book, name='sell'),
+    path('sell/', views.SellView.as_view(), name='sell'),
     path('forgot/', views.forgot, name='forgot'),
     path('forgot/<id>/', views.forgot, name='reset'),
     path('review/', views.leave_review, name='post_review')
+    path('editor/', views.EditorLibrary.as_view(), name='editor_library'),
+    path('profile/', views.view_profile, name="view_profile"),
+    path('purchase/', views.complete_purchase, name='purchase'),
+    path('editBook/<slug:pk>/', views.EditBookView.as_view(), name='edit_book'),
+    path('deleteBook/<slug:pk>/', views.DeleteBookView.as_view(), name='delete_book'),
+    path('pdf/', views.generate_pdf, name='generate_bill'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
