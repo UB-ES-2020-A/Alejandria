@@ -391,7 +391,12 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='SEL'),
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
-        print(context)
+        the_user = self.request.user
+        print(the_user)
+        if 'AnonymousUser' is str(the_user):
+            context['admin']= False
+        else:
+            context['admin'] = self.request.user.role in 'Admin'
 
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)

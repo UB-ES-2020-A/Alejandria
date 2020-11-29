@@ -52,15 +52,15 @@
 
             <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
               <div class="card-body mr-5">
-                  {% for faq in list_query.0 %}
-                    <div class="col-12 ml-3 m-2" style="text-align:left;">
-                      <h3>{{faq.question}}</h3>
-                    </div>
-                    <div class="col-12 ml-5 m-2" style="text-align:left;">
-                      {% autoescape off %}
-                          {{faq.answer|safe}}
-                      {% endautoescape %}
-                    </div>
+                {% for faq in list_query.0 %}
+                <div class="col-12 ml-3 m-2" style="text-align:left;">
+                  <h3>{{faq.question}}</h3>
+                </div>
+                <div class="col-12 ml-5 m-2" style="text-align:left;">
+                  {% autoescape off %}
+                  {{faq.answer|safe}}
+                  {% endautoescape %}
+                </div>
                 {% endfor %}
               </div>
             </div>
@@ -75,15 +75,15 @@
             </div>
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
               <div class="card-body mr-5">
-                  {% for faq in list_query.1 %}
-                    <div class="col-12 ml-3 m-2" style="text-align:left;">
-                      <h3>{{faq.question}}</h3>
-                    </div>
-                    <div class="col-12 ml-5 m-2" style="text-align:left;">
-                      {% autoescape off %}
-                          {{faq.answer|safe}}
-                      {% endautoescape %}
-                    </div>
+                {% for faq in list_query.1 %}
+                <div class="col-12 ml-3 m-2" style="text-align:left;">
+                  <h3>{{faq.question}}</h3>
+                </div>
+                <div class="col-12 ml-5 m-2" style="text-align:left;">
+                  {% autoescape off %}
+                  {{faq.answer|safe}}
+                  {% endautoescape %}
+                </div>
                 {% endfor %}
               </div>
             </div>
@@ -98,16 +98,16 @@
             </div>
             <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
               <div class="card-body mr-5">
-                  {% for faq in list_query.2 %}
-                    <div class="col-12 ml-3 m-2" style="text-align:left;">
-                      <h3>{{faq.question}}</h3>
-                    </div>
-                    <div class="col-12 ml-5 m-2" style="text-align:left;">
-                      {% autoescape off %}
-                          {{faq.answer|safe}}
-                      {% endautoescape %}
-                    </div>
-                  {% endfor %}
+                {% for faq in list_query.2 %}
+                <div class="col-12 ml-3 m-2" style="text-align:left;">
+                  <h3>{{faq.question}}</h3>
+                </div>
+                <div class="col-12 ml-5 m-2" style="text-align:left;">
+                  {% autoescape off %}
+                  {{faq.answer|safe}}
+                  {% endautoescape %}
+                </div>
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -121,16 +121,16 @@
             </div>
             <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
               <div class="card-body mr-5">
-                  {% for faq in list_query.3 %}
-                    <div class="col-12 ml-3 m-2" style="text-align:left;">
-                      <h3>{{faq.question}}</h3>
-                    </div>
-                    <div class="col-12 ml-5 m-2" style="text-align:left;">
-                      {% autoescape off %}
-                          {{faq.answer|safe}}
-                      {% endautoescape %}
-                    </div>
-                  {% endfor %}
+                {% for faq in list_query.3 %}
+                <div class="col-12 ml-3 m-2" style="text-align:left;">
+                  <h3>{{faq.question}}</h3>
+                </div>
+                <div class="col-12 ml-5 m-2" style="text-align:left;">
+                  {% autoescape off %}
+                  {{faq.answer|safe}}
+                  {% endautoescape %}
+                </div>
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -144,22 +144,116 @@
             </div>
             <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
               <div class="card-body mr-5">
-                  {% for faq in list_query.4 %}
-                    <div class="col-12 ml-3 m-2" style="text-align:left;">
-                      <h3>{{faq.question}}</h3>
-                    </div>
-                    <div class="col-12 ml-5 m-2" style="text-align:left;">
-                      {% autoescape off %}
-                          {{faq.answer|safe}}
-                      {% endautoescape %}
-                    </div>
-                  {% endfor %}
+                {% for faq in list_query.4 %}
+                <div class="col-12 ml-3 m-2" style="text-align:left;">
+                  <h3>{{faq.question}}</h3>
+                </div>
+                <div class="col-12 ml-5 m-2" style="text-align:left;">
+                  {% autoescape off %}
+                  {{faq.answer|safe}}
+                  {% endautoescape %}
+                </div>
+                {% endfor %}
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    {% if admin %}
+    <hr style="background-color:white;">
+    <div class="row my-2 px-5 justify-content-center">
+      <div class="col-3">
+        <h3 style="text-align: center; color: white;">Admin panel</h3>
+      </div>
+      <div class="col-10">
+        <h3 style="color: white;">Operation</h3>
+      </div>
+    </div>
+    <div class="row my-2 px-5 justify-content-center">
+      <div class="col-2">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupOp">Operation</label>
+          </div>
+          <select class="select-op" id="inputGroupOp">
+            <option selected>Choose...</option>
+            <option value="1">Add</option>
+            <option value="2">Modify</option>
+            <option value="3">Delete</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-8">
+        <div class="form-group">
+          <select class="faq-select" id="modifySelect">
+            <option disabled selected>Select a question...</option>
+            {% for faq in list_query.0 %}
+            <option value={{faq.question}}>{{faq.question}}</option>
+            {% endfor %}
+            {% for faq in list_query.1 %}
+            <option value={{faq.question}}>{{faq.question}}</option>
+            {% endfor %}
+            {% for faq in list_query.2 %}
+            <option value={{faq.question}}>{{faq.question}}</option>
+            {% endfor %}
+            {% for faq in list_query.3 %}
+            <option value={{faq.question}}>{{faq.question}}</option>
+            {% endfor %}
+            {% for faq in list_query.4 %}
+            <option value={{faq.question}}>{{faq.question}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-10">
+        <h4 style="color: white;">Properties</h4>
+      </div>
+      <div class="col-10">
+        <label for="category" style="color: white;">Category</label>
+        <form>
+          <div class="form-group">
+            <select class="cat-select" id="category">
+              <option disabled selected>Select the category...</option>
+              <option value={{category_names.0}}>{{category_names.0}}</option>
+              <option value={{category_names.0}}>{{category_names.1}}</option>
+              <option value={{category_names.0}}>{{category_names.2}}</option>
+              <option value={{category_names.0}}>{{category_names.3}}</option>
+              <option value={{category_names.0}}>{{category_names.4}}</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="col-10">
+        <form>
+          <div class="form-group">
+            <label for="question" style="color: white;">Question</label>
+            <textarea class="form-control" id="question" rows="1"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="col-10">
+        <form>
+          <div class="form-group">
+            <label for="answer" style="color: white;">Answer</label>
+            <textarea class="form-control" id="answer" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="col-10">
+
+      </div>
+      <div class="col-8">
+        <div class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1">
+          <label class="form-check-label" for="exampleCheck1" style="color: white;">I am aware what this operation will cause</label>
+        </div>
+      </div>
+      <div class="col-2 pl-5">
+        <button type="submit" class="btn btn-primary" style="background-color: orange;">Apply changes</button>
+      </div>
+    </div>
+    {% endif %}
   </div>
 </body>
 
