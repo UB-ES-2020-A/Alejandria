@@ -150,11 +150,11 @@ class LibraryBills(models.Model):
 class FAQ(models.Model):
     # First object = Saved on the model, second object = Human readable one
     FAQ_CHOICES = [
-        ('DWLDBOOK', 'Como descargar un ebook'),
-        ('DEVOL', 'Devoluciones'),
-        ('SELL', 'Vende tus libros'),
-        ('FACTU', 'Necesito la factura de mi libro o alguna modificación'),
-        ('CONTACT', 'Contacta con nosotros'),
+        ('DWL', 'About our ebooks'),
+        ('REF', 'Refund'),
+        ('SEL', 'Sell your ebooks'),
+        ('FAC', 'About bills and payment'),
+        ('CON', 'Contact us'),
     ]
 
     ID = models.AutoField(primary_key=True)

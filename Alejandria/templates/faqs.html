@@ -6,132 +6,161 @@
 {% block content %}
 
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Alejandria</title>
+  <meta charset="UTF-8">
+  <title>Alejandria Frequently Asked Questions</title>
 
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+  <!-- Bootstrap 4 + Accordion funcctionality requirements -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
-    <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
-    <link rel="stylesheet" href="{% static 'css/font.css' %}">
-    <link rel="stylesheet" href="{% static 'css/card.css' %}">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>
-
-
-<!--    <link rel="stylesheet/less" type="text/css" href="styles.less" />-->
-    <script src="//cdn.jsdelivr.net/npm/less" ></script>
-<!--    <link rel="stylesheet" href="{% static 'css/main.css' %}">-->
-
-<!--    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <!-- CSS Special for FAQs page -->
+  <link rel="stylesheet" href="{% static 'css/faq-page/faqs.css' %}">
 
 </head>
-<body>
 
-    <div class="container p-2" style="color: white">
-      <div class="row mt-3">
-        <h1 style="color: white"> Preguntas frequentes </h1>
+<body style="background-color:#141414">
+  <div class="container-fluid justify-content-center my-3 p-5">
+    <div class="row justify-content-center">
+      <div class="col-4">
+        <h1 style="text-align: center; color: white">Hi, how can we help?</h1>
       </div>
-      <div class="container p-2">
-            <div class="row">
-              <div class="col-12 m-2" >
-                <h3>{{ category_names.0 }}</h3>
-              </div>
-              <div class="row ml-2 m-2">
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-6">
+        <p style="  text-align: center; color: white;">This page is refered
+          to doubts and frequently asked questions about Alejandria. <br>
+          We hope you can find what you are looking for, notice we classified
+          in related topics the questions. <br>In case you this page might not
+          help you, let us know and contact with our support team. <br>Good luck!</p>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-10">
+        <div class="accordion p-1 shadow" id="accordionExample">
+          <div class="card">
+            <div class="card-header" id="headingOne">
+              <h2 class="mb-0">
+                <button class="btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  <h4>{{ category_names.0 }}</h4>
+                </button>
+              </h2>
+            </div>
+
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+              <div class="card-body mr-5">
                   {% for faq in list_query.0 %}
-                    <div class="col-12 ml-3 m-2">
-                      <h4>{{faq.question}}</h4>
+                    <div class="col-12 ml-3 m-2" style="text-align:left;">
+                      <h3>{{faq.question}}</h3>
                     </div>
-                    <div class="col-12 ml-5 m-2">
+                    <div class="col-12 ml-5 m-2" style="text-align:left;">
                       {% autoescape off %}
                           {{faq.answer|safe}}
                       {% endautoescape %}
                     </div>
-                  {% endfor %}
-                </div>
+                {% endfor %}
               </div>
-            <div class="row">
-              <div class="col-12 m-2" >
-                <h3>{{ category_names.1 }}</h3>
-              </div>
-              <div class="row ml-2 m-2">
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="headingTwo">
+              <h2 class="mb-0">
+                <button class="btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <h4>{{ category_names.1 }}</h4>
+                </button>
+              </h2>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+              <div class="card-body mr-5">
                   {% for faq in list_query.1 %}
-                    <div class="col-12 ml-3 m-2">
-                      <h4>{{faq.question}}</h4>
+                    <div class="col-12 ml-3 m-2" style="text-align:left;">
+                      <h3>{{faq.question}}</h3>
                     </div>
-                    <div class="col-12 ml-5 m-2">
+                    <div class="col-12 ml-5 m-2" style="text-align:left;">
+                      {% autoescape off %}
+                          {{faq.answer|safe}}
+                      {% endautoescape %}
+                    </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="headingThree">
+              <h2 class="mb-0">
+                <button class="btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  <h4>{{ category_names.2 }}</h4>
+                </button>
+              </h2>
+            </div>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+              <div class="card-body mr-5">
+                  {% for faq in list_query.2 %}
+                    <div class="col-12 ml-3 m-2" style="text-align:left;">
+                      <h3>{{faq.question}}</h3>
+                    </div>
+                    <div class="col-12 ml-5 m-2" style="text-align:left;">
                       {% autoescape off %}
                           {{faq.answer|safe}}
                       {% endautoescape %}
                     </div>
                   {% endfor %}
-                </div>
               </div>
-        <div class="row">
-        <div class="col-12 m-2" >
-          <h3>{{ category_names.2 }}</h3>
-        </div>
-        <div class="row ml-2 m-2">
-            {% for faq in list_query.2 %}
-              <div class="col-12 ml-3 m-2">
-                <h4>{{faq.question}}</h4>
-              </div>
-              <div class="col-12 ml-5 m-2">
-                {% autoescape off %}
-                    {{faq.answer|safe}}
-                {% endautoescape %}
-              </div>
-            {% endfor %}
+            </div>
           </div>
-        </div>
-
-      <div class="row">
-        <div class="col-12 m-2" >
-          <h3>{{ category_names.3 }}</h3>
-        </div>
-        <div class="row ml-2 m-2">
-            {% for faq in list_query.3 %}
-              <div class="col-12 ml-3 m-2">
-                <h4>{{faq.question}}</h4>
+          <div class="card">
+            <div class="card-header" id="headingFour">
+              <h2 class="mb-0">
+                <button class="btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                  <h4>{{ category_names.3 }}</h4>
+                </button>
+              </h2>
+            </div>
+            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
+              <div class="card-body mr-5">
+                  {% for faq in list_query.3 %}
+                    <div class="col-12 ml-3 m-2" style="text-align:left;">
+                      <h3>{{faq.question}}</h3>
+                    </div>
+                    <div class="col-12 ml-5 m-2" style="text-align:left;">
+                      {% autoescape off %}
+                          {{faq.answer|safe}}
+                      {% endautoescape %}
+                    </div>
+                  {% endfor %}
               </div>
-              <div class="col-12 ml-5 m-2">
-                {% autoescape off %}
-                    {{faq.answer|safe}}
-                {% endautoescape %}
-              </div>
-            {% endfor %}
+            </div>
           </div>
-        </div>
-      <div class="row">
-        <div class="col-12 m-2" >
-          <h3>{{ category_names.4 }}</h3>
-        </div>
-        <div class="row ml-2 m-2">
-            {% for faq in list_query.4 %}
-              <div class="col-12 ml-3 m-2">
-                <h4>{{faq.question}}</h4>
+          <div class="card">
+            <div class="card-header" id="headingFive">
+              <h2 class="mb-0">
+                <button class="btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                  <h4>{{ category_names.4 }}</h4>
+                </button>
+              </h2>
+            </div>
+            <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
+              <div class="card-body mr-5">
+                  {% for faq in list_query.4 %}
+                    <div class="col-12 ml-3 m-2" style="text-align:left;">
+                      <h3>{{faq.question}}</h3>
+                    </div>
+                    <div class="col-12 ml-5 m-2" style="text-align:left;">
+                      {% autoescape off %}
+                          {{faq.answer|safe}}
+                      {% endautoescape %}
+                    </div>
+                  {% endfor %}
               </div>
-              <div class="col-12 ml-5 m-2">
-                {% autoescape off %}
-                    {{faq.answer|safe}}
-                {% endautoescape %}
-              </div>
-            {% endfor %}
+            </div>
           </div>
         </div>
       </div>
-        </div>
-<!--        <div>-->
-<!--          <img src="/static/recent_books.jpg" class="img-responsive center-block d-block mx-auto" alt="centered image" style="margin-top:10px; ">-->
-<!--&lt;!&ndash;             falta caption - background casa del libro &ndash;&gt;-->
-<!--        </div>-->
-
+    </div>
+  </div>
 </body>
 
 </html>

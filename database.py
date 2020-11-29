@@ -8,6 +8,7 @@ import random
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
+
 from books.models import Book, User, Address, Product, Cart, FAQ  #  deepcode ignore C0413: <irrelevant error>
 
 from django.core.files import File
@@ -93,28 +94,28 @@ try:
         product = Product(ISBN=b, price=b.price)
         products.append(product)
         product.save()
-
+    
     print("PRODUCTS SAVED...OK")
-
+    
     # Create Cart
     cart = Cart(id=1, user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
     pk_cart = cart.pk
-    # cart.save()
-
-    # cart = Cart.objects.filter(pk=pk_cart)
-    # cart = Cart(id=1, user_id=user)
-
+    #cart.save()
+    
+    #cart = Cart.objects.filter(pk=pk_cart)
+    #cart = Cart(id=1, user_id=user)
+    
     for p in products:
         cart.products.add(p)
-
+    
     cart.save()
-
+    
     print("CART SAVED...OK")
 except IntegrityError:
     print("Error in cart")
 
-
-def read_faqs_from_file():  # pylint: disable=too-many-statements too-many-branches too-many-nested-blocks no-else-break
+    
+def read_faqs_from_file(): # pylint: disable=too-many-statements too-many-branches too-many-nested-blocks no-else-break
     """
     READS FAQs FROM A FILE:
     THE FILE FORMAT IS DEFFINED IN faqs.txt
@@ -124,13 +125,14 @@ def read_faqs_from_file():  # pylint: disable=too-many-statements too-many-branc
     filename = 'faqs.txt'
     file_faqs = open(filename, 'r')
     lines = file_faqs.readlines()
-
     print(lines)
 
     # Strips the newline character
     i = 0  # Line we are reading
     more_faqs = len(lines) > 0
-    while more_faqs:  # pylint: disable=too-many-nested-blocks
+
+    while more_faqs: # pylint: disable=too-many-nested-blocks
+    
         cat = None
         q = list()
         a = list()
@@ -213,25 +215,24 @@ def save_faq(cat, q, a):
     new_faq.save()
     print("FAQ SAVED: " + str(new_faq))
 
-
 print("RF: Reaf file (faqs.txt)")
 print("DB: Read whats in the database")
 print("DEL: Delete whattever is in the database")
-#
-# while True:
-#     what = input(" Choose (RF/DB/DEL), default(RF) : ")
-#     if what in 'RF' or what in '' or what in '\n':  # pylint: disable=no-else-break
-#         read_faqs_from_file()
-#         break
-#     elif what == 'DB':
-#         faqs = FAQ.objects.all()
-#         print(faqs)
-#         for faq in faqs:
-#             print(faq)
-#         break
-#     elif what == 'DEL':
-#         FAQ.objects.all().delete()
-#         print(FAQ.objects.all())
-#         break
-#     else:
-#         print("Introduce a valid option")
+while True:
+    what = input(" Choose (RF/DB/DEL), default(RF) : ")
+    if what in 'RF' or what in '' or what in '\n': #pylint: disable=no-else-break
+        read_faqs_from_file()
+        break
+    elif what == 'DB':
+        faqs = FAQ.objects.all()
+        print(faqs)
+        for faq in faqs:
+            print(faq)
+        break
+    elif what == 'DEL':
+        FAQ.objects.all().delete()
+        print(FAQ.objects.all())
+        break
+    else:
+        print("Introduce a valid option")
+
