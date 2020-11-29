@@ -10,6 +10,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
 from books.models import Book, User, Address, Product, Cart, FAQ
 from django.core.files import File
+from django.db import IntegrityError
 
 
 
@@ -110,7 +111,7 @@ try:
     cart.save()
     
     print("CART SAVED...OK")
-except:
+except IntegrityError:
     print("Error in cart")
 
 def read_faqs_from_file(): # pylint: disable=too-many-statements too-many-branches too-many-nested-blocks no-else-break
@@ -208,9 +209,9 @@ def save_faq(cat, q, a):
     """
     question = "".join(q)
     answer = "".join(a)
-    faq = FAQ(question=question, answer=answer, category=cat)
-    faq.save()
-    print("FAQ SAVED: " + str(faq))
+    new_faq = FAQ(question=question, answer=answer, category=cat)
+    new_faq.save()
+    print("FAQ SAVED: " + str(new_faq))
 
 print("RF: Reaf file (faqs.txt)")
 print("DB: Read whats in the database")
