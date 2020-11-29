@@ -46,7 +46,7 @@ We are shure you can make it</a>
 
 <cat>FAC</cat>
 <q>How do I acces my bills and payments on the platform?</q>
-<a>Your bills and payments can be found in your profile. 
+<a>Your bills and payments can be found in your profile.
 If you have any other problem with them plis feel free to come back or contact us</a>
 
 <cat>FAC</cat>

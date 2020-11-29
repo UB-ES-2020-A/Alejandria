@@ -44,7 +44,7 @@ class User(AbstractUser):
     id = models.AutoField(primary_key=True, null=False, blank=True)
     # TODO: ADD USERNAME AS A PK
     role = models.CharField(max_length=10, null=False, blank=False)
-    name = models.CharField(max_length=50, null=False, blank=False)
+    name = models.CharField(max_length=50, null=False, blank=False, default="user")
     password = models.CharField(max_length=150, null=False, blank=False)
     email = models.EmailField(max_length=50, null=False, blank=False)
     user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
@@ -113,15 +113,17 @@ class Product(models.Model):
 
 
 class Rating(models.Model):
+
+
     ID = models.AutoField(primary_key=True, blank=False, null=False)
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
+    ISBN = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
-                                blank=False)  # TODO: on_delete
+                                blank=False)
     text = models.TextField(max_length=500, null=False, blank=True)
     per_values = range(1, 6)
     human_readable = [str(value) for value in per_values]
     score = models.IntegerField(choices=zip(per_values, human_readable), null=False, blank=False)
-    date = models.DateField(null=False, blank=False, default=timezone.now)
+    date = models.DateField(null=True, blank=True, default=timezone.now)
 
 
 class Cart(models.Model):
@@ -169,7 +171,6 @@ class FAQ(models.Model):
 
 
 class ResetMails(models.Model):
-
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False, blank=False)
     activated = models.BooleanField(default=True)
 

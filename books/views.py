@@ -19,8 +19,8 @@ from reportlab.pdfgen import canvas
 from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
-from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills
+from .forms import BookForm, UpdateBookForm, ReviewForm
+from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
 
 # Create your views here.
 
@@ -32,21 +32,122 @@ NUM_COINCIDENT = 10
 NUM_RELATED = 5
 MONTHS_TO_CONSIDER_TOP_SELLER = 6
 
+
+#
+# class RatingView(PermissionRequiredMixin, generic.DetailView):
+#     model = Rating
+#     template_name = 'details.html'
+#     permission_required = ('books.add_book',)
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         # format data to suit frontend requirements
+#         #context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+#         return context
+#
+#     # post (update) of book
+#     def post(self, request, *args, **kwargs):
+#         if request.method == 'POST':
+#             # get the instance to modify
+#             #s = get_object_or_404(Book, pk=self.kwargs['pk'])
+#             form = ReviewForm(request.POST)
+#             if form.is_valid():
+#                 review = form.save(commit=False)
+#                 # intern field (not shown to user)
+#                 review.user_id = request.user
+#                 review.book = self.kwargs['pk']
+#
+#                 messages.info(request, 'Your review has been added successfully!')
+#                 review.save()
+#             else:
+#                 messages.info(request, 'Oops.. something is wrong')
+#         else:
+#             form = ReviewForm()
+#         return render(request, "details.html", {"form": form})
+
+
 # This one is the same but uses a generic Model, lso should work with the primary key
 class BookView(generic.DetailView):
     model = Book
     template_name = 'details.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
+        self.context = super().get_context_data(**kwargs)
+        relation_book = Book.objects.filter(primary_genre=self.context['object'].primary_genre)[:20]
+        review_list = Rating.objects.filter(ISBN=self.context['object'])
+        if self.request.user.id != None:
+            owned = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(
+                ISBN=self.context['book']).first()
+            if owned:
+                self.context['owned'] = "true"
+
+        if relation_book:
+            self.context['book_relation'] = relation_book
+        else:
+            self.context['book_relation'] = Book.objects.all()[:20]
+
+        if review_list:
+            self.context['review_list'] = review_list
+
+        if 'owned' not in self.context.keys():
+            self.context['owned'] = 'false'
+
+        return self.context
+
+    def post(self, request, *args, **kwargs):
+        book = get_object_or_404(Book, pk=self.kwargs['pk'])
+
+        if request.method == 'POST':
+            # get the instance to modify
+            # s = get_object_or_404(Book, pk=self.kwargs['pk'])
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                print("entrooooooooo")
+
+
+                review = form.save(commit=False)
+                # intern field (not shown to user)
+                review.user_id = request.user
+                review.ISBN = book
+
+                messages.info(request, 'Your review has been added successfully!')
+                review.save()
+            else:
+                print("nmooooooo entrooooooooo")
+                messages.info(request, 'Oops.. something is wrong')
+        else:
+            form = ReviewForm()
+
+        context = {}
+
+
+        context['book'] = book
+
+        relation_book = Book.objects.filter(primary_genre=book.primary_genre)[:20]
+        review_list = Rating.objects.filter(ISBN=book)
+        if self.request.user.id:
+            owned = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(
+                ISBN=self.kwargs['pk']).first()
+            if owned:
+                context['owned'] = "true"
 
         if relation_book:
             context['book_relation'] = relation_book
         else:
             context['book_relation'] = Book.objects.all()[:20]
 
-        return context
+        if review_list:
+            context['review_list'] = review_list
+
+        if 'owned' not in context.keys():
+            context['owned'] = 'false'
+
+
+        print(form)
+        print(context)
+        context["form"] = form
+
+        return render(request, "details.html", context)
 
 
 class HomeView(generic.ListView):
@@ -96,7 +197,6 @@ class HomeView(generic.ListView):
             context['total_items'] = items
 
         return response
-
 
     @staticmethod
     def generate_id():
@@ -591,6 +691,7 @@ def login_user(request):
 class PaymentView(generic.ListView):
     # model = Account
     template_name = 'payment.html'
+    queryset = Product.objects.all()
     context_object_name = 'cart_list'
 
     def __init__(self, **kwargs):
@@ -674,7 +775,26 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
         context['editor_books'] = editor_books
 
         return context
-      
+
+
+def leave_review(request, **kwargs):
+    if request.method == 'POST':
+        if int(request.POST['score']) < 0 or int(request.POST['score']) > 5:
+            return JsonResponse({"error": "You must provide a valid score (between 0 and 5)."})
+        if len(request.POST['text']) > 500:
+            return JsonResponse({"error": "The maximum text length is 500 characters."})
+
+        book = Book.objects.filter(ISBN=request.POST['book']).first()
+        review = Rating(book=book,
+                        user_id=request.user,
+                        text=request.POST['text'],
+                        score=request.POST['score'])
+
+        review.save()
+        print("Your review was added successfully!")
+        return JsonResponse({"message": "Your review was added successfully!"})
+
+
 def view_profile(request):
     if request.method == "POST":
         if validate_data(request):
@@ -747,8 +867,7 @@ def view_profile(request):
             context = {
                 'total_items': items
             }
-            return render(request, "view_profile.html", context)
-        return render(request, "view_profile.html")
+        return render(request, "view_profile.html", context)
 
 
 def complete_purchase(request):
@@ -815,7 +934,8 @@ def complete_purchase(request):
                                                         "\nRemember that you can also find all your bills in your " \
                                                         "profile on our website. " \
                                                         "\n\n Name: " + bill.name + "\n Date: " + str(bill.date) + "\n" \
-                                                        " Total: " + str(total) + "€" + "\n\nAlejandria Team."
+                                                                                                                   " Total: " + str(
+                    total) + "€" + "\n\nAlejandria Team."
 
                 send_mail(subject, msg, EMAIL_HOST_USER, [request.user.email], fail_silently=True)
 

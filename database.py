@@ -8,12 +8,15 @@ import random
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
-from books.models import Book, User, Address, Product, Cart, FAQ # I know this does not work here but deep code is stupid
+
+from books.models import Book, User, Address, Product, Cart, FAQ  #  deepcode ignore C0413: <irrelevant error>
 
 from django.core.files import File
 from django.db import IntegrityError
 
 
+from django.core.files import File
+from django.db import IntegrityError
 
 user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
@@ -115,6 +118,7 @@ try:
 except IntegrityError:
     print("Error in cart")
 
+    
 def read_faqs_from_file(): # pylint: disable=too-many-statements too-many-branches too-many-nested-blocks no-else-break
     """
     READS FAQs FROM A FILE:
@@ -125,13 +129,14 @@ def read_faqs_from_file(): # pylint: disable=too-many-statements too-many-branch
     filename = 'faqs.txt'
     file_faqs = open(filename, 'r')
     lines = file_faqs.readlines()
-    
     print(lines)
 
     # Strips the newline character
     i = 0  # Line we are reading
     more_faqs = len(lines) > 0
+
     while more_faqs: # pylint: disable=too-many-nested-blocks
+    
         cat = None
         q = list()
         a = list()
@@ -153,7 +158,7 @@ def read_faqs_from_file(): # pylint: disable=too-many-statements too-many-branch
                     q.append(line[3:])
                     while True:
                         if "</q>" in line:
-                            #Ends the question
+                            # Ends the question
                             q.pop()
                             if first_q_line:
                                 q.append(line[3:-5])
@@ -166,14 +171,14 @@ def read_faqs_from_file(): # pylint: disable=too-many-statements too-many-branch
                         q.append(line)
                         first_q_line = False
                         i += 1
-                    
+
                 if "<a>" in line:
-                    #Answer
+                    # Answer
                     # We found the question
                     while True:
                         line = lines[i]
                         if "</a>" in line:
-                            #Ends the question
+                            # Ends the question
                             if first_a_line:
                                 a.append(line[3:-5])
                             else:
@@ -181,7 +186,7 @@ def read_faqs_from_file(): # pylint: disable=too-many-statements too-many-branch
                                 a.append(line[:-5])
                             save_faq(cat, q, a)
                             inprocess = False
-                            more_faqs = len(lines) > i+2
+                            more_faqs = len(lines) > i + 2
                             break
                         # We are in a middle line
                         if first_a_line:
@@ -234,3 +239,4 @@ while True:
         break
     else:
         print("Introduce a valid option")
+
