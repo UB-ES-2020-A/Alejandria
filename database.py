@@ -8,8 +8,7 @@ import random
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
-from books.models import Book, User, Address, Product, Cart, \
-    FAQ  # I know this does not work here but deep code is stupid
+from books.models import Book, User, Address, Product, Cart, FAQ  #  deepcode ignore C0413: <irrelevant error>
 
 from django.core.files import File
 from django.db import IntegrityError
