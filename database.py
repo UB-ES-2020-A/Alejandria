@@ -212,12 +212,9 @@ def save_faq(cat, q, a):
 
 
 what = input("Chose option, insert manually, read in file information, see whats in database or delete all FAQ"
-             " (I/RF/DB/DEL) :")
+             " (RF/DB/DEL) :")
 while True:
-    if what == 'I':
-        write_some_faqs()
-        break
-    elif what == 'RF':
+    if what == 'RF':
         read_faqs_from_file()
         break
     elif what == 'DB':
