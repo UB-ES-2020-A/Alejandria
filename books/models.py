@@ -44,9 +44,9 @@ class User(AbstractUser):
     id = models.AutoField(primary_key=True, null=False, blank=True)
     # TODO: ADD USERNAME AS A PK
     role = models.CharField(max_length=10, null=False, blank=False)
-    name = models.CharField(max_length=50, null=False, blank=False, default="user")
+    name = models.CharField(max_length=150, null=False, blank=False, default="user")
     password = models.CharField(max_length=150, null=False, blank=False)
-    email = models.EmailField(max_length=50, null=False, blank=False)
+    email = models.EmailField(max_length=150, null=False, blank=False)
     user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
                                      related_name="user_address")
     fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
