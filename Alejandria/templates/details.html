@@ -115,7 +115,7 @@
                 {% for review in review_list %}
                 <div class="container" style="border-bottom: 1px solid gray;">
                     <div style="margin-left: 2px; margin-top: 15px" class="row">
-                        <img style="height: 20px; width: 20px;" src="https://www.vhv.rs/dpng/d/312-3120300_default-profile-hd-png-download.png">
+                        <img style="height: 20px; width: 20px;" src="{% static 'images/default-user-img.png' %}">
                         <p style="color: white; margin-left: 10px; margin-right: 65%"> {{ review.user_id.username }} </p>
                         <p style="color: white"> {{ review.date }} </p>
                     </div>
@@ -174,16 +174,16 @@
 
 <div class="container" style="margin-left: 8%; margin-top: 20px;">
     <h4 style="color: white">Have you read this book? Leave a review!</h4>
-    <form class="form-group" id="review-form" post_url="review/">
+    <form method="POST">
         {% csrf_token %}
         <div class="main">
-            <i class="fa fa-star unchecked" id="one"></i>
-            <i class="fa fa-star unchecked" id="two"></i>
-            <i class="fa fa-star unchecked" id="three"></i>
-            <i class="fa fa-star unchecked" id="four"></i>
-            <i class="fa fa-star unchecked" id="five"></i>
+            <input type="radio" class="fa fa-star unchecked" id="one" value=1 name="score"></input>
+            <input type="radio" class="fa fa-star unchecked" id="two" value=2 name="score"></input>
+            <input type="radio" class="fa fa-star unchecked" id="three" value=3 name="score"></input>
+            <input type="radio" class="fa fa-star unchecked" id="four" value=4 name="score"></input>
+            <input type="radio" class="fa fa-star unchecked" id="five" value=5 name="score"></input>
         </div>
-        <textarea id="review-text-input" style="height: 100px; margin-top: 20px; margin-bottom: 20px;" type="text" class="form-control mr-sm-2" placeholder="Submit your review here"></textarea>
+        <input type="textarea" id="review-text-input" name="text" style="height: 100px; margin-top: 20px; margin-bottom: 20px;" type="text" class="form-control mr-sm-2" placeholder="Submit your review here"></input>
         <button type="submit" class="btn btn-danger">Submit</button>
     </form>
 </div>
@@ -246,51 +246,6 @@
                 }
             }
         });
-    });
-
-    $('#review-form').on('submit', function () {
-        if(typeof {{ user.id }} == undefined){
-            alert("You need to log in to leave a review");
-            return false;
-        }
-
-        if({{ owned }} == false){
-            alert("You need to buy the book first to review it.");
-            return false;
-        }
-
-        var post_url = '../../review/';
-
-        var form = $('#review-form')[0];
-        var formData = new FormData(form);
-        var book = {{ book.ISBN }};
-        var user_id = {{ user.id }};
-        formData.append('book', book);
-        formData.append('user_id', user_id);
-        formData.append('text', document.getElementById('review-text-input').value);
-        formData.append('score', rating);
-
-        $.ajax({
-            url: post_url,
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success:function(response){
-                console.log("response");
-                console.log(response.message);
-                alert(response.message);
-                window.location.reload();
-            },
-            error:function(response){
-                console.log("response");
-                console.log(response.responseJSON.message);
-                console.log(response.status);
-                alert(response.responseJSON.message);
-            }
-        });
-
-        return false;
     });
 
 
