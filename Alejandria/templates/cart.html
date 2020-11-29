@@ -39,8 +39,7 @@
                         <div style="margin-left:1%;">
                             <div class="row horizontal">
                                 <div class="col-md-8">
-                                    <p class="book-title"><a href="#">{{ product.ISBN.title }}, {{ product.ISBN.author
-                                        }}</a></p>
+                                    <p class="book-title"><a href="#">{{ product.ISBN.title }}, {{ product.ISBN.author }}</a></p>
                                 </div>
                                 <div class="col">
                                     <p class="text" style="text-align:right;"><span>{{ product.price }}</span>€</p>
@@ -300,12 +299,21 @@
 
             <!--Bottom of the page-->
             <div style="margin-top:5%; padding-bottom:5%; width:100%; text-align: center;">
+                {% if user.is_authenticated %}
                 <button class="btn btn-success my-2 my-sm-0"
                         style="width:200px;"
                         type="submit"
                         id="btn_purchase"
                 >Complete purchase
                 </button>
+                {% else %}
+                <button class="btn btn-success my-2 my-sm-0"
+                        style="width:200px;"
+                        type="submit"
+                        disabled
+                >Complete purchase
+                </button>
+                {% endif %}
                 <p class="text" style="font-size:12px">New client? &nbsp;<a href="#">Register here</a></p>
             </div>
             <!-- ./Bottom of the page -->
@@ -320,19 +328,15 @@
             <div class="info-box" style="border-color: #d9534f; box-shadow: 0 0 2px 1px #d9534f;">
 
                 <div class="row">
-                    {% for v in total_items %}
                     <div class="col" style="margin-left:4%">
-                        <div class="text" style="font-size:20px">Subtotal&nbsp;(<span id="subtotal_products">{{ v }}
+                        <div class="text" style="font-size:20px">Subtotal&nbsp;(<span id="subtotal_products">{{ total_items }}
                                 </span>&nbsp;<span id="items">items</span>)
                         </div>
                     </div>
-                    {% endfor %}
 
-                    {% for v in total_price %}
                     <div class="col-4">
-                        <span class="text" style="font-size:20px" id="priceSubtotal">{{ v }}€</span>
+                        <span class="text" style="font-size:20px" id="priceSubtotal">{{ total_price }}€</span>
                     </div>
-                    {% endfor %}
                 </div>
 
                 <div class="custom-control custom-checkbox" style="margin-left:4%; margin-bottom: 3%">
@@ -343,12 +347,21 @@
                 </div>
 
                 <div style="text-align: center; margin-bottom:2%">
+                    {% if user.is_authenticated %}
                     <button class="btn btn-success my-2 my-sm-0"
                             style="width:80%;"
                             type="submit"
                             id="btn_checkout"
                     >Proceed to Checkout
                     </button>
+                    {% else %}
+                    <button class="btn btn-success my-2 my-sm-0"
+                            style="width:80%;"
+                            type="submit"
+                            disabled
+                    >Proceed to Checkout
+                    </button>
+                    {% endif %}
                 </div>
             </div>
             <!-- ./Total Payment -->

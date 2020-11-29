@@ -8,9 +8,9 @@ import random
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
-
 from books.models import Book, User, Address, Product, Cart, FAQ
 from django.core.files import File
+
 
 
 user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
@@ -85,31 +85,35 @@ book6 = Book(ISBN="012345812", user_id=user, title="Holita", saga="Harry Potter"
 book6.save()
 
 print("BOOKS SAVED...OK")
+try:
+    # Create Products
+    books = Book.objects.all()
+    products = []  # TODO: Product.objects.all() doesn't work.
+    for b in books:
+        product = Product(ISBN=b, price=b.price)
+        products.append(product)
+        product.save()
+    
+    print("PRODUCTS SAVED...OK")
+    
+    # Create Cart
+    cart = Cart(id=1, user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
+    pk_cart = cart.pk
+    #cart.save()
+    
+    #cart = Cart.objects.filter(pk=pk_cart)
+    #cart = Cart(id=1, user_id=user)
+    
+    for p in products:
+        cart.products.add(p)
+    
+    cart.save()
+    
+    print("CART SAVED...OK")
+except:
+    print("Error in cart")
 
-# Create Products
-books = Book.objects.all()
-products = []  # TODO: Product.objects.all() doesn't work.
-for b in books:
-    product = Product(ISBN=b, price=b.price)
-    products.append(product)
-    product.save()
-
-print("PRODUCTS SAVED...OK")
-
-# Create Cart
-cart = Cart(user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
-cart.save()
-cart = Cart(id=1, user_id=user)
-
-for p in products:
-    cart.products.add(p)
-
-cart.save()
-
-print("CART SAVED...OK")
-
-
-def read_faqs_from_file():
+def read_faqs_from_file(): # pylint: disable=too-many-statements too-many-branches too-many-nested-blocks no-else-break
     """
     READS FAQs FROM A FILE:
     THE FILE FORMAT IS DEFFINED IN faqs.txt
@@ -124,8 +128,8 @@ def read_faqs_from_file():
 
     # Strips the newline character
     i = 0  # Line we are reading
-    more_faqs = True if len(lines) > 0 else False
-    while more_faqs:
+    more_faqs = len(lines) > 0
+    while more_faqs: # pylint: disable=too-many-nested-blocks
         cat = None
         q = list()
         a = list()
@@ -155,11 +159,10 @@ def read_faqs_from_file():
                                 q.append("<br>")
                                 q.append(line[:-5])
                             break
-                        else:
-                            # We are in a middle line
-                            q.append("<br>")
-                            q.append(line)
-                            first_q_line = False
+                        # We are in a middle line
+                        q.append("<br>")
+                        q.append(line)
+                        first_q_line = False
                         i += 1
                     
                 if "<a>" in line:
@@ -176,16 +179,15 @@ def read_faqs_from_file():
                                 a.append(line[:-5])
                             save_faq(cat, q, a)
                             inprocess = False
-                            more_faqs = True if len(lines) > i+2 else False
+                            more_faqs = len(lines) > i+2
                             break
+                        # We are in a middle line
+                        if first_a_line:
+                            a.append(line[3:-1])
                         else:
-                            # We are in a middle line
-                            if first_a_line:
-                                a.append(line[3:-1])
-                            else:
-                                a.append("<br>")
-                                a.append(line[:-1])
-                            first_a_line = False
+                            a.append("<br>")
+                            a.append(line[:-1])
+                        first_a_line = False
                         i += 1
                     i += 1
                 i += 1
@@ -210,11 +212,12 @@ def save_faq(cat, q, a):
     faq.save()
     print("FAQ SAVED: " + str(faq))
 
-
-what = input("Chose option, insert manually, read in file information, see whats in database or delete all FAQ"
-             " (RF/DB/DEL) :")
+print("RF: Reaf file (faqs.txt)")
+print("DB: Read whats in the database")
+print("DEL: Delete whattever is in the database")
 while True:
-    if what == 'RF':
+    what = input(" Choose (RF/DB/DEL), default(RF) : ")
+    if what in 'RF' or what in '' or what in '\n': #pylint: disable=no-else-break
         read_faqs_from_file()
         break
     elif what == 'DB':
@@ -227,3 +230,5 @@ while True:
         FAQ.objects.all().delete()
         print(FAQ.objects.all())
         break
+    else:
+        print("Introduce a valid option")

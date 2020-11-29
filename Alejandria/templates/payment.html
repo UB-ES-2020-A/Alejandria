@@ -13,6 +13,30 @@
 
 <body style="background-color:black">
 
+{% if messages %}
+{% for message in messages %}
+{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">Error!</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+      <div class="modal-body">
+          <a class="custom-close"> {{ message }} </a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endif %}
+{% endfor %}
+{% endif %}
+
 <!-- Container -->
 <div class="row" style="margin-left: 3%; margin-top: 2%; margin-right: 3%">
     <div class="col-75 body-card">
@@ -28,38 +52,39 @@
 
 
                 <div class="row">
-                    <div class="col-lg-9 mx-auto rounded" style="border-color: #d9534f; box-shadow: 0 0 4px 2px #d9534f;">
+                    <div class="col-lg-9 mx-auto rounded"
+                         style="border-color: #d9534f; box-shadow: 0 0 4px 2px #d9534f;">
                         <div class="card" style="background-color: black">
                             <div class="card-header">
                                 <!-- Credit card form content -->
                                 <div class="tab-content">
 
                                     <div class="py-5">
-                                        <div class="container" id="container-products" style="border-color: #d9534f; box-shadow: 0 0 2px 1px #d9534f;">
+                                        <div class="container" id="container-products"
+                                             style="border-color: #d9534f; box-shadow: 0 0 2px 1px #d9534f;">
                                             <h3 style="margin-bottom:2%">Cart
                                                 <span class="price" style="color:black">
                                                   <i class="fa fa-shopping-cart fa-sm"></i>
-                                                  <b id="number-products">3</b>
+                                                  <b id="number-products">{{ total_items }}</b>
                                                 </span>
                                             </h3>
-                                            <div class="row">
-                                                <div class="col"><p>The Arrivals</p></div>
-                                                <div class="col-2" style="text-align:right"><span>15.00 €</span></div>
-                                            </div>
+                                            <div style="height: 200px; overflow:auto; border-color: none; box-shadow: 0 0 3px 0px black;">
+                                                {% for product in cart_list %}
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <p class="col">{{ product.ISBN.title }}</p>
+                                                        <div class="col-2" style="text-align:right"><span>{{ product.ISBN.price }} €</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
 
-                                            <div class="row">
-                                                <div class="col"><p>The Arrivals</p></div>
-                                                <div class="col-2" style="text-align:right"><span>15.00 €</span></div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col"><p>The Arrivals</p></div>
-                                                <div class="col-2" style="text-align:right"><span>15.00 €</span></div>
                                             </div>
                                             <hr>
                                             <div class="row">
                                                 <div class="col"><b>Total</b></div>
-                                                <div class="col-2" style="text-align:right"><b>45.00 €</b></div>
+                                                <div class="col-2" style="text-align:right"><b>{{ total_price }} €</b>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -72,6 +97,8 @@
                                                     <div class="input-group">
                                                         <input type="text" name="username" id="fullname"
                                                                placeholder="John Cena" required
+                                                               value="{{ user.name }} {{user.last_name}}"
+                                                               readonly="readonly"
                                                                class="form-control ">
                                                         <div class="input-group-append">
                                                     <span class="input-group-text text-muted bg-dark">
@@ -86,6 +113,8 @@
                                                     <div class="input-group"><input type="text"
                                                                                     id="email"
                                                                                     placeholder="john@example.com"
+                                                                                    value="{{ user.email }}"
+                                                                                    readonly="readonly"
                                                                                     class="form-control " required>
                                                         <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -102,7 +131,9 @@
                                                             <div class="input-group"><input type="text"
                                                                                             id="address"
                                                                                             placeholder="Calle Alcalá, 48"
-                                                                                            class="form-control "
+                                                                                            class="form-control"
+                                                                                            readonly="readonly"
+                                                                                            value="{{ user.fact_address.street }}"
                                                                                             required>
                                                                 <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -117,8 +148,10 @@
                                                             <label for="city" style="color:white">City</label>
                                                             <div class="input-group"><input type="text"
                                                                                             id="city"
+                                                                                            readonly="readonly"
                                                                                             placeholder="Madrid"
-                                                                                            class="form-control "
+                                                                                            class="form-control"
+                                                                                            value="{{ user.fact_address.city }}"
                                                                                             required>
                                                                 <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -133,8 +166,11 @@
                                                             <label for="zip" style="color:white">Zip</label>
                                                             <div class="input-group"><input type="text"
                                                                                             id="zip"
+                                                                                            name="zip"
+                                                                                            readonly="readonly"
                                                                                             placeholder="00000"
-                                                                                            class="form-control "
+                                                                                            class="form-control"
+                                                                                            value="{{ user.fact_address.zip }}"
                                                                                             required>
                                                                 <div class="input-group-append">
                                                         <span class="input-group-text text-muted bg-dark">
@@ -152,15 +188,20 @@
                                     <!-- ./Bill Address -->
 
                                     <!-- Credit card form tabs -->
-                                    <ul role="tablist" class="nav bg-light nav-pills rounded nav-fill mb-3" style="border-color: #d9534f; box-shadow: 0 0 4px 2px #e9534f;">
-                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill" href="#credit-card"
-                                                                class="nav-link active"> <i
-                                                class="fas fa-credit-card mr-2"></i> Credit Card </a></li>
-                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill" href="#paypal"
-                                                                class="nav-link "> <i
+                                    <ul role="tablist" class="nav bg-light nav-pills rounded nav-fill mb-3"
+                                        style="border-color: #d9534f; box-shadow: 0 0 4px 2px #e9534f;">
+                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill"
+                                                                                               href="#credit-card"
+                                                                                               class="nav-link active">
+                                            <i
+                                                    class="fas fa-credit-card mr-2"></i> Credit Card </a></li>
+                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill"
+                                                                                               href="#paypal"
+                                                                                               class="nav-link "> <i
                                                 class="fab fa-paypal mr-2"></i> Paypal </a></li>
-                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill" href="#net-banking"
-                                                                class="nav-link "> <i
+                                        <li class="nav-item" style="background-color:black"><a data-toggle="pill"
+                                                                                               href="#net-banking"
+                                                                                               class="nav-link "> <i
                                                 class="fas fa-mobile-alt mr-2"></i> Net Banking </a></li>
                                     </ul>
                                     <!-- End -->
@@ -170,15 +211,22 @@
 
                                         <!-- credit card info-->
                                         <div id="credit-card" class="tab-pane fade show active pt-3">
-                                            <form role="form">
+                                            <form action="{% url 'books:purchase' %}" method="post">
+                                                {% csrf_token %}
                                                 <div class="form-group"><label for="username" style="color:white">
                                                     Card Owner
                                                 </label> <input type="text" name="username" id="username"
                                                                 placeholder="Card Owner Name" required
+                                                                value="{{ user.name }} {{ user.last_name }}"
+                                                                pattern="[A-Za-z]{4-30}"
+                                                                title="Please insert the name of the card owner."
                                                                 class="form-control ">
                                                 </div>
-                                                <div class="form-group"><label for="cardNumber" style="color:white">
-                                                    Card number
+                                                <div class="form-group"><label for="cardNumber" style="color:white"
+                                                                               data-toggle="tooltip"
+                                                                               style="color:white"
+                                                                               title="Your credit card number must have 16 digits">
+                                                    Card number <i class="fa fa-question-circle d-inline"></i>
                                                 </label>
                                                     <div class="input-group"><input type="text" name="cardNumber"
                                                                                     id="cardNumber"
@@ -187,8 +235,10 @@
                                                         <div class="input-group-append"><span
                                                                 class="input-group-text text-muted bg-dark"> <i
                                                                 class="fab fa-cc-visa mx-1" style="color:white"></i> <i
-                                                                class="fab fa-cc-mastercard mx-1" style="color:white"></i> <i
-                                                                class="fab fa-cc-amex mx-1" style="color:white"></i> </span></div>
+                                                                class="fab fa-cc-mastercard mx-1"
+                                                                style="color:white"></i> <i
+                                                                class="fab fa-cc-amex mx-1"
+                                                                style="color:white"></i> </span></div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -200,10 +250,10 @@
                                                             <div class="input-group">
                                                                 <input type="number" pattern="\d*" maxlength="2"
                                                                        placeholder="MM" class="form-control"
-                                                                       required>
+                                                                       name="month_exp" required>
                                                                 <input type="number" pattern="\d*" minlength="4"
-                                                                       maxlength="4" placeholder="YY"
-                                                                       class="form-control"
+                                                                       maxlength="4" placeholder="YYYY"
+                                                                       class="form-control" name="year_exp"
                                                                        required>
                                                             </div>
                                                         </div>
@@ -211,16 +261,17 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group mb-4"><label data-toggle="tooltip"
                                                                                             style="color:white"
-                                                                                            title="Three digit CV code on the back of your card">
+                                                                                            title="Three or four digit CV code on the back of your card">
                                                             CVV <i class="fa fa-question-circle d-inline"></i>
-                                                        </label> <input type="text" placeholder="XXX" required class="form-control">
+                                                        </label><input type="text" placeholder="XXX" required
+                                                                        class="form-control" name="cvv">
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <!-- Don't close DIV -->
                                                 <div style="margin-left:10%; margin-right:10%; margin-bottom:2%">
-                                                    <button type="button"
+                                                    <button type="submit"
                                                             class="subscribe btn btn-success btn-block shadow-sm">
                                                         <i class="fas fa-lock mr-2"></i>Confirm Payment
                                                     </button>
@@ -300,6 +351,7 @@
     </div>
     <!-- JavaScript files from static folder -->
     <!-- script src="/static/js/payment-page/showproducts.js"></script -->
+    <script src="/static/js/payment-page/modal.js"></script>
     <!-- ./JavaScript files from static folder -->
 
 </body>
