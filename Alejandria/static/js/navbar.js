@@ -9,6 +9,10 @@ $(document).ready(function () {
         window.location.href = window.location.origin;
     });
 
+    $("#performLogout").click(function () {
+        $("#logout_btn").click();
+    })
+
     $("#buttonSearch").click(function () {
             book_name = document.getElementById('textSearch').value;
             if(book_name!=""){
@@ -16,7 +20,6 @@ $(document).ready(function () {
                 var url = new URL(urlname);
                 url.searchParams.append('search_book', document.getElementById('textSearch').value);
                 window.location.href = url;
-                //window.location.href = "/search/" + document.getElementById('textSearch').value; //window.location.origin+"/login";
             }
             else{ //TODO: Falta fer el search buit...
                 console.log("NULL");
@@ -164,10 +167,6 @@ $(document).ready(function () {
         }
     });
 
-    /*return {
-
-
-                }*/
 
     $("#faqs_btn").click(function () {
         window.location.href = "/faqs/";
@@ -199,6 +198,7 @@ $(document).ready(function () {
                     '<div class="form-group">'+
                         '<label for="register_lastname" style="margin-right: 77%;"><strong>Last Name</strong></label>'+
                         '<input type="text" id="register_lastname" class="swal2-input form-control" placeholder="Last Name">' +
+                        '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">Please enter just 1 last name</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
@@ -211,12 +211,6 @@ $(document).ready(function () {
                         '<label for="register_password_1" style="margin-right: 100%;"><strong>Password</strong></label>'+
                         '<input type="password" id="register_password_1" class="swal2-input form-control" placeholder="Enter password">' +
                         '<small id="password1Help" class="form-text text-muted" style="padding-right: 32%;">Max. 50 characters. All characters are valid.</small>'+
-                    '</div>'+
-
-                    '<div class="form-group">'+
-                        '<label for="register_password_2" style="margin-right: 61%;"><strong>Confirm Password</strong></label>'+
-                        '<input type="password" id="register_password_2" class="swal2-input form-control" placeholder="Confirm password">'+
-                        '<small id="password2Help" class="form-text text-muted" style="padding-right: 55%;">Both Passwords must match.</small>'+
                     '</div>',
 
                 preConfirm: () => {
@@ -225,9 +219,9 @@ $(document).ready(function () {
                         firstname: $("#register_firstname").val(),
                         lastname: $("#register_lastname").val(),
                         email: $("#register_email").val(),
-                        password1: $("#register_password_1").val(),
-                        password2: $("#register_password_2").val()
+                        password1: $("#register_password_1").val()
                     }
+
                     window.value = data;
                 }
             },
@@ -295,6 +289,128 @@ $(document).ready(function () {
                         trigger: "register"
                     }
                     window.value = $.extend(window.value,data);
+                }
+            },
+            {
+                title: "Give us your taste! (Optional)",
+                html:
+                    '<div class="form-group">'+
+                        '<label for="genreDropdownBtn1" style="margin-right: 66%;"><strong>Your 1st choice</strong></label>'+
+                        '<div class="dropdown">' +
+                            '<button class="btn btn-secondary dropdown-toggle" type="button" id="genreDropdownBtn1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 100%;">Choose</button> '+
+                            '<div class="dropdown-menu dropdown-menu-right" style="height: auto;max-height: 150px;overflow-x: hidden;" aria-labelledby="genreDropdownBtn1">' +
+                                '<a class="dropdown-item item-taste-1" href="#">Fantasy</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Crime & Thriller</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Fiction</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Science Fiction</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Horror</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Romance</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Teen & Young Adult</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Children\'s Books</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Anime & Manga</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Others</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Art</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Biography</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Food</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">History</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Dictionary</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Health</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Humour</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Travel</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Sport</a> '+
+                                '<a class="dropdown-item item-taste-1" href="#">Poetry</a> '+
+                            '</div> '+
+                        '</div>' +
+                    '</div>'+
+
+                    '<div class="form-group">'+
+                        '<label for="genreDropdownBtn2" style="margin-right: 66%;"><strong>Your 2nd choice</strong></label>'+
+                        '<div class="dropdown">' +
+                            '<button class="btn btn-secondary dropdown-toggle" type="button" id="genreDropdownBtn2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 100%;">Choose</button> '+
+                            '<div class="dropdown-menu dropdown-menu-right" style="height: auto;max-height: 150px;overflow-x: hidden;" aria-labelledby="genreDropdownBtn2">' +
+                                '<a class="dropdown-item item-taste-2" href="#">Fantasy</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Crime & Thriller</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Fiction</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Science Fiction</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Horror</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Romance</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Teen & Young Adult</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Children\'s Books</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Anime & Manga</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Others</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Art</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Biography</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Food</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">History</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Dictionary</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Health</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Humour</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Travel</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Sport</a> '+
+                                '<a class="dropdown-item item-taste-2" href="#">Poetry</a> '+
+                            '</div> '+
+                        '</div>' +
+                    '</div>'+
+
+                    '<div class="form-group">'+
+                        '<label for="genreDropdownBtn3" style="margin-right: 66%;"><strong>Your 3rd choice</strong></label>'+
+                        '<div class="dropdown">' +
+                            '<button class="btn btn-secondary dropdown-toggle" type="button" id="genreDropdownBtn3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 100%;">Choose</button> '+
+                            '<div class="dropdown-menu dropdown-menu-right" style="height: auto;max-height: 150px;overflow-x: hidden;" aria-labelledby="genreDropdownBtn3">' +
+                                '<a class="dropdown-item item-taste-3" href="#">Fantasy</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Crime & Thriller</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Fiction</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Science Fiction</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Horror</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Romance</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Teen & Young Adult</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Children\'s Books</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Anime & Manga</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Others</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Art</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Biography</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Food</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">History</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Dictionary</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Health</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Humour</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Travel</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Sport</a> '+
+                                '<a class="dropdown-item item-taste-3" href="#">Poetry</a> '+
+                            '</div> '+
+                        '</div>' +
+                    '</div>',
+                preConfirm: () => {
+                    let tastes = false;
+
+                    if ($("#genreDropdownBtn1").text() != "Choose" || $("#genreDropdownBtn1").text() != "Choose" || $("#genreDropdownBtn1").text() != "Choose") {
+                        tastes = true;
+                    }
+
+                    data = {
+                        taste1: $("#genreDropdownBtn1").text(),
+                        taste2: $("#genreDropdownBtn2").text(),
+                        taste3: $("#genreDropdownBtn3").text(),
+                        trigger: "register",
+                        tastes: tastes
+                    }
+                    window.value = $.extend(window.value,data);
+                },
+                willOpen: () => {
+                    $(".swal2-confirm").text("Send");
+
+                    $(".item-taste-1").click(function () {
+                        $("#genreDropdownBtn1").text($(this).text());
+                        $("#genreDropdownBtn1").css("background-color","#dc3545");
+                    })
+                    $(".item-taste-2").click(function () {
+                        $("#genreDropdownBtn2").text($(this).text());
+                        $("#genreDropdownBtn2").css("background-color","#dc3545");
+                    })
+                    $(".item-taste-3").click(function () {
+                        $("#genreDropdownBtn3").text($(this).text());
+                        $("#genreDropdownBtn3").css("background-color","#dc3545");
+                    })
                 }
             }
         ]).then((result) => {

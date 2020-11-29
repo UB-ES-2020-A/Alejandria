@@ -38,7 +38,7 @@ def isbn_10__to__isbn_13(isbn_10):
 
 responses = list()
 
-for _, genre in Book.GENRE_CHOICES:
+for _, genre in GENRE_CHOICES:
     print("GENRE: ", genre)
     for word in genre.split(" "):
         params = {'query': '{"type":"\/type\/edition", "genres":' + "\"{}\"".format(word) + '}'}

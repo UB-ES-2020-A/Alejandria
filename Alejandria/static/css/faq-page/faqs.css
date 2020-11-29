@@ -1,0 +1,54 @@
+.body {
+  background-color: inherit;
+}
+
+.card{
+  background-color: #242424;
+  text-align: center;
+}
+.card-header {
+  height: auto;
+  background-color: #343A40;
+  text-align: center;
+}
+
+.btn {
+  color: white;
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
+  display: inline-block;
+  box-shadow: none;
+}
+
+.btn:hover{
+  color: #a5a5a5;
+}
+
+.card-body{
+  color: white;
+}
+
+.card-header:after {
+  content: '+';
+  /* Unicode character for "plus" sign (+) */
+  color: white;
+  float: right;
+  margin-left: 5px;
+}
+
+/* .card-header.{
+  content: "\2796"; /* Unicode character for "minus" sign (-) */
+/* } */
+
+.select{
+  font-size: 30px;
+}
+
+.h3{
+  color: white;
+}
+
+.h4{
+  color: white;
+}

@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -6,8 +7,30 @@ from django.utils import timezone
 # Create your models here.
 
 """
-TODO: IF NECESSARY INTRODUCE help_text in some characteristics.
+IF NECESSARY INTRODUCE help_text in some characteristics.
 """
+GENRE_CHOICES = [
+        ('FANT', 'Fantasy'),
+        ('CRIM', 'Crime & Thriller'),
+        ('FICT', 'Fiction'),
+        ('SCFI', 'Science Fiction'),
+        ('HORR', 'Horror'),
+        ('ROMA', 'Romance'),
+        ('TEEN', 'Teen & Young Adult'),
+        ('KIDS', "Children's Books"),
+        ('ANIM', 'Anime & Manga'),
+        ('OTHR', 'Others'),
+        ('ARTS', 'Art'),
+        ('BIOG', 'Biography'),
+        ('FOOD', 'Food'),
+        ('HIST', 'History'),
+        ('DICT', 'Dictionary'),
+        ('HEAL', 'Health'),
+        ('HUMO', 'Humor'),
+        ('SPOR', 'Sport'),
+        ('TRAV', 'Travel'),
+        ('POET', 'Poetry')
+    ]
 
 
 class Address(models.Model):
@@ -21,13 +44,21 @@ class User(AbstractUser):
     id = models.AutoField(primary_key=True, null=False, blank=True)
     # TODO: ADD USERNAME AS A PK
     role = models.CharField(max_length=10, null=False, blank=False)
-    name = models.CharField(max_length=50, null=False, blank=False)
-    password = models.CharField(max_length=50, null=False, blank=False)
-    email = models.EmailField(max_length=50, null=False, blank=False)
-    user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
+    name = models.CharField(max_length=150, null=False, blank=False, default="user")
+    password = models.CharField(max_length=150, null=False, blank=False)
+    email = models.EmailField(max_length=150, null=False, blank=False)
+    user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
                                      related_name="user_address")
-    fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=False, null=False,
+    fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
                                      related_name="fact_address")
+    genre_preference_1 = models.CharField(max_length=4, choices=GENRE_CHOICES, blank=True, null=True)
+    genre_preference_2 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
+    genre_preference_3 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
+
+
+class Guest(models.Model):
+    id = models.AutoField(primary_key=True, null=False, blank=True)
+    device = models.CharField(max_length=200, null=False, blank=False)
 
 
 # class Author(models.Model):
@@ -42,19 +73,6 @@ class User(AbstractUser):
 
 
 class Book(models.Model):
-    GENRE_CHOICES = [
-        ('FANT', 'Fantasy'),
-        ('CRIM', 'Crime & Thriller'),
-        ('FICT', 'Fiction'),
-        ('SCFI', 'Science Fiction'),
-        ('HORR', 'Horror'),
-        ('ROMA', 'Romance'),
-        ('TEEN', 'Teen & Young Adult'),
-        ('KIDS', "Children's Books"),
-        ('ANIM', 'Anime & Manga'),
-        ('OTHR', 'Others'),
-    ]
-
     ISBN = models.CharField(primary_key=True, max_length=13, blank=False, null=False)  # Its a Char instead of Integer
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)  # Reference to the User that created it #TODO: on_delete=models.CASCADE
@@ -77,8 +95,8 @@ class Book(models.Model):
     recommended_age = models.CharField(max_length=30, blank=True,
                                        null=True)  # TODO: choices=<<possible range recommendation>> example: Juvenile
     # Path to thumbnail(Thubnail identified by ISBN)
-    thumbnail = models.CharField(max_length=30)  # TODO:Should be blank=False in the Future
-
+    thumbnail = models.ImageField(blank=True, null=True, upload_to="thumbnails/")  # TODO:Should be blank=False in the Future
+    eBook = models.FileField(blank=True, null=True, upload_to="ebooks/")
     # pub_date = publication_date  # Abreviation
 
 
@@ -96,38 +114,45 @@ class Product(models.Model):
 
 class Rating(models.Model):
     ID = models.AutoField(primary_key=True, blank=False, null=False)
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
+    ISBN = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
-                                blank=False)  # TODO: on_delete
+                                blank=False)
     text = models.TextField(max_length=500, null=False, blank=True)
     per_values = range(1, 6)
     human_readable = [str(value) for value in per_values]
     score = models.IntegerField(choices=zip(per_values, human_readable), null=False, blank=False)
-    date = models.DateField(null=False, blank=False, default=timezone.now)
+    date = models.DateField(null=True, blank=True, default=timezone.now)
 
 
 class Cart(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=False)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
+    guest_id = models.ForeignKey(Guest, on_delete=models.CASCADE, blank=False, null=True)
     products = models.ManyToManyField(Product)
 
 
 class Bill(models.Model):
-    num_factura = models.AutoField(primary_key=True, blank=False, null=False)  # TODO: auto field
-    cart = models.ManyToManyField(Cart)  # TODO: How to treat quantities
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    num_bill = models.AutoField(primary_key=True, blank=False, null=False)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
     date = models.DateField(null=True, blank=True, default=timezone.now)
-    seller_info = models.TextField(blank=True, null=False)  # TODO: This is provisional
-    payment_method = models.CharField(max_length=30)  # TODO: Define choices.
+    payment_method = models.CharField(max_length=50)
+    products = models.ManyToManyField(Product)
+    total_money_spent = models.DecimalField(decimal_places=2, max_digits=8, null=True)
+
+
+class LibraryBills(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False)
+    bills = models.ManyToManyField(Bill)
 
 
 class FAQ(models.Model):
     # First object = Saved on the model, second object = Human readable one
     FAQ_CHOICES = [
-        ('DWLDBOOK', 'Como descargar un ebook'),
-        ('DEVOL', 'Devoluciones'),
-        ('SELL', 'Vende tus libros'),
-        ('FACTU', 'Necesito la factura de mi libro o alguna modificación'),
-        ('CONTACT', 'Contacta con nosotros'),
+        ('DWL', 'About our ebooks'),
+        ('REF', 'Refund'),
+        ('SEL', 'Sell your ebooks'),
+        ('FAC', 'About bills and payment'),
+        ('CON', 'Contact us'),
     ]
 
     ID = models.AutoField(primary_key=True)
@@ -144,7 +169,16 @@ class FAQ(models.Model):
 
 
 class ResetMails(models.Model):
-
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
-                                blank=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False, blank=False)
     activated = models.BooleanField(default=True)
+
+
+class BankAccount(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    name = models.CharField(max_length=100)
+    money = models.DecimalField(decimal_places=2, max_digits=8, default=500.00)
+    card_number = models.CharField(validators=[RegexValidator(regex='^[0-9]{16}$', message='Length has to be 16',
+                                                              code='nomatch')], max_length=16, null=True)
+    month_exp = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)], null=True)
+    year_exp = models.IntegerField(validators=[MinValueValidator(2020)], null=True)
+    cvv = models.IntegerField(validators=[MinValueValidator(000), MaxValueValidator(9999)], null=True)  # 3 or 4 digits

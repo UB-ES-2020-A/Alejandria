@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+<html lang="en">
+
+<link rel="stylesheet" href="{% static 'css/editor-page/card.css' %}">
+<head>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 mt-3">
+            {% for bill in user_bills %}
+            <div class="card" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
+                <div class="card-horizontal">
+                    <div class="card-body" style="color:white;">
+                        <h3 class="card-title">{{ bill.num_bill }}</h3>
+                        <form action="/pdf"> <!--{{prod.ISBN.ISBN}}-->
+                            <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Download"
+                                    type="submit"><i class="fas fa-download"></i></button>
+                        </form>
+                        <div class="row" style="margin-top:2%;">
+                            <div class="column" style="position: absolute; right: 5%; ">
+                                <div clas="row" style="margin-top: 5%;">
+                                </div>
+                                <div clas="row" style="margin-top:5%;">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if user_bills|length == 0 %}
+        <div class="col-12 mt-3" style="color: white; text-align: center;">
+            <h3>Seems like you did not buy any book yet...</h3>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>
+
+
+{% endblock %}

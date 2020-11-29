@@ -1,9 +1,10 @@
 addons:
   postgresql: '9.4'
 before_script:
-- psql -c 'create database travis_ci_test;' -U postgres
-- python manage.py makemigrations
-- python manage.py migrate
+  - "psql -c 'create database travis_ci_test;' -U postgres"
+  - "python manage.py makemigrations"
+  - "python manage.py migrate"
+  - "pylint Alejandria books *.py --errors-only"
 cache: pip
 env:
 - DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test
@@ -13,7 +14,9 @@ language: python
 python:
 - 3.8
 script:
-- pytest
+  - pytest --cov
+after_success:
+  - coveralls
 sudo: false
 deploy:
   provider: heroku

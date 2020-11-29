@@ -1,6 +1,7 @@
 # Alejandria
 
-[![Build Status](https://travis-ci.com/UB-ES-2020/Alejandria.svg?branch=main)](https://travis-ci.com/UB-ES-2020/Alejandria)
+[![Build Status](https://travis-ci.com/UB-ES-2020-A/Alejandria.svg?branch=main)](https://travis-ci.com/UB-ES-2020-A/Alejandria)
+[![Coverage Status](https://coveralls.io/repos/github/UB-ES-2020-A/Alejandria/badge.svg?branch=main)](https://coveralls.io/github/UB-ES-2020-A/Alejandria?branch=main)
 
 ### Primeros pasos
 
@@ -45,3 +46,32 @@ Vamos a utilizar la librería ``pytest`` para la creación y comprobación de nu
 - Para ejecutar los test le damos a la propia ejecución desde el fichero de test (saldrá un icono de ejecutar en la linea de definición de la función) o bien si queremos ejecutar manualmente por consola `pytest archivo_de_test.py` o `pytest archivo_de_test.py::funcion_a_testear` o `pytest archivo_de_test.py::Clase::funcion_a_testear`
 
 - Por último comprobar que el estado de la ejecución es PASSED.
+
+Durante el proyecto también se ha añadido code coverage con `pytest-cov + coveralls` ambos se han añadido al fichero de `requirements.txt`
+y poseis ejecutar `pytest --cov` para obtener también la información de la cantidad de codigo testeado actualmente.
+
+
+### Configuración Pylint
+
+La libreria de ``pylint`` ya se encuentra en los requirements del proyecto, sí los has instalado podreis ejecutar los 
+comandos en el terminal necesarios para comprovar los errores y problemas de estandarización en vuestro código.  
+Puedes ejecutar la comprovación de pylint sobre un fichero, modulo o proyecto de python, algunos ejemplos de uso en 
+el terminal serian:
+```
+pylint books # Ejecuta la comprovación de código sobre el modulo books de la aplicación
+pylint api_read_files.py # Ejecuta la comprovación sobre el fichero python.
+``` 
+Usar esta herramienta desde el terminal puede ser de ayuda, pero ayuda mucho utilizar el plugin adaptado al IDE que estés utilizando.  
+Sí utilizas Pycharm puedes buscar el plugin pylint en `File >> Settings >> Plugins` y buscar `pylint`, tras instalarlo 
+debes reiniciar el IDE y podras ejecutar pylint dentro de Pycharm de forma interactiva.  
+Para más información sobre como utilizar pylint en tu IDE, puedes encontrarla en el siguiente [enlace](http://pylint.pycqa.org/en/latest/user_guide/ide-integration.html#pylint-in-pycharm).  
+
+Seguro que hay errores que pueden ser ignorados y no quieres que pylint los resalte,
+puedes comentar entonces en esa linea o al nivel de identación al que quieres que se aplique lo siguiente:  
+```
+# pylint: disable=<<codigo-de-error>>
+```
+Substituyendo `<<codigo-de-error>>` con el codigo de error que quieres evitar.
+Puedes encontrar más sobre "Messages Control" [aquí](http://pylint.pycqa.org/en/latest/user_guide/message-control.html). 
+
+Puedes encontrar más información sobre como utilizar Pylint [aquí](http://pylint.pycqa.org/en/latest/user_guide/run.html).
