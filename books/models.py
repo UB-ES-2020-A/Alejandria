@@ -113,15 +113,17 @@ class Product(models.Model):
 
 
 class Rating(models.Model):
+
+
     ID = models.AutoField(primary_key=True, blank=False, null=False)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)  # TODO: on_delete
+    ISBN = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
-                                blank=False)  # TODO: on_delete
+                                blank=False)
     text = models.TextField(max_length=500, null=False, blank=True)
     per_values = range(1, 6)
     human_readable = [str(value) for value in per_values]
     score = models.IntegerField(choices=zip(per_values, human_readable), null=False, blank=False)
-    date = models.DateField(null=False, blank=False, default=timezone.now)
+    date = models.DateField(null=True, blank=True, default=timezone.now)
 
 
 class Cart(models.Model):

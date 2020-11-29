@@ -5,12 +5,14 @@ but might be changed for a future mor professional implementation.
 import os
 import django
 import random
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
-from books.models import Book, User, Address, Product, Cart, FAQ
+from books.models import Book, User, Address, Product, Cart, \
+    FAQ  # I know this does not work here but deep code is stupid
+
 from django.core.files import File
-
-
+from django.db import IntegrityError
 
 user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
@@ -84,117 +86,153 @@ book6 = Book(ISBN="012345812", user_id=user, title="Holita", saga="Harry Potter"
 book6.save()
 
 print("BOOKS SAVED...OK")
+try:
+    # Create Products
+    books = Book.objects.all()
+    products = []  # TODO: Product.objects.all() doesn't work.
+    for b in books:
+        product = Product(ISBN=b, price=b.price)
+        products.append(product)
+        product.save()
 
-# Create Products
-books = Book.objects.all()
-products = []  # TODO: Product.objects.all() doesn't work.
-for b in books:
-    product = Product(ISBN=b, price=b.price)
-    products.append(product)
-    product.save()
+    print("PRODUCTS SAVED...OK")
 
-print("PRODUCTS SAVED...OK")
+    # Create Cart
+    cart = Cart(id=1, user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
+    pk_cart = cart.pk
+    # cart.save()
 
-# Create Cart
-cart = Cart(id=1, user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
-pk_cart = cart.pk
-#cart.save()
+    # cart = Cart.objects.filter(pk=pk_cart)
+    # cart = Cart(id=1, user_id=user)
 
-#cart = Cart.objects.filter(pk=pk_cart)
-#cart = Cart(id=1, user_id=user)
+    for p in products:
+        cart.products.add(p)
 
-for p in products:
-    cart.products.add(p)
+    cart.save()
 
-cart.save()
-
-print("CART SAVED...OK")
-
-
-## TO GENEREATE FAQS, CAN BE CREATED FROM A FILE faqs.txt OR WRITTEN IN TERMINAL. ALSO DELETE ALL OR SEE WHAT IS IN THE DATABASE
-
-def write_some_faqs():
-    """ Asks to introduce FAQs by hand in terminal"""
-    while True:
-        n = input("Number of faqs you whant to write:")
-        if n.isdigit():
-            n = int(n)
-            break
-        else:
-            print("Introduce number")
-
-    questions = list()
-    answers = list()
-    categories = list()
-
-    for i in range(n):
-        loop = True
-        category = "DEFAULT"
-        while loop:
-            category = input("CATEGORY (DWLDBOOK, DEVOL, SELL, FACTU, CONTACT):")
-            loop = False
-        question = input("Question:")
-        answer = input("Answer")
-
-        categories.append(category)
-        questions.append(question)
-        answers.append(answer)
-
-    faqs_list = list(zip(categories, questions, answers))
-    print("Faqs:", faqs_list)
-    create_faqs(faqs_list)
+    print("CART SAVED...OK")
+except IntegrityError:
+    print("Error in cart")
 
 
-def read_faqs_from_file():
+def read_faqs_from_file():  # pylint: disable=too-many-statements too-many-branches too-many-nested-blocks no-else-break
+    """
+    READS FAQs FROM A FILE:
+    THE FILE FORMAT IS DEFFINED IN faqs.txt
+    """
     # Using readlines()
     print("READING FILE...")
     filename = 'faqs.txt'
-    file1 = open(filename, 'r')
-    lines = file1.readlines()
+    file_faqs = open(filename, 'r')
+    lines = file_faqs.readlines()
 
-    questions = list()
-    answers = list()
-    categories = list()
+    print(lines)
 
     # Strips the newline character
-    for line in lines:
-        print(line)
-        category, question, answer = line.strip().split('///')
-        questions.append(question)
-        answers.append(answer)
-        categories.append(category)
+    i = 0  # Line we are reading
+    more_faqs = len(lines) > 0
+    while more_faqs:  # pylint: disable=too-many-nested-blocks
+        cat = None
+        q = list()
+        a = list()
+        first_q_line = True
+        first_a_line = True
+        line = lines[i]
+        if "<cat>" in line and "</cat>" in line:
+            print(line[5:-7])
+            if line[5:-7] in [cat[0] for cat in FAQ.FAQ_CHOICES]:
+                cat = line[5:-7]
+                inprocess = True
+                i += 1
+            else:
+                raise Exception("File format error")
+            while inprocess:
+                line = lines[i]
+                if "<q>" in line:
+                    # We found the question
+                    q.append(line[3:])
+                    while True:
+                        if "</q>" in line:
+                            # Ends the question
+                            q.pop()
+                            if first_q_line:
+                                q.append(line[3:-5])
+                            else:
+                                q.append("<br>")
+                                q.append(line[:-5])
+                            break
+                        # We are in a middle line
+                        q.append("<br>")
+                        q.append(line)
+                        first_q_line = False
+                        i += 1
 
-    print("ALL FAQS READ...OK")
-    faqs_list = list(zip(categories, questions, answers))
-    create_faqs(faqs_list)
+                if "<a>" in line:
+                    # Answer
+                    # We found the question
+                    while True:
+                        line = lines[i]
+                        if "</a>" in line:
+                            # Ends the question
+                            if first_a_line:
+                                a.append(line[3:-5])
+                            else:
+                                a.append("<br>")
+                                a.append(line[:-5])
+                            save_faq(cat, q, a)
+                            inprocess = False
+                            more_faqs = len(lines) > i + 2
+                            break
+                        # We are in a middle line
+                        if first_a_line:
+                            a.append(line[3:-1])
+                        else:
+                            a.append("<br>")
+                            a.append(line[:-1])
+                        first_a_line = False
+                        i += 1
+                    i += 1
+                i += 1
+        else:
+            i += 1
+            print(i)
+
+    print("ALL FAQS CREATED...OK")
 
 
-def create_faqs(faqs_to_create):
-    print("SAVING FAQS...OK")
-    for faq_element in faqs_to_create:
-        print("### FAQ ---->", faq_element)
-        to_save = FAQ(question=faq_element[1], answer=faq_element[2], category=faq_element[0])
-        print(to_save)
-        to_save.save()
-    print("ALL FAQS SAVED...OK")
+def save_faq(cat, q, a):
+    """
+    Saves a faq passing
+    Parameters:
+        cat : category
+        q: question
+        a: answer
+    """
+    question = "".join(q)
+    answer = "".join(a)
+    new_faq = FAQ(question=question, answer=answer, category=cat)
+    new_faq.save()
+    print("FAQ SAVED: " + str(new_faq))
 
 
-what = input("Chose option, insert manually, read in file information, see whats in database or delete all FAQ"
-             " (I/RF/DB/DEL) :")
-while True:
-    if what == 'I':
-        write_some_faqs()
-        break
-    elif what == 'RF':
-        read_faqs_from_file()
-        break
-    elif what == 'DB':
-        faqs = FAQ.objects.all()
-        print(faqs)
-        for faq in faqs:
-            print(faq)
-        break
-    elif what == 'DEL':
-        FAQ.objects.all().delete()
-        print(FAQ.objects.all())
-        break
+print("RF: Reaf file (faqs.txt)")
+print("DB: Read whats in the database")
+print("DEL: Delete whattever is in the database")
+#
+# while True:
+#     what = input(" Choose (RF/DB/DEL), default(RF) : ")
+#     if what in 'RF' or what in '' or what in '\n':  # pylint: disable=no-else-break
+#         read_faqs_from_file()
+#         break
+#     elif what == 'DB':
+#         faqs = FAQ.objects.all()
+#         print(faqs)
+#         for faq in faqs:
+#             print(faq)
+#         break
+#     elif what == 'DEL':
+#         FAQ.objects.all().delete()
+#         print(FAQ.objects.all())
+#         break
+#     else:
+#         print("Introduce a valid option")

@@ -1,6 +1,67 @@
-DWLDBOOK///¿Como puedo descargar un eBook?///Cuando compras un eBook en Alejandría te damos la opción de varios formatos de descarga. <br>  Sí estas en una tablet, teléfono o eReader, te recomendamos el formato 'ePub', y en 'pdf' en caso de leer en ordenadór.
-DWLDBOOK///¿Puedo descargarme mi libro de nuevo?///Sí, claro. Si vas a tu perfíl, allí encontraras el apartado 'Comprados', donde puedes ver los libros en tu propiedad y descargarlos de nuevo.
-FACTU///¿Como veo las facturas de mis compras?///Accede a tu perfil y dirigete al apartado 'Mis compras', allí verás una lista con las facturas de las compras realizadas en el pasado. Recuerda que tambíen puedes descargarla en el momento de terminar la compra del carrito.
-SELL///Vender tu libro és facilisimo.///Si te has registrado como editor/editorial, puedes subir tus propios libros a Alejandria, solo tienes que introducír la información requerida en el apartado de 'Poner mi libro a la venta', i automaticamente se publicará en nuestra web.
-DEVOL///Las devoluciones són fáciles.///Solo para pedidos entregados en España*. <br> El plazo máximo de devolución de estos casos es de 14 días naturales desde la entrega del pedido. <br> Las devoluciones se puede realizar en cualquiera de nuestras librerías (solo para productos vendidos por Alejandría) o poniéndote en contacto con nosotros.
-CONTACT///¿Quieres contactar con nosotros?///Puedes enviarnos un correo a soporte@alejandria.com. <br> Recuerda que siempre encontraras la forma de contactar con Alejandría en la parte inferiór de nuestra pàgina web.
+# This file deffines faq, in a similar structure to an html
+# Between one faq and the other is a good practice to let a blank line
+
+<cat>DWL</cat>
+<q>How a book is bought</q>
+<a>Any book you see in our web can be bought. Click over a book to acces it's detailed page. There you will find all the details about the book, and add it to your cart.
+To buy the book or multiple books you added to your cart acces to it from around the top-left corner of our page, the systtem will require you to log into your account if you already did not do that. Finish the payment process and thats it.
+Now you can download your book</a>
+
+<cat>DWL</cat>
+<q>How do I find the books I already bought?</q>
+<a>The books you bought in the past can be located in Profile >> Library.
+There you will find and have acces to all the books you bought, and be ablo to download them as many as you want</a>
+
+<cat>DWL</cat>
+<q>I cant find a book I bought</q>
+<a>If you can not find a book you already bought in your library plis contact us to find out what happened.
+It is possible that the book got removed and the refound was unsuccesful</a>
+
+<cat>REF</cat>
+<q>Can I refund a recent purchase?</q>
+<a>We can make a refund of a purchase if the operation is justified, plis contact with our financial team over financial@alejandria.com.
+Keep in mind this operation might be limited in time if it is considered that the client is not right.
+In case of disagreement, you might want to acces to out 'Conditions and terms of use'</a>
+
+<cat>REF</cat>
+<q>How much can the refund take?</q>
+<a>Refunds might take some time, our computer science team and financial team have to investigate your personal case. In general refunds are made in one to two weeks</a>
+
+<cat>SEL</cat>
+<q>Can I sell my books in Alejandria?</q>
+<a>Of course !!!
+Alejandria was thought as a platform where everyone can upload their boooks.
+To be able to upload your books you might want to register as an editor.
+To upload a book go to the Sell section you can find in our navigation bar.
+Ther specify all the necessary information and wait for our staff to review it.
+You will be informed about the process by email</a>
+
+<cat>SEL</cat>
+<q>My books are not selling, what can I do?</q>
+<a>Keep up your work.
+You never know when your books can explode in popularity.
+Improve and write more, from Alejandria we encourage to follow with your work.
+Good luck!!
+We are shure you can make it</a>
+
+<cat>FAC</cat>
+<q>How do I acces my bills and payments on the platform?</q>
+<a>Your bills and payments can be found in your profile.
+If you have any other problem with them plis feel free to come back or contact us</a>
+
+<cat>FAC</cat>
+<q>One of my recent bills is not correct</q>
+<a>If you have any problem with recent bills in our platform contact us as fast as you can, our financial team will love to help you at financial@alejandria.com</a>
+
+<cat>CON</cat>
+<q>Support Team</q>
+<a>For general questions and support in our web page you can ask for help at support@alejandria.com</a>
+
+<cat>CON</cat>
+<q>Financial Team</q>
+<a>For specific questions about bills and payment in our web page you can ask for help at financial@alejandria.com</a>
+
+<cat>CON</cat>
+<q>Human Recources Team</q>
+<a>If you liked our web and want to work in Alejandria send us an email at humanres@alejandria.com</a>
+s
