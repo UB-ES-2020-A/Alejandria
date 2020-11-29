@@ -1,5 +1,5 @@
 addons:
-  postgresql: "9.4"
+  postgresql: '9.4'
 before_script:
   - "psql -c 'create database travis_ci_test;' -U postgres"
   - "python manage.py makemigrations"
@@ -7,14 +7,23 @@ before_script:
   - "pylint Alejandria books *.py --errors-only"
 cache: pip
 env:
-  - "DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test"
+- DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test
 install:
-  - "pip install -r requirements.txt"
+- pip install -r requirements.txt
 language: python
 python:
-  - 3.8
+- 3.8
 script:
   - pytest --cov
 after_success:
   - coveralls
 sudo: false
+deploy:
+  provider: heroku
+  api_key:
+    secure: nDwhwkr7q+zDPLEqqdr91RFEcNtfw0NxSenmG//ICv0fWaEd4/hf3j31FIL1Y+fU4kg8xyHNeWrPrBm4G8iBiAjTHGX3AlVS14AvC9QB6LpxrdKfaQHKe7YgSkrpELp0gh7hCyb8x1QjPG3THKLLMrfalmvehn+ZGNQWm0iSz+H8cVfXFNtsDlEAo3W/lk6OE2fyDzXLB+hQUc+caRPixrtSuQH9rUpdapv7Loq4KdRHauO9wMDTIktvvYFe6BKxJWpJDnbeUGQLE/kJSvYXddcIKsxAR+ejSVN1uZ3P8Sv0mzOxozRL2VlUdHVUPdy3BHX7Rt+hl1wgeZF6Su6Z4DqLczwIpWGtlQ39ZbhWTpSg42CymD8aJ0xYxJOFOzcIr2+c+WUqpUPscqGe2GC9XtpJ441DvBDjmhsSl/RCPhjMQjXa1TdzNRaTwkZE1FzwpbPI0IDpn/YmV5abMYvxI7dZo+orSoqWEHp24uiS1ZsiUewbgizX9MjCTmagk742qCUujEAcORQmo/ORqJ646R+rFNHtOwFZK2WYwPjq+jW3qCicihZEzUEDXqnXPpWgGp8PK1QNoR+tNufQQ/kICV4PkQ1MF/51/LsWf97w/YIU6G6V45o+xA6Q6SLFHXmyGLfZxKRyYdUnnJ6mXDK1Dq9+QT3D3GkwiVz97R1fCtQ=
+  app: alejandria-es
+  on:
+    repo: UB-ES-2020/Alejandria
+    branch: main
+  skip_cleanup: 'true'
