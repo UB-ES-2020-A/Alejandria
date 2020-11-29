@@ -40,3 +40,15 @@
 /* .card-header.{
   content: "\2796"; /* Unicode character for "minus" sign (-) */
 /* } */
+
+.select{
+  font-size: 30px;
+}
+
+.h3{
+  color: white;
+}
+
+.h4{
+  color: white;
+}
