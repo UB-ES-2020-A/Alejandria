@@ -115,11 +115,11 @@
                 {% for review in review_list %}
                 <div class="container" style="border-bottom: 1px solid gray;">
                     <div style="margin-left: 2px; margin-top: 15px" class="row">
-                        <img style="height: 20px; width: 20px;" src="{% static 'images/default-user-img.png' %}">
+                        <img style="height: 20px; width: 20px;" src="https://www.vhv.rs/dpng/d/312-3120300_default-profile-hd-png-download.png">
                         <p style="color: white; margin-left: 10px; margin-right: 65%"> {{ review.user_id.username }} </p>
                         <p style="color: white"> {{ review.date }} </p>
                     </div>
-                    <div class="main">
+                    <div class="main row">
                         {% if review.score == 0 %}
                             <i class="fa fa-star unchecked" id="one_review"></i>
                             <i class="fa fa-star unchecked" id="two_review"></i>
@@ -157,15 +157,24 @@
                             <i class="fa fa-star checked" id="four_review"></i>
                             <i class="fa fa-star checked" id="five_review"></i>
                         {% endif %}
+                        {% csrf_token %}
                     </div>
-                    <p style="color: white; margin-top: 10px; overflow-wrap: break-word"> {{ review.text }} </p>
+                    <div style="margin-left: 2px; margin-top: 15px" class="row">
+                        <p style="color: white; margin-top: 10px; overflow-wrap: break-word"> {{ review.text }} </p>
+                    </div>
+                    {% if review.user_id.id == request.user.id %}
+                    <div id="review-div-{{ review.ID }}" class="row">
+                        <button style="height:40px" type="submit" class="btn btn-danger" onclick="startModifyingReview({{ review.ID }})">Modify</button>
+                        <form class="form-group" id="delete-review-form" onsubmit="return onSubmitDeleteReview({{ review.ID }})">
+                            <button style="margin-left: 20px; height:40px" type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
             {% else %}
-            <div style="margin-top: 2%; border-top: 1px solid gray; border-bottom: 1px solid gray">
                 <p style="margin-top: 50px; margin-bottom: 50px; margin-left: 50px; color: #ffffff"> There are no reviews for this product. </p>
-            </div>
             {% endif %}
         </div>
     </div>
@@ -174,16 +183,16 @@
 
 <div class="container" style="margin-left: 8%; margin-top: 20px;">
     <h4 style="color: white">Have you read this book? Leave a review!</h4>
-    <form method="POST">
+    <form class="form-group" id="review-form" post_url="review/">
         {% csrf_token %}
         <div class="main">
-            <input type="radio" class="fa fa-star unchecked" id="one" value=1 name="score"></input>
-            <input type="radio" class="fa fa-star unchecked" id="two" value=2 name="score"></input>
-            <input type="radio" class="fa fa-star unchecked" id="three" value=3 name="score"></input>
-            <input type="radio" class="fa fa-star unchecked" id="four" value=4 name="score"></input>
-            <input type="radio" class="fa fa-star unchecked" id="five" value=5 name="score"></input>
+            <i class="fa fa-star unchecked" id="one"></i>
+            <i class="fa fa-star unchecked" id="two"></i>
+            <i class="fa fa-star unchecked" id="three"></i>
+            <i class="fa fa-star unchecked" id="four"></i>
+            <i class="fa fa-star unchecked" id="five"></i>
         </div>
-        <input type="textarea" id="review-text-input" name="text" style="height: 100px; margin-top: 20px; margin-bottom: 20px;" type="text" class="form-control mr-sm-2" placeholder="Submit your review here"></input>
+        <textarea id="review-text-input" style="height: 100px; margin-top: 20px; margin-bottom: 20px;" type="text" class="form-control mr-sm-2" placeholder="Submit your review here"></textarea>
         <button type="submit" class="btn btn-danger">Submit</button>
     </form>
 </div>
@@ -247,6 +256,185 @@
             }
         });
     });
+
+    $('#review-form').on('submit', function () {
+        if(typeof {{ user.id }} == undefined){
+            alert("You need to log in to leave a review");
+            return false;
+        }
+
+        if({{ owned }} == false){
+            alert("You need to buy the book first to review it.");
+            return false;
+        }
+
+        var post_url = '../../review/';
+
+        var form = $('#review-form')[0];
+        var formData = new FormData(form);
+        var book = {{ book.ISBN }};
+        var user_id = {{ user.id }};
+        formData.append('book', book);
+        formData.append('user_id', user_id);
+        formData.append('text', document.getElementById('review-text-input').value);
+        formData.append('score', rating);
+        formData.append('adding', "true");
+
+        $.ajax({
+            url: post_url,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:function(response){
+                console.log("response");
+                console.log(response.message);
+                alert(response.message);
+                window.location.reload();
+            },
+            error:function(response){
+                console.log("response");
+                console.log(response.responseJSON.message);
+                console.log(response.status);
+                alert(response.responseJSON.message);
+            }
+        });
+
+        return false;
+    });
+
+    function onSubmitModifyReview(review_id, rating) {
+        var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+        var post_url = '../../review/';
+        var form = $('#modify-review-form')[0];
+        var formData = new FormData(form);
+        formData.append('review_id', review_id);
+        formData.append('text', document.getElementById('modify-review-text-input').value);
+        formData.append('score', rating);
+        formData.append('modifying', "true");
+        formData.append('csrfmiddlewaretoken', csrf);
+
+        $.ajax({
+            url: post_url,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:function(response){
+                console.log("response");
+                console.log(response.message);
+                alert(response.message);
+                window.location.reload();
+            },
+            error:function(response){
+                console.log("response");
+                console.log(response.responseJSON.message);
+                console.log(response.status);
+                alert(response.responseJSON.message);
+            }
+        });
+
+        return false;
+    }
+
+    function onSubmitDeleteReview(review_id){
+        var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+        var post_url = '../../review/';
+        var form = $('#delete-review-form')[0];
+        var formData = new FormData(form);
+        formData.append('review_id', review_id);
+        formData.append('deleting', "true");
+        formData.append('csrfmiddlewaretoken', csrf);
+
+        $.ajax({
+            url: post_url,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:function(response){
+                console.log("success");
+                console.log(response.message);
+                alert(response.message);
+                window.location.reload();
+            },
+            error:function(response){
+                console.log("error");
+                console.log(response.responseJSON.message);
+                console.log(response.status);
+                alert(response.responseJSON.message);
+            }
+        });
+
+        return false;
+    }
+
+    function startModifyingReview(review_id){
+        $("#review-div-" + review_id).html(
+            "<div class=\"container\" style=\"margin-left: 8%; margin-top: 20px;\">\n" +
+            "    <form class=\"form-group\" id=\"modify-review-form\" post_url=\"review/\">\n" +
+            "        <div class=\"main\">\n" +
+            "            <i class=\"fa fa-star unchecked\" id=\"modify-one\"></i>\n" +
+            "            <i class=\"fa fa-star unchecked\" id=\"modify-two\"></i>\n" +
+            "            <i class=\"fa fa-star unchecked\" id=\"modify-three\"></i>\n" +
+            "            <i class=\"fa fa-star unchecked\" id=\"modify-four\"></i>\n" +
+            "            <i class=\"fa fa-star unchecked\" id=\"modify-five\"></i>\n" +
+            "        </div>\n" +
+            "        <textarea id=\"modify-review-text-input\" style=\"height: 100px; margin-top: 20px; margin-bottom: 20px;\" type=\"text\" class=\"form-control mr-sm-2\" placeholder=\"Submit your review here\"></textarea>\n" +
+            "        <button type=\"submit\" class=\"btn btn-danger\" onclick=\"cancelModifyingReview(" + review_id + ")\">Cancel</button>\n" +
+            "        <button type=\"submit\" class=\"btn btn-danger\" onclick=\"onSubmitModifyReview(" + review_id + ", modifiedRating)\">Submit</button>\n" +
+            "    </form>\n" +
+            "</div>");
+
+        var textInput = "";
+        var modifiedRating = 0;
+        var modifyList=['modify-one', 'modify-two', 'modify-three', 'modify-four', 'modify-five']
+        modifyList.forEach(function(element) {
+            document.getElementById(element).addEventListener("click", function(){
+                for(let i=0; i < modifyList.length; i++){
+                    document.getElementById(modifyList[i]).classList.remove("checked");
+                    document.getElementById(modifyList[i]).classList.add("unchecked");
+                }
+
+                for(i=0; i < modifyList.length; i++) {
+                    if(modifyList[i] !== element) {
+                        document.getElementById(modifyList[i]).classList.remove("unchecked");
+                        document.getElementById(modifyList[i]).classList.add("checked");
+                    }else{
+                        document.getElementById(modifyList[i]).classList.remove("unchecked");
+                        document.getElementById(modifyList[i]).classList.add("checked");
+                        modifiedRating = i + 1;
+                        textInput = document.getElementById("modify-review-text-input").value;
+                        $("#review-div-" + review_id).html(
+                            "<div class=\"container\" style=\"margin-left: 8%; margin-top: 20px;\">\n" +
+                            "    <form class=\"form-group\" id=\"modify-review-form\" post_url=\"review/\">\n" +
+                            "        <div class=\"main\">\n" +
+                            "            <i class=\"fa fa-star " + document.getElementById(modifyList[0]).classList.item(2) + " id=\"modify-one\"></i>\n" +
+                            "            <i class=\"fa fa-star " + document.getElementById(modifyList[1]).classList.item(2) + " id=\"modify-two\"></i>\n" +
+                            "            <i class=\"fa fa-star " + document.getElementById(modifyList[2]).classList.item(2) + " id=\"modify-three\"></i>\n" +
+                            "            <i class=\"fa fa-star " + document.getElementById(modifyList[3]).classList.item(2) + " id=\"modify-four\"></i>\n" +
+                            "            <i class=\"fa fa-star " + document.getElementById(modifyList[4]).classList.item(2) + " id=\"modify-five\"></i>\n" +
+                            "        </div>\n" +
+                            "        <textarea id=\"modify-review-text-input\" style=\"height: 100px; margin-top: 20px; margin-bottom: 20px;\" type=\"text\" class=\"form-control mr-sm-2\" placeholder=\"Submit your review here\"></textarea>\n" +
+                            "        <button type=\"submit\" class=\"btn btn-danger\" onclick=\"cancelModifyingReview(" + review_id + "," + modifiedRating + ")\">Cancel</button>\n" +
+                            "        <button type=\"submit\" class=\"btn btn-danger\" onclick=\"onSubmitModifyReview(" + review_id + "," + modifiedRating + ")\">Submit</button>\n" +
+                            "    </form>\n" +
+                            "</div>");
+                        document.getElementById("modify-review-text-input").value = textInput;
+                        break;
+                    }
+                }
+            });
+        });
+    }
+
+    function cancelModifyingReview(review_id){
+        $("#review-div-" + review_id).html(
+            "<button style=\"height:40px\" type=\"submit\" class=\"btn btn-danger\" onclick=\"startModifyingReview(" + review_id + ")\">Modify</button>\n" +
+            "   <form class=\"form-group\" id=\"delete-review-form\" onsubmit=\"return onSubmitDeleteReview(" + review_id + ")\">\n" +
+            "       <button style=\"margin-left: 20px; height:40px\" type=\"submit\" class=\"btn btn-danger\">Delete</button>\n" +
+            "   </form>");
+    }
 
 
 $(document).ready(function () {
