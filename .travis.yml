@@ -14,5 +14,7 @@ language: python
 python:
   - 3.8
 script:
-  - pytest
+  - pytest --cov
+after_success:
+  - coveralls
 sudo: false

@@ -1,5 +1,8 @@
 # Alejandria
 
+[![Build Status](https://travis-ci.com/UB-ES-2020-A/Alejandria.svg?branch=main)](https://travis-ci.com/UB-ES-2020-A/Alejandria)
+[![Coverage Status](https://coveralls.io/repos/github/UB-ES-2020-A/Alejandria/badge.svg?branch=main)](https://coveralls.io/github/UB-ES-2020-A/Alejandria?branch=main)
+
 ### Primeros pasos
 
 Una vez bajado el proyecto teneis que crear un virtual environment e instalar los requirements con:
@@ -43,6 +46,10 @@ Vamos a utilizar la librería ``pytest`` para la creación y comprobación de nu
 - Para ejecutar los test le damos a la propia ejecución desde el fichero de test (saldrá un icono de ejecutar en la linea de definición de la función) o bien si queremos ejecutar manualmente por consola `pytest archivo_de_test.py` o `pytest archivo_de_test.py::funcion_a_testear` o `pytest archivo_de_test.py::Clase::funcion_a_testear`
 
 - Por último comprobar que el estado de la ejecución es PASSED.
+
+Durante el proyecto también se ha añadido code coverage con `pytest-cov + coveralls` ambos se han añadido al fichero de `requirements.txt`
+y poseis ejecutar `pytest --cov` para obtener también la información de la cantidad de codigo testeado actualmente.
+
 
 ### Configuración Pylint
 
