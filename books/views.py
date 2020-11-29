@@ -964,3 +964,41 @@ def generate_pdf(request):
         # Get StringIO's body and write it out to the response.
         response.write(pdf)
         return response
+
+        
+class UserLibrary(generic.ListView): #PermissionRequiredMixin
+    model = Book
+    template_name = 'user_library.html'  # TODO: Provisional file
+    context_object_name = 'coincident'
+    # permission_required = ('books.add_book',)
+
+    # permission_required = 'Alejandria.view_book'
+
+    def __init__(self):
+        super().__init__()
+        self.userBooks = None
+        self.user_id = None
+
+    def get(self, request, *args, **kwargs):
+        print(request.GET)
+        self.user_id = self.request.user.id or None
+
+        # if 'search_book' in request.GET:
+        #     self.searchBook = request.GET['search_book']
+        # else:
+        #     keys = request.GET.keys()
+        #     for key in keys:
+        #         self.genres.append(request.GET[key])
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
+        context = super().get_context_data(**kwargs)
+
+        # Filtering by title or author
+        print(self.user_id)
+        user_products = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user.id))
+        print("books", user_products)
+        context['user_prod'] = user_products
+
+        return context
