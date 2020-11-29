@@ -94,27 +94,27 @@ try:
         product = Product(ISBN=b, price=b.price)
         products.append(product)
         product.save()
-    
+
     print("PRODUCTS SAVED...OK")
-    
+
     # Create Cart
-    cart = Cart(id=1, user_id=user)  # TODO: if not postgresql complains about the cart is not created in database.
+    cart, created = Cart.objects.get_or_create(id=1, user_id=user) # TODO: if not postgresql complains about the cart is not created in database.
     pk_cart = cart.pk
     #cart.save()
-    
+
     #cart = Cart.objects.filter(pk=pk_cart)
     #cart = Cart(id=1, user_id=user)
-    
+
     for p in products:
         cart.products.add(p)
-    
+
     cart.save()
-    
+
     print("CART SAVED...OK")
 except IntegrityError:
     print("Error in cart")
 
-    
+
 def read_faqs_from_file(): # pylint: disable=too-many-statements too-many-branches too-many-nested-blocks no-else-break
     """
     READS FAQs FROM A FILE:
@@ -132,7 +132,7 @@ def read_faqs_from_file(): # pylint: disable=too-many-statements too-many-branch
     more_faqs = len(lines) > 0
 
     while more_faqs: # pylint: disable=too-many-nested-blocks
-    
+
         cat = None
         q = list()
         a = list()

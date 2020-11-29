@@ -41,6 +41,7 @@ class BookView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
+        context['isbn'] = str(context['object'].ISBN)
         review_list = Rating.objects.filter(ISBN=context['object'])
         if self.request.user.id != None:
             owned = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first()

@@ -272,7 +272,7 @@
 
         var form = $('#review-form')[0];
         var formData = new FormData(form);
-        var book = {{ book.ISBN }};
+        var book = "{{ book.ISBN }}";
         var user_id = {{ user.id }};
         formData.append('book', book);
         formData.append('user_id', user_id);
