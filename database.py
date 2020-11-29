@@ -5,10 +5,10 @@ but might be changed for a future mor professional implementation.
 import os
 import django
 import random
+from books.models import Book, User, Address, Product, Cart, FAQ # I know this does not work here but deep code is stupid
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
-from books.models import Book, User, Address, Product, Cart, FAQ
 from django.core.files import File
 from django.db import IntegrityError
 
