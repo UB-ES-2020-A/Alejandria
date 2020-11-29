@@ -14,10 +14,6 @@ from books.models import Book, User, Address, Product, Cart, FAQ  #  deepcode ig
 from django.core.files import File
 from django.db import IntegrityError
 
-
-from django.core.files import File
-from django.db import IntegrityError
-
 user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
 user_address.save()

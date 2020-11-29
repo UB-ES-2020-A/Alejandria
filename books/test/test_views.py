@@ -7,8 +7,8 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 
-import random as rand
 """
+import random as rand
 from django.test import RequestFactory
 from books.models import User, Address, Cart, Book, Product, Guest, BankAccount, Bill
 from books.test.test_register import random_char
