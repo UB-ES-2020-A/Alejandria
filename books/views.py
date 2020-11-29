@@ -1007,3 +1007,33 @@ class UserLibrary(generic.ListView): #PermissionRequiredMixin
         context['user_prod'] = user_products
 
         return context
+
+
+class UserBills(generic.ListView): #PermissionRequiredMixin
+    model = Book
+    template_name = 'user_bills.html'  # TODO: Provisional file
+    context_object_name = 'coincident'
+    # permission_required = ('books.add_book',)
+
+    # permission_required = 'Alejandria.view_book'
+
+    def __init__(self):
+        super().__init__()
+        self.userBooks = None
+        self.user_id = None
+
+    def get(self, request, *args, **kwargs):
+        print(request.GET)
+        self.user_id = self.request.user.id or None
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
+        context = super().get_context_data(**kwargs)
+
+        # Filtering by title or author
+        user_bills = LibraryBills.objects.get(user_id=self.user_id)
+        context['user_bills'] = user_bills.bills.all()
+        print(user_bills.bills.all())
+
+        return context
