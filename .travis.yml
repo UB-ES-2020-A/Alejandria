@@ -5,7 +5,6 @@ before_script:
   - "python manage.py makemigrations"
   - "python manage.py migrate"
   - "pylint Alejandria books *.py --errors-only"
-  - "travis encrypt d0ab4f86-3a30-4b1f-9933-c31ab47532f2 --add deploy.api_key --pro"
 cache: pip
 env:
 - DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test
