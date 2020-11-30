@@ -1,10 +1,10 @@
 addons:
   postgresql: '9.4'
 before_script:
-  - "psql -c 'create database travis_ci_test;' -U postgres"
-  - "python manage.py makemigrations"
-  - "python manage.py migrate"
-  - "pylint Alejandria books *.py --errors-only"
+- psql -c 'create database travis_ci_test;' -U postgres
+- python manage.py makemigrations
+- python manage.py migrate
+- pylint Alejandria books *.py --errors-only
 cache: pip
 env:
 - DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test
@@ -14,14 +14,14 @@ language: python
 python:
 - 3.8
 script:
-  - pytest --cov
+- pytest --cov
 after_success:
-  - coveralls
+- coveralls
 sudo: false
 deploy:
   provider: heroku
   api_key:
-    secure: nDwhwkr7q+zDPLEqqdr91RFEcNtfw0NxSenmG//ICv0fWaEd4/hf3j31FIL1Y+fU4kg8xyHNeWrPrBm4G8iBiAjTHGX3AlVS14AvC9QB6LpxrdKfaQHKe7YgSkrpELp0gh7hCyb8x1QjPG3THKLLMrfalmvehn+ZGNQWm0iSz+H8cVfXFNtsDlEAo3W/lk6OE2fyDzXLB+hQUc+caRPixrtSuQH9rUpdapv7Loq4KdRHauO9wMDTIktvvYFe6BKxJWpJDnbeUGQLE/kJSvYXddcIKsxAR+ejSVN1uZ3P8Sv0mzOxozRL2VlUdHVUPdy3BHX7Rt+hl1wgeZF6Su6Z4DqLczwIpWGtlQ39ZbhWTpSg42CymD8aJ0xYxJOFOzcIr2+c+WUqpUPscqGe2GC9XtpJ441DvBDjmhsSl/RCPhjMQjXa1TdzNRaTwkZE1FzwpbPI0IDpn/YmV5abMYvxI7dZo+orSoqWEHp24uiS1ZsiUewbgizX9MjCTmagk742qCUujEAcORQmo/ORqJ646R+rFNHtOwFZK2WYwPjq+jW3qCicihZEzUEDXqnXPpWgGp8PK1QNoR+tNufQQ/kICV4PkQ1MF/51/LsWf97w/YIU6G6V45o+xA6Q6SLFHXmyGLfZxKRyYdUnnJ6mXDK1Dq9+QT3D3GkwiVz97R1fCtQ=
+    secure: AdqYmUtIpntkYVo1XCSwQmQ7I96ySBqMIxaojzrq2aD8WSJR8MR3Ah3QT4anuXepVsWkkLwNA+e6MAXhm7Lv1lIsMAxyGUFzH1vSak9QREg9+OPm+sTt6dMMo2ySD2bJFxIJyOhjYEO6TuIt+6GuAAtyCqpC18SIuX2CR7k7M4JIvQjje8ITdPySORe/C/JklOJvofCmIYWttcxu4D3E0PXxq+EOCrOsokDRB8FRSa9K0+2bLaJqkk0aS5HM8fE5qvSU476+Rvc1HICQdCJA/dBCp8MeA3mIUy/jWWYL87CxBymnkBNku4n5HC6mbtxgqIHN3a/66Tub/q5c/hes0LaBUmjCJRwKkj3MdhMYrJ7NIYGhpltsefUXCZ3JNOsK+dc/X403GTjw4rK+imIh38SqFIu+Lfw3rtbYFcR1bI67reFLJSsSIJLRPps6+C7L4bYAo4GHJay8ySPsAvA/Ltt1u5NqhmIXLIaJVD07YsNLQV5Lci+W3OkgmqO+M6aDBlMmv9TduB3vphTF7xzX5H8ODDkBcIdJaGyhD/BvSI7Qt/27W04w5waplHNna6Yw7WplWM04+Xk5U3TOnOo0W8MluYwMFq9NMVvfArqy0P48zSoISscwfu3/CSwXh0cID7JUccfBIFA3dnSTiE/OwoD1oRJ9Wt+XGRoIhdg5gPw=
   app: alejandria-es
   on:
     repo: UB-ES-2020-A/Alejandria
