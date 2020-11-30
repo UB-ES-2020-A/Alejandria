@@ -26,4 +26,4 @@ deploy:
   on:
     repo: UB-ES-2020-A/Alejandria
     branch: main
-  skip_cleanup: 'true'
+  skip_cleanup: true
