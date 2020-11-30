@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'Alejandria',
     # 'books',
     'books.apps.BooksConfig',
-    'test'
 ]
 
 MIDDLEWARE = [
