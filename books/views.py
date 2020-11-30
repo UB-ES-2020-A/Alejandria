@@ -43,6 +43,7 @@ class BookView(generic.DetailView):
         relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
         context['isbn'] = str(context['object'].ISBN)
         review_list = Rating.objects.filter(ISBN=context['object'])
+
         if self.request.user.id != None:
             owned = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first()
             if owned:
@@ -215,6 +216,11 @@ class SellView(PermissionRequiredMixin, generic.ListView):
                 messages.info(request, 'Your book has been created successfully!')
 
                 book.save()
+
+                product = Product(ISBN=book, price=book.price)
+                product.save()
+
+
             else:
                 messages.info(request, 'Oops.. something is wrong')
 
@@ -247,6 +253,12 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
                 book.user_id = request.user
                 messages.info(request, 'Your book has been updated successfully!')
                 book.save()
+
+
+                product = Product.objects.filter(ISBN=book).first()
+                product.price = book.price
+                product.save()
+
             else:
                 messages.info(request, 'Oops.. something is wrong')
         else:
