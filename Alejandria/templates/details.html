@@ -121,41 +121,41 @@
                     </div>
                     <div class="main row">
                         {% if review.score == 0 %}
-                            <i class="fa fa-star unchecked" id="one_review"></i>
-                            <i class="fa fa-star unchecked" id="two_review"></i>
-                            <i class="fa fa-star unchecked" id="three_review"></i>
-                            <i class="fa fa-star unchecked" id="four_review"></i>
-                            <i class="fa fa-star unchecked" id="five_review"></i>
+                            <i class="fa fa-star unchecked"></i>
+                            <i class="fa fa-star unchecked"></i>
+                            <i class="fa fa-star unchecked"></i>
+                            <i class="fa fa-star unchecked"></i>
+                            <i class="fa fa-star unchecked"></i>
                         {% elif review.score == 1 %}
-                            <i class="fa fa-star checked" id="one_review"></i>
-                            <i class="fa fa-star unchecked" id="two_review"></i>
-                            <i class="fa fa-star unchecked" id="three_review"></i>
-                            <i class="fa fa-star unchecked" id="four_review"></i>
-                            <i class="fa fa-star unchecked" id="five_review"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star unchecked"></i>
+                            <i class="fa fa-star unchecked"></i>
+                            <i class="fa fa-star unchecked"></i>
+                            <i class="fa fa-star unchecked"></i>
                         {% elif review.score == 2 %}
-                            <i class="fa fa-star checked" id="one_review"></i>
-                            <i class="fa fa-star checked" id="two_review"></i>
-                            <i class="fa fa-star unchecked" id="three_review"></i>
-                            <i class="fa fa-star unchecked" id="four_review"></i>
-                            <i class="fa fa-star unchecked" id="five_review"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star unchecked"></i>
+                            <i class="fa fa-star unchecked"></i>
+                            <i class="fa fa-star unchecked"></i>
                         {% elif review.score == 3 %}
-                            <i class="fa fa-star checked" id="one_review"></i>
-                            <i class="fa fa-star checked" id="two_review"></i>
-                            <i class="fa fa-star checked" id="three_review"></i>
-                            <i class="fa fa-star unchecked" id="four_review"></i>
-                            <i class="fa fa-star unchecked" id="five_review"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star unchecked"></i>
+                            <i class="fa fa-star unchecked"></i>
                         {% elif review.score == 4 %}
-                            <i class="fa fa-star checked" id="one_review"></i>
-                            <i class="fa fa-star checked" id="two_review"></i>
-                            <i class="fa fa-star checked" id="three_review"></i>
-                            <i class="fa fa-star checked" id="four_review"></i>
-                            <i class="fa fa-star unchecked" id="five_review"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star unchecked"></i>
                         {% elif review.score == 5 %}
-                            <i class="fa fa-star checked" id="one_review"></i>
-                            <i class="fa fa-star checked" id="two_review"></i>
-                            <i class="fa fa-star checked" id="three_review"></i>
-                            <i class="fa fa-star checked" id="four_review"></i>
-                            <i class="fa fa-star checked" id="five_review"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star checked"></i>
+                            <i class="fa fa-star checked"></i>
                         {% endif %}
                         {% csrf_token %}
                     </div>

@@ -100,18 +100,6 @@ class Book(models.Model):
     # pub_date = publication_date  # Abreviation
 
 
-class Product(models.Model):
-    ID = models.AutoField(primary_key=True)
-    ISBN = models.ForeignKey(Book, on_delete=models.CASCADE, blank=False, null=False)
-    # TODO: What to do on_delete=?
-    price = models.DecimalField(decimal_places=2, max_digits=8)
-    # TODO: Could be in no.arange(0.00, 100.00, 0.01) -> To have percentages with 0.01 precision
-    per_values = range(0, 101)
-    human_readable = [str(value) for value in per_values]
-    fees = models.DecimalField(decimal_places=2, max_digits=5, choices=zip(per_values, human_readable), default=21.0)
-    discount = models.DecimalField(decimal_places=2, max_digits=5, choices=zip(per_values, human_readable), default=0.0)
-
-
 class Rating(models.Model):
     ID = models.AutoField(primary_key=True, blank=False, null=False)
     ISBN = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)
@@ -127,7 +115,7 @@ class Rating(models.Model):
 class Cart(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
     guest_id = models.ForeignKey(Guest, on_delete=models.CASCADE, blank=False, null=True)
-    products = models.ManyToManyField(Product)
+    books = models.ManyToManyField(Book)
 
 
 class Bill(models.Model):
@@ -136,7 +124,7 @@ class Bill(models.Model):
     name = models.CharField(max_length=50)
     date = models.DateField(null=True, blank=True, default=timezone.now)
     payment_method = models.CharField(max_length=50)
-    products = models.ManyToManyField(Product)
+    books = models.ManyToManyField(Book)
     total_money_spent = models.DecimalField(decimal_places=2, max_digits=8, null=True)
 
 

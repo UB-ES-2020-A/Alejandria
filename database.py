@@ -9,7 +9,7 @@ import random
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Alejandria.settings")
 django.setup()
 
-from books.models import Book, User, Address, Product, Cart, FAQ  #  deepcode ignore C0413: <irrelevant error>
+from books.models import Book, User, Address, Cart, FAQ  #  deepcode ignore C0413: <irrelevant error>
 
 from django.core.files import File
 from django.db import IntegrityError
@@ -87,30 +87,14 @@ book6.save()
 
 print("BOOKS SAVED...OK")
 try:
-    # Create Products
-    books = Book.objects.all()
-    products = []  # TODO: Product.objects.all() doesn't work.
-    for b in books:
-        product = Product(ISBN=b, price=b.price)
-        products.append(product)
-        product.save()
-
-    print("PRODUCTS SAVED...OK")
 
     # Create Cart
-    cart, created = Cart.objects.get_or_create(id=1, user_id=user) # TODO: if not postgresql complains about the cart is not created in database.
-    pk_cart = cart.pk
-    #cart.save()
-
-    #cart = Cart.objects.filter(pk=pk_cart)
-    #cart = Cart(id=1, user_id=user)
-
-    for p in products:
-        cart.products.add(p)
-
+    cart, created = Cart.objects.get_or_create(id=1, user_id=user)
+    books = Book.objects.all()
+    cart.books.add(books[0])
     cart.save()
-
     print("CART SAVED...OK")
+
 except IntegrityError:
     print("Error in cart")
 
