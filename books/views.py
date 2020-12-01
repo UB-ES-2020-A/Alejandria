@@ -202,7 +202,7 @@ class SellView(PermissionRequiredMixin, generic.ListView):
         return context
 
     # post (update) of book
-    def post(request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         if request.method == "POST":
             form = BookForm(request.POST, request.FILES)
             if form.is_valid():
