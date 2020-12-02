@@ -25,5 +25,10 @@ deploy:
   app: alejandria-es
   on:
     repo: UB-ES-2020-A/Alejandria
-    branch: main
+    branches:
+      only:
+        - main
+        - DEPLOY-develop
+      main: alejandria-es
+      DEPLOY-develop: alejandria-staging
   skip_cleanup: true
