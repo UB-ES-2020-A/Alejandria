@@ -69,11 +69,11 @@
                                                 </span>
                                             </h3>
                                             <div style="height: 200px; overflow:auto; border-color: none; box-shadow: 0 0 3px 0px black;">
-                                                {% for product in cart_list %}
+                                                {% for book in cart_list %}
                                                 <div class="container">
                                                     <div class="row">
-                                                        <p class="col">{{ product.ISBN.title }}</p>
-                                                        <div class="col-2" style="text-align:right"><span>{{ product.ISBN.price }} €</span>
+                                                        <p class="col">{{ book.title }}</p>
+                                                        <div class="col-2" style="text-align:right"><span>{{ book.price }} €</span>
                                                         </div>
                                                     </div>
                                                 </div>

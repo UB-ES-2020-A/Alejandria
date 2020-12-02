@@ -20,7 +20,7 @@ from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
 from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
+from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
 
 # Create your views here.
 
@@ -44,8 +44,8 @@ class BookView(generic.DetailView):
         context['isbn'] = str(context['object'].ISBN)
         review_list = Rating.objects.filter(ISBN=context['object'])
 
-        if self.request.user.id != None:
-            owned = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first()
+        if self.request.user.id is not None:
+            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first() # TODO: NEED TO FIX THIS
             if owned:
                 context['owned'] = "true"
 
@@ -61,6 +61,30 @@ class BookView(generic.DetailView):
             context['owned'] = 'false'
 
         return context
+
+
+def generate_id():
+    temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+    list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
+    id = "".join(list_id)
+    return id
+
+
+def get_cart(user_id, request, response=None):
+    if user_id:
+        cart = Cart.objects.get(user_id=user_id)
+    else:
+        device = request.COOKIES.get('device')
+        if not device and response is not None:
+            device = generate_id()
+            response.set_cookie('device', device)
+
+        user, created = Guest.objects.get_or_create(device=device)
+        cart, created = Cart.objects.get_or_create(guest_id=user)
+
+    if cart is not None:
+        return cart
+    return None
 
 
 class HomeView(generic.ListView):
@@ -93,36 +117,17 @@ class HomeView(generic.ListView):
 
     def render_to_response(self, context, **response_kwargs):
         response = super(HomeView, self).render_to_response(context, **response_kwargs)
-
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
+        cart = get_cart(self.user_id, self.request, response)
+        if cart is not None:
+            context['total_items'] = len(cart.books.all())
         else:
-            device = self.request.COOKIES.get('device')
-            if not device:
-                device = self.generate_id()
-                response.set_cookie('device', device)
-
-            user, created = Guest.objects.get_or_create(device=device)
-            cart, created = Cart.objects.get_or_create(guest_id=user)
-        if cart:
-            products = cart.products.all()
-            items = len(products)
-            context['total_items'] = items
-
+            context['total_items'] = 0
         return response
-
-
-    @staticmethod
-    def generate_id():
-        temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-        list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
-        id = "".join(list_id)
-        return id
 
 
 class SearchView(generic.ListView):
     model = Book
-    template_name = 'search.html'  # TODO: Provisional file
+    template_name = 'search.html'
     context_object_name = 'coincident'
 
     def __init__(self):
@@ -151,18 +156,11 @@ class SearchView(generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
-
-        # Get number of cart products
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
+        cart = get_cart(self.user_id, self.request)
+        if cart is not None:
+            context['total_items'] = len(cart.books.all())
         else:
-            device = self.request.COOKIES['device']
-            user, created = Guest.objects.get_or_create(device=device)
-            cart, created = Cart.objects.get_or_create(guest_id=user)
-
-        products = cart.products.all()
-        items = len(products)
-        context['total_items'] = items
+            context['total_items'] = 0
 
         # Filtering by title or author
         if self.searchBook:
@@ -216,11 +214,6 @@ class SellView(PermissionRequiredMixin, generic.ListView):
                 messages.info(request, 'Your book has been created successfully!')
 
                 book.save()
-
-                product = Product(ISBN=book, price=book.price)
-                product.save()
-
-
             else:
                 messages.info(request, 'Oops.. something is wrong')
 
@@ -253,12 +246,6 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
                 book.user_id = request.user
                 messages.info(request, 'Your book has been updated successfully!')
                 book.save()
-
-
-                product = Product.objects.filter(ISBN=book).first()
-                product.price = book.price
-                product.save()
-
             else:
                 messages.info(request, 'Oops.. something is wrong')
         else:
@@ -293,16 +280,12 @@ class CartView(generic.ListView):
         self.user_id = None
 
     def get_queryset(self):
-        request = self.request
-        self.user_id = request.user.id or None
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
-        else:
-            device = request.COOKIES['device']
-            user, created = Guest.objects.get_or_create(device=device)
-            cart, created = Cart.objects.get_or_create(guest_id=user)
-
-        return cart.products.all()
+        self.user_id = self.request.user.id
+        cart = get_cart(self.user_id, self.request)
+        if cart is not None:
+            return cart.books.all()
+        print("CART DON'T EXIST")
+        return []
 
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
@@ -310,25 +293,17 @@ class CartView(generic.ListView):
         context['books_from_cart_view_1'] = Book.objects.all()[:3]
         context['books_from_cart_view_2'] = Book.objects.all()[3:6]
         context['books_from_cart_view_3'] = Book.objects.all()[6:9]
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
-        else:
-            device = self.request.COOKIES['device']
-            user, created = Guest.objects.get_or_create(device=device)
-            cart, created = Cart.objects.get_or_create(guest_id=user)
-
-        products = cart.products.all()
+        cart = get_cart(self.user_id, self.request)
+        books = cart.books.all()
         total_price = 0
-        items = len(products)
-        for prod in products:
-            total_price += prod.price
+        for book in books:
+            total_price += book.price
         context['total_price'] = total_price
-        context['total_items'] = items
-
+        context['total_items'] = len(books)
         return context
 
 
-def delete_product(request, product_id):
+def delete_product(request, book):
     user = request.user or None
     print(request.GET)
     if user:
@@ -344,10 +319,10 @@ def delete_product(request, product_id):
         user = Guest.objects.get(device=device)
         cart = Cart.objects.get(guest_id=user)
 
-    product = cart.products.get(ID=product_id)
-    print("DELETE BOOK ", product)
-    cart.products.remove(product)
+    print("DELETE BOOK ", book)
+    cart.books.remove(book)
     cart.save()
+    print("CART: ", cart.books.all())
     return HttpResponseRedirect('/cart')
 
 
@@ -368,12 +343,9 @@ def add_product(request, view, book):
         user, created = Guest.objects.get_or_create(device=device)
         cart, created = Cart.objects.get_or_create(guest_id=user)
 
-    products = Product.objects.all()
-    for product in products:
-        if product.ISBN.ISBN == book:
-            print("ADD BOOK ", book)
-            cart.products.add(product)
-            cart.save()
+    print("ADD BOOK ", book)
+    cart.books.add(book)
+    cart.save()
 
     if view == 'home':
         return HttpResponseRedirect('/')
@@ -383,7 +355,7 @@ def add_product(request, view, book):
 
 class FaqsView(generic.ListView):
     model = FAQ
-    template_name = 'faqs.html'  # TODO: Provisional file
+    template_name = 'faqs.html'
     context_object_name = 'faqs'
 
     def __init__(self, **kwargs):
@@ -391,7 +363,7 @@ class FaqsView(generic.ListView):
         self.user_id = None
 
     def get_queryset(self):
-        self.user_id = self.request.user.id or None
+        self.user_id = self.request.user.id
         return FAQ.objects.all()
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -404,22 +376,13 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
-        print(the_user)
         if 'AnonymousUser' is str(the_user):
-            context['admin']= False
+            context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
 
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
-        else:
-            device = self.request.COOKIES['device']
-            user, created = Guest.objects.get_or_create(device=device)
-            cart, created = Cart.objects.get_or_create(guest_id=user)
-
-        products = cart.products.all()
-        items = len(products)
-        context['total_items'] = items
+        cart = get_cart(self.user_id, self.request)
+        context['total_items'] = len(cart.books.all())
 
         return context
 
@@ -434,12 +397,9 @@ class AddView(generic.ListView):
 
     def post(self, request, *args, **kwargs):
         book = Book.objects.filter(ISBN=request.POST['isbn']).first()
-
         if book:
-
             if book.user_id != request.user.id:
                 return JsonResponse({'message': 'The book does not belong to you'}, status=401)
-
             else:
                 print('The book exists')
                 book.title = request.POST['title']
@@ -530,9 +490,9 @@ def register(request):
                     cart_guest_query = Cart.objects.filter(guest_id=guest)
                     if cart_guest_query.count() != 0:
                         cart_guest = cart_guest_query.first()
-                        for product in cart_guest.products.all():
-                            cart_user.products.add(product)
-                        cart_guest.products.clear()
+                        for book in cart_guest.books.all():
+                            cart_user.books.add(book)
+                        cart_guest.books.clear()
                         cart_guest.save()
                         cart_user.save()
 
@@ -621,7 +581,7 @@ def login_user(request):
 class PaymentView(generic.ListView):
     # model = Account
     template_name = 'payment.html'
-    queryset = Product.objects.all()
+    queryset = Book.objects.all()
     context_object_name = 'cart_list'
 
     def __init__(self, **kwargs):
@@ -630,19 +590,17 @@ class PaymentView(generic.ListView):
         self.username = ''
         self.card_number = ''
         self.total = 0
-        self.products = None
         self.year = None
         self.month = None
         self.cvv = None
 
     def get_queryset(self):
-        request = self.request
-        print(request.GET)
-        self.user_id = request.user.id or None
+        self.user_id = self.request.user.id
+        print(self.request.GET)
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
             if cart:
-                return cart.products.all()
+                return cart.books.all()
         return None
 
     def get_context_data(self, **kwargs):
@@ -650,13 +608,12 @@ class PaymentView(generic.ListView):
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
             user_bank_account = BankAccount.objects.filter(user_id=self.user_id).first() or None
-            products = cart.products.all()
+            books = cart.books.all()
             total_price = 0
-            items = len(products)
-            for prod in products:
-                total_price += prod.price
+            for book in books:
+                total_price += book.price
             context['total_price'] = total_price
-            context['total_items'] = items
+            context['total_items'] = len(cart.books.all())
             if user_bank_account is not None:
                 context['card_owner'] = self.username
                 context['card_number'] = self.card_number
@@ -671,7 +628,7 @@ class PaymentView(generic.ListView):
 
 class EditorLibrary(PermissionRequiredMixin, generic.ListView):
     model = Book
-    template_name = 'editor_library.html'  # TODO: Provisional file
+    template_name = 'editor_library.html'
     context_object_name = 'coincident'
     permission_required = ('books.add_book',)
 
@@ -684,7 +641,7 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
 
     def get(self, request, *args, **kwargs):
         print(request.GET)
-        self.user_id = self.request.user.id or None
+        self.user_id = self.request.user.id
 
         # if 'search_book' in request.GET:
         #     self.searchBook = request.GET['search_book']
@@ -699,7 +656,6 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
         context = super().get_context_data(**kwargs)
 
         # Filtering by title or author
-        print(self.user_id)
         editor_books = Book.objects.filter(user_id=self.user_id)
         print("editor books", editor_books)
         context['editor_books'] = editor_books
@@ -811,29 +767,25 @@ def view_profile(request):
         user = request.user.id
         if user:
             cart = Cart.objects.get(user_id=user)
-            products = cart.products.all()
-            items = len(products)
             context = {
-                'total_items': items
+                'total_items': len(cart.books.all())
             }
+        else:
+            context = {}
         return render(request, "view_profile.html", context)
 
 
 def complete_purchase(request):
     print(request.POST)
-
     user = request.user.id or None
-
     if user:
-
         user_bank_account, created = BankAccount.objects.get_or_create(user_id=user)
         current_money = float(user_bank_account.money)
-
         cart = Cart.objects.get(user_id=user)
-        products = cart.products.all()
+        books = cart.books.all()
         total = 0
-        for p in products:
-            total += p.price
+        for book in books:
+            total += book.price
         total = float(total)
 
         if current_money - total >= 0:
@@ -864,12 +816,12 @@ def complete_purchase(request):
                 setattr(bill, 'total_money_spent', total)
                 setattr(bill, 'payment_method', 'Credit card')
                 setattr(bill, 'name', user_bank_account.name)
-                for p in products:
-                    bill.products.add(p)
+                for book in books:
+                    bill.books.add(book)
                 bill.save()
                 lib_of_bills.bills.add(bill)
                 lib_of_bills.save()
-                cart.products.clear()
+                cart.books.clear()
                 cart.save()
 
                 # Add fail_silently=True when testing
@@ -919,14 +871,14 @@ def generate_pdf(request):
         user_bills = LibraryBills.objects.get(user_id=user)
         user_bill = user_bills.bills.filter(user_id=user).last()
 
-        products = user_bill.products.all()
+        books = user_bill.books.all()
 
-        products_titles = [p.ISBN.title for p in products]
+        books_titles = [book.title for book in books]
 
         # Content
         filename = 'Expenses.pdf'
         document_title = 'Expenses'
-        title = 'Alejanria'
+        title = 'Alejandria'
         subtitle = 'Thank you for buying through our website!'
 
         text_lines = [
@@ -934,7 +886,7 @@ def generate_pdf(request):
             'Name: ' + user_bill.name,
             'Date: ' + str(user_bill.date),
             'Total: ' + str(user_bill.total_money_spent) + '€',
-            'Products: ' + ', '.join(products_titles)
+            'Books: ' + ', '.join(books_titles)
         ]
 
         # Make your response and prep to attach
@@ -985,7 +937,7 @@ def generate_pdf(request):
         
 class UserLibrary(generic.ListView): #PermissionRequiredMixin
     model = Book
-    template_name = 'user_library.html'  # TODO: Provisional file
+    template_name = 'user_library.html'
     context_object_name = 'coincident'
     # permission_required = ('books.add_book',)
 
@@ -997,8 +949,8 @@ class UserLibrary(generic.ListView): #PermissionRequiredMixin
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
+        self.user_id = self.request.user.id
         print(request.GET)
-        self.user_id = self.request.user.id or None
 
         # if 'search_book' in request.GET:
         #     self.searchBook = request.GET['search_book']
@@ -1013,17 +965,15 @@ class UserLibrary(generic.ListView): #PermissionRequiredMixin
         context = super().get_context_data(**kwargs)
 
         # Filtering by title or author
-        print(self.user_id)
-        user_products = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user.id))
-        print("books", user_products)
-        context['user_prod'] = user_products
+        user_books = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user.id))
+        context['user_prod'] = user_books
 
         return context
 
 
 class UserBills(generic.ListView): #PermissionRequiredMixin
     model = Book
-    template_name = 'user_bills.html'  # TODO: Provisional file
+    template_name = 'user_bills.html'
     context_object_name = 'coincident'
     # permission_required = ('books.add_book',)
 
@@ -1031,13 +981,11 @@ class UserBills(generic.ListView): #PermissionRequiredMixin
 
     def __init__(self):
         super().__init__()
-        self.userBooks = None
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
         print(request.GET)
-        self.user_id = self.request.user.id or None
-
+        self.user_id = self.request.user.id
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test

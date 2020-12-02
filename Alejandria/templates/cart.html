@@ -28,10 +28,10 @@
                      style="height:800px; overflow:auto; border-color: #d9534f; box-shadow: 0 0 4px 2px #d9534f;"
                      id="container-info-books">
 
-                    {% for product in cart_list %}
+                    {% for book in cart_list %}
                     <div class="info-book">
-                        {% if product.ISBN.thumbnail %}
-                        <img class="book-cover" src="{{ product.ISBN.thumbnail.url }}" alt="Card image cap">
+                        {% if book.thumbnail %}
+                        <img class="book-cover" src="{{ book.thumbnail.url }}" alt="Card image cap">
                         <!--TODO: Change to real book image -->
                         {% else %}
                         <img class="book-cover" src="{% static 'no_available.jpg' %}" alt="Card image cap">
@@ -39,10 +39,10 @@
                         <div style="margin-left:1%;">
                             <div class="row horizontal">
                                 <div class="col-md-8">
-                                    <p class="book-title"><a href="#">{{ product.ISBN.title }}, {{ product.ISBN.author }}</a></p>
+                                    <p class="book-title"><a href="#">{{ book.title }}, {{ book.author }}</a></p>
                                 </div>
                                 <div class="col">
-                                    <p class="text" style="text-align:right;"><span>{{ product.price }}</span>€</p>
+                                    <p class="text" style="text-align:right;"><span>{{ book.price }}</span>€</p>
                                 </div>
                             </div>
                             <hr>
@@ -77,7 +77,7 @@
                             </p>
                             <hr>
                             <a class="btn btn-outline-danger my-2 my-sm-0"
-                               href="{% url 'books:delete_product' product.ID %}">Delete</a>
+                               href="{% url 'books:delete_product' book.ISBN %}">Delete</a>
 
                             <div style="padding-bottom:15%"></div>
                         </div>
