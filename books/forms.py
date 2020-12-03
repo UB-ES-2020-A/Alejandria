@@ -3,7 +3,7 @@ Contains forms.ModelForm used for ajax communication
 """
 
 from django import forms
-from books.models import Book, Rating
+from books.models import Book, Rating, BookProperties
 
 
 class BookForm(forms.ModelForm):
@@ -50,6 +50,21 @@ class ReviewForm(forms.ModelForm):
         fields = [
             "text",
             "score"
+        ]
+
+
+class BookProperties(forms.ModelForm):
+    """
+    Defines the structure of information of Book Properties
+    """
+
+    class Meta:
+        model = BookProperties
+        """ BookProperties Meta """
+
+        fields = [
+            "desired",
+            "readed"
         ]
 
 

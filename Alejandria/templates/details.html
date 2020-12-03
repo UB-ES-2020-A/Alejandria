@@ -77,11 +77,61 @@
         {% endif %}
     </div>
     <div class="col-4">
+         <div class="row">
         {% if book.thumbnail %}
             <img src="{{ book.thumbnail.url }}" style="float: left; height:400px; margin-top:20px">
         {% else %}
             <img src="{% static 'no_available.jpg' %}" style="float: left; height:400px; margin-top:20px">
         {% endif %}
+         </div>
+
+<!--        <div class="container" style="width:260px; border: 2px solid; border-color: black;">-->
+        <form method="POST" > {% csrf_token %}
+            <div>
+                <input id="desired" name="desired" type="checkbox"/>
+                <span style="width:15%;display:inline-block;"><i class="fas fa-heart"></i></span>
+
+                <input id="readed" name="readed" type="checkbox"/>
+                <span style="width:15%;display:inline-block;"><i class="fas fa-book-open"></i></span>
+
+                <input type="submit" value="Save" />
+            </div>
+<!--            <div class="row">-->
+<!--            <div class="column">-->
+<!--                <input id="desired" name="desired" type="checkbox"/>-->
+<!--                <i class="fas fa-heart"></i>-->
+<!--            </div>-->
+<!--            <div class="column" style="position:relative; left:10%">-->
+<!--                <input id="readed" name="readed" type="checkbox"/>-->
+<!--                <i class="fas fa-book-open"></i>-->
+<!--            </div>-->
+<!--            <div class="column" style="position:absolute; right:20%">-->
+<!--                <input type="submit" value="Save" />-->
+<!--            </div>-->
+<!--                </div>-->
+
+<!--            <div class="column">-->
+<!--                <div class="row">-->
+<!--                    <div class="form-check">-->
+<!--                    <input id="desired" name="desired" type="checkbox"/>-->
+<!--                        <i class="fas fa-heart"></i>-->
+<!--                        </div>-->
+<!--                </div>-->
+<!--                <div class="row">-->
+<!--                    <div class="form-check">-->
+<!--                    <input id="readed" name="readed" type="checkbox"/>-->
+<!--                        <i class="fas fa-book-open"></i>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="column" style="position:relative; left:10%;">-->
+<!--            <input type="submit" value="Save" />-->
+<!--            </div>-->
+
+        </form>
+<!--            </div>-->
+
+
     </div>
     <div class="col-8" style="margin-top:20px">
         <h3 style="color: white"> Summary: </h3>

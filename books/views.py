@@ -19,7 +19,7 @@ from reportlab.pdfgen import canvas
 from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
-from .forms import BookForm, UpdateBookForm
+from .forms import BookForm, UpdateBookForm, BookProperties
 from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
 
 # Create your views here.
@@ -61,6 +61,31 @@ class BookView(generic.DetailView):
             context['owned'] = 'false'
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        print(self.kwargs['pk'])
+        if request.method == "POST":
+            form = BookProperties(request.POST)
+            if form.is_valid():
+                book_properties = form.save(commit=False)
+                # intern fields (not showed to user)
+                book_properties.user_id = request.user
+                book_properties.book = get_object_or_404(Book,pk=kwargs['pk'])
+
+                messages.info(request, 'Your preference has been saved!')
+                book_properties.save()
+            else:
+                messages.info(request, 'Oops.. something is wrong')
+
+        else:
+            form = BookProperties()
+
+
+        context = {}
+        context['book'] = book_properties.book
+        context['form'] = form
+
+        return render(request, "details.html", context)
 
 
 def generate_id():
