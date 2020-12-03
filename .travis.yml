@@ -19,13 +19,15 @@ after_success:
 - coveralls
 sudo: false
 deploy:
-  provider: heroku
   api_key:
     secure: B9OpEHXJCdWzOsZLk5AfMQy0R/p6M+ONyP0/HsYmeKY30ID/LsG8puILuEnha/bLweXcb/crL6piywIj0d7U9QePR2wG9f5zdaVtZ6EBxhZnxdRHUrgS4ixH2FyUMe+sAfkWtCbFeEyyHRQBBs4AU6wNEDMcz00fdIWGnWZdKDjEwzNURfCSb9fEezf54Zz7JRSx2zTE3o4DzH8TXfpZSuzZ+pZPIE5RWOcLS/ukP61Wqz/zp3OWG+GeIJg7sjBj43QyOZEsUTjo8X/lN8OBwj7Q2I40RXm1X+U5Xodxjcpwyk3BlE37gXt7xXCFoiyVubvmVFINcMClzY/3gAuP35LdjoYJy5hLOPRSyHQ/tjUWptuIULba/G+ovl5/Fg3glY+y24Nv2694Qy29s0S+a8EcelXL4M0pC0GcwIj0U0jEXAvc1JRbxoE0kfIlpT3/tz+9RlrSsAD6ZG2J3j9yiCjN8XmCfEte1fzmccDm4JGAS+iXDNcJxFMtdkinAK/R5LHR8esmI94VrhKS+tjlS7aX2exQHRg+CRC9VvIuU7rhOOYynuHS446F0MZCqZfTt4TPUc3ti3hIKq8Zery0gnYqH8Qu2kf5ERIlfLyZAVuWDgxNQyPzcbusiY48BCMnkgetnUftXH1rAmH4eg+2fH/cs6fTQYhWJhIqjUnZcBU=
-  skip_cleanup: true
-  app:
-    main: alejandria-es
-    DEPLOY-develop: alejandria-staging
-  on:
-  - main
-  - DEPLOY-develop
+  - provider: heroku
+    # Main app
+    app: alejandria-es
+    on:
+      branch: main
+  - provider: heroku
+    # Develop app
+    app: alejandria-staging
+    on:
+      branch: DEPLOY-develop
