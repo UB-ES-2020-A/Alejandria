@@ -103,6 +103,17 @@ elif 'HEROKU' in os.environ:
 
         # Despues de configurar la
     }
+elif 'HEROKU-STAGING' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'd4dd9qv6i3d8ko',  # Poned este nombre todos en el pgadmin al crear la db local
+            'USER': 'iyepslihnlfrzq',  # Cread este usuario y asignadlo como owner de la db y dadle todos los permisos
+            'PASSWORD': 'ab4898a108ec21f7610d7fa597ef9a093db31fe3000b8c6c2d3a4d40fba465ba',  # usad esta constraseña
+            'HOST': 'ec2-54-75-225-52.eu-west-1.compute.amazonaws.com',  # como hemos dicho es una db local
+            'PORT': '5432'  # a este puerto
+            }
+        }
 
 else:
     print("Remember, you are in the local database.")
