@@ -25,4 +25,4 @@ deploy:
   skip_cleanup: true
   app:
     main: alejandria-es
-    DEPLOY-develop: alejandria-staging
+    develop: alejandria-staging
