@@ -24,7 +24,7 @@ LOGIN_URL = '/'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['alejandria-es.herokuapp.com', '127.0.0.1','localhost', 'alejandria-staging.herokuapp.com/']
+ALLOWED_HOSTS = ['alejandria-es.herokuapp.com', '127.0.0.1','localhost', 'alejandria-staging.herokuapp.com']
 
 # Application definition
 
