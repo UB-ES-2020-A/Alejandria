@@ -203,9 +203,53 @@
   </div>
 </div>
 
+
+
+<!-- Modal -->
+<div id="promotionModal" class="modal fade" role="dialog" >
+  <div class="modal-dialog" style="max-width: 900px;">
+    <!-- Modal content-->
+    <div class="modal-content" style="background:#343a40; color:white">
+      <div class="modal-header">
+          <h4 style="left:0px" class="modal-title">Terms and Conditions</h4>
+        <button style="color:red;" type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+
+          <div class="card" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
+             <div class="card-horizontal" >
+                 <div class="card-body" style="color:white;" >
+                     <h3 class="card-title">title</h3>
+                     <div class="row" style="margin-top:2%;">
+                         <div class="column" style="position: absolute; right: 30%">
+                             <h6 class="card-title"><b>code</b></h6>
+                         </div>
+                         <div class="column" style="position: absolute; right: 5%; " >
+                            <div clas="row" style="margin-top: 5%;">
+<!--                                <form action="/book/{{book.ISBN}}">-->
+<!--                                    <button class="btn btn-danger my-2 my-sm-0"  style="width:100%" title="Show"  type="submit"><i class="fas fa-search"></i></button>-->
+<!--                                </form>-->
+
+                            </div>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+
+        </div>
+      <div class="modal-footer">
+        <button type="button" style="color:white; background:#dc3545;" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
     <img id="blah" style="width:110%" src="{% static 'no_available.jpg' %}" />
+      <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#promotionModal">Add promo code</button>
   </div>
   <div class="right-container" style="width:auto">
     <header>
