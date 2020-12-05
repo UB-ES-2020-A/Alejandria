@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
     <link rel="stylesheet" href="{% static 'css/font.css' %}">
-    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+<!--    <link rel="stylesheet" href="{% static 'css/card.css' %}">-->
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/form-sell.css' %}">
     <!-- Css files from static folder -->
@@ -207,7 +207,7 @@
 
 <!-- Modal -->
 <div id="promotionModal" class="modal fade" role="dialog" >
-  <div class="modal-dialog" style="max-width: 900px;">
+  <div class="modal-dialog" style="max-width: 35%;">
     <!-- Modal content-->
     <div class="modal-content" style="background:#343a40; color:white">
       <div class="modal-header">
@@ -219,18 +219,18 @@
           <div class="card" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
              <div class="card-horizontal" >
                  <div class="card-body" style="color:white;" >
-                     <h3 class="card-title">title</h3>
-                     <div class="row" style="margin-top:2%;">
-                         <div class="column" style="position: absolute; right: 30%">
-                             <h6 class="card-title"><b>code</b></h6>
+                     <div class="row">
+                         <div class="column">
+                            <h3 class="card-title">CODE</h3>
                          </div>
-                         <div class="column" style="position: absolute; right: 5%; " >
-                            <div clas="row" style="margin-top: 5%;">
-<!--                                <form action="/book/{{book.ISBN}}">-->
-<!--                                    <button class="btn btn-danger my-2 my-sm-0"  style="width:100%" title="Show"  type="submit"><i class="fas fa-search"></i></button>-->
-<!--                                </form>-->
-
-                            </div>
+                         <div class="column">
+                            <h5>50 %</h5>
+                            <h5>Redeemed</h5>
+                         </div>
+                         <div class="column">
+                            <h5>price</h5>
+                            <h5>Total</h5>
+                         </div>
                          </div>
                      </div>
                 </div>
