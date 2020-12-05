@@ -1,5 +1,6 @@
 $(document).ready(function () {
     let data = null;
+    let condition = false;
 
     $(".navbar-brand").click(function () {
         window.location.href = window.location.origin;
@@ -179,6 +180,7 @@ $(document).ready(function () {
             progressSteps: ["1", "2", "3", "4"],
             showCancelButton: true,
             focusConfirm: false,
+            allowOutsideClick: false,
 
         }).queue([
             {
@@ -187,33 +189,42 @@ $(document).ready(function () {
                     '<div class="form-group">'+
                         '<label for="register_username" style="margin-right: 100%;"><strong>Username</strong></label>'+
                         '<input type="text" id="register_username" class="swal2-input form-control" placeholder="Username">' +
+                        '<div class="alert alert-danger d-none" id="alertUsername" role="alert">The field is empty or already exists</div>'+
                         '<small id="usernameHelp" class="form-text text-muted" style="padding-right: 74%;">Displayed Name</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_firstname" style="margin-right: 77%;"><strong>First Name</strong></label>'+
                         '<input type="text" id="register_firstname" class="swal2-input form-control" placeholder="First Name">' +
+                        '<div class="alert alert-danger d-none" id="alertFirstname" role="alert">The field is empty</div>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_lastname" style="margin-right: 77%;"><strong>Last Name</strong></label>'+
                         '<input type="text" id="register_lastname" class="swal2-input form-control" placeholder="Last Name">' +
+                        '<div class="alert alert-danger d-none" id="alertLastname" role="alert">The field is empty or invalid</div>'+
                         '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">Please enter just 1 last name</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_email" style="margin-right: 69%;"><strong>Email Address</strong></label>'+
                         '<input type="email" id="register_email" class="swal2-input form-control" placeholder="Enter email">' +
+                        '<div class="alert alert-danger d-none" id="alertEmail" role="alert">The field is empty or invalid or already exists</div>'+
                         '<small id="emailHelp" class="form-text text-muted" style="padding-right: 57%;">Enter a valid Email Address</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_password_1" style="margin-right: 100%;"><strong>Password</strong></label>'+
                         '<input type="password" id="register_password_1" class="swal2-input form-control" placeholder="Enter password">' +
+                        '<div class="alert alert-danger d-none" id="alertPassword" role="alert">The field is empty</div>'+
                         '<small id="password1Help" class="form-text text-muted" style="padding-right: 32%;">Max. 50 characters. All characters are valid.</small>'+
                     '</div>',
 
                 preConfirm: () => {
+                    if(condition) {
+                        condition = false;
+                        return false;
+                    }
                     data = {
                         username: $("#register_username").val(),
                         firstname: $("#register_firstname").val(),
@@ -223,7 +234,136 @@ $(document).ready(function () {
                     }
 
                     window.value = data;
-                }
+                },
+                willOpen: () => {
+                    $(".swal2-confirm").click(function (event) {
+
+                        if($("#register_username").val() == '') {
+                            condition = true;
+                            $("#alertUsername").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertUsername").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled){
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled){
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            },3000)
+
+                        }
+
+                        if($("#register_firstname").val() == '') {
+                            condition = true;
+                            $("#alertFirstname").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertFirstname").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled){
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled){
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            },3000)
+
+                        }
+
+                        if($("#register_lastname").val() == '' || $("#register_lastname").val().split(" ").length > 1) {
+                            condition = true;
+                            $("#alertLastname").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertLastname").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled){
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled){
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            },3000)
+
+                        }
+
+                        if($("#register_email").val() == '' || !validateEmail($("#register_email").val())) {
+                            condition = true;
+                            $("#alertEmail").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertEmail").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled){
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled){
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            },3000)
+
+                        }
+
+                        if($("#register_password_1").val() == '') {
+                            condition = true;
+                            $("#alertPassword").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertPassword").addClass("d-none");
+
+                                if ($(".swal2-confirm")[0].disabled){
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled){
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            },3000);
+
+                        }
+
+                    })
+
+                    $("#register_username").keyup(function () {
+                        if ($("#register_username").val() != "") {
+                            setCSRF();
+                            $.ajax(window.location.origin+"/check/", {
+                                method: "POST",
+                                data: {username:$("#register_username").val()},
+                                ContentType: 'application/x-www-form-urlencode',
+                                success: function (response) {
+                                    if (!response.exists){
+                                        $("#alertUsername").addClass("d-none");
+                                        $(".swal2-confirm")[0].disabled = false;
+                                    }
+                                    else {
+                                        $("#alertUsername").removeClass("d-none");
+                                        $(".swal2-confirm")[0].disabled = true;
+                                    }
+                                }
+
+                            })
+                        }
+
+                    })
+
+                    $("#register_email").keyup(function () {
+                        if ($("#register_email").val() != "") {
+                            setCSRF();
+                            $.ajax(window.location.origin+"/check/", {
+                                method: "POST",
+                                data: {email:$("#register_email").val()},
+                                ContentType: 'application/x-www-form-urlencode',
+                                success: function (response) {
+                                    if (!response.exists){
+                                        $("#alertEmail").addClass("d-none");
+                                        $(".swal2-confirm")[0].disabled = false;
+                                    }
+                                    else {
+                                        $("#alertEmail").removeClass("d-none");
+                                        $(".swal2-confirm")[0].disabled = true;
+
+                                    }
+                                }
+
+                            })
+                        }
+
+                    })
+
+                },
             },
             {
                 title: "User Address",
@@ -432,6 +572,7 @@ $(document).ready(function () {
                         } else {
                             Swal.fire({
                                 icon: 'success',
+                                allowOutsideClick: false,
                                 title: 'Registered Successfully',
                                 text: 'You can now Sign In to your account!',
                             })
@@ -476,4 +617,9 @@ function setCSRF() {
         }
 
     });
+}
+
+function validateEmail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
 }
