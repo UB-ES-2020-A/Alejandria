@@ -207,7 +207,7 @@
 
 <!-- Modal -->
 <div id="promotionModal" class="modal fade" role="dialog" >
-  <div class="modal-dialog" style="max-width: 35%;">
+  <div class="modal-dialog" style="max-width: 50%;">
     <!-- Modal content-->
     <div class="modal-content" style="background:#343a40; color:white">
       <div class="modal-header">
@@ -216,30 +216,56 @@
       </div>
       <div class="modal-body">
 
-          <div class="card" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
+          <div class="card" style="background-color: #963434; margin-top:2%;">
              <div class="card-horizontal" >
                  <div class="card-body" style="color:white;" >
                      <div class="row">
-                         <div class="column">
-                            <h3 class="card-title">CODE</h3>
+                         <div class="column" style="width: 25%;">
+                            <h4 class="card-title" style="margin-left:10%;width:auto;text-align: center; margin-top: 7%;">QWERTYUIOP</h4>
                          </div>
-                         <div class="column">
-                            <h5>50 %</h5>
-                            <h5>Redeemed</h5>
+                         <div class="column" style="margin-left:5%">
+                            <h5>Discount: 50 %</h5>
+                            <h5>Redeemed: 100</h5>
                          </div>
-                         <div class="column">
-                            <h5>price</h5>
-                            <h5>Total</h5>
+                         <div class="column" style="margin-left:5%">
+                            <h5>Final price: 100€</h5>
+                            <h5>Promo codes left: 20000</h5>
                          </div>
+                         <div class="column" style="margin-left:10%">
+                            <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Delete"><i class="fas fa-trash-alt"></i></button>
                          </div>
                      </div>
                 </div>
             </div>
+          </div>
         </div>
+
+        <div class="card" style="background-color: #963434; margin-top:2%;">
+             <div class="card-horizontal" >
+                 <div class="card-body" style="color:white;" >
+                     <div class="row">
+                         <form method="POST"> {% csrf_token %}
+                         <label for="code">Code:</label>
+                             <input id="code" name="code" placeholder="SAVE25" type="text"/>
+                         <div class="column" style="margin-left:5%">
+                            <label for="Discount">Discount:</label>
+                             <input id="Discount" name="percentage" placeholder="25" type="number">%</input>
+                             <label for="max_limit">Max redeem:</label>
+                             <input id="max_limit" name="max_limit" placeholder="1500" type="number"/>
+                         </div>
+
+                         <div class="column" style="margin-left:10%">
+                            <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                         </div>
+                         </form>
+                         </div>
+                     </div>
+                </div>
+            </div>
 
 
         </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="background:#343a40;">
         <button type="button" style="color:white; background:#dc3545;" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
