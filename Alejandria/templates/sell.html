@@ -238,30 +238,50 @@
                 </div>
             </div>
           </div>
-        </div>
 
-        <div class="card" style="background-color: #963434; margin-top:2%;">
+
+          <div class="card" style="background-color: #963434; margin-top:2%;">
              <div class="card-horizontal" >
                  <div class="card-body" style="color:white;" >
                      <div class="row">
                          <form method="POST"> {% csrf_token %}
-                         <label for="code">Code:</label>
-                             <input id="code" name="code" placeholder="SAVE25" type="text"/>
-                         <div class="column" style="margin-left:5%">
-                            <label for="Discount">Discount:</label>
-                             <input id="Discount" name="percentage" placeholder="25" type="number">%</input>
-                             <label for="max_limit">Max redeem:</label>
-                             <input id="max_limit" name="max_limit" placeholder="1500" type="number"/>
-                         </div>
+                             <label for="code" style="margin-left:2.5%;">Code:</label>
+                             <input style="width:16%;" id="code" name="code" placeholder="SAVE25" type="text"/>
+                             <label for="Discount" style="margin-left:5%;">Discount:</label>
+                             <input style="width: 7%;" id="Discount" name="percentage" placeholder="25" type="number">%</input>
+                             <label for="max_limit" style="margin-left:5%;">Max redeem:</label>
+                             <input style="width: 15%;" id="max_limit" name="max_limit" placeholder="1500" type="number"/>
+                             <button class="btn btn-danger my-2 my-sm-0" style="margin-left:9%; " title="Delete"><i class="fas fa-trash-alt"></i></button>
 
-                         <div class="column" style="margin-left:10%">
-                            <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Delete"><i class="fas fa-trash-alt"></i></button>
-                         </div>
+<!--                             <div style="margin-left:2.5%">-->
+<!--                                <label for="code">Code:</label>-->
+<!--                                <input id="code" name="code" placeholder="SAVE25" type="text"/>-->
+<!--                             </div>-->
+<!--                         <div class="row">-->
+<!--                         <div class="column" style="margin-left:5%">-->
+<!--                             <label for="Discount">Discount:</label>-->
+<!--                             <input style="width: 15%;" id="Discount" name="percentage" placeholder="25" type="number">%</input>-->
+<!--                         </div>-->
+<!--                             <div class="column" style="margin-left:10%">-->
+<!--                            <label for="max_limit">Max redeem:</label>-->
+<!--                             <input style="width: 15%;" id="max_limit" name="max_limit" placeholder="1500" type="number"/>-->
+<!--                         </div>-->
+
+<!--                         <div class="column" style="margin-left:10%">-->
+
+<!--                            <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Delete"><i class="fas fa-trash-alt"></i></button>-->
+<!--                         </div>-->
+<!--                         </div>-->
                          </form>
                          </div>
                      </div>
                 </div>
             </div>
+
+
+        </div>
+
+
 
 
         </div>
