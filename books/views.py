@@ -175,7 +175,7 @@ class SearchView(generic.ListView):
             relation_book = Book.objects.filter(primary_genre__in=genres_relation)[:20]
             if relation_book:
                 context['book_relation'] = relation_book
-                return context
+                #return context
 
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
