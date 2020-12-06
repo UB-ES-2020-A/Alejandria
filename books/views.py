@@ -110,9 +110,12 @@ class HomeView(generic.ListView):
         today = datetime.today().strftime("%Y-%m-%d")
         last_day = (datetime.today() - timedelta(days=7)).strftime("%Y-%m-%d")
 
-        context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])
-        context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
-        context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
+        next_day = (datetime.today() + timedelta(days=14)).strftime("%Y-%m-%d")
+
+        context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])[:20]
+        context['comingsoon'] = Book.objects.filter(publication_date__range=[today, next_day])[:20]
+        context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")[:20]
+        context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")[:20]
         return context
 
     def render_to_response(self, context, **response_kwargs):
