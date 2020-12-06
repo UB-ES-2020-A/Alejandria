@@ -370,32 +370,149 @@ $(document).ready(function () {
                 html:
                 '<div class="form-group">'+
                     '<label for="register_country_1" style="margin-right: 100%;"><strong>Country</strong></label>'+
-                    '<input type="text" id="register_country_1" class="swal2-input" placeholder="Country">' +
+                    '<div class="dropdown">' +
+                        '<button class="btn btn-secondary dropdown-toggle" type="button" id="countryDropdownBtn1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 100%;">Choose</button> '+
+                        '<div class="dropdown-menu dropdown-menu-right" id="menu_country1" style="height: auto;max-height: 150px;overflow-x: hidden;" aria-labelledby="genreDropdownBtn1">' +
+
+                        '</div> '+
+                    '</div>' +
+                    '<div class="alert alert-danger d-none" id="alertCountry1" role="alert">The field is empty</div>'+
                 '</div>'+
 
                 '<div class="form-group">'+
                     '<label for="register_city_1" style="margin-right: 100%;"><strong>City</strong></label>'+
                     '<input type="text" id="register_city_1" class="swal2-input" placeholder="City">' +
+                    '<div class="alert alert-danger d-none" id="alertCity1" role="alert">The field is empty</div>'+
                 '</div>'+
 
                 '<div class="form-group">'+
                     '<label for="register_street_1" style="margin-right: 100%;"><strong>Street</strong></label>'+
                     '<input type="text" id="register_street_1" class="swal2-input" placeholder="Street">' +
+                    '<div class="alert alert-danger d-none" id="alertStreet1" role="alert">The field is empty</div>'+
                 '</div>'+
 
                 '<div class="form-group">'+
                     '<label for="register_zip_1" style="margin-right: 81%;"><strong>Zip Code</strong></label>'+
                     '<input type="text" id="register_zip_1" class="swal2-input" placeholder="Zip Code">'+
+                    '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">All zip codes are numbers</small>'+
+                    '<div class="alert alert-danger d-none" id="alertZip1" role="alert">The field is empty or Invalid</div>'+
                 '</div>',
 
                 preConfirm: () => {
+
+                    if(condition) {
+                        condition = false;
+                        return false;
+                    }
+
                     data = {
-                        country1: $("#register_country_1").val(),
+                        country1: $("#countryDropdownBtn1").text(),
                         city1: $("#register_city_1").val(),
                         street1: $("#register_street_1").val(),
                         zip1: $("#register_zip_1").val()
                     }
                     window.value = $.extend(window.value,data);
+                },
+                willOpen: () => {
+                    $(".swal2-confirm").click(function (event) {
+
+                        if ($("#countryDropdownBtn1").text() == 'Choose') {
+                            condition = true;
+                            $("#alertCountry1").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertCountry1").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled) {
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled) {
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            }, 3000)
+
+                        }
+
+                        if ($("#register_city_1").val() == '') {
+                            condition = true;
+                            $("#alertCity1").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertCity1").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled) {
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled) {
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            }, 3000)
+
+                        }
+                        if ($("#register_street_1").val() == '') {
+                            condition = true;
+                            $("#alertStreet1").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertStreet1").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled) {
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled) {
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            }, 3000)
+
+                        }
+
+                        if ($("#register_zip_1").val() == '') {
+                            condition = true;
+                            $("#alertZip1").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertZip1").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled) {
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled) {
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            }, 3000)
+
+                        }
+
+                    })
+
+                    $("#register_zip_1").keyup(function () {
+                        let value = $("#register_zip_1").val();
+                        let new_value = value.replace(/[^0-9]+/g, "");
+                        $("#register_zip_1").val(new_value);
+
+                        if($("#register_zip_1").val().length > 5) {
+                            new_value = $("#register_zip_1").val().slice(0, 5);
+                            $("#register_zip_1").val(new_value);
+                        }
+                    })
+
+                    $.ajax("https://pkgstore.datahub.io/core/country-list/data_csv/data/d7c9d7cfb42cb69f4422dec222dbbaa8/data_csv.csv", {
+                        method: "GET",
+                        success: function (response) {
+                            let data = response.split("\n");
+                            data = data.slice(1,data.lenght);
+                            let code = "";
+                            let countries = data.map(parseData);
+
+
+                            function parseData(value, index, array) {
+                                let country = value.split(",")[0]
+                                let html = '<a class="dropdown-item item-country-1" href="#">'+country.replace('"',"")+'</a>';
+                                code += html;
+                                return html;
+                            }
+
+                            $("#menu_country1").html(code);
+                            $(".item-country-1").click(function () {
+                                $("#countryDropdownBtn1").text($(this).text());
+                                $("#countryDropdownBtn1").css("background-color","#dc3545");
+                            })
+
+                        }
+                })
+
                 }
             },
             {
@@ -403,32 +520,148 @@ $(document).ready(function () {
                 html:
                     '<div class="form-group">'+
                         '<label for="register_country_2" style="margin-right: 100%;"><strong>Country</strong></label>'+
-                        '<input type="text" id="register_country_2" class="swal2-input" placeholder="Country">' +
+                        '<div class="dropdown">' +
+                            '<button class="btn btn-secondary dropdown-toggle" type="button" id="countryDropdownBtn2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 100%;">Choose</button> '+
+                            '<div class="dropdown-menu dropdown-menu-right" id="menu_country2" style="height: auto;max-height: 150px;overflow-x: hidden;" aria-labelledby="genreDropdownBtn1">' +
+
+                            '</div> '+
+                        '</div>' +
+                        '<div class="alert alert-danger d-none" id="alertCountry2" role="alert">The field is empty</div>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_city_2" style="margin-right: 100%;"><strong>City</strong></label>'+
                         '<input type="text" id="register_city_2" class="swal2-input" placeholder="City">' +
+                        '<div class="alert alert-danger d-none" id="alertCity2" role="alert">The field is empty</div>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_street_2" style="margin-right: 100%;"><strong>Street</strong></label>'+
                         '<input type="text" id="register_street_2" class="swal2-input" placeholder="Street">' +
+                        '<div class="alert alert-danger d-none" id="alertStreet2" role="alert">The field is empty</div>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_zip_2" style="margin-right: 81%;"><strong>Zip Code</strong></label>'+
                         '<input type="text" id="register_zip_2" class="swal2-input" placeholder="Zip Code">'+
+                        '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">All zip codes are numbers</small>'+
+                        '<div class="alert alert-danger d-none" id="alertZip2" role="alert">The field is empty or Invalid</div>'+
                     '</div>',
                 preConfirm: () => {
+                    if(condition) {
+                        condition = false;
+                        return false;
+                    }
+
                     data = {
-                        country2: $("#register_country_2").val(),
+                        country2: $("#countryDropdownBtn2").text(),
                         city2: $("#register_city_2").val(),
                         street2: $("#register_street_2").val(),
                         zip2: $("#register_zip_2").val(),
                         trigger: "register"
                     }
                     window.value = $.extend(window.value,data);
+                },
+                willOpen: () => {
+                    $(".swal2-confirm").click(function (event) {
+
+                        if ($("#countryDropdownBtn2").text() == 'Choose') {
+                            condition = true;
+                            $("#alertCountry2").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertCountry2").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled) {
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled) {
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            }, 3000)
+
+                        }
+
+                        if ($("#register_city_2").val() == '') {
+                            condition = true;
+                            $("#alertCity2").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertCity2").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled) {
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled) {
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            }, 3000)
+
+                        }
+                        if ($("#register_street_2").val() == '') {
+                            condition = true;
+                            $("#alertStreet2").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertStreet2").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled) {
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled) {
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            }, 3000)
+
+                        }
+
+                        if ($("#register_zip_2").val() == '') {
+                            condition = true;
+                            $("#alertZip2").removeClass("d-none");
+                            setTimeout(function () {
+                                $("#alertZip2").addClass("d-none");
+                                if ($(".swal2-confirm")[0].disabled) {
+                                    $(".swal2-confirm")[0].disabled = false;
+                                }
+                                if ($(".swal2-cancel")[0].disabled) {
+                                    $(".swal2-cancel")[0].disabled = false;
+                                }
+                            }, 3000)
+
+                        }
+
+                    })
+
+                    $("#register_zip_2").keyup(function () {
+                        let value = $("#register_zip_2").val();
+                        let new_value = value.replace(/[^0-9]+/g, "");
+                        $("#register_zip_2").val(new_value);
+
+                        if($("#register_zip_2").val().length > 5) {
+                            new_value = $("#register_zip_2").val().slice(0, 5);
+                            $("#register_zip_2").val(new_value);
+                        }
+                    })
+
+                    $.ajax("https://pkgstore.datahub.io/core/country-list/data_csv/data/d7c9d7cfb42cb69f4422dec222dbbaa8/data_csv.csv", {
+                        method: "GET",
+                        success: function (response) {
+                            let data = response.split("\n");
+                            data = data.slice(1,data.lenght);
+                            let code = "";
+                            let countries = data.map(parseData);
+
+
+                            function parseData(value, index, array) {
+                                let country = value.split(",")[0]
+                                let html = '<a class="dropdown-item item-country-2" href="#">'+country.replace('"',"")+'</a>';
+                                code += html;
+                                return html;
+                            }
+
+                            $("#menu_country2").html(code);
+                            $(".item-country-2").click(function () {
+                                $("#countryDropdownBtn2").text($(this).text());
+                                $("#countryDropdownBtn2").css("background-color","#dc3545");
+                            })
+
+                        }
+                })
+
                 }
             },
             {
@@ -550,6 +783,11 @@ $(document).ready(function () {
                     $(".item-taste-3").click(function () {
                         $("#genreDropdownBtn3").text($(this).text());
                         $("#genreDropdownBtn3").css("background-color","#dc3545");
+                    })
+
+                    $(".item-country-2").click(function () {
+                        $("#countryDropdownBtn2").text($(this).text());
+                        $("#countryDropdownBtn2").css("background-color","#dc3545");
                     })
                 }
             }
