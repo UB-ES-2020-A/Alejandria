@@ -503,6 +503,15 @@ def register(request):
 
         return JsonResponse({"error": True})
 
+def check_data(request):
+    if request.method == 'POST':
+        if 'username' in request.POST:
+            username = request.POST["username"]
+            return JsonResponse({"exists": User.objects.filter(username=username).exists()})
+        if 'email' in request.POST:
+            email = request.POST["email"]
+            return JsonResponse({"exists": User.objects.filter(email=email).exists()})
+
 
 def forgot(request, **kwargs):
     if request.method == 'POST':
