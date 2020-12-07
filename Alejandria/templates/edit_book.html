@@ -192,7 +192,11 @@
                             <h5>Promo codes left: 20000</h5>
                          </div>
                          <div class="column" style="margin-top: 1.5%;">
-                            <button class="btn btn-danger my-2 my-sm-0" style="width:100%; margin-left:40%; margin-top: 7%;" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                             <form method="POST" action=".">{% csrf_token %}
+                            <button class="btn btn-danger my-2 my-sm-0" name="delete_promo" value="{{promo.code}}"
+                                    style="width:100%; margin-left:40%; margin-top: 7%;" title="Delete">
+                                <i class="fas fa-trash-alt"></i></button>
+                                 </form>
                          </div>
                      </div>
                 </div>
@@ -213,12 +217,8 @@
                              <label for="max_limit" style="margin-left:3%;">Max redeem:</label>
                              <input style="width: 15%;" id="max_limit" name="max_limit" placeholder="1500" type="number"/>
 <!--                             <button type="button" style="margin-left:5%; width:14%" class="btn btn-success">Save</button>-->
-                             <input style="margin-left:5%; width:14%; background-color: #28a745;
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  line-height: 1.4;
-  padding: 10px;" name="promo_form" type="submit" value="Save" />
+                             <input style="margin-left:7%; width:14%; background-color: #28a745; border: 0;border-radius: 5px;
+                             cursor: pointer; line-height: 1.4;padding: 10px;" name="promo_form" type="submit" value="Save" />
                          </form>
                          </div>
                      </div>
@@ -446,6 +446,7 @@ $( document ).ready(function() {
 
 
 });
+
 
     function readURL(input) {
             if (input.files && input.files[0]) {

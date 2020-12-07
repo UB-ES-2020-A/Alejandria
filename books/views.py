@@ -241,8 +241,22 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
 
     # post (update) of book
     def post(self, request, *args, **kwargs):
+        print("HOLA",request.POST)
 
-        if "promo_form" in request.POST:
+        if 'delete_promo' in request.POST:
+            book = get_object_or_404(Book, pk=self.kwargs['pk'])
+            promo = get_object_or_404(Cupon, pk=request.POST['delete_promo'])
+            promo.delete()
+
+            context = {}
+            context['book'] = book
+            context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+            context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+
+            return render(request, "edit_book.html", context)
+
+
+        elif "promo_form" in request.POST:
             if request.method == 'POST':
                 # get the instance to modify
                 book = get_object_or_404(Book, pk=self.kwargs['pk'])
@@ -266,7 +280,6 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             context['book'] = book
             context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
             context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
-
 
             return render(request, "edit_book.html", context)
 
