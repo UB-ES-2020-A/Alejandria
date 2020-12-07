@@ -37,34 +37,6 @@
 </head>
 <body>
 
-<!--
-
-<div>
-
-<div class="container">
-    <div>
-        <h1 style="color: #dc3545"> {{book.title}} </h1>
-        <h3 style="color: white"> {{book.author}} </h3>
-        <h6 style="color:white"> Category: {{book.get_primary_genre_display }}, {{book.get_secondary_genre_display}} </h6>
-    </div>
-    <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="float: left; height:400px; margin-top:20px">
-
-</div>
-
-<div>
-
-    <p style="color: white; text-align: justify; text-justify: inter-word;">
-            {{book.description}}
-        </p>
-</div>
-
-
-
-
-
-</div>
--->
-
 <div class="container" style="margin-top:3%; margin-left:7%;">
   <div class="row">
     <div class="col-12">
@@ -77,12 +49,30 @@
         {% endif %}
     </div>
     <div class="col-4">
+         <div class="row">
         {% if book.thumbnail %}
             <img src="{{ book.thumbnail.url }}" style="float: left; height:400px; margin-top:20px">
         {% else %}
             <img src="{% static 'no_available.jpg' %}" style="float: left; height:400px; margin-top:20px">
         {% endif %}
+         </div>
+
+<!--        <div class="container" style="width:260px; border: 2px solid; border-color: black;">-->
+        {% if user.is_authenticated %}
+        <form id="properties-form" method="POST" > {% csrf_token %}
+            <div style="margin-top:5%;">
+                <input style="width: 40px; height: 40px; opacity: 0;z-index:10;margin-left: 15%; position: relative;" onchange="toggleCheckbox(this)" id="desired" name="desired" type="checkbox"/>
+                <span id="desired-icon" style="text-shadow:0 0 3px #f00;  margin-left:-17%; width:15%;display:inline-block; color:#141414;"><i class="fas fa-heart fa-3x"></i></span>
+                <input style="width: 40px; height: 40px; opacity: 0; margin-left: 15%;z-index:10; position: relative;" onchange="toggleCheckboxBook(this)" id="readed" name="readed" type="checkbox"/>
+                <span id="readed-icon" style="text-shadow:0 0 3px #80471C; margin-left:-17%; width:15%;display:inline-block; color:#141414"><i class="fas fa-book-open fa-3x"></i></span>
+            </div>
+        </form>
+        {% endif %}
+
+
     </div>
+
+
     <div class="col-8" style="margin-top:20px">
         <h3 style="color: white"> Summary: </h3>
         <p style="color:white">{{book.description}}</p>
@@ -232,6 +222,61 @@
 </div>
 
 <script>
+    {% if user.is_authenticated %}
+        {% if form.desired %}
+            $('#desired').checked = true;
+            console.log('estic true')
+            $('#desired-icon').css({'color': 'red'});
+        {% else %}
+            $('#desired').checked = false;
+            $('#desired-icon').css({'color': '#141414'});
+        {% endif %}
+
+        {% if form.readed %}
+            console.log('llegit');
+            $('#readed').checked = true;
+            $('#readed-icon').css({'color': '#80471C'});
+        {% else %}
+         console.log('no llegit');
+            $('#readed').checked = false;
+            $('#readed-icon').css({'color': '#141414'});
+        {% endif %}
+    {% endif %}
+
+
+    function toggleCheckbox(element)
+     {
+       if(element.checked){
+          $('#desired-icon').css({'color': 'red'});
+          console.log("like");
+       }
+       else{
+          $('#desired-icon').css({'color': '#141414'});
+          console.log("not like");
+       }
+
+       $('#properties-form').submit();
+
+     }
+
+     function toggleCheckboxBook(element)
+     {
+       if(element.checked){
+          $('#readed-icon').css({'color': '#80471C'});
+          console.log("read");
+       }
+       else{
+          $('#readed-icon').css({'color': '#141414'});
+          console.log("not read");
+       }
+       $('#properties-form').submit();
+
+     }
+
+
+
+
+
 
     var rating = 0;
     var list=['one','two','three','four','five'];
