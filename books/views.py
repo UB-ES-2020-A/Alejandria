@@ -6,6 +6,7 @@ from io import BytesIO
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -44,8 +45,12 @@ class BookView(generic.DetailView):
         context['isbn'] = str(context['object'].ISBN)
         review_list = Rating.objects.filter(ISBN=context['object'])
 
+        if self.request.user.is_authenticated:
+            print('auth')
+            book = get_object_or_404(Book, pk=self.kwargs['pk'])
+            properties, created = BookProperties.objects.get_or_create(book=book, user=self.request.user)
 
-        properties = get_object_or_404(BookProperties, book=context['object'], user=self.request.user)
+            context['form'] = properties
 
         if self.request.user.id is not None:
             owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first() # TODO: NEED TO FIX THIS
@@ -63,68 +68,51 @@ class BookView(generic.DetailView):
         if 'owned' not in context.keys():
             context['owned'] = 'false'
 
-        context['form'] = properties
+
 
         return context
 
+
     def post(self, request, *args, **kwargs):
-        print(self.kwargs['pk'])
-        print('entro')
         if request.method == "POST":
-
-            pre_desired = None
-            pre_readed = None
-
-
             book = get_object_or_404(Book, pk=self.kwargs['pk'])
+            properties, created = BookProperties.objects.get_or_create(book=book, user=request.user)
 
-            # properties = BookProperties.objects.filter(book=book).filter(user=request.user).first()
-            properties = get_object_or_404(BookProperties, book=book, user=request.user)
+            pre_desired = properties.desired
+            pre_readed = properties.readed
 
-            if properties:
-                pre_desired = properties.desired
-                pre_readed = properties.readed
+            change = None
+            value = None
 
-                change = None
-                value = None
+            if 'readed' in request.POST:
+                change = 'readed'
+                aux = request.POST['readed']
+                if aux == 'on':
+                    if pre_readed:
+                        value = False
+                    else:
+                        value = True
 
-                if 'readed' in request.POST:
-                    change = 'readed'
-                    aux = request.POST['readed']
-                    if aux == 'on':
-                        if pre_readed:
-                            value = False
-                        else:
-                            value = True
+            if 'desired' in request.POST:
+                change = 'desired'
+                aux = request.POST['desired']
+                if aux == 'on':
+                    if pre_desired:
+                        value = False
+                    else:
+                        value = True
 
-                if 'desired' in request.POST:
-                    change = 'desired'
-                    aux = request.POST['desired']
-                    if aux == 'on':
-                        if pre_desired:
-                            value = False
-                        else:
-                            value = True
+            form = BookPropertiesForm(request.POST, instance=properties)
 
-
-
-                form = BookPropertiesForm(request.POST, instance=properties)
-            else:
-                form = BookPropertiesForm(request.POST)
-
-            # form = BookPropertiesForm(request.POST)
-            print(type(form))
             if form.is_valid():
                 book_properties = form.save(commit=False)
                 # intern fields (not showed to user)
-
                 if change == 'desired':
                     book_properties.desired = value
                     book_properties.readed = pre_readed
                 elif change == 'readed':
                     book_properties.readed = value
                     book_properties.desired = pre_desired
-
 
                 book_properties.user = request.user
                 book_properties.book = get_object_or_404(Book,pk=kwargs['pk'])
@@ -133,12 +121,6 @@ class BookView(generic.DetailView):
                 book_properties.save()
             else:
                 messages.info(request, 'Oops.. something is wrong')
-
-        else:
-            form = BookProperties()
-
-
-
 
         context = {}
         context['book'] = book_properties.book
