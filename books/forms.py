@@ -53,7 +53,7 @@ class ReviewForm(forms.ModelForm):
         ]
 
 
-class BookProperties(forms.ModelForm):
+class BookPropertiesForm(forms.ModelForm):
     """
     Defines the structure of information of Book Properties
     """

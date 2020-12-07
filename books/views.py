@@ -19,8 +19,8 @@ from reportlab.pdfgen import canvas
 from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
-from .forms import BookForm, UpdateBookForm, BookProperties
-from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
+from .forms import BookForm, UpdateBookForm, BookPropertiesForm
+from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, BookProperties
 
 # Create your views here.
 
@@ -44,6 +44,9 @@ class BookView(generic.DetailView):
         context['isbn'] = str(context['object'].ISBN)
         review_list = Rating.objects.filter(ISBN=context['object'])
 
+
+        properties = get_object_or_404(BookProperties, book=context['object'], user=self.request.user)
+
         if self.request.user.id is not None:
             owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first() # TODO: NEED TO FIX THIS
             if owned:
@@ -60,16 +63,70 @@ class BookView(generic.DetailView):
         if 'owned' not in context.keys():
             context['owned'] = 'false'
 
+        context['form'] = properties
+
         return context
 
     def post(self, request, *args, **kwargs):
         print(self.kwargs['pk'])
+        print('entro')
         if request.method == "POST":
-            form = BookProperties(request.POST)
+
+            pre_desired = None
+            pre_readed = None
+
+
+            book = get_object_or_404(Book, pk=self.kwargs['pk'])
+
+            # properties = BookProperties.objects.filter(book=book).filter(user=request.user).first()
+            properties = get_object_or_404(BookProperties, book=book, user=request.user)
+
+            if properties:
+                pre_desired = properties.desired
+                pre_readed = properties.readed
+
+                change = None
+                value = None
+
+                if 'readed' in request.POST:
+                    change = 'readed'
+                    aux = request.POST['readed']
+                    if aux == 'on':
+                        if pre_readed:
+                            value = False
+                        else:
+                            value = True
+
+                if 'desired' in request.POST:
+                    change = 'desired'
+                    aux = request.POST['desired']
+                    if aux == 'on':
+                        if pre_desired:
+                            value = False
+                        else:
+                            value = True
+
+
+
+                form = BookPropertiesForm(request.POST, instance=properties)
+            else:
+                form = BookPropertiesForm(request.POST)
+
+            # form = BookPropertiesForm(request.POST)
+            print(type(form))
             if form.is_valid():
                 book_properties = form.save(commit=False)
                 # intern fields (not showed to user)
-                book_properties.user_id = request.user
+
+                if change == 'desired':
+                    book_properties.desired = value
+                    book_properties.readed = pre_readed
+                elif change == 'readed':
+                    book_properties.readed = value
+                    book_properties.desired = pre_desired
+
+
+                book_properties.user = request.user
                 book_properties.book = get_object_or_404(Book,pk=kwargs['pk'])
 
                 messages.info(request, 'Your preference has been saved!')
@@ -81,9 +138,19 @@ class BookView(generic.DetailView):
             form = BookProperties()
 
 
+
+
         context = {}
         context['book'] = book_properties.book
-        context['form'] = form
+        context['form'] = book_properties
+
+        if self.request.user.id is not None:
+            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first() # TODO: NEED TO FIX THIS
+            if owned:
+                context['owned'] = "true"
+
+        if 'owned' not in context.keys():
+            context['owned'] = 'false'
 
         return render(request, "details.html", context)
 

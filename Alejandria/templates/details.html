@@ -86,15 +86,15 @@
          </div>
 
 <!--        <div class="container" style="width:260px; border: 2px solid; border-color: black;">-->
-        <form method="POST" > {% csrf_token %}
-            <div>
-                <input id="desired" name="desired" type="checkbox"/>
-                <span style="width:15%;display:inline-block;"><i class="fas fa-heart"></i></span>
+        <form id="properties-form" method="POST" > {% csrf_token %}
+            <div style="margin-top:5%;">
+                <input style="width: 40px; height: 40px; opacity: 0;z-index:10;margin-left: 15%; position: relative;" onchange="toggleCheckbox(this)" id="desired" name="desired" type="checkbox"/>
 
-                <input id="readed" name="readed" type="checkbox"/>
-                <span style="width:15%;display:inline-block;"><i class="fas fa-book-open"></i></span>
+                <span id="desired-icon" style="text-shadow:0 0 3px #f00;  margin-left:-17%; width:15%;display:inline-block; color:#141414;"><i class="fas fa-heart fa-3x"></i></span>
 
-                <input type="submit" value="Save" />
+                <input style="width: 40px; height: 40px; opacity: 0; margin-left: 15%;z-index:10; position: relative;" onchange="toggleCheckboxBook(this)" id="readed" name="readed" type="checkbox"/>
+                <span id="readed-icon" style="text-shadow:0 0 3px #80471C; margin-left:-17%; width:15%;display:inline-block; color:#141414"><i class="fas fa-book-open fa-3x"></i></span>
+
             </div>
 <!--            <div class="row">-->
 <!--            <div class="column">-->
@@ -282,6 +282,59 @@
 </div>
 
 <script>
+
+    {% if form.desired %}
+        $('#desired').checked = true;
+        $('#desired-icon').css({'color': 'red'});
+    {% else %}
+        $('#desired').checked = false;
+        $('#desired-icon').css({'color': '#141414'});
+    {% endif %}
+
+    {% if form.readed %}
+        console.log('llegit');
+        $('#readed').checked = true;
+        $('#readed-icon').css({'color': '#80471C'});
+    {% else %}
+     console.log('no llegit');
+        $('#readed').checked = false;
+        $('#readed-icon').css({'color': '#141414'});
+    {% endif %}
+
+
+    function toggleCheckbox(element)
+     {
+       if(element.checked){
+          $('#desired-icon').css({'color': 'red'});
+          console.log("like");
+       }
+       else{
+          $('#desired-icon').css({'color': '#141414'});
+          console.log("not like");
+       }
+
+       $('#properties-form').submit();
+
+     }
+
+     function toggleCheckboxBook(element)
+     {
+       if(element.checked){
+          $('#readed-icon').css({'color': '#80471C'});
+          console.log("read");
+       }
+       else{
+          $('#readed-icon').css({'color': '#141414'});
+          console.log("not read");
+       }
+       $('#properties-form').submit();
+
+     }
+
+
+
+
+
 
     var rating = 0;
     var list=['one','two','three','four','five'];

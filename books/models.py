@@ -103,7 +103,7 @@ class Book(models.Model):
 class BookProperties(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
                                 blank=False)
     desired = models.BooleanField(default=False)
     readed = models.BooleanField(default=False)
