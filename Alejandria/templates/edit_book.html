@@ -183,16 +183,16 @@
                          <div class="column" style="width: 25%;">
                             <h4 class="card-title" style="margin-left:10%;width:auto;text-align: center; margin-top: 7%;">{{promo.code}}</h4>
                          </div>
-                         <div class="column" style="margin-left:5%">
+                         <div class="column" style="margin-left:5%; width: 21%;">
                             <h5>Discount: {{promo.percentage}} %</h5>
                             <h5>Redeemed: {{promo.redeemed}}</h5>
                          </div>
-                         <div class="column" style="margin-left:5%">
+                         <div class="column" style="margin-left:5%; width: 33%;">
                             <h5>Final price: 100€</h5>
                             <h5>Promo codes left: 20000</h5>
                          </div>
-                         <div class="column" style="margin-left:10%">
-                            <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                         <div class="column" style="margin-top: 1.5%;">
+                            <button class="btn btn-danger my-2 my-sm-0" style="width:100%; margin-left:40%; margin-top: 7%;" title="Delete"><i class="fas fa-trash-alt"></i></button>
                          </div>
                      </div>
                 </div>
@@ -213,7 +213,12 @@
                              <label for="max_limit" style="margin-left:3%;">Max redeem:</label>
                              <input style="width: 15%;" id="max_limit" name="max_limit" placeholder="1500" type="number"/>
 <!--                             <button type="button" style="margin-left:5%; width:14%" class="btn btn-success">Save</button>-->
-                             <input style="margin-left:5%; width:14%" name="promo_form" class="btn btn-success" type="submit" value="Save" />
+                             <input style="margin-left:5%; width:14%; background-color: #28a745;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  line-height: 1.4;
+  padding: 10px;" name="promo_form" type="submit" value="Save" />
                          </form>
                          </div>
                      </div>

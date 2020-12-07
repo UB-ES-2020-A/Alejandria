@@ -230,7 +230,7 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
     permission_required = ('books.add_book',)
 
     def get_context_data(self, **kwargs):
-        print('get edit book')
+        print('get_context_data')
         context = super().get_context_data(**kwargs)
         # format data to suit frontend requirements
 
@@ -264,6 +264,8 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             context = {}
             context['promo_form'] = promo_form
             context['book'] = book
+            context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+            context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
 
 
             return render(request, "edit_book.html", context)
