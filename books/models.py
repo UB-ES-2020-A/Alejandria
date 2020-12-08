@@ -100,6 +100,14 @@ class Book(models.Model):
     discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0,null=False)
     # pub_date = publication_date  # Abreviation
 
+class BookProperties(models.Model):
+    id = models.AutoField(primary_key=True, blank=False, null=False)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
+                                blank=False)
+    desired = models.BooleanField(default=False)
+    readed = models.BooleanField(default=False)
+
 class Rating(models.Model):
     ID = models.AutoField(primary_key=True, blank=False, null=False)
     ISBN = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)

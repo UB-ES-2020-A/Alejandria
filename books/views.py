@@ -6,6 +6,7 @@ from io import BytesIO
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -19,8 +20,8 @@ from reportlab.pdfgen import canvas
 from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
-from .forms import BookForm, UpdateBookForm, CuponFrom
-from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, Cupon
+from .forms import BookForm, UpdateBookForm, CuponFrom, BookPropertiesForm
+from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, Cupon, BookProperties
 
 # Create your views here.
 
@@ -47,6 +48,13 @@ class BookView(generic.DetailView):
         context['isbn'] = str(self.object.ISBN)
         review_list = Rating.objects.filter(ISBN=self.object)
 
+        if self.request.user.is_authenticated:
+            print('auth')
+            book = get_object_or_404(Book, pk=self.kwargs['pk'])
+            properties, created = BookProperties.objects.get_or_create(book=book, user=self.request.user)
+
+            context['form'] = properties
+
         if self.request.user.id is not None:
             owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(
                 ISBN=context['book']).first()  # TODO: NEED TO FIX THIS
@@ -68,6 +76,70 @@ class BookView(generic.DetailView):
         context['new_price'] = new_price
 
         return context
+
+
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            book = get_object_or_404(Book, pk=self.kwargs['pk'])
+            properties, created = BookProperties.objects.get_or_create(book=book, user=request.user)
+
+            pre_desired = properties.desired
+            pre_readed = properties.readed
+
+            change = None
+            value = None
+
+            if 'readed' in request.POST:
+                change = 'readed'
+                aux = request.POST['readed']
+                if aux == 'on':
+                    if pre_readed:
+                        value = False
+                    else:
+                        value = True
+
+            if 'desired' in request.POST:
+                change = 'desired'
+                aux = request.POST['desired']
+                if aux == 'on':
+                    if pre_desired:
+                        value = False
+                    else:
+                        value = True
+
+            form = BookPropertiesForm(request.POST, instance=properties)
+
+            if form.is_valid():
+                book_properties = form.save(commit=False)
+                # intern fields (not showed to user)
+                if change == 'desired':
+                    book_properties.desired = value
+                    book_properties.readed = pre_readed
+                elif change == 'readed':
+                    book_properties.readed = value
+                    book_properties.desired = pre_desired
+
+                book_properties.user = request.user
+                book_properties.book = get_object_or_404(Book,pk=kwargs['pk'])
+
+                messages.info(request, 'Your preference has been saved!')
+                book_properties.save()
+            else:
+                messages.info(request, 'Oops.. something is wrong')
+
+        context = {}
+        context['book'] = book_properties.book
+        context['form'] = book_properties
+
+        if self.request.user.id is not None:
+            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first() # TODO: NEED TO FIX THIS
+            if owned:
+                context['owned'] = "true"
+
+        if 'owned' not in context.keys():
+            context['owned'] = 'false'
+
+        return render(request, "details.html", context)
 
 
 def generate_id():
@@ -117,9 +189,12 @@ class HomeView(generic.ListView):
         today = datetime.today().strftime("%Y-%m-%d")
         last_day = (datetime.today() - timedelta(days=7)).strftime("%Y-%m-%d")
 
-        context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])
-        context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
-        context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
+        next_day = (datetime.today() + timedelta(days=14)).strftime("%Y-%m-%d")
+
+        context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])[:20]
+        context['comingsoon'] = Book.objects.filter(publication_date__range=[today, next_day])[:20]
+        context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")[:20]
+        context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")[:20]
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -182,7 +257,7 @@ class SearchView(generic.ListView):
             relation_book = Book.objects.filter(primary_genre__in=genres_relation)[:20]
             if relation_book:
                 context['book_relation'] = relation_book
-                return context
+                #return context
 
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
@@ -562,6 +637,15 @@ def register(request):
                 return JsonResponse({"error": True})
 
         return JsonResponse({"error": True})
+
+def check_data(request):
+    if request.method == 'POST':
+        if 'username' in request.POST:
+            username = request.POST["username"]
+            return JsonResponse({"exists": User.objects.filter(username=username).exists()})
+        if 'email' in request.POST:
+            email = request.POST["email"]
+            return JsonResponse({"exists": User.objects.filter(email=email).exists()})
 
 
 def forgot(request, **kwargs):
