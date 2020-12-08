@@ -3,8 +3,7 @@ Contains forms.ModelForm used for ajax communication
 """
 
 from django import forms
-from books.models import Book, Rating, BookProperties
-
+from books.models import Book, Rating, Cupon, BookProperties
 
 class BookForm(forms.ModelForm):
     """
@@ -34,7 +33,8 @@ class BookForm(forms.ModelForm):
             "num_pages",
             "recommended_age",
             "thumbnail",
-            "eBook"
+            "eBook",
+            "discount"
         ]
 
 
@@ -50,6 +50,21 @@ class ReviewForm(forms.ModelForm):
         fields = [
             "text",
             "score"
+        ]
+
+class CuponFrom(forms.ModelForm):
+    """
+    Defines the structure of a cupon
+    """
+
+    class Meta:
+        model = Cupon
+        """ CuponFrom Meta """
+
+        fields = [
+            "code",
+            "percentage",
+            "max_limit",
         ]
 
 

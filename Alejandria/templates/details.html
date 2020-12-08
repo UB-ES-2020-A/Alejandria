@@ -86,7 +86,14 @@
               <p style="color:white">Publisher: {{book.publisher}}</p>
               <p style="color:white">Nº pages: {{book.num_page}}</p>
               <p style="color:white">Recommended age: {{book.recommended_age}}</p>
+
+              {% if book.discount != 0 %}
+              <p style="color:white">Price: <del>{{book.price}}€</del></p>
+              <p style="color:red"><b>Discount: {{book.discount}}%!</b></p>
+              <p style="color:white">New price: {{ new_price }}€ </p>
+              {% else %}
               <p style="color:white">Price: {{book.price}}€</p>
+              {% endif %}
           </div>
           <div class="row">
               <div class="col-12" style="text-align:right">

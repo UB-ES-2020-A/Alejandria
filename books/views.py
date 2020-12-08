@@ -20,8 +20,8 @@ from reportlab.pdfgen import canvas
 from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
-from .forms import BookForm, UpdateBookForm, BookPropertiesForm
-from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, BookProperties
+from .forms import BookForm, UpdateBookForm, CuponFrom, BookPropertiesForm
+from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, Cupon, BookProperties
 
 # Create your views here.
 
@@ -38,12 +38,15 @@ MONTHS_TO_CONSIDER_TOP_SELLER = 6
 class BookView(generic.DetailView):
     model = Book
     template_name = 'details.html'
+    pk_url_kwarg = 'pk'
+
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
-        relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
-        context['isbn'] = str(context['object'].ISBN)
-        review_list = Rating.objects.filter(ISBN=context['object'])
+        relation_book = Book.objects.filter(primary_genre=self.object.primary_genre)[:20]
+        context['isbn'] = str(self.object.ISBN)
+        review_list = Rating.objects.filter(ISBN=self.object)
 
         if self.request.user.is_authenticated:
             print('auth')
@@ -53,7 +56,8 @@ class BookView(generic.DetailView):
             context['form'] = properties
 
         if self.request.user.id is not None:
-            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first() # TODO: NEED TO FIX THIS
+            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(
+                ISBN=context['book']).first()  # TODO: NEED TO FIX THIS
             if owned:
                 context['owned'] = "true"
 
@@ -68,7 +72,8 @@ class BookView(generic.DetailView):
         if 'owned' not in context.keys():
             context['owned'] = 'false'
 
-
+        new_price = self.object.discount * self.object.price / 100
+        context['new_price'] = new_price
 
         return context
 
@@ -306,28 +311,81 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
     permission_required = ('books.add_book',)
 
     def get_context_data(self, **kwargs):
+        print('get_context_data')
         context = super().get_context_data(**kwargs)
         # format data to suit frontend requirements
+
         context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+        context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+        print(context['promos'])
         return context
 
     # post (update) of book
     def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            # get the instance to modify
-            s = get_object_or_404(Book, pk=self.kwargs['pk'])
-            form = UpdateBookForm(request.POST, instance=s)
-            if form.is_valid():
-                book = form.save(commit=False)
-                # intern field (not shown to user)
-                book.user_id = request.user
-                messages.info(request, 'Your book has been updated successfully!')
-                book.save()
+
+        if 'delete_promo' in request.POST:
+            book = get_object_or_404(Book, pk=self.kwargs['pk'])
+            promo = get_object_or_404(Cupon, pk=request.POST['delete_promo'])
+            promo.delete()
+
+            context = {}
+            context['book'] = book
+            context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+            context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+
+            return render(request, "edit_book.html", context)
+
+
+        elif "promo_form" in request.POST:
+            if request.method == 'POST':
+                # get the instance to modify
+                book = get_object_or_404(Book, pk=self.kwargs['pk'])
+                promo_form = CuponFrom(request.POST)
+                book_form = UpdateBookForm(request.POST, instance=book)
+                if promo_form.is_valid():
+                    promotion = promo_form.save(commit=False)
+                    # intern field (not shown to user)
+                    promotion.book = book
+                    promotion.redeemed = 0
+
+                    messages.info(request, 'Promo code added successfully!')
+                    promotion.save()
+                else:
+                    messages.error(request, 'Oops.. something is wrong')
             else:
-                messages.info(request, 'Oops.. something is wrong')
+                promo_form = CuponFrom()
+
+            context = {}
+            context['promo_form'] = promo_form
+            context['book'] = book
+            context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+            context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+
+            return render(request, "edit_book.html", context)
+
         else:
-            form = UpdateBookForm()
-        return render(request, "edit_book.html", {"form": form})
+            if request.method == 'POST':
+                # get the instance to modify
+                s = get_object_or_404(Book, pk=self.kwargs['pk'])
+                form = UpdateBookForm(request.POST, instance=s)
+                if form.is_valid():
+                    book = form.save(commit=False)
+                    # intern field (not shown to user)
+                    book.user_id = request.user
+                    messages.info(request, 'Your book has been updated successfully!')
+                    book.save()
+                else:
+                    messages.info(request, 'Oops.. something is wrong')
+            else:
+                form = UpdateBookForm()
+
+            context = {}
+            context['form'] = form
+            context['book'] = book
+            context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+            context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+
+            return render(request, "edit_book.html", context)
 
 
 class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
@@ -728,14 +786,6 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
     def get(self, request, *args, **kwargs):
         print(request.GET)
         self.user_id = self.request.user.id
-
-        # if 'search_book' in request.GET:
-        #     self.searchBook = request.GET['search_book']
-        # else:
-        #     keys = request.GET.keys()
-        #     for key in keys:
-        #         self.genres.append(request.GET[key])
-
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
@@ -921,7 +971,8 @@ def complete_purchase(request):
                                                         "\nRemember that you can also find all your bills in your " \
                                                         "profile on our website. " \
                                                         "\n\n Name: " + bill.name + "\n Date: " + str(bill.date) + "\n" \
-                                                        " Total: " + str(total) + "€" + "\n\nAlejandria Team."
+                                                                                                                   " Total: " + str(
+                    total) + "€" + "\n\nAlejandria Team."
 
                 send_mail(subject, msg, EMAIL_HOST_USER, [request.user.email], fail_silently=True)
 
@@ -1020,11 +1071,12 @@ def generate_pdf(request):
         response.write(pdf)
         return response
 
-        
-class UserLibrary(generic.ListView): #PermissionRequiredMixin
+
+class UserLibrary(generic.ListView):  # PermissionRequiredMixin
     model = Book
     template_name = 'user_library.html'
     context_object_name = 'coincident'
+
     # permission_required = ('books.add_book',)
 
     # permission_required = 'Alejandria.view_book'
@@ -1036,7 +1088,7 @@ class UserLibrary(generic.ListView): #PermissionRequiredMixin
 
     def get(self, request, *args, **kwargs):
         self.user_id = self.request.user.id
-        print(request.GET)
+        # print(request.GET)
 
         # if 'search_book' in request.GET:
         #     self.searchBook = request.GET['search_book']
@@ -1057,10 +1109,11 @@ class UserLibrary(generic.ListView): #PermissionRequiredMixin
         return context
 
 
-class UserBills(generic.ListView): #PermissionRequiredMixin
+class UserBills(generic.ListView):  # PermissionRequiredMixin
     model = Book
     template_name = 'user_bills.html'
     context_object_name = 'coincident'
+
     # permission_required = ('books.add_book',)
 
     # permission_required = 'Alejandria.view_book'
