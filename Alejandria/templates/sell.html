@@ -274,8 +274,7 @@
 
 <div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
-    <img id="blah" style="width:110%" src="{% static 'no_available.jpg' %}" />
-      <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#promotionModal">Add promo code</button>
+    <img id="thumbImg" style="width:110%" src="{% static 'no_available.jpg' %}" />
   </div>
   <div class="right-container" style="width:auto">
     <header>
@@ -478,7 +477,7 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    $('#blah')
+                    $('#thumbImg')
                         .attr('src', e.target.result)
                         .width(150)
                         .height(200);
