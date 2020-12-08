@@ -115,7 +115,7 @@ def create_book():
 
         # request.COOKIES['device'] = guest.device
 
-        book = request.context.get('book')
+        # book = request.context.get('book')
 
         # view = BookView()
         # view.setup(request)
