@@ -99,19 +99,19 @@ def create_book():
 
 
 
-class BookViewTest(TestCase):
-    def test_environment_set_in_context(self):
-        #request = RequestFactory().get('/book/01456789012/')
-        #request = RequestFactory().get('book/01456789012',)
-        guest = get_or_create_guest()
-        isbn = create_book()
-        # req = RequestFactory().post("/register/")
-        # req.COOKIES['device'] = guest.device
-
-
-
-        client = Client()
-        request = client.get(reverse('books:book', kwargs={'pk': isbn}))
+# class BookViewTest(TestCase):
+#     def test_environment_set_in_context(self):
+#         #request = RequestFactory().get('/book/01456789012/')
+#         #request = RequestFactory().get('book/01456789012',)
+#         guest = get_or_create_guest()
+#         isbn = create_book()
+#         # req = RequestFactory().post("/register/")
+#         # req.COOKIES['device'] = guest.device
+#
+#
+#
+#         client = Client()
+#         request = client.get(reverse('books:book', kwargs={'pk': isbn}))
 
         # request.COOKIES['device'] = guest.device
 
