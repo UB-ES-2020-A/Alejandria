@@ -10,8 +10,8 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import HttpResponseForbidden, HttpResponse
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, \
+    HttpResponseForbidden, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
 from reportlab.pdfgen import canvas
@@ -20,10 +20,11 @@ from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
 from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
+from .models import Book, FAQ, Cart, User, Address, \
+    ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
 
 # Create your views here.
-
+# pylint: disable=line-too-long
 """
 This is my custom response to get to a book by it's ISBN. The ISBN is passed by the front in an AJAX
 """
@@ -376,7 +377,7 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
-        if 'AnonymousUser' is str(the_user):
+        if 'AnonymousUser' == str(the_user):
             context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
@@ -943,7 +944,41 @@ def generate_pdf(request):
         response.write(pdf)
         return response
 
-        
+## TODO: Remove if finally is not used
+# def book_pdf(request):
+#     # Create a response to pass the file of the book
+#     user = request.user.id
+#     if user:
+#         print(request.method)
+#         if request.method == 'POST':
+#             print("iminpost")
+#             if request.is_ajax():
+#                 print("iminajax")
+#                 isbn = request.POST.get('isbn', None)
+#                 print("isbn:" + isbn)
+#                 book = Book.objects.filter(ISBN=isbn).first()
+#                 print(book)
+#                 print(book.eBook)
+#
+#                 response = HttpResponse( content_type='application/pdf')
+#                 response['Content-Disposition'] = 'attachment; filename=media/%s' % book.eBook
+#                 response.write(book.eBook)
+#                 print(response)
+#
+#                 return response
+#     else:
+#         context = {}
+#         print("No user")
+#         return Http404("You are not logged in")
+    
+    # filename = 'bill.pdf'
+    # content = FileWrapper(filename)
+    # response = HttpResponse(content, content_type='application/pdf')
+    # response['Content-Length'] = os.path.getsize(filename)
+    # response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    # return response
+
+
 class UserLibrary(generic.ListView): #PermissionRequiredMixin
     model = Book
     template_name = 'user_library.html'

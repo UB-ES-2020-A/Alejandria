@@ -96,7 +96,7 @@ class Book(models.Model):
                                        null=True)  # TODO: choices=<<possible range recommendation>> example: Juvenile
     # Path to thumbnail(Thubnail identified by ISBN)
     thumbnail = models.ImageField(blank=True, null=True, upload_to="thumbnails/")  # TODO:Should be blank=False in the Future
-    eBook = models.FileField(blank=True, null=True, upload_to="ebooks/")
+    eBook = models.FileField(blank=True, null=True, upload_to="ebooks/", default="/media/ebooks/download.pdf")
     # pub_date = publication_date  # Abreviation
 
 
