@@ -34,7 +34,8 @@ class BookForm(forms.ModelForm):
             "num_pages",
             "recommended_age",
             "thumbnail",
-            "eBook"
+            "eBook",
+            "discount"
         ]
 
 

@@ -37,12 +37,15 @@ MONTHS_TO_CONSIDER_TOP_SELLER = 6
 class BookView(generic.DetailView):
     model = Book
     template_name = 'details.html'
+    pk_url_kwarg = 'pk'
+
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
-        relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
-        context['isbn'] = str(context['object'].ISBN)
-        review_list = Rating.objects.filter(ISBN=context['object'])
+        relation_book = Book.objects.filter(primary_genre=self.object.primary_genre)[:20]
+        context['isbn'] = str(self.object.ISBN)
+        review_list = Rating.objects.filter(ISBN=self.object)
 
         if self.request.user.id is not None:
             owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(
@@ -60,6 +63,9 @@ class BookView(generic.DetailView):
 
         if 'owned' not in context.keys():
             context['owned'] = 'false'
+
+        new_price = self.object.discount * self.object.price / 100
+        context['new_price'] = new_price
 
         return context
 
@@ -241,7 +247,6 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
 
     # post (update) of book
     def post(self, request, *args, **kwargs):
-        print("HOLA",request.POST)
 
         if 'delete_promo' in request.POST:
             book = get_object_or_404(Book, pk=self.kwargs['pk'])
