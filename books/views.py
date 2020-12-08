@@ -298,7 +298,14 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
                     messages.info(request, 'Oops.. something is wrong')
             else:
                 form = UpdateBookForm()
-            return render(request, "edit_book.html", {"form": form})
+
+            context = {}
+            context['form'] = form
+            context['book'] = book
+            context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+            context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+
+            return render(request, "edit_book.html", context)
 
 
 class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
@@ -690,14 +697,6 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
     def get(self, request, *args, **kwargs):
         print(request.GET)
         self.user_id = self.request.user.id
-
-        # if 'search_book' in request.GET:
-        #     self.searchBook = request.GET['search_book']
-        # else:
-        #     keys = request.GET.keys()
-        #     for key in keys:
-        #         self.genres.append(request.GET[key])
-
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
