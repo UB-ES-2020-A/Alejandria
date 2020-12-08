@@ -55,7 +55,7 @@ $(document).ready(function () {
                 incno = itemsSplit[0];
                 itemWidth = sampwidth / (incno*1.75);
             }
-            itemWidth = 180 /* distancia entre carts */
+            itemWidth = 200 /* distancia entre carts */
             $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers});
             $(this).find(itemClass).each(function () {
                 $(this).outerWidth(itemWidth);
