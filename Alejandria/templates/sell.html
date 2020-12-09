@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
     <link rel="stylesheet" href="{% static 'css/font.css' %}">
-    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+<!--    <link rel="stylesheet" href="{% static 'css/card.css' %}">-->
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/form-sell.css' %}">
     <!-- Css files from static folder -->
@@ -203,9 +203,78 @@
   </div>
 </div>
 
+
+
+<!-- Modal -->
+<div id="promotionModal" class="modal fade" role="dialog" >
+  <div class="modal-dialog" style="max-width: 50%;">
+    <!-- Modal content-->
+    <div class="modal-content" style="background:#343a40; color:white">
+      <div class="modal-header">
+          <h4 style="left:0px" class="modal-title">Add a promo code for your book</h4>
+        <button style="color:red;" type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+
+<!--          <div class="card" style="background-color: #963434; margin-top:2%;">-->
+<!--             <div class="card-horizontal" >-->
+<!--                 <div class="card-body" style="color:white;" >-->
+<!--                     <div class="row">-->
+<!--                         <div class="column" style="width: 25%;">-->
+<!--                            <h4 class="card-title" style="margin-left:10%;width:auto;text-align: center; margin-top: 7%;">QWERTYUIOP</h4>-->
+<!--                         </div>-->
+<!--                         <div class="column" style="margin-left:5%">-->
+<!--                            <h5>Discount: 50 %</h5>-->
+<!--                            <h5>Redeemed: 100</h5>-->
+<!--                         </div>-->
+<!--                         <div class="column" style="margin-left:5%">-->
+<!--                            <h5>Final price: 100€</h5>-->
+<!--                            <h5>Promo codes left: 20000</h5>-->
+<!--                         </div>-->
+<!--                         <div class="column" style="margin-left:10%">-->
+<!--                            <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Delete"><i class="fas fa-trash-alt"></i></button>-->
+<!--                         </div>-->
+<!--                     </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--          </div>-->
+
+
+          <div class="card" style="background-color: #963434; margin-top:2%;">
+             <div class="card-horizontal" >
+                 <div class="card-body" style="color:white;" >
+                     <div class="row">
+                         <form method="POST"> {% csrf_token %}
+                             <label for="code" style="margin-left:2.5%;">Code:</label>
+                             <input style="width:16%;" id="code" name="code" placeholder="SAVE25" type="text"/>
+                             <label for="Discount" style="margin-left:3%;">Discount:</label>
+                             <input style="width: 7%;" id="Discount" name="percentage" placeholder="25" type="number">%</input>
+                             <label for="max_limit" style="margin-left:3%;">Max redeem:</label>
+                             <input style="width: 15%;" id="max_limit" name="max_limit" placeholder="1500" type="number"/>
+                             <button type="button" style="margin-left:5%; width:14%" class="btn btn-success">Save</button>
+                         </form>
+                         </div>
+                     </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+
+        </div>
+      <div class="modal-footer" style="background:#343a40;">
+        <button type="button" style="color:white; background:#dc3545;" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
-    <img id="blah" style="width:110%" src="{% static 'no_available.jpg' %}" />
+    <img id="thumbImg" style="width:110%" src="{% static 'no_available.jpg' %}" />
   </div>
   <div class="right-container" style="width:auto">
     <header>
@@ -261,6 +330,10 @@
       <label for="recommended_age">Recommended age</label>
                    <input id="recommended_age" name="recommended_age" placeholder="Adult" type="text"/>
     </div>
+      </div>
+          <div class="pets-name">
+        <label for="discount-book">Discount (percentage)</label>
+          <input id="discount-book" name="discount" placeholder="50" type="number"/>
       </div>
 
 
@@ -408,7 +481,7 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    $('#blah')
+                    $('#thumbImg')
                         .attr('src', e.target.result)
                         .width(150)
                         .height(200);

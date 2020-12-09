@@ -13,7 +13,7 @@ app = get_wsgi_application()
 
 # Then load own libs
 from books.models import Book, FAQ, Address, User # pylint: disable=wrong-import-position import-error
-
+from django.test import Client
 
 # TODO: Make test "en cadena". If we have to test something before try one test, do it.
 # Decorator to enable DB at test function
@@ -573,3 +573,10 @@ def test_faq():
     obj = FAQ.objects.all().last()
 
     check = all([question == obj.question, answer == obj.answer])
+
+
+def test_get_book():
+    c = Client()
+    response = c.get('/book/01456789012/', {'username': 'john', 'password': 'smith'})
+    res_code = response.status_code
+    print(response.content)
