@@ -72,8 +72,9 @@ class BookView(generic.DetailView):
         if 'owned' not in context.keys():
             context['owned'] = 'false'
 
-        new_price = self.object.discount * self.object.price / 100
-        context['new_price'] = new_price
+        if self.object.discount:
+            new_price = self.object.discount * self.object.price / 100
+            context['new_price'] = new_price
 
         return context
 
