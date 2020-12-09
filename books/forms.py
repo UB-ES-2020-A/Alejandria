@@ -104,6 +104,7 @@ class UpdateBookForm(forms.ModelForm):
             "secondary_genre",
             "publisher",
             "num_pages",
+            "discount",
             "recommended_age",
             "thumbnail",
             "eBook"

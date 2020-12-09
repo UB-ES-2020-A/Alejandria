@@ -72,7 +72,7 @@ class BookView(generic.DetailView):
         if 'owned' not in context.keys():
             context['owned'] = 'false'
 
-        new_price = self.object.discount * self.object.price / 100
+        new_price = self.object.price - (self.object.discount * self.object.price / 100)
         context['new_price'] = new_price
 
         return context
@@ -195,6 +195,10 @@ class HomeView(generic.ListView):
         context['comingsoon'] = Book.objects.filter(publication_date__range=[today, next_day])[:20]
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")[:20]
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")[:20]
+
+        promotions_books = Book.objects.filter(~Q(discount=0))
+        context['promotion_books'] = promotions_books[:20]
+
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -262,6 +266,7 @@ class SearchView(generic.ListView):
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
+
         if self.user_id:
             recommended_books = Book.objects.filter(
                 (Q(primary_genre__in=self.genres_preferences)
@@ -270,6 +275,9 @@ class SearchView(generic.ListView):
             recommended_books_list = list(recommended_books)
             recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
             context['recommended_books'] = recommended_books_list
+
+        promotions_books = Book.objects.filter(~Q(discount=0))
+        context['promotion_books'] = promotions_books[:20]
 
         return context
 
