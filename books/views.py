@@ -509,8 +509,12 @@ def register(request):
 def post_avatar(request):
     if 'trigger' in request.POST and 'avatar' in request.POST['trigger']:
         file = request.FILES["avatar"]
-        user = request.POST["username"]
-        user = User.objects.filter(username=user).first()
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = request.POST["username"]
+            user = User.objects.filter(username=user).first()
+
         user.avatar.save(file.name, file)
         return JsonResponse({"error": False})
     return JsonResponse({"error": True})
