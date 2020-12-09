@@ -176,10 +176,10 @@
                                         <div class="card mb-2">
                                             <div class="card" style="width: 11rem;">
                                                 {% if book.thumbnail %}
-                                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}"
+                                                <img class="card-img-top" src="{{ book.thumbnail.url }}"
                                                      alt="Card image cap"> <!--TODO: Change to real book image -->
                                                 {% else %}
-                                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}"
+                                                <img class="card-img-top" src="{% static 'no_available.jpg' %}"
                                                      alt="Card image cap">
                                                 {% endif %}
                                                 <div class="card-body"
@@ -216,10 +216,10 @@
                                         <div class="card mb-2">
                                             <div class="card" style="width: 11rem;">
                                                 {% if book.thumbnail %}
-                                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}"
+                                                <img class="card-img-top" src="{{ book.thumbnail.url }}"
                                                      alt="Card image cap"> <!--TODO: Change to real book image -->
                                                 {% else %}
-                                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}"
+                                                <img class="card-img-top" src="{% static 'no_available.jpg' %}"
                                                      alt="Card image cap">
                                                 {% endif %}
                                                 <div class="card-body"
@@ -255,10 +255,10 @@
                                         <div class="card mb-2">
                                             <div class="card" style="width: 11rem;">
                                                 {% if book.thumbnail %}
-                                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}"
+                                                <img class="card-img-top" src="{{ book.thumbnail.url }}"
                                                      alt="Card image cap"> <!--TODO: Change to real book image -->
                                                 {% else %}
-                                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}"
+                                                <img class="card-img-top" src="{% static 'no_available.jpg' %}"
                                                      alt="Card image cap">
                                                 {% endif %}
                                                 <div class="card-body"
@@ -381,10 +381,10 @@
 
                     <div class="col-md-5" style="margin-top:5%">
                         {% if book.thumbnail %}
-                        <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                        <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
                         <!--TODO: Change to real book image -->
                         {% else %}
-                        <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                        <img class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
                         {% endif %}
                     </div>
 
