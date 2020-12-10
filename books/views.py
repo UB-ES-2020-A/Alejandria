@@ -3,6 +3,7 @@ import re
 from datetime import datetime, timedelta
 from io import BytesIO
 
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
@@ -11,8 +12,8 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import HttpResponseForbidden, HttpResponse
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, \
+    HttpResponseForbidden, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
 from reportlab.pdfgen import canvas
@@ -24,7 +25,7 @@ from .forms import BookForm, UpdateBookForm, CuponFrom, BookPropertiesForm
 from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, Cupon, BookProperties
 
 # Create your views here.
-
+# pylint: disable=line-too-long
 """
 This is my custom response to get to a book by it's ISBN. The ISBN is passed by the front in an AJAX
 """
@@ -72,7 +73,7 @@ class BookView(generic.DetailView):
         if 'owned' not in context.keys():
             context['owned'] = 'false'
 
-        new_price = self.object.discount * self.object.price / 100
+        new_price = self.object.price - (self.object.discount * self.object.price / 100)
         context['new_price'] = new_price
 
         return context
@@ -195,6 +196,10 @@ class HomeView(generic.ListView):
         context['comingsoon'] = Book.objects.filter(publication_date__range=[today, next_day])[:20]
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")[:20]
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")[:20]
+
+        promotions_books = Book.objects.filter(~Q(discount=0))
+        context['promotion_books'] = promotions_books[:20]
+
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -262,6 +267,7 @@ class SearchView(generic.ListView):
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
+
         if self.user_id:
             recommended_books = Book.objects.filter(
                 (Q(primary_genre__in=self.genres_preferences)
@@ -270,6 +276,9 @@ class SearchView(generic.ListView):
             recommended_books_list = list(recommended_books)
             recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
             context['recommended_books'] = recommended_books_list
+
+        promotions_books = Book.objects.filter(~Q(discount=0))
+        context['promotion_books'] = promotions_books[:20]
 
         return context
 
@@ -511,7 +520,9 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
+
         if 'AnonymousUser' in str(the_user):
+
             context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
@@ -637,6 +648,21 @@ def register(request):
                 return JsonResponse({"error": True})
 
         return JsonResponse({"error": True})
+
+
+@csrf_exempt
+def post_avatar(request):
+    if 'trigger' in request.POST and 'avatar' in request.POST['trigger']:
+        file = request.FILES["avatar"]
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = request.POST["username"]
+            user = User.objects.filter(username=user).first()
+
+        user.avatar.save(file.name, file)
+        return JsonResponse({"error": False})
+    return JsonResponse({"error": True})
 
 def check_data(request):
     if request.method == 'POST':
@@ -1070,7 +1096,6 @@ def generate_pdf(request):
         # Get StringIO's body and write it out to the response.
         response.write(pdf)
         return response
-
 
 class UserLibrary(generic.ListView):  # PermissionRequiredMixin
     model = Book

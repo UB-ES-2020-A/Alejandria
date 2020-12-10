@@ -54,6 +54,8 @@ class User(AbstractUser):
     genre_preference_1 = models.CharField(max_length=4, choices=GENRE_CHOICES, blank=True, null=True)
     genre_preference_2 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
     genre_preference_3 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
+    avatar = models.ImageField(blank=True, null=True, upload_to="avatars/")
+
 
 
 class Guest(models.Model):
@@ -96,7 +98,7 @@ class Book(models.Model):
                                        null=True)  # TODO: choices=<<possible range recommendation>> example: Juvenile
     # Path to thumbnail(Thubnail identified by ISBN)
     thumbnail = models.ImageField(blank=True, null=True, upload_to="thumbnails/")  # TODO:Should be blank=False in the Future
-    eBook = models.FileField(blank=True, null=True, upload_to="ebooks/")
+    eBook = models.FileField(blank=True, null=True, upload_to="ebooks/", default="/media/ebooks/download.pdf")
     discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0,null=False)
     # pub_date = publication_date  # Abreviation
 
