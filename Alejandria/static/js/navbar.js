@@ -1,6 +1,8 @@
 $(document).ready(function () {
     let data = null;
     let condition = false;
+    let avatar = null;
+    let username = null;
 
     $(".navbar-brand").click(function () {
         window.location.href = window.location.origin;
@@ -177,7 +179,7 @@ $(document).ready(function () {
         Swal.mixin({
             title: "Sign In",
             confirmButtonText: "Next &rarr;",
-            progressSteps: ["1", "2", "3", "4"],
+            progressSteps: ["1", "2", "3", "4", "5"],
             showCancelButton: true,
             focusConfirm: false,
             allowOutsideClick: false,
@@ -232,6 +234,8 @@ $(document).ready(function () {
                         email: $("#register_email").val(),
                         password1: $("#register_password_1").val()
                     }
+
+                    username = $("#register_username").val();
 
                     window.value = data;
                 },
@@ -764,13 +768,11 @@ $(document).ready(function () {
                         taste1: $("#genreDropdownBtn1").text(),
                         taste2: $("#genreDropdownBtn2").text(),
                         taste3: $("#genreDropdownBtn3").text(),
-                        trigger: "register",
                         tastes: tastes
                     }
                     window.value = $.extend(window.value,data);
                 },
                 willOpen: () => {
-                    $(".swal2-confirm").text("Send");
 
                     $(".item-taste-1").click(function () {
                         $("#genreDropdownBtn1").text($(this).text());
@@ -789,7 +791,34 @@ $(document).ready(function () {
                         $("#countryDropdownBtn2").text($(this).text());
                         $("#countryDropdownBtn2").css("background-color","#dc3545");
                     })
+
                 }
+            },
+            {
+                title: "Choose a Custom Avatar! (Optional)",
+                html:
+                    '<div class="file-loading">' +
+                        '<img id="preview" src="https://www.computerhope.com/jargon/g/guest-user.jpg" alt="Your Avatar" width="100" height="100"/>'+
+                        '<input id="avatar-1" name="avatar" type="file" required>' +
+                        '<small>Select file</small>'+
+                    '</div>',
+                preConfirm: () => {
+                    data = {
+                        trigger: "register",
+                    }
+
+                    avatar = $('#avatar-1')[0].files[0];
+
+                    window.value = $.extend(window.value,data);
+                },
+                willOpen: () => {
+                    $(".swal2-confirm").text("Send");
+
+                    $("#avatar-1").change(function() {
+                      readURL(this);
+                    });
+                }
+
             }
         ]).then((result) => {
             var url = window.location.origin+"/register/"
@@ -800,14 +829,22 @@ $(document).ready(function () {
                     data: window.value,
                     ContentType: 'application/x-www-form-urlencode',
                     success: function (response) {
-                        if (response.error) {
+
+                        var dataForm = new FormData();
+                        dataForm.append("avatar", avatar);
+                        dataForm.append("username", username);
+                        dataForm.append("trigger", "avatar");
+                        var status = navigator.sendBeacon(window.location.origin+"/avatar/", dataForm);
+
+                        if (response.error && !status) {
                             window.value = ""
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
                                 text: 'Something went wrong!',
                             })
-                        } else {
+                        }
+                        if(!response.error && status) {
                             Swal.fire({
                                 icon: 'success',
                                 allowOutsideClick: false,
@@ -827,22 +864,24 @@ $(document).ready(function () {
     });
 });
 
-function setCSRF() {
-    function getCSRFToken() {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                if (cookie.substring(0, 10) == ('csrftoken' + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(10));
-                    break;
-                }
+
+function getCSRFToken() {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, 10) == ('csrftoken' + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(10));
+                break;
             }
         }
-        return cookieValue;
-
     }
+    return cookieValue;
+
+}
+
+function setCSRF() {
 
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
@@ -860,4 +899,16 @@ function setCSRF() {
 function validateEmail(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+}
+
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      $('#preview').attr('src', e.target.result);
+    }
+
+    reader.readAsDataURL(input.files[0]); // convert to base64 string
+  }
 }

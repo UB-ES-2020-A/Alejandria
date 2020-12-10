@@ -3,6 +3,7 @@ import re
 from datetime import datetime, timedelta
 from io import BytesIO
 
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
@@ -645,6 +646,21 @@ def register(request):
                 return JsonResponse({"error": True})
 
         return JsonResponse({"error": True})
+
+
+@csrf_exempt
+def post_avatar(request):
+    if 'trigger' in request.POST and 'avatar' in request.POST['trigger']:
+        file = request.FILES["avatar"]
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = request.POST["username"]
+            user = User.objects.filter(username=user).first()
+
+        user.avatar.save(file.name, file)
+        return JsonResponse({"error": False})
+    return JsonResponse({"error": True})
 
 def check_data(request):
     if request.method == 'POST':
