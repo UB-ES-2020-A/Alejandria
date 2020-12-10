@@ -1250,3 +1250,28 @@ def deletefaq(request):
         else:
             return HttpResponseForbidden('You have to be an admin to do that')
     return response
+
+
+class DesiredLibrary(generic.ListView): #PermissionRequiredMixin
+    model = Book
+    template_name = 'desired_library.html'
+
+    def __init__(self):
+        super().__init__()
+        self.user = None
+
+    def get(self, request, *args, **kwargs):
+        #self.user_id = self.request.user.id
+        self.user = self.request.user
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
+        context = super().get_context_data(**kwargs)
+
+        desired_books = BookProperties.objects.filter(Q(user=self.user) & (Q(desired=True)))
+        print(desired_books)
+        # Filtering by title or author
+        user_books = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user.id))
+        context['user_prod'] = user_books
+
+        return context
