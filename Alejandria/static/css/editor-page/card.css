@@ -7,4 +7,16 @@
   transform: scale(1.05); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
+.tag {
+       float: left;
+       position: absolute;
+       left: 0px;
+       top: 0px;
+       z-index: 1000;
+       background-color: #92AD40;
+       padding: 5px;
+       color: #FFFFFF;
+       font-weight: bold;
 
+
+    }

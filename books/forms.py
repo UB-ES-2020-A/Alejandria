@@ -14,6 +14,7 @@ class BookForm(forms.ModelForm):
         label="Terms&Conditions"
     )
 
+
     class Meta:
         """ BookFrom Meta """
         model = Book

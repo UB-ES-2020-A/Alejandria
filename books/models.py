@@ -82,7 +82,7 @@ class Guest(models.Model):
 class Book(models.Model):
     ISBN = models.CharField(primary_key=True, max_length=13, blank=False, null=False)  # Its a Char instead of Integer
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.CASCADE)  # Reference to the User that created it #TODO: on_delete=models.CASCADE
+                                on_delete=models.CASCADE)
     title = models.CharField(max_length=100, blank=False)
     description = models.TextField(max_length=1000, blank=True, null=True)  # Synopsis
     saga = models.CharField(max_length=100, blank=True, null=True)
@@ -93,19 +93,18 @@ class Book(models.Model):
     # By default it's now.
     publication_date = models.DateField(null=True, blank=True, default=timezone.now)
     price = models.DecimalField(decimal_places=2, max_digits=8)
-    language = models.CharField(max_length=30, blank=False)  # TODO: Might have choices=<<languages it can be>>
-    primary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES,
-                                     default='OTHR')  # TODO: choices=<<all possible genres>>, also can have multiple choices
+    language = models.CharField(max_length=30, blank=False)
+    primary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, default='OTHR')
     secondary_genre = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
     publisher = models.CharField(max_length=50)
     num_pages = models.IntegerField(blank=False)
     num_sold = models.IntegerField(default=0)
     recommended_age = models.CharField(max_length=30, blank=True,
-                                       null=True)  # TODO: choices=<<possible range recommendation>> example: Juvenile
+                                       null=True)
     # Path to thumbnail(Thubnail identified by ISBN)
     thumbnail = models.ImageField(blank=True, null=True, upload_to="thumbnails/")  # TODO:Should be blank=False in the Future
+    discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0, blank=True, null=True)
     eBook = models.FileField(blank=True, null=True, upload_to="ebooks/", default="/media/ebooks/download.pdf")
-    discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0,null=False)
     # pub_date = publication_date  # Abreviation
 
 
