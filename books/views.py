@@ -520,7 +520,9 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
-        if 'AnonymousUser' == str(the_user):
+
+        if 'AnonymousUser' in str(the_user):
+
             context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
@@ -1159,3 +1161,83 @@ class UserBills(generic.ListView):  # PermissionRequiredMixin
         print(user_bills.bills.all())
 
         return context
+
+def addfaq(request):
+    the_user = request.user
+    response = HttpResponse()
+    if 'AnonymousUser' in str(the_user):
+        return HttpResponseForbidden('You have to be an admin to do that')
+    else:
+        admin = request.user.role in 'Admin'
+        if admin:
+            category = request.POST.get('category')
+            question = request.POST.get('question')
+            answer = request.POST.get('answer')
+
+            try:
+                category = [cat[0] for cat in FAQ.FAQ_CHOICES if category in cat][0]
+            except:
+                return HttpResponseForbidden('Select a valid category')
+                
+            try:
+                faq = FAQ(category=category, question=question, answer=answer)
+                faq.save()
+            except:
+                return HttpResponseForbidden('Something went wrong')
+        else:
+            return HttpResponseForbidden('You have to be an admin to do that')
+    return response
+
+def modifyfaq(request):
+    the_user = request.user
+    response = HttpResponse()
+    if 'AnonymousUser' in str(the_user):
+        return HttpResponseForbidden('You have to be an admin to do that')
+    else:
+        admin = request.user.role in 'Admin'
+        if admin:
+            original = request.POST.get('original')
+            category = request.POST.get('category')
+            question = request.POST.get('question')
+            answer = request.POST.get('answer')
+            
+            try:
+                category = [cat[0] for cat in FAQ.FAQ_CHOICES if category in cat][0]
+            except:
+                return HttpResponseForbidden('Select a valid category')
+            
+            original_faq = FAQ.objects.filter(question=original)
+            
+            if original_faq:
+                try:
+                    original_faq.update(category=category, question=question, answer=answer)
+                except:
+                    return HttpResponseForbidden('Something went wrong')
+            else:
+                return HttpResponseForbidden('This FAQ does not exist')
+        else:
+            return HttpResponseForbidden('You have to be an admin to do that')
+    return response
+
+def deletefaq(request):
+    the_user = request.user
+    response = HttpResponse()
+    if 'AnonymousUser' in str(the_user):
+        return HttpResponseForbidden('You have to be an admin to do that')
+    else:
+        admin = request.user.role in 'Admin'
+        if admin:
+            original = request.POST.get('original')
+            
+            original_faq = FAQ.objects.filter(question=original)
+            
+            if original_faq:
+                try:
+                    original_faq.delete()
+                except:
+                    return HttpResponseForbidden('Something went wrong')
+            else:
+                return HttpResponseForbidden('This FAQ does not exist')
+        else:
+            return HttpResponseForbidden('You have to be an admin to do that')
+    return response
