@@ -62,10 +62,9 @@
                                 <div class="tag">ON SALE!</div>
                             {% endif %}
                             {% if book.thumbnail %}
-                            <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            <!--TODO: Change to real book image -->
+                            <img style="width: 176px;height: 265px;" style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
                             {% else %}
-                            <img class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                            <img style="width: 176px;height: 265px;" style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
                             {% endif %}
                             <div class="card-body">
                                 {% if book.title|length > 18 %}
@@ -104,10 +103,10 @@
                                 <div class="tag">ON SALE!</div>
                             {% endif %}
                             {% if book.thumbnail %}
-                            <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                            <img style="width: 176px;height: 265px;" style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
                             <!--TODO: Change to real book image -->
                             {% else %}
-                            <img class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
                             {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
@@ -144,10 +143,9 @@
                                 <div class="tag">ON SALE!</div>
                             {% endif %}
                             {% if book.thumbnail %}
-                            <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            <!--TODO: Change to real book image -->
+                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
                             {% else %}
-                            <img class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
                             {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
@@ -220,10 +218,10 @@
                                 <div class="tag">ON SALE!</div>
                             {% endif %}
                             {% if book.thumbnail %}
-                            <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
                             <!--TODO: Change to real book image -->
                             {% else %}
-                            <img class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
                             {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
@@ -257,10 +255,10 @@
                                 <div class="tag">ON SALE!</div>
                             {% endif %}
                             {% if book.thumbnail %}
-                            <img class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
                             <!--TODO: Change to real book image -->
                             {% else %}
-                            <img class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
                             {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
@@ -376,7 +374,7 @@ $(document).ready(function () {
                 incno = itemsSplit[0];
                 itemWidth = sampwidth / (incno*1.75);
             }
-            itemWidth = 180 /* distancia entre carts */
+            itemWidth = 190 /* distancia entre carts */
             $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers});
             $(this).find(itemClass).each(function () {
                 $(this).outerWidth(itemWidth);

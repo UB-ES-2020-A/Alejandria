@@ -207,9 +207,9 @@
                         <div class="card" style="width: 11rem;">
                             <a href="/book/{{obj.ISBN}}" style="text-decoration: none; color: inherit;">
                           {% if obj.thumbnail %}
-                            <img class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
                             {% else %}
-                            <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                            <img style="width: 176px;height: 265px;" class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
                             {% endif %}
                           <div class="card-body">
                             <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
@@ -545,7 +545,7 @@ $(document).ready(function () {
                 incno = itemsSplit[0];
                 itemWidth = sampwidth / (incno*1.75);
             }
-            itemWidth = 180 /* distancia entre carts */
+            itemWidth = 190 /* distancia entre carts */
             $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers});
             $(this).find(itemClass).each(function () {
                 $(this).outerWidth(itemWidth);
