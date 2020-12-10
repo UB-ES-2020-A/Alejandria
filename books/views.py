@@ -1270,8 +1270,11 @@ class DesiredLibrary(generic.ListView): #PermissionRequiredMixin
 
         desired_books = BookProperties.objects.filter(Q(user=self.user) & (Q(desired=True)))
         print(desired_books)
-        # Filtering by title or author
-        user_books = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user.id))
-        context['user_prod'] = user_books
+        desired_list = []
+        for desired in desired_books:
+            new_price = desired.book.price - (desired.book.discount * desired.book.price / 100)
+            desired_list.append((desired.book,new_price))
+
+        context['desired_books'] = desired_list
 
         return context
