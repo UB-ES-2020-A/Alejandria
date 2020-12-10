@@ -11,31 +11,32 @@
   <meta charset="UTF-8">
   <title>Alejandria Frequently Asked Questions</title>
 
-  <!-- Bootstrap 4 + Accordion funcctionality requirements -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
   <!-- CSS Special for FAQs page -->
   <link rel="stylesheet" href="{% static 'css/faq-page/faqs.css' %}">
+  <script type="text/javascript" src={% static 'js/faqs-page/faqs.js' %}>
+
+  </script>
 
 </head>
 
 <body style="background-color:#141414">
   <div class="container-fluid justify-content-center my-3 p-5">
     <div class="row justify-content-center">
-      <div class="col-4">
+      <div class="col-6 mb-3">
         <h1 style="text-align: center; color: white">Hi, how can we help?</h1>
       </div>
     </div>
     <div class="row justify-content-center">
       <div class="col-6">
-        <p style="  text-align: center; color: white;">This page is refered
-          to doubts and frequently asked questions about Alejandria. <br>
-          We hope you can find what you are looking for, notice we classified
-          in related topics the questions. <br>In case you this page might not
-          help you, let us know and contact with our support team. <br>Good luck!</p>
+        <div class="main">
+          <div class="left"></div>
+          <div class="right"></div>
+          <p style="  text-align: center; color: white;">This page is refered
+            to doubts and frequently asked questions about Alejandria. <br>
+            We hope you can find what you are looking for, notice we classified
+            in related topics the questions. <br>In case you this page might not
+            help you, let us know and contact with our support team. <br>Good luck!</p>
+        </div>
       </div>
     </div>
     <div class="row justify-content-center">
@@ -44,8 +45,8 @@
           <div class="card">
             <div class="card-header" id="headingOne">
               <h2 class="mb-0">
-                <button class="btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                  <h4>{{ category_names.0 }}</h4>
+                <button class="faq btn shadow-none collapsed w-100" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  {{ category_names.0 }}
                 </button>
               </h2>
             </div>
@@ -68,8 +69,8 @@
           <div class="card">
             <div class="card-header" id="headingTwo">
               <h2 class="mb-0">
-                <button class="btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                  <h4>{{ category_names.1 }}</h4>
+                <button class="faq btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  {{ category_names.1 }}
                 </button>
               </h2>
             </div>
@@ -91,8 +92,8 @@
           <div class="card">
             <div class="card-header" id="headingThree">
               <h2 class="mb-0">
-                <button class="btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                  <h4>{{ category_names.2 }}</h4>
+                <button class="faq btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  {{ category_names.2 }}
                 </button>
               </h2>
             </div>
@@ -114,8 +115,8 @@
           <div class="card">
             <div class="card-header" id="headingFour">
               <h2 class="mb-0">
-                <button class="btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                  <h4>{{ category_names.3 }}</h4>
+                <button class="faq btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                  {{ category_names.3 }}
                 </button>
               </h2>
             </div>
@@ -137,8 +138,8 @@
           <div class="card">
             <div class="card-header" id="headingFive">
               <h2 class="mb-0">
-                <button class="btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                  <h4>{{ category_names.4 }}</h4>
+                <button class="faq btn shadow-none collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                  {{ category_names.4 }}
                 </button>
               </h2>
             </div>
@@ -161,55 +162,54 @@
       </div>
     </div>
     {% if admin %}
-    <hr style="background-color:white;">
-    <div class="row my-2 px-5 justify-content-center">
-      <div class="col-3">
+    <hr style="background-color:white;" class="my-5">
+    <div class="row justify-content-center mx-5 px-5">
+      <div class="col-3 mb-2">
         <h3 style="text-align: center; color: white;">Admin panel</h3>
       </div>
-      <div class="col-10">
-        <h3 style="color: white;">Operation</h3>
-      </div>
     </div>
-    <div class="row my-2 px-5 justify-content-center">
-      <div class="col-2">
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <label class="input-group-text" for="inputGroupOp">Operation</label>
+    <div class="row justify-content-center mx-5 px-5">
+      <div class="col-6">
+        <div class="form-inline input-group">
+          <div class="form-group input-group-prepend w-50">
+            <label class="input-group-text w-100" for="inputGroupOp">Operation</label>
           </div>
-          <select class="select-op" id="inputGroupOp">
-            <option selected>Choose...</option>
+          <select class="form-group select-op w-50" id="inputGroupOp">
+            <option disabled selected>Choose...</option>
             <option value="1">Add</option>
             <option value="2">Modify</option>
             <option value="3">Delete</option>
           </select>
         </div>
       </div>
-      <div class="col-8">
-        <div class="form-group">
-          <select class="faq-select" id="modifySelect">
-            <option disabled selected>Select a question...</option>
-            {% for faq in list_query.0 %}
-            <option value={{faq.question}}>{{faq.question}}</option>
-            {% endfor %}
-            {% for faq in list_query.1 %}
-            <option value={{faq.question}}>{{faq.question}}</option>
-            {% endfor %}
-            {% for faq in list_query.2 %}
-            <option value={{faq.question}}>{{faq.question}}</option>
-            {% endfor %}
-            {% for faq in list_query.3 %}
-            <option value={{faq.question}}>{{faq.question}}</option>
-            {% endfor %}
-            {% for faq in list_query.4 %}
-            <option value={{faq.question}}>{{faq.question}}</option>
-            {% endfor %}
-          </select>
-        </div>
+      <div class="col-6">
+        <select class="faq-select w-100 h-100 mh-100" id="questionSelect">
+          <option disabled selected>Select the question to modify or delete</option>
+          {% for faq in list_query.0 %}
+          <option value={{faq.question}}>{{faq.question}}</option>
+          {% endfor %}
+          {% for faq in list_query.1 %}
+          <option value={{faq.question}}>{{faq.question}}</option>
+          {% endfor %}
+          {% for faq in list_query.2 %}
+          <option value={{faq.question}}>{{faq.question}}</option>
+          {% endfor %}
+          {% for faq in list_query.3 %}
+          <option value={{faq.question}}>{{faq.question}}</option>
+          {% endfor %}
+          {% for faq in list_query.4 %}
+          <option value={{faq.question}}>{{faq.question}}</option>
+          {% endfor %}
+        </select>
       </div>
-      <div class="col-10">
+    </div>
+    <div class="row mt-3 mx-5 px-5">
+      <div class="col-12">
         <h4 style="color: white;">Properties</h4>
       </div>
-      <div class="col-10">
+    </div>
+    <div class="row mx-5 px-5">
+      <div class="col-12">
         <label for="category" style="color: white;">Category</label>
         <form>
           <div class="form-group">
@@ -224,7 +224,9 @@
           </div>
         </form>
       </div>
-      <div class="col-10">
+    </div>
+    <div class="row mx-5 px-5">
+      <div class="col-12">
         <form>
           <div class="form-group">
             <label for="question" style="color: white;">Question</label>
@@ -232,7 +234,9 @@
           </div>
         </form>
       </div>
-      <div class="col-10">
+    </div>
+    <div class="row mx-5 px-5">
+      <div class="col-12">
         <form>
           <div class="form-group">
             <label for="answer" style="color: white;">Answer</label>
@@ -240,20 +244,20 @@
           </div>
         </form>
       </div>
-      <div class="col-10">
-
-      </div>
-      <div class="col-8">
+    </div>
+    <div class="row mx-5 px-5">
+      <div class="col-9">
         <div class="form-group form-check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1">
+          <input id="checkbox1" type="checkbox" class="form-check-input">
           <label class="form-check-label" for="exampleCheck1" style="color: white;">I am aware what this operation will cause</label>
         </div>
       </div>
-      <div class="col-2 pl-5">
-        <button type="submit" class="btn btn-primary" style="background-color: orange;">Apply changes</button>
+      <div class="col-3 pl-5">
+        <button id="apply_btn" type="submit" class="btn btn-primary" style="background-color: orange;">Apply changes</button>
       </div>
     </div>
-    {% endif %}
+  </div>
+  {% endif %}
   </div>
 </body>
 

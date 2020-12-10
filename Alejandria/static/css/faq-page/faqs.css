@@ -1,54 +1,100 @@
 .body {
-  background-color: inherit;
+    background-color: inherit;
 }
 
-.card{
-  background-color: #242424;
-  text-align: center;
+.card {
+    background-color: #242424;
+    text-align: center;
 }
+
 .card-header {
-  height: auto;
-  background-color: #343A40;
-  text-align: center;
+    height: auto;
+    background-color: #343A40;
+    text-align: center;
 }
 
-.btn {
-  color: white;
-  border: none;
-  background-color: inherit;
-  cursor: pointer;
-  display: inline-block;
-  box-shadow: none;
+button.faq {
+    color: white;
+    border: none;
+    background-color: inherit;
+    cursor: pointer;
+    display: inline-block;
+    box-shadow: none;
+    width: 100%;
+    font-size: 1.5rem;
+    margin-bottom: .5rem;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
 }
 
-.btn:hover{
-  color: #a5a5a5;
+button.faq:hover {
+    color: #a5a5a5;
 }
 
-.card-body{
-  color: white;
+.card-body {
+    color: white;
 }
 
-.card-header:after {
-  content: '+';
-  /* Unicode character for "plus" sign (+) */
-  color: white;
-  float: right;
-  margin-left: 5px;
+.faq:after {
+    content: '+';
+    /* Unicode character for "plus" sign (+) */
+    color: white;
+    float: right;
+    margin-left: 5px;
+    font-size: 1.4rem;
+
 }
 
 /* .card-header.{
   content: "\2796"; /* Unicode character for "minus" sign (-) */
 /* } */
 
-.select{
-  font-size: 30px;
+.select {
 }
 
-.h3{
-  color: white;
+.h3 {
+    color: white;
 }
 
-.h4{
-  color: white;
+.h4 {
+    color: white;
+}
+
+.main {
+    height: 200px;
+}
+
+.left,
+.right {
+    width: 35%;
+    height: inherit;
+    background-color: lightgray;
+    visibility: hidden;
+}
+
+.left {
+    -webkit-shape-outside: polygon(0 0, 100% 100%, 0 100%);
+    shape-outside: polygon(0 0, 100% 100%, 0 100%);
+    float: left;
+    -webkit-clip-path: polygon(0 0, 100% 100%, 0 100%);
+    clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
+.right {
+    -webkit-shape-outside: polygon(100% 0, 100% 100%, 0 100%);
+    shape-outside: polygon(100% 0, 100% 100%, 0 100%);
+    float: right;
+    -webkit-clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+p {
+    text-align: center;
+}
+
+#apply_btn{
+    border : white;
 }

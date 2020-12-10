@@ -31,6 +31,10 @@ urlpatterns = [
     path('library/', views.UserLibrary.as_view(), name='user_library'),
     path('bills/', views.UserBills.as_view(), name='user_bills'),
     path('check/', views.check_data, name="check_username"),
+    path('addfaq/', views.addfaq, name="add_faq"),
+    path('modifyfaq/', views.modifyfaq, name="modify_faq"),
+    path('deletefaq/', views.deletefaq, name="delete_faq"),
+#    path('download/', views.book_pdf, name="download_book"), TODO:CAN BE REMOVED IF WONT BE USED TO HAVE SAFER DOWNLOADS
     path('avatar/', views.post_avatar, name="avatar")
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

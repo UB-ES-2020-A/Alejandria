@@ -104,8 +104,8 @@ class Book(models.Model):
                                        null=True)  # TODO: choices=<<possible range recommendation>> example: Juvenile
     # Path to thumbnail(Thubnail identified by ISBN)
     thumbnail = models.ImageField(blank=True, null=True, upload_to="thumbnails/")  # TODO:Should be blank=False in the Future
-    eBook = models.FileField(blank=True, null=True, upload_to="ebooks/")
-    discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0, null=False)
+    eBook = models.FileField(blank=True, null=True, upload_to="ebooks/", default="/media/ebooks/download.pdf")
+    discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0,null=False)
     # pub_date = publication_date  # Abreviation
 
 

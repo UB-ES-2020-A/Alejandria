@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -21,8 +20,9 @@ from reportlab.pdfgen import canvas
 from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
-from .forms import BookForm, UpdateBookForm, CuponFrom, BookPropertiesForm
-from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, Cupon, BookProperties
+from .forms import BookForm, UpdateBookForm, BookPropertiesForm, CuponForm
+from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, \
+    BookProperties, Cupon
 
 # Create your views here.
 
@@ -55,10 +55,14 @@ class BookView(generic.DetailView):
             properties, created = BookProperties.objects.get_or_create(book=book, user=self.request.user)
 
             context['form'] = properties
+        relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
+        context['isbn'] = str(context['object'].ISBN)
+        review_list = Rating.objects.filter(ISBN=context['object'])
 
         if self.request.user.id is not None:
             owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(
                 ISBN=context['book']).first()  # TODO: NEED TO FIX THIS
+            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first() # TODO: NEED TO FIX THIS
             if owned:
                 context['owned'] = "true"
 
@@ -66,10 +70,8 @@ class BookView(generic.DetailView):
             context['book_relation'] = relation_book
         else:
             context['book_relation'] = Book.objects.all()[:20]
-
         if review_list:
             context['review_list'] = review_list
-
         if 'owned' not in context.keys():
             context['owned'] = 'false'
 
@@ -143,6 +145,7 @@ class BookView(generic.DetailView):
         return render(request, "details.html", context)
 
 
+
 def generate_id():
     temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
     list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
@@ -200,6 +203,10 @@ class HomeView(generic.ListView):
         promotions_books = Book.objects.filter(~Q(discount=0))
         context['promotion_books'] = promotions_books[:20]
 
+
+        context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])
+        context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
+        context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -262,12 +269,11 @@ class SearchView(generic.ListView):
             relation_book = Book.objects.filter(primary_genre__in=genres_relation)[:20]
             if relation_book:
                 context['book_relation'] = relation_book
-                #return context
+
 
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
             context['book_list'] = filtered
-
         if self.user_id:
             recommended_books = Book.objects.filter(
                 (Q(primary_genre__in=self.genres_preferences)
@@ -276,10 +282,8 @@ class SearchView(generic.ListView):
             recommended_books_list = list(recommended_books)
             recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
             context['recommended_books'] = recommended_books_list
-
-        promotions_books = Book.objects.filter(~Q(discount=0))
-        context['promotion_books'] = promotions_books[:20]
-
+            promotions_books = Book.objects.filter(~Q(discount=0))
+            context['promotion_books'] = promotions_books[:20]
         return context
 
 
@@ -320,13 +324,10 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
     permission_required = ('books.add_book',)
 
     def get_context_data(self, **kwargs):
-        print('get_context_data')
         context = super().get_context_data(**kwargs)
         # format data to suit frontend requirements
-
         context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
         context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
-        print(context['promos'])
         return context
 
     # post (update) of book
@@ -349,7 +350,7 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             if request.method == 'POST':
                 # get the instance to modify
                 book = get_object_or_404(Book, pk=self.kwargs['pk'])
-                promo_form = CuponFrom(request.POST)
+                promo_form = CuponForm(request.POST)
                 book_form = UpdateBookForm(request.POST, instance=book)
                 if promo_form.is_valid():
                     promotion = promo_form.save(commit=False)
@@ -362,7 +363,7 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
                 else:
                     messages.error(request, 'Oops.. something is wrong')
             else:
-                promo_form = CuponFrom()
+                promo_form = CuponForm()
 
             context = {}
             context['promo_form'] = promo_form
@@ -826,6 +827,14 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
     def get(self, request, *args, **kwargs):
         print(request.GET)
         self.user_id = self.request.user.id
+
+        # if 'search_book' in request.GET:
+        #     self.searchBook = request.GET['search_book']
+        # else:
+        #     keys = request.GET.keys()
+        #     for key in keys:
+        #         self.genres.append(request.GET[key])
+
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
@@ -909,13 +918,13 @@ def view_profile(request):
                 last_name = " ".join(tokens[-1:])
 
                 # Process tastes
-                if request.POST["taste1"]:
+                if request.POST["taste1"] and request.POST["taste1"] != "None":
                     genre_preference_1 = encode_genre(request.POST["taste1"])
 
-                if request.POST["taste2"]:
+                if request.POST["taste2"] and request.POST["taste2"] != "None":
                     genre_preference_2 = encode_genre(request.POST["taste2"])
 
-                if request.POST["taste3"]:
+                if request.POST["taste3"] and request.POST["taste3"] != "None":
                     genre_preference_3 = encode_genre(request.POST["taste3"])
 
                 # Apply changes
@@ -926,9 +935,13 @@ def view_profile(request):
                 user.name = first_name
                 user.first_name = first_name
                 user.last_name = last_name
-                user.genre_preference_1 = genre_preference_1
-                user.genre_preference_2 = genre_preference_2
-                user.genre_preference_3 = genre_preference_3
+
+                if request.POST["taste1"] != "None":
+                    user.genre_preference_1 = genre_preference_1
+                if request.POST["taste2"] != "None":
+                    user.genre_preference_2 = genre_preference_2
+                if request.POST["taste3"] != "None":
+                    user.genre_preference_3 = genre_preference_3
 
                 user.save()
 
@@ -1011,8 +1024,7 @@ def complete_purchase(request):
                                                         "\nRemember that you can also find all your bills in your " \
                                                         "profile on our website. " \
                                                         "\n\n Name: " + bill.name + "\n Date: " + str(bill.date) + "\n" \
-                                                                                                                   " Total: " + str(
-                    total) + "€" + "\n\nAlejandria Team."
+                                                        " Total: " + str(total) + "€" + "\n\nAlejandria Team."
 
                 send_mail(subject, msg, EMAIL_HOST_USER, [request.user.email], fail_silently=True)
 
@@ -1111,12 +1123,11 @@ def generate_pdf(request):
         response.write(pdf)
         return response
 
-
-class UserLibrary(generic.ListView):  # PermissionRequiredMixin
+        
+class UserLibrary(generic.ListView): #PermissionRequiredMixin
     model = Book
     template_name = 'user_library.html'
     context_object_name = 'coincident'
-
     # permission_required = ('books.add_book',)
 
     # permission_required = 'Alejandria.view_book'
@@ -1128,7 +1139,7 @@ class UserLibrary(generic.ListView):  # PermissionRequiredMixin
 
     def get(self, request, *args, **kwargs):
         self.user_id = self.request.user.id
-        # print(request.GET)
+        print(request.GET)
 
         # if 'search_book' in request.GET:
         #     self.searchBook = request.GET['search_book']
@@ -1149,11 +1160,10 @@ class UserLibrary(generic.ListView):  # PermissionRequiredMixin
         return context
 
 
-class UserBills(generic.ListView):  # PermissionRequiredMixin
+class UserBills(generic.ListView): #PermissionRequiredMixin
     model = Book
     template_name = 'user_bills.html'
     context_object_name = 'coincident'
-
     # permission_required = ('books.add_book',)
 
     # permission_required = 'Alejandria.view_book'
@@ -1176,3 +1186,83 @@ class UserBills(generic.ListView):  # PermissionRequiredMixin
         print(user_bills.bills.all())
 
         return context
+
+def addfaq(request):
+    the_user = request.user
+    response = HttpResponse()
+    if 'AnonymousUser' in str(the_user):
+        return HttpResponseForbidden('You have to be an admin to do that')
+    else:
+        admin = request.user.role in 'Admin'
+        if admin:
+            category = request.POST.get('category')
+            question = request.POST.get('question')
+            answer = request.POST.get('answer')
+
+            try:
+                category = [cat[0] for cat in FAQ.FAQ_CHOICES if category in cat][0]
+            except:
+                return HttpResponseForbidden('Select a valid category')
+
+            try:
+                faq = FAQ(category=category, question=question, answer=answer)
+                faq.save()
+            except:
+                return HttpResponseForbidden('Something went wrong')
+        else:
+            return HttpResponseForbidden('You have to be an admin to do that')
+    return response
+
+def modifyfaq(request):
+    the_user = request.user
+    response = HttpResponse()
+    if 'AnonymousUser' in str(the_user):
+        return HttpResponseForbidden('You have to be an admin to do that')
+    else:
+        admin = request.user.role in 'Admin'
+        if admin:
+            original = request.POST.get('original')
+            category = request.POST.get('category')
+            question = request.POST.get('question')
+            answer = request.POST.get('answer')
+
+            try:
+                category = [cat[0] for cat in FAQ.FAQ_CHOICES if category in cat][0]
+            except:
+                return HttpResponseForbidden('Select a valid category')
+
+            original_faq = FAQ.objects.filter(question=original)
+
+            if original_faq:
+                try:
+                    original_faq.update(category=category, question=question, answer=answer)
+                except:
+                    return HttpResponseForbidden('Something went wrong')
+            else:
+                return HttpResponseForbidden('This FAQ does not exist')
+        else:
+            return HttpResponseForbidden('You have to be an admin to do that')
+    return response
+
+def deletefaq(request):
+    the_user = request.user
+    response = HttpResponse()
+    if 'AnonymousUser' in str(the_user):
+        return HttpResponseForbidden('You have to be an admin to do that')
+    else:
+        admin = request.user.role in 'Admin'
+        if admin:
+            original = request.POST.get('original')
+
+            original_faq = FAQ.objects.filter(question=original)
+
+            if original_faq:
+                try:
+                    original_faq.delete()
+                except:
+                    return HttpResponseForbidden('Something went wrong')
+            else:
+                return HttpResponseForbidden('This FAQ does not exist')
+        else:
+            return HttpResponseForbidden('You have to be an admin to do that')
+    return response
