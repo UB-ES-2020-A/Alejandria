@@ -21,7 +21,7 @@ from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
 from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
+from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, Cupon
 
 # Create your views here.
 
@@ -329,7 +329,6 @@ def delete_product(request, book):
 
 def add_product(request, view, book):
     user = request.user or None
-    print(request.POST)
     if user:
         user_id = user.id
         if user_id:
@@ -813,9 +812,25 @@ def complete_purchase(request):
         cart = Cart.objects.get(user_id=user)
         books = cart.books.all()
         total = 0
+        coupons = []
+
+        for i in range(int(request.POST.get('redeemed_codes'))):
+            coupon = Cupon.objects.filter(code=request.POST.get('code'+str(i))).first()
+            if coupon:
+                coupons.append(coupon)
+            print(request.POST.get('code'+str(i)))
+
         for book in books:
             total += book.price
+
+            for coupon in coupons:
+                if coupon.book == book:
+                    total -= book.price * coupon.percentage/100
+
+
         total = float(total)
+
+        print(total)
 
         if current_money - total >= 0:
 
@@ -963,7 +978,7 @@ def generate_pdf(request):
         response.write(pdf)
         return response
 
-        
+
 class UserLibrary(generic.ListView): #PermissionRequiredMixin
     model = Book
     template_name = 'user_library.html'
@@ -1026,3 +1041,25 @@ class UserBills(generic.ListView): #PermissionRequiredMixin
         print(user_bills.bills.all())
 
         return context
+
+
+def check_promo_code(request, **kwargs):
+    if request.method == 'GET':
+        coupon = Cupon.objects.filter(code=kwargs['code']).first()
+        if not coupon:
+            return JsonResponse({'error': 'The coupon does not exist.'}, status=404)
+
+        if coupon.redeemed >= coupon.max_limit:
+            return JsonResponse({'error': 'The coupon has already been redeemed.'}, status=404)
+
+        dic = {}
+        books = Cart.objects.filter(user_id=request.user).first().books.all()
+        for book in books:
+            if coupon.book == book:
+                dic[book.ISBN] = book.price - book.price * coupon.percentage / 100
+
+        if dic == {}:
+            return JsonResponse({'error': 'The coupon introduced does not apply to any book in your cart.'}, status=404)
+
+        return JsonResponse(dic)
+
