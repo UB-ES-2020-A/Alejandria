@@ -75,8 +75,9 @@ class BookView(generic.DetailView):
         if 'owned' not in context.keys():
             context['owned'] = 'false'
 
-        new_price = self.object.price - (self.object.discount * self.object.price / 100)
-        context['new_price'] = new_price
+        if self.object.discount:
+            new_price = self.object.price - (self.object.discount * self.object.price / 100)
+            context['new_price'] = new_price
 
         return context
 
@@ -1001,6 +1002,8 @@ def complete_purchase(request):
                 setattr(bill, 'payment_method', 'Credit card')
                 setattr(bill, 'name', user_bank_account.name)
                 for book in books:
+                    book.num_sold += 1
+                    book.save()
                     bill.books.add(book)
                 bill.save()
                 lib_of_bills.bills.add(bill)
@@ -1261,3 +1264,31 @@ def deletefaq(request):
         else:
             return HttpResponseForbidden('You have to be an admin to do that')
     return response
+
+
+class DesiredLibrary(generic.ListView): #PermissionRequiredMixin
+    model = Book
+    template_name = 'desired_library.html'
+
+    def __init__(self):
+        super().__init__()
+        self.user = None
+
+    def get(self, request, *args, **kwargs):
+        #self.user_id = self.request.user.id
+        self.user = self.request.user
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
+        context = super().get_context_data(**kwargs)
+
+        desired_books = BookProperties.objects.filter(Q(user=self.user) & (Q(desired=True)))
+        print(desired_books)
+        desired_list = []
+        for desired in desired_books:
+            new_price = desired.book.price - (desired.book.discount * desired.book.price / 100)
+            desired_list.append((desired.book,new_price))
+
+        context['desired_books'] = desired_list
+
+        return context
