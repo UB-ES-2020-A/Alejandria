@@ -12,8 +12,8 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import HttpResponseForbidden, HttpResponse
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, \
+    HttpResponseForbidden, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
 from reportlab.pdfgen import canvas
@@ -25,7 +25,7 @@ from .forms import BookForm, UpdateBookForm, CuponFrom, BookPropertiesForm
 from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, Cupon, BookProperties
 
 # Create your views here.
-
+# pylint: disable=line-too-long
 """
 This is my custom response to get to a book by it's ISBN. The ISBN is passed by the front in an AJAX
 """
@@ -520,7 +520,7 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
-        if 'AnonymousUser' is str(the_user):
+        if 'AnonymousUser' == str(the_user):
             context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
@@ -1094,7 +1094,6 @@ def generate_pdf(request):
         # Get StringIO's body and write it out to the response.
         response.write(pdf)
         return response
-
 
 class UserLibrary(generic.ListView):  # PermissionRequiredMixin
     model = Book
