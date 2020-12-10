@@ -75,8 +75,9 @@ class BookView(generic.DetailView):
         if 'owned' not in context.keys():
             context['owned'] = 'false'
 
-        new_price = self.object.price - (self.object.discount * self.object.price / 100)
-        context['new_price'] = new_price
+        if self.object.discount:
+            new_price = self.object.price - (self.object.discount * self.object.price / 100)
+            context['new_price'] = new_price
 
         return context
 
@@ -990,6 +991,8 @@ def complete_purchase(request):
                 setattr(bill, 'payment_method', 'Credit card')
                 setattr(bill, 'name', user_bank_account.name)
                 for book in books:
+                    book.num_sold += 1
+                    book.save()
                     bill.books.add(book)
                 bill.save()
                 lib_of_bills.bills.add(bill)
