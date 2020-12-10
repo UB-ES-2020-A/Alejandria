@@ -119,12 +119,12 @@
                                 {% if obj.discount != 0 %}
                                     <div class="tag">ON SALE!</div>
                                 {% endif %}
-                                <img style="width: 176px;height: 265px; class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                                <img style="width: 176px;height: 265px;"; class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
                             {% else %}
                                 {% if obj.discount != 0 %}
                                     <div class="tag">ON SALE!</div>
                                 {% endif %}
-                                <img style="width: 176px;height: 265px; class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
 
                             {% endif %}
                               <div class="card-body">
@@ -163,10 +163,10 @@
 
                               {% if obj.thumbnail %}
                                 <div class="tag">ON SALE!</div>
-                                <img class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
                             {% else %}
                                 <div class="tag">ON SALE!</div>
-                                <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                                <img style= "width: 176px;height: 265px;" class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
                             {% endif %}
                               <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
