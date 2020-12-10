@@ -51,13 +51,13 @@
     <div class="col-3">
          <div class="row">
         {% if book.thumbnail %}
-            <img src="{{ book.thumbnail.url }}" style="float: left; height:400px; margin-top:20px">
+            <img src="{{ book.thumbnail.url }}" style="float: left; height:400px; width:250px; margin-top:20px">
         {% else %}
             <img src="{% static 'no_available.jpg' %}" style="float: left; height:400px; margin-top:20px">
         {% endif %}
          </div>
         <div style="margin-top:5%;" >
-            <a style="width: 60%;" href="#" class="btn btn-danger my-2 my-sm-0">Add to cart</a>
+            <a style="width:250px; margin-left:-15px;" href="#" class="btn btn-danger my-2 my-sm-0">Add to cart</a>
         </div>
 
 
@@ -75,11 +75,16 @@
 
 
     </div>
-    <div class="col-4" style="margin-top:20px">
-        <h3 style="color: white"> Summary: </h3>
-        <p style="color:white">{{book.description}}</p>
-    </div>
-    <div class="col-4" style="margin-top:20px">
+      {% if book.description and book.description != "" %}
+        <div class="col-4" style="margin-top:20px">
+            <h3 style="color: white"> Summary: </h3>
+            <p style="color:white">{{book.description}}</p>
+        </div>
+      <div class="col-4" style="margin-top:20px; position:relative; left:15%;">
+      {% else %}
+      <div class="col-4" style="margin-top:20px; position:relative;">
+      {% endif %}
+
         <h3 style="color: white"> Properties: </h3>
         <p style="color:white">ISBN: {{book.ISBN}}</p>
         <p style="color:white">Language: {{book.language}}</p>
