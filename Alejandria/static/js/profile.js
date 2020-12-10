@@ -248,10 +248,12 @@ $(document).ready(function () {
                         })
                     }
                     else {
-                        var dataForm = new FormData();
-                        dataForm.append("avatar", $('#avatar-field')[0].files[0]);
-                        dataForm.append("trigger", "avatar");
-                        var status = navigator.sendBeacon(window.location.origin+"/avatar/", dataForm);
+                        if ($("#avatar-field").val() != "") {
+                            var dataForm = new FormData();
+                            dataForm.append("avatar", $('#avatar-field')[0].files[0]);
+                            dataForm.append("trigger", "avatar");
+                            var status = navigator.sendBeacon(window.location.origin + "/avatar/", dataForm);
+                        }
                         Swal.fire({
                             icon: 'success',
                             title: 'Profile updated',
