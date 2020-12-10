@@ -116,9 +116,16 @@
                             <div class="card" style="width: 11rem;">
                                 <a href="/book/{{obj.ISBN}}" style="text-decoration: none; color: inherit;">
                               {% if obj.thumbnail %}
-                                <img class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                                {% if obj.discount != 0 %}
+                                    <div class="tag">ON SALE!</div>
+                                {% endif %}
+                                <img style="width: 176px;height: 265px;"; class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
                             {% else %}
-                                <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% if obj.discount != 0 %}
+                                    <div class="tag">ON SALE!</div>
+                                {% endif %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+
                             {% endif %}
                               <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
@@ -142,6 +149,44 @@
 
 
 
+
+{% if promotion_books %}
+    <h3 style="color:#ffffff; padding:35px; padding-bottom:0px">On sale!</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel6"  data-interval="1000">
+                <div class="MultiCarousel-inner" id="MultiCarouselCoincidents6">
+                    {% for obj in promotion_books %}
+                        <div class="item" style="width: 185px;">
+                            <div class="card" style="width: 11rem;">
+                                <a href="/book/{{obj.ISBN}}" style="text-decoration: none; color: inherit;">
+
+                              {% if obj.thumbnail %}
+                                <div class="tag">ON SALE!</div>
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                            {% else %}
+                                <div class="tag">ON SALE!</div>
+                                <img style= "width: 176px;height: 265px;" class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                            {% endif %}
+                              <div class="card-body">
+                                <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
+                                <p class="card-text">Fernando Aramburu</p>
+                                  <p class="card-text">Preu: {{obj.price}}€</p>
+                                <a href="#" class="btn btn-danger my-2 my-sm-0">Add to cart</a>
+                              </div>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+
 {% if recommended_books %}
 
 <h3 style="color:white; padding:25px; padding-bottom:0px">Other recommended books...</h3>
@@ -154,9 +199,16 @@
                             <div class="card" style="width: 11rem;">
                                 <a href="/book/{{obj.ISBN}}" style="text-decoration: none; color: inherit;">
                               {% if obj.thumbnail %}
-                                  <img class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+
+                                    {% if obj.discount != 0 %}
+                                        <div class="tag">ON SALE!</div>
+                                    {% endif %}
+                                  <img style="width: 176px;height: 265px; class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
                               {% else %}
-                                  <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
+                                    {% if obj.discount != 0 %}
+                                        <div class="tag">ON SALE!</div>
+                                    {% endif %}
+                                  <img style="width: 176px;height: 265px; class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
                               {% endif %}
                               <div class="card-body">
                                 <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
@@ -226,7 +278,7 @@ var itemWidth = "";
                 incno = itemsSplit[0];
                 itemWidth = sampwidth / (incno*1.75);
             }
-            itemWidth = 180 /* distancia entre carts */
+            itemWidth = 190 /* distancia entre carts */
             $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers});
             $(this).find(itemClass).each(function () {
                 $(this).outerWidth(itemWidth);
@@ -296,7 +348,7 @@ $(document).ready(function () {
                 incno = itemsSplit[0];
                 itemWidth = sampwidth / (incno*1.75);
             }
-            itemWidth = 180 /* distancia entre carts */
+            itemWidth = 190 /* distancia entre carts */
             $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers});
             $(this).find(itemClass).each(function () {
                 $(this).outerWidth(itemWidth);

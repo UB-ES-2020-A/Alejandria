@@ -24,7 +24,12 @@
               <div class="card" id="mainCard">
                 <div class="card-body">
                   <div class="d-flex flex-column align-items-center text-center">
-                    <img src="https://www.computerhope.com/jargon/g/guest-user.jpg" alt="Admin" class="rounded-circle" width="150">
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" id="avatar-2" class="rounded-circle" width="150" height="150">
+                    {% else %}
+                    <img src="https://www.computerhope.com/jargon/g/guest-user.jpg" id="avatar-2" class="rounded-circle" width="150" height="150">
+                    {% endif %}
+                    <input id="avatar-field" name="avatar" class="d-none" type="file" required>
                     <div class="mt-3">
                       <h4>{{ user.username }}</h4>
                       <p class="text-secondary mb-1">{{ user.name }}</p>
@@ -160,7 +165,7 @@
                       <h6 class="mb-0">Street</h6>
                     </div>
                     <div class="col-sm-9 text-secondary" id="id_street2">
-                      {{ user.user_address.street }}
+                      {{ user.fact_address.street }}
                     </div>
                   </div>
                   <hr>
@@ -169,7 +174,7 @@
                       <h6 class="mb-0">City</h6>
                     </div>
                     <div class="col-sm-9 text-secondary" id="id_city2">
-                      {{ user.user_address.city }}
+                      {{ user.fact_address.city }}
                     </div>
                   </div>
                   <hr>
@@ -178,7 +183,7 @@
                       <h6 class="mb-0">Country</h6>
                     </div>
                     <div class="col-sm-9 text-secondary" id="id_country2">
-                      {{ user.user_address.country }}
+                      {{ user.fact_address.country }}
                     </div>
                   </div>
                   <hr>
@@ -187,7 +192,7 @@
                       <h6 class="mb-0">Zip Code</h6>
                     </div>
                     <div class="col-sm-9 text-secondary" id="id_zip2">
-                      {{ user.user_address.zip }}
+                      {{ user.fact_address.zip }}
                     </div>
                   </div>
                 </div>

@@ -3,6 +3,20 @@
     font-size: 22px;
 }
 
+.tag {
+       float: left;
+       position: absolute;
+       left: 0px;
+       top: 0px;
+       z-index: 1000;
+       background-color: #92AD40;
+       padding: 5px;
+       color: #FFFFFF;
+       font-weight: bold;
+
+
+    }
+
 .card{
     box-shadow: 0 6px 10px rgba(0,0,0,.08), 0 0 6px rgba(0,0,0,.05);
       transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);
