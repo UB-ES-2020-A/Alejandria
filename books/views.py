@@ -123,7 +123,7 @@ class BookView(generic.DetailView):
                     book_properties.desired = pre_desired
 
                 book_properties.user = request.user
-                book_properties.book = get_object_or_404(Book,pk=kwargs['pk'])
+                book_properties.book = get_object_or_404(Book, pk=kwargs['pk'])
 
                 messages.info(request, 'Your preference has been saved!')
                 book_properties.save()
@@ -143,6 +143,15 @@ class BookView(generic.DetailView):
             context['owned'] = 'false'
 
         return render(request, "details.html", context)
+
+    def render_to_response(self, context, **response_kwargs):
+        response = super(BookView, self).render_to_response(context, **response_kwargs)
+        cart = get_cart(self.request.user.id, self.request, response)
+        if cart is not None:
+            context['total_items'] = len(cart.books.all())
+        else:
+            context['total_items'] = 0
+        return response
 
 
 
@@ -309,13 +318,13 @@ class SellView(PermissionRequiredMixin, generic.ListView):
                 messages.info(request, 'Your book has been created successfully!')
 
                 book.save()
+                return HttpResponseRedirect('/editor')
             else:
                 messages.info(request, 'Oops.. something is wrong')
+                form = BookForm()
+                return render(request, "sell.html", {"form": form})
 
-        else:
-            form = BookForm()
 
-        return render(request, "sell.html", {"form": form})
 
 
 class EditBookView(PermissionRequiredMixin, generic.DetailView):
@@ -326,8 +335,10 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # format data to suit frontend requirements
-        context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
-        context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+        print('CONTEXT BOOK', context.get('book'))
+        if context.get('book').publication_date:
+            context['date'] = context.get('book').publication_date.strftime("%Y-%m-%d")
+        context['promos'] = Cupon.objects.filter(Q(book=context.get('book').ISBN))
         return context
 
     # post (update) of book
@@ -384,18 +395,16 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
                     book.user_id = request.user
                     messages.info(request, 'Your book has been updated successfully!')
                     book.save()
+                    return HttpResponseRedirect('/editor')
                 else:
                     messages.info(request, 'Oops.. something is wrong')
-            else:
-                form = UpdateBookForm()
-
-            context = {}
-            context['form'] = form
-            context['book'] = book
-            context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
-            context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
-
-            return render(request, "edit_book.html", context)
+                    book = get_object_or_404(Book, pk=self.kwargs['pk'])
+                    context = {}
+                    context['form'] = form
+                    context['book'] = book
+                    context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+                    context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+                    return render(request, "edit_book.html", context)
 
 
 class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
@@ -496,6 +505,8 @@ def add_product(request, view, book):
         return HttpResponseRedirect('/')
     if view == 'cart':
         return HttpResponseRedirect('/cart')
+    if view == 'details':
+        return HttpResponseRedirect('/book/'+book)
 
 
 class FaqsView(generic.ListView):
