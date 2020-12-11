@@ -11,9 +11,9 @@ $(document).ready(function () {
     });
 
     $("#recommended_button").click(function() {
-        if ($("#best_seller_carrousel").length) {
+        if ($("#recommended_carrousel").length) {
             $('html,body').animate({
-                scrollTop: $("#best_seller_carrousel").offset().top - 100},
+                scrollTop: $("#recommended_carrousel").offset().top - 100},
                 'slow');
         }
         else{
@@ -119,9 +119,6 @@ $(document).ready(function () {
             window.location.href = window.location.origin;
         }
     });
-
-
-
 
 
     let data = null;
