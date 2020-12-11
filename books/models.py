@@ -134,7 +134,7 @@ class Cupon(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)
     percentage = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)], null=False)
     max_limit = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99999999)], null=True)
-    redeemed = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99999999)], null=True)
+    redeemed = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(99999999)], null=True, default=0)
 
 
 class Cart(models.Model):

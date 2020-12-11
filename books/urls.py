@@ -36,6 +36,7 @@ urlpatterns = [
     path('deletefaq/', views.deletefaq, name="delete_faq"),
     path('desiredLibrary/', views.DesiredLibrary.as_view(), name='desired_library'),
 #    path('download/', views.book_pdf, name="download_book"), TODO:CAN BE REMOVED IF WONT BE USED TO HAVE SAFER DOWNLOADS
-    path('avatar/', views.post_avatar, name="avatar")
+    path('avatar/', views.post_avatar, name="avatar"),
+    path('promocode/<code>', views.check_promo_code, name='check_promo_code')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
