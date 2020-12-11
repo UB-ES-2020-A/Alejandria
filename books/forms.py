@@ -14,6 +14,7 @@ class BookForm(forms.ModelForm):
         label="Terms&Conditions"
     )
 
+
     class Meta:
         """ BookFrom Meta """
         model = Book
@@ -52,14 +53,14 @@ class ReviewForm(forms.ModelForm):
             "score"
         ]
 
-class CuponFrom(forms.ModelForm):
+class CuponForm(forms.ModelForm):
     """
     Defines the structure of a cupon
     """
 
     class Meta:
         model = Cupon
-        """ CuponFrom Meta """
+        """ CuponForm Meta """
 
         fields = [
             "code",

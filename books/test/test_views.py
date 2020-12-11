@@ -95,6 +95,7 @@ def create_book():
 #         request = client.get(reverse('books:faqs'))
 #
 #         print(request.context)
+#         print(request.content)
 
 
 
