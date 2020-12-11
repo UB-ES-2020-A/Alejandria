@@ -1,4 +1,129 @@
 $(document).ready(function () {
+    $("#best_sellers_button").click(function() {
+        if ($("#best_seller_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#best_seller_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+    $("#recommended_button").click(function() {
+        if ($("#best_seller_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#best_seller_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+    $("#recently_button").click(function() {
+        if ($("#recently_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#recently_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+    $("#comming_button").click(function() {
+        if ($("#comming_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#comming_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+    $("#on_sale_button").click(function() {
+        if ($("#on_sale_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#on_sale_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+    $("#crime_button").click(function() {
+        if ($("#crime_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#crime_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+    $("#fantasy_button").click(function() {
+        if ($("#fantasy_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#fantasy_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+    $("#horror_button").click(function() {
+        if ($("#horror_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#horror_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+    $("#fiction_button").click(function() {
+        if ($("#fiction_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#fiction_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+    $("#romance_button").click(function() {
+        if ($("#romance_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#romance_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+    $("#anime_button").click(function() {
+        if ($("#anime_carrousel").length) {
+            $('html,body').animate({
+                scrollTop: $("#anime_carrousel").offset().top - 100},
+                'slow');
+        }
+        else{
+            window.location.href = window.location.origin;
+        }
+    });
+
+
+
+
+
     let data = null;
     let condition = false;
     let avatar = null;
