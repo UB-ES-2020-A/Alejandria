@@ -30,16 +30,16 @@
 
                     {% for book in cart_list %}
                     <div class="info-book">
-                        {% if book.thumbnail %}
-                        <img class="book-cover" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                        <!--TODO: Change to real book image -->
-                        {% else %}
-                        <img class="book-cover" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                        {% endif %}
+                            {% if book.thumbnail %}
+                            <img href="/book/{{ book.ISBN }}" class="book-cover" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                            <!--TODO: Change to real book image -->
+                            {% else %}
+                            <img href="/book/{{ book.ISBN }}" class="book-cover" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                            {% endif %}
                         <div style="margin-left:1%;">
                             <div class="row horizontal">
                                 <div class="col-md-8">
-                                    <p class="book-title"><a href="#">{{ book.title }}, {{ book.author }}</a></p>
+                                    <p class="book-title" href="/book/{{ book.ISBN }}"><a href="/book/{{ book.ISBN }}">{{ book.title }}, {{ book.author }}</a></p>
                                 </div>
                                 <div class="col">
                                     <p class="text" style="text-align:right;"><span>{{ book.price }}</span>€</p>
@@ -68,11 +68,11 @@
                             </span>
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input">
-                                <label class="custom-control-label" for="gift_checkbox1" style="color:white">This is a
+                                <label class="custom-control-label" style="color:white">This is a
                                     gift</label>
                             </div>
                             <hr>
-                            <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
+                            <p class="reviews"><a href="/book/{{ book.ISBN }}" style="color:white">Reviews <span class="badge badge-light"
                                                                                              style="font-size:0.7em">15</span></a>
                             </p>
                             <hr>
@@ -83,66 +83,6 @@
                         </div>
                     </div>
                     {% endfor %}
-
-                    <div class="info-book" id="info_book_1">
-                        <img class="book-cover" src="/static/images/cover-images/book_cover.jpg" alt="Card image cap">
-                        <div style="margin-left:1%;">
-                            <div class="row horizontal">
-                                <div class="col-md-8">
-                                    <p class="book-title"><a href="#">DON'T DELETE used as test material</a></p>
-                                </div>
-                                <div class="col">
-                                    <p class="text" style="text-align:right;"><span
-                                            id="price_book_1">24.95</span>€</p>
-                                </div>
-                            </div>
-                            <p class="price" id="original_price_1">24.95€</p>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="gift_checkbox1">
-                                <label class="custom-control-label" for="gift_checkbox1" style="color:white">This is a
-                                    gift</label>
-                            </div>
-                            <span class="score">
-                                <div class="score-wrap">
-                                    <span class="stars-active" style="width:80%">
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                    </span>
-
-                                    <span class="stars-inactive">
-                                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                                        <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    </span>
-                                </div>
-                            </span>
-                            <p class="reviews"><a href="#" style="color:white">Reviews <span class="badge badge-light"
-                                                                                             style="font-size:0.7em">15</span></a>
-                            </p>
-                            <div class="dropdown">
-                                <label style="color:white">Quantity</label>
-                                <select class="selectpicker btn-drop m1"
-                                        style="color:white; font-size: 14px; width:60px;" id="selectItems1"
-                                        onclick="update_quantity()">
-                                    <option class="btn btn-dark btn-drop" style="background-color:black">1</option>
-                                    <option class="btn btn-dark btn-drop" style="background-color:black">2</option>
-                                    <option class="btn btn-dark btn-drop" style="background-color:black">3</option>
-                                    <option class="btn btn-dark btn-drop" style="background-color:black">4</option>
-                                    <option class="btn btn-dark btn-drop" style="background-color:black">5</option>
-                                </select>
-                            </div>
-                            <button class="btn btn-outline-danger my-2 my-sm-0" onclick="dlt_books_btn(this,)"
-                                    type="submit">
-                                Delete
-                            </button>
-                            <div style="padding-bottom:15%"></div>
-                        </div>
-                    </div>
 
                 </div>
 
@@ -184,18 +124,14 @@
                                                 {% endif %}
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">{{ book.title
-                                                        }}</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">{{
-                                                        book.author }}</p>
+                                                    <h5 class="book-title" style="padding-top:15px">{{ book.title }}</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{ book.author }}</p>
 
-                                                    <p class="text-card" style="font-size: 14px; color:white">{{
-                                                        book.price }}€</p>
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{ book.price }}€</p>
 
-                                                    <button class="btn btn-success"
-                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)">
+                                                    <a class="btn btn-success" href="{% url 'books:add_product' 'cart' book.ISBN %}">
                                                         Add to cart
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -224,18 +160,14 @@
                                                 {% endif %}
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">{{ book.title
-                                                        }}</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">{{
-                                                        book.author }}</p>
+                                                    <h5 class="book-title" style="padding-top:15px">{{ book.title }}</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{ book.author }}</p>
 
-                                                    <p class="text-card" style="font-size: 14px; color:white">{{
-                                                        book.price }}€</p>
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{ book.price }}€</p>
 
-                                                    <button class="btn btn-success"
-                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)">
+                                                    <a class="btn btn-success" href="{% url 'books:add_product' 'cart' book.ISBN %}">
                                                         Add to cart
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -263,18 +195,14 @@
                                                 {% endif %}
                                                 <div class="card-body"
                                                      style="background-color:black;border:1px solid white;">
-                                                    <h5 class="book-title" style="padding-top:15px">{{ book.title
-                                                        }}</h5>
-                                                    <p class="text-card" style="font-size: 14px; color:white">{{
-                                                        book.author }}</p>
+                                                    <h5 class="book-title" style="padding-top:15px">{{ book.title }}</h5>
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{ book.author }}</p>
 
-                                                    <p class="text-card" style="font-size: 14px; color:white">{{
-                                                        book.price }}€</p>
+                                                    <p class="text-card" style="font-size: 14px; color:white">{{ book.price }}€</p>
 
-                                                    <button class="btn btn-success"
-                                                            onclick="createInfoBook('info_book', 'price_book', 'original_price', 'gift', 'quantity_book', 'button_rmv', 'button_add', 'Patria' , 'Fernando Aramburu', 62, 'https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg', 24.95)">
+                                                    <a class="btn btn-success" href="{% url 'books:add_product' 'cart' book.ISBN %}">
                                                         Add to cart
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -314,7 +242,9 @@
                 >Complete purchase
                 </button>
                 {% endif %}
-                <p class="text" style="font-size:12px">New client? &nbsp;<a href="#">Register here</a></p>
+                {% if not user.is_authenticated %}
+                <p class="text" style="font-size:12px">New client? &nbsp;<label class="registerBtn" id="register_bottom_btn">Register here</label></p>
+                {% endif %}
             </div>
             <!-- ./Bottom of the page -->
 
@@ -389,7 +319,7 @@
                     </div>
 
                     <div class="col" style="margin-left:-6%; margin-top:5%">
-                        <p class="book-title" style="font-size:16px"><a href="#">{{ book.title }}, {{ book.author }}
+                        <p class="book-title" style="font-size:16px"><a href="/book/{{ book.ISBN }}">{{ book.title }}, {{ book.author }}
                         </a></p>
 
                         <span class="score" style="margin-top:-5%">
@@ -438,6 +368,7 @@
 <script src="/static/js/cart-page/stars.js"></script>
 <script src="/static/js/cart-page/info-book.js"></script>
 <script src="/static/js/cart-page/navigation.js"></script>
+<script src="/static/js/cart-page/register.js"></script>
 <!-- ./JavaScript files from static folder -->
 
 </body>

@@ -11,22 +11,6 @@
     <meta charset="UTF-8">
     <title>Alejandria</title>
 
-<!--    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>-->
-<!--    <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>-->
-
-
-
-<!--    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">-->
-
-
-<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
-    <!-- popper.js -->
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>-->
-
-
-<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
-
-
     <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
     <link rel="stylesheet" href="{% static 'css/font.css' %}">
 <!--    <link rel="stylesheet" href="{% static 'css/card.css' %}">-->
@@ -40,9 +24,6 @@
 
 </head>
 <body>
-
-
-
 {% if messages %}
   {% for msg in messages %}
     <div class="alert alert-info alert-dismissable">
@@ -51,27 +32,6 @@
     </div>
   {% endfor %}
 {% endif %}
-
-<!--<div class="signup-container" style="margin:auto; margin-top:50px">
-  <div style="margin:auto;padding-right:30px;">
-    <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="width:110%">
-  </div>
-  <div class="right-container" style="width:auto">
-    <form method="POST" enctype = "multipart/form-data"> {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Next" />
-</form>
-
-    </header>
-    <footer>
-      <div class="set">
-        <button id="next">Next</button>
-      </div>
-    </footer>
-  </div>
-</div>-->
-
-
 {% if form.errors %}
     {% for field in form %}
         {% for error in field.errors %}

@@ -57,7 +57,7 @@
         {% endif %}
          </div>
         <div style="margin-top:5%;" >
-            <a style="width:250px; margin-left:-15px;" href="#" class="btn btn-danger my-2 my-sm-0">Add to cart</a>
+            <a style="width:250px; margin-left:-15px;" href="{% url 'books:add_product' 'details' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to cart</a>
         </div>
 
 
@@ -107,13 +107,7 @@
         <p style="color:white">Price: {{book.price}}€</p>
         {% endif %}
     </div>
-<!--      <div class="container">-->
-<!--          <div class="row">-->
-<!--              <div class="col-12" style="text-align:right">-->
-<!--                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Add to cart</button>-->
-<!--              </div>-->
-<!--          </div>-->
-<!--      </div>-->
+
   </div>
 
 
@@ -227,7 +221,7 @@
                             <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
                             <p class="card-text">{{obj.author}}</p>
                               <p class="card-text">Preu: {{obj.price}}€</p>
-                            <a href="#" class="btn btn-danger my-2 my-sm-0">Add to cart</a>
+                            <a href="{% url 'books:add_product' 'details' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to cart</a>
                           </div>
                             </a>
                         </div>
