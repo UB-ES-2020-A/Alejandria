@@ -10,43 +10,49 @@ from django.utils import timezone
 IF NECESSARY INTRODUCE help_text in some characteristics.
 """
 GENRE_CHOICES = [
-        ('FANT', 'Fantasy'),
-        ('CRIM', 'Crime & Thriller'),
-        ('FICT', 'Fiction'),
-        ('SCFI', 'Science Fiction'),
-        ('HORR', 'Horror'),
-        ('ROMA', 'Romance'),
-        ('TEEN', 'Teen & Young Adult'),
-        ('KIDS', "Children's Books"),
-        ('ANIM', 'Anime & Manga'),
-        ('OTHR', 'Others'),
-        ('ARTS', 'Art'),
-        ('BIOG', 'Biography'),
-        ('FOOD', 'Food'),
-        ('HIST', 'History'),
-        ('DICT', 'Dictionary'),
-        ('HEAL', 'Health'),
-        ('HUMO', 'Humor'),
-        ('SPOR', 'Sport'),
-        ('TRAV', 'Travel'),
-        ('POET', 'Poetry')
-    ]
+    ('FANT', 'Fantasy'),
+    ('CRIM', 'Crime & Thriller'),
+    ('FICT', 'Fiction'),
+    ('SCFI', 'Science Fiction'),
+    ('HORR', 'Horror'),
+    ('ROMA', 'Romance'),
+    ('TEEN', 'Teen & Young Adult'),
+    ('KIDS', "Children's Books"),
+    ('ANIM', 'Anime & Manga'),
+    ('OTHR', 'Others'),
+    ('ARTS', 'Art'),
+    ('BIOG', 'Biography'),
+    ('FOOD', 'Food'),
+    ('HIST', 'History'),
+    ('DICT', 'Dictionary'),
+    ('HEAL', 'Health'),
+    ('HUMO', 'Humor'),
+    ('SPOR', 'Sport'),
+    ('TRAV', 'Travel'),
+    ('POET', 'Poetry')
+]
 
 
 class Address(models.Model):
     street = models.CharField(max_length=50, null=False, blank=False)
-    city = models.CharField(max_length=50, null=False, blank=False)
-    country = models.CharField(max_length=50, null=False, blank=False)
-    zip = models.CharField(max_length=10, null=False, blank=False)
+    city = models.CharField(validators=[RegexValidator(regex=r"^[A-Z][a-z]+$", message='Invalid city name.',
+                                                       code='nomatch')], max_length=50, null=False, blank=False)
+    country = models.CharField(validators=[RegexValidator(regex=r"^[A-Z][a-z]+$", message='Invalid country name.',
+                                                          code='nomatch')], max_length=50, null=False, blank=False)
+    zip = models.CharField(validators=[RegexValidator(regex=r"^[0-9]{4-7}$", message='Invalid zip. Must have 5 digits.',
+                                                      code='nomatch')], max_length=10, null=False, blank=False)
 
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True, null=False, blank=True)
     # TODO: ADD USERNAME AS A PK
     role = models.CharField(max_length=10, null=False, blank=False)
-    name = models.CharField(max_length=150, null=False, blank=False, default="user")
-    password = models.CharField(max_length=150, null=False, blank=False)
-    email = models.EmailField(max_length=150, null=False, blank=False)
+    name = models.CharField(validators=[RegexValidator(regex=r"^[A-Z][a-z ,.'-]+$", message='Invalid name.',
+                                                       code='nomatch')], max_length=150, null=False, blank=False, default="user")
+    password = models.CharField(validators=[RegexValidator(regex=r"^[A-Za-z0-9]{6,20}$", message='Invalid password.',
+                                                           code='nomatch')], max_length=150, null=False, blank=False)
+    email = models.EmailField(validators=[RegexValidator(regex=r"^[A-Za-z0-9](\.?[A-Za-z0-9]){5,}@g(oogle)?mail\.com$", message='Invalid email.',
+                                                         code='nomatch')], max_length=150, null=False, blank=False)
     user_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
                                      related_name="user_address")
     fact_address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True,
@@ -55,7 +61,6 @@ class User(AbstractUser):
     genre_preference_2 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
     genre_preference_3 = models.CharField(max_length=4, choices=GENRE_CHOICES, null=True, blank=True)
     avatar = models.ImageField(blank=True, null=True, upload_to="avatars/")
-
 
 
 class Guest(models.Model):
@@ -102,13 +107,15 @@ class Book(models.Model):
     eBook = models.FileField(blank=True, null=True, upload_to="ebooks/", default="/media/ebooks/download.pdf")
     # pub_date = publication_date  # Abreviation
 
+
 class BookProperties(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,
-                                blank=False)
+                             blank=False)
     desired = models.BooleanField(default=False)
     readed = models.BooleanField(default=False)
+
 
 class Rating(models.Model):
     ID = models.AutoField(primary_key=True, blank=False, null=False)
@@ -121,12 +128,14 @@ class Rating(models.Model):
     score = models.IntegerField(choices=zip(per_values, human_readable), null=False, blank=False)
     date = models.DateField(null=True, blank=True, default=timezone.now)
 
+
 class Cupon(models.Model):
     code = models.CharField(primary_key=True, max_length=10, blank=False, null=False)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, null=False, blank=False)
     percentage = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)], null=False)
     max_limit = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99999999)], null=True)
     redeemed = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99999999)], null=True)
+
 
 class Cart(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=True)
@@ -168,6 +177,7 @@ class FAQ(models.Model):
     def __str__(self):
         return "ID:{}  CAT:{}   {} --- {}".format(self.ID, self.category, self.question, self.answer)
 
+
 ## TODO: If we decide to give the option to the admin to add the FAQ to a new category, categories shold be saved to the database
 # class FAQchoices(models.Model):
 
@@ -181,7 +191,7 @@ class BankAccount(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
     name = models.CharField(max_length=100)
     money = models.DecimalField(decimal_places=2, max_digits=8, default=500.00)
-    card_number = models.CharField(validators=[RegexValidator(regex='^[0-9]{16}$', message='Length has to be 16',
+    card_number = models.CharField(validators=[RegexValidator(regex=r'^[0-9]{16}$', message='Length has to be 16',
                                                               code='nomatch')], max_length=16, null=True)
     month_exp = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)], null=True)
     year_exp = models.IntegerField(validators=[MinValueValidator(2020)], null=True)

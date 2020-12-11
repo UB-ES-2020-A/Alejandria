@@ -192,34 +192,34 @@ $(document).ready(function () {
                         '<label for="register_username" style="margin-right: 100%;"><strong>Username</strong></label>'+
                         '<input type="text" id="register_username" class="swal2-input form-control" placeholder="Username">' +
                         '<div class="alert alert-danger d-none" id="alertUsername" role="alert">The field is empty or already exists</div>'+
-                        '<small id="usernameHelp" class="form-text text-muted" style="padding-right: 74%;">Displayed Name</small>'+
+                        '<small id="usernameHelp" class="form-text text-muted" style="text-align: left">Displayed Name</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_firstname" style="margin-right: 77%;"><strong>First Name</strong></label>'+
-                        '<input type="text" id="register_firstname" class="swal2-input form-control" placeholder="First Name">' +
+                        '<input type="text" id="register_firstname" class="swal2-input form-control" placeholder="First Name" required>' +
                         '<div class="alert alert-danger d-none" id="alertFirstname" role="alert">The field is empty</div>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_lastname" style="margin-right: 77%;"><strong>Last Name</strong></label>'+
-                        '<input type="text" id="register_lastname" class="swal2-input form-control" placeholder="Last Name">' +
+                        '<input type="text" id="register_lastname" class="swal2-input form-control" placeholder="Last Name" required>' +
                         '<div class="alert alert-danger d-none" id="alertLastname" role="alert">The field is empty or invalid</div>'+
-                        '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">Please enter just 1 last name</small>'+
+                        '<small id="lastnameHelp" class="form-text text-muted" style="text-align: left"">Please enter just 1 last name</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_email" style="margin-right: 69%;"><strong>Email Address</strong></label>'+
-                        '<input type="email" id="register_email" class="swal2-input form-control" placeholder="Enter email">' +
+                        '<input type="email" id="register_email" class="swal2-input form-control" placeholder="Enter email" required>' +
                         '<div class="alert alert-danger d-none" id="alertEmail" role="alert">The field is empty or invalid or already exists</div>'+
-                        '<small id="emailHelp" class="form-text text-muted" style="padding-right: 57%;">Enter a valid Email Address</small>'+
+                        '<small id="emailHelp" class="form-text text-muted" style="text-align: left">Enter a valid Email Address. Must be a Gmail account.</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_password_1" style="margin-right: 100%;"><strong>Password</strong></label>'+
-                        '<input type="password" id="register_password_1" class="swal2-input form-control" placeholder="Enter password">' +
+                        '<input type="password" id="register_password_1" class="swal2-input form-control" placeholder="Enter password" required>' +
                         '<div class="alert alert-danger d-none" id="alertPassword" role="alert">The field is empty</div>'+
-                        '<small id="password1Help" class="form-text text-muted" style="padding-right: 32%;">Max. 50 characters. All characters are valid.</small>'+
+                        '<small id="password1Help" class="form-text text-muted" style="text-align: left">Between 6 and 20 characters. Only letters and numbers are valid.</small>'+
                     '</div>',
 
                 preConfirm: () => {
@@ -385,21 +385,21 @@ $(document).ready(function () {
 
                 '<div class="form-group">'+
                     '<label for="register_city_1" style="margin-right: 100%;"><strong>City</strong></label>'+
-                    '<input type="text" id="register_city_1" class="swal2-input" placeholder="City">' +
+                    '<input type="text" id="register_city_1" class="swal2-input" placeholder="City" required>' +
                     '<div class="alert alert-danger d-none" id="alertCity1" role="alert">The field is empty</div>'+
                 '</div>'+
 
                 '<div class="form-group">'+
                     '<label for="register_street_1" style="margin-right: 100%;"><strong>Street</strong></label>'+
-                    '<input type="text" id="register_street_1" class="swal2-input" placeholder="Street">' +
+                    '<input type="text" id="register_street_1" class="swal2-input" placeholder="Street" required>' +
                     '<div class="alert alert-danger d-none" id="alertStreet1" role="alert">The field is empty</div>'+
                 '</div>'+
 
                 '<div class="form-group">'+
                     '<label for="register_zip_1" style="margin-right: 81%;"><strong>Zip Code</strong></label>'+
-                    '<input type="text" id="register_zip_1" class="swal2-input" placeholder="Zip Code">'+
-                    '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">All zip codes are numbers</small>'+
-                    '<div class="alert alert-danger d-none" id="alertZip1" role="alert">The field is empty or Invalid</div>'+
+                    '<input type="text" id="register_zip_1" class="swal2-input" placeholder="Zip Code" required>'+
+                    '<small id="lastnameHelp" class="form-text text-muted" style="text-align: left">All zip codes are numbers.</small>'+
+                    '<div class="alert alert-danger d-none" id="alertZip1" role="alert">The field is empty or Invalid. Zip codes are between 4 and 7 numbers.</div>'+
                 '</div>',
 
                 preConfirm: () => {
@@ -487,7 +487,7 @@ $(document).ready(function () {
                         $("#register_zip_1").val(new_value);
 
                         if($("#register_zip_1").val().length > 5) {
-                            new_value = $("#register_zip_1").val().slice(0, 5);
+                            new_value = $("#register_zip_1").val().slice(0, 7);
                             $("#register_zip_1").val(new_value);
                         }
                     })
@@ -535,21 +535,21 @@ $(document).ready(function () {
 
                     '<div class="form-group">'+
                         '<label for="register_city_2" style="margin-right: 100%;"><strong>City</strong></label>'+
-                        '<input type="text" id="register_city_2" class="swal2-input" placeholder="City">' +
+                        '<input type="text" id="register_city_2" class="swal2-input" placeholder="City" required>' +
                         '<div class="alert alert-danger d-none" id="alertCity2" role="alert">The field is empty</div>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_street_2" style="margin-right: 100%;"><strong>Street</strong></label>'+
-                        '<input type="text" id="register_street_2" class="swal2-input" placeholder="Street">' +
+                        '<input type="text" id="register_street_2" class="swal2-input" placeholder="Street" required>' +
                         '<div class="alert alert-danger d-none" id="alertStreet2" role="alert">The field is empty</div>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_zip_2" style="margin-right: 81%;"><strong>Zip Code</strong></label>'+
-                        '<input type="text" id="register_zip_2" class="swal2-input" placeholder="Zip Code">'+
-                        '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">All zip codes are numbers</small>'+
-                        '<div class="alert alert-danger d-none" id="alertZip2" role="alert">The field is empty or Invalid</div>'+
+                        '<input type="text" id="register_zip_2" class="swal2-input" placeholder="Zip Code" required>'+
+                        '<small id="lastnameHelp" class="form-text text-muted" style="text-align: left">All zip codes are numbers</small>'+
+                        '<div class="alert alert-danger d-none" id="alertZip2" role="alert">The field is empty or Invalid. Zip codes are between 4 and 7 numbers.</div>'+
                     '</div>',
                 preConfirm: () => {
                     if(condition) {
@@ -636,7 +636,7 @@ $(document).ready(function () {
                         $("#register_zip_2").val(new_value);
 
                         if($("#register_zip_2").val().length > 5) {
-                            new_value = $("#register_zip_2").val().slice(0, 5);
+                            new_value = $("#register_zip_2").val().slice(0, 7);
                             $("#register_zip_2").val(new_value);
                         }
                     })
@@ -836,7 +836,7 @@ $(document).ready(function () {
                         dataForm.append("trigger", "avatar");
                         var status = navigator.sendBeacon(window.location.origin+"/avatar/", dataForm);
 
-                        if (response.error && !status) {
+                        if (response.error || !status) {
                             window.value = ""
                             Swal.fire({
                                 icon: 'error',

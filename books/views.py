@@ -628,21 +628,35 @@ def register(request):
 
                 user.save()
 
-                # Create user's cart
-                device = request.COOKIES.get('device')
-                guest, created = Guest.objects.get_or_create(device=device)
-                cart_user, created = Cart.objects.get_or_create(user_id=user)
-                if device:
-                    cart_guest_query = Cart.objects.filter(guest_id=guest)
-                    if cart_guest_query.count() != 0:
-                        cart_guest = cart_guest_query.first()
-                        for book in cart_guest.books.all():
-                            cart_user.books.add(book)
-                        cart_guest.books.clear()
-                        cart_guest.save()
-                        cart_user.save()
+                try:
+                    fact_address.clean()
+                    user_address.clean()
+                    user.full_clean()
 
-                return JsonResponse({"error": False})
+                except ValidationError:
+                    # Do something when validation is not passing
+                    print("ERROR VALIDATION REGISTER")
+                    fact_address.delete()
+                    user_address.delete()
+                    user.delete()
+                    return JsonResponse({"error": True})
+
+                else:
+                    # Create user's cart
+                    device = request.COOKIES.get('device')
+                    guest, created = Guest.objects.get_or_create(device=device)
+                    cart_user, created = Cart.objects.get_or_create(user_id=user)
+                    if device:
+                        cart_guest_query = Cart.objects.filter(guest_id=guest)
+                        if cart_guest_query.count() != 0:
+                            cart_guest = cart_guest_query.first()
+                            for book in cart_guest.books.all():
+                                cart_user.books.add(book)
+                            cart_guest.books.clear()
+                            cart_guest.save()
+                            cart_user.save()
+
+                    return JsonResponse({"error": False})
 
             else:
                 return JsonResponse({"error": True})
@@ -653,16 +667,18 @@ def register(request):
 @csrf_exempt
 def post_avatar(request):
     if 'trigger' in request.POST and 'avatar' in request.POST['trigger']:
-        file = request.FILES["avatar"]
-        if request.user.is_authenticated:
-            user = request.user
-        else:
-            user = request.POST["username"]
-            user = User.objects.filter(username=user).first()
+        file = request.FILES.get("avatar")
+        if file is not None:
+            if request.user.is_authenticated:
+                user = request.user
+            else:
+                user = request.POST["username"]
+                user = User.objects.filter(username=user).first()
 
-        user.avatar.save(file.name, file)
-        return JsonResponse({"error": False})
+            user.avatar.save(file.name, file)
+            return JsonResponse({"error": False})
     return JsonResponse({"error": True})
+
 
 def check_data(request):
     if request.method == 'POST':
