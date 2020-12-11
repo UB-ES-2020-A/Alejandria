@@ -48,21 +48,18 @@ class BookView(generic.DetailView):
         relation_book = Book.objects.filter(primary_genre=self.object.primary_genre)[:20]
         context['isbn'] = str(self.object.ISBN)
         review_list = Rating.objects.filter(ISBN=self.object)
+        book = get_object_or_404(Book, pk=self.kwargs['pk'])
 
         if self.request.user.is_authenticated:
-            print('auth')
-            book = get_object_or_404(Book, pk=self.kwargs['pk'])
             properties, created = BookProperties.objects.get_or_create(book=book, user=self.request.user)
-
             context['form'] = properties
+
         relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
         context['isbn'] = str(context['object'].ISBN)
         review_list = Rating.objects.filter(ISBN=context['object'])
 
-        if self.request.user.id is not None:
-            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(
-                ISBN=context['book']).first()  # TODO: NEED TO FIX THIS
-            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first() # TODO: NEED TO FIX THIS
+        if self.request.user.id:
+            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=book.ISBN)#.filter(ISBN=book) # TODO: NEED TO FIX THIS
             if owned:
                 context['owned'] = "true"
 
@@ -522,7 +519,7 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
-        if 'AnonymousUser' is str(the_user):
+        if 'AnonymousUser' == str(the_user):
             context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
