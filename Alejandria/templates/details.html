@@ -118,11 +118,11 @@
                 {% for review in review_list %}
                 <div class="container" style="border-bottom: 1px solid gray;">
                     <div style="margin-left: 2px; margin-top: 15px" class="row">
-                        <img style="height: 20px; width: 20px;" src="https://www.vhv.rs/dpng/d/312-3120300_default-profile-hd-png-download.png">
+                        <img style="height: 30px; width: 30px;" src="{{ user.avatar.url }}">
                         <p style="color: white; margin-left: 10px; margin-right: 65%"> {{ review.user_id.username }} </p>
                         <p style="color: white"> {{ review.date }} </p>
                     </div>
-                    <div class="main row">
+                    <div class="main row" style="margin-left:0.2%; margin-top:0.3%">
                         {% if review.score == 0 %}
                             <i class="fa fa-star unchecked"></i>
                             <i class="fa fa-star unchecked"></i>
@@ -166,7 +166,7 @@
                         <p style="color: white; margin-top: 10px; overflow-wrap: break-word"> {{ review.text }} </p>
                     </div>
                     {% if review.user_id.id == request.user.id %}
-                    <div id="review-div-{{ review.ID }}" class="row">
+                    <div id="review-div-{{ review.ID }}" class="row" style="margin-left:0.3%">
                         <button style="height:40px" type="submit" class="btn btn-danger" onclick="startModifyingReview({{ review.ID }})">Modify</button>
                         <form class="form-group" id="delete-review-form" onsubmit="return onSubmitDeleteReview({{ review.ID }})">
                             <button style="margin-left: 20px; height:40px" type="submit" class="btn btn-danger">Delete</button>
