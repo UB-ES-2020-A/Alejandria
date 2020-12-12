@@ -86,7 +86,7 @@ if 'TRAVIS' in os.environ:
             'USER':     'postgres',
             'PASSWORD': '',
             'HOST':     'localhost',
-            'PORT':     '5433',
+            'PORT':     '5432',
         }
     }
 elif 'HEROKU' in os.environ:
