@@ -38,6 +38,22 @@
   text-decoration: none;
 }
 
+.center-items-navbar {
+display: flex;
+justify-content: center;
+align-items: center;
+height:60px;
+width: auto;
+}
+
+.right-items-navbar {
+width: 100%;
+display: flex;
+justify-content: flex-end;
+align-items: center;
+height:60px;
+}
+
 
 .horizontal-nav{
   position: absolute;
