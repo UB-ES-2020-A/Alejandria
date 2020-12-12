@@ -46,6 +46,7 @@
             {% else %}
             <h6 style="color:white"> Category: {{book.get_primary_genre_display}}</h6>
             {% endif %}
+
         </div>
         <div class="col-3">
             <div class="row">
@@ -81,6 +82,7 @@
             <h3 style="color: white"> Summary: </h3>
             <p style="color:white">{{book.description}}</p>
         </div>
+                                  
         <div class="col-4" style="margin-top:20px; position:relative; left:15%;">
             {% else %}
             <div class="col-4" style="margin-top:20px; position:relative;">
@@ -126,6 +128,7 @@
                         </div>
                         <div class="main row">
                             {% if review.score == 0 %}
+
                             <i class="fa fa-star unchecked"></i>
                             <i class="fa fa-star unchecked"></i>
                             <i class="fa fa-star unchecked"></i>
@@ -175,6 +178,7 @@
                             </form>
                         </div>
                         {% endif %}
+
                     </div>
                     {% endfor %}
                 </div>
@@ -203,7 +207,6 @@
         </form>
     </div>
 
-
     <div class="container" style="margin-bottom:5%">
         <h3 class="scroll-title" style="padding-left: 0;">You might like these related books...</h3>
         <div class="container-fluid">
@@ -228,6 +231,7 @@
                                     </div>
                                 </a>
                             </div>
+
                         </div>
                         {% endfor %}
                     </div>

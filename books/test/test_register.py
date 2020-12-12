@@ -1,12 +1,11 @@
 # Django and 3rd party libs
-import pytest
+import json
 import os
+import random
+import string
+
 from django.core.wsgi import get_wsgi_application
 from django.test.client import RequestFactory
-import json
-import string
-import random
-
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
@@ -36,10 +35,10 @@ def test_register():
     email = random_char(7) + "@gmail.com"
     username = random_char(5)
     body = {
-        "username": username, "firstname": "Josep", "lastname": "Lopez",
+        "username": username, "firstname": "Josep",  "lastname": "Lopez",
         "email": email, "password1": "password123", "password2": "password123",
-        "country1": "España", "city1": "Sant Adria del Besos", "street1": "c/Mare de deu del carme 116 4B",
-        "zip1": "08930", "country2": "España", "city2": "Sant Adria del Besos",
+        "country1": "Spain", "city1": "Sant Adria del Besos", "street1": "c/Mare de deu del carme 116 4B",
+        "zip1": "08930", "country2": "Spain", "city2": "Sant Adria del Besos",
         "street2": "c/Mare de deu del carme 116 4B", "zip2": "08930", "trigger": "register", "taste1": "Fiction",
         "taste2": "Crime & Thriller", "taste3": "Science Fiction", "tastes": True
     }
@@ -49,4 +48,4 @@ def test_register():
     req.COOKIES['device'] = guest.device
     response = register(req)
     response_json = json.loads(response.content.decode("utf-8"))
-    assert response.status_code == 200 and response_json["error"] == False and User.objects.filter(email=email, username=username).exists()
+    assert response.status_code == 200 and response_json["error"] is False and User.objects.filter(email=email, username=username).exists()

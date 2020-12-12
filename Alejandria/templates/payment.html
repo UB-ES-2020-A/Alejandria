@@ -73,7 +73,7 @@
                                                 <div class="container">
                                                     <div class="row">
                                                         <p class="col">{{ book.title }}</p>
-                                                        <div class="col-2" style="text-align:right"><span>{{ book.price }} €</span>
+                                                        <div id="price-book-{{ book.ISBN }}" class="col-2" style="text-align:right">{{ book.price }} €
                                                         </div>
                                                     </div>
                                                 </div>
@@ -83,7 +83,7 @@
                                             <hr>
                                             <div class="row">
                                                 <div class="col"><b>Total</b></div>
-                                                <div class="col-2" style="text-align:right"><b>{{ total_price }} €</b>
+                                                <div id="total-price" class="col-2" style="text-align:right"><b>{{ total_price }} €</b>
                                                 </div>
                                             </div>
                                         </div>
@@ -265,6 +265,9 @@
                                                                         class="form-control" name="cvv">
                                                         </div>
                                                     </div>
+                                                    <div id="promo-codes-form-input">
+                                                        <input id="redeemed_codes_hidden_input" type="hidden" name="redeemed_codes" value="0">
+                                                    </div>
                                                 </div>
 
                                                 <!-- Don't close DIV -->
@@ -342,6 +345,18 @@
                                 <!-- ./Credit card form content -->
                             </div>
 
+                                <form onsubmit="return check_promo_code()">
+                                    <div>
+                                        <div class="form-group">
+                                            <label style="color: white" for="promo-code">Promotional code (optional)</label>
+                                            <div style="display: flex; flex-direction: row">
+                                                <input id="promo-code-input" class="form-control" type="text" placeholder="Promotional code">
+                                                <button style="margin-left: 50px; height: auto" class="btn btn-success" type="submit">Validate code</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
                         </div>
                     </div>
                 </div>
@@ -352,6 +367,42 @@
     <!-- JavaScript files from static folder -->
     <!-- script src="/static/js/payment-page/showproducts.js"></script -->
     <script src="/static/js/payment-page/modal.js"></script>
+    <script>
+        var redeemedCodes = 0;
+        function check_promo_code() {
+            var code = document.getElementById("promo-code-input").value
+            var url = "../promocode/" + code;
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: null,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert("Promotional code applied successfully!");
+                    var keys = Object.keys(response);
+                    var values = Object.values(response);
+                    // Update the price of each discounted book
+                    for (var i = 0; i < keys.length; i++) {
+                        var previousPrice = document.getElementById("price-book-" + keys[i]).innerHTML;
+                        document.getElementById("price-book-" + keys[i]).innerHTML = "<strike>" + previousPrice + "</strike>" + values[i] + " €";
+                        var totalPrice = document.getElementById("total-price").innerHTML;
+                        var newPrize = parseFloat(totalPrice.substring(3, totalPrice.length-4)) - parseFloat(previousPrice.substring(0, previousPrice.length-1)) + parseFloat(values[i]);
+                        document.getElementById("total-price").innerHTML = "<b>" + newPrize.toFixed(2) + " €</b>";
+                    }
+                    document.getElementById("promo-codes-form-input").innerHTML +=
+                            "<input type='hidden' name='code" + redeemedCodes + "' value='" + code + "'>";
+                    redeemedCodes += 1;
+                    document.getElementById("redeemed_codes_hidden_input").value = redeemedCodes;
+                },
+                error: function (response) {
+                    alert(response.responseJSON.error);
+                }
+            });
+            return false;
+        }
+    </script>
     <!-- ./JavaScript files from static folder -->
 
 </body>

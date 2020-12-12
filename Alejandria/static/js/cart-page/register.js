@@ -1,303 +1,5 @@
 $(document).ready(function () {
-    $("#best_sellers_button").click(function() {
-        if ($("#best_seller_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#best_seller_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-    $("#recommended_button").click(function() {
-        if ($("#recommended_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#recommended_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-    $("#recently_button").click(function() {
-        if ($("#recently_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#recently_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-    $("#comming_button").click(function() {
-        if ($("#comming_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#comming_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-    $("#on_sale_button").click(function() {
-        if ($("#on_sale_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#on_sale_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-    $("#crime_button").click(function() {
-        if ($("#crime_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#crime_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-    $("#fantasy_button").click(function() {
-        if ($("#fantasy_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#fantasy_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-    $("#horror_button").click(function() {
-        if ($("#horror_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#horror_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-    $("#fiction_button").click(function() {
-        if ($("#fiction_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#fiction_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-    $("#romance_button").click(function() {
-        if ($("#romance_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#romance_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-    $("#anime_button").click(function() {
-        if ($("#anime_carrousel").length) {
-            $('html,body').animate({
-                scrollTop: $("#anime_carrousel").offset().top - 100},
-                'slow');
-        }
-        else{
-            window.location.href = window.location.origin;
-        }
-    });
-
-
-    let data = null;
-    let condition = false;
-    let avatar = null;
-    let username = null;
-
-    $(".navbar-brand").click(function () {
-        window.location.href = window.location.origin;
-    });
-
-    $("#home_btn").click(function () {
-        window.location.href = window.location.origin;
-    });
-
-    $("#performLogout").click(function () {
-        $("#logout_btn").click();
-    })
-
-    $("#buttonSearch").click(function () {
-            book_name = document.getElementById('textSearch').value;
-            if(book_name!=""){
-                var urlname = window.location.origin+"/search";
-                var url = new URL(urlname);
-                url.searchParams.append('search_book', document.getElementById('textSearch').value);
-                window.location.href = url;
-            }
-            else{ //TODO: Falta fer el search buit...
-                console.log("NULL");
-                window.location.href = "/search";
-             }
-
-        });
-
-    $("#logout_btn").click(function () {
-        var url = window.location.origin + "/login/";
-        setCSRF();
-        $.ajax(url, {
-            method: "POST",
-            data: {trigger: "logout"},
-            ContentType: 'application/x-www-form-urlencode',
-            success: function (response) {
-                if (response.error) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong!',
-                    })
-                } else {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'See you later',
-                        text: 'Logout was a success!',
-                    })
-                    $(".swal2-confirm").click(function () {
-                        window.location.href = "";
-                    });
-                }
-            }
-
-
-
-
-
-        })
-    });
-
-    $("#forgot_btn_hidden").click(async function openForgotPasswordModal() {
-
-        const {value: forgotParams} = await Swal.fire({
-            title: "Forgot Password",
-            html:
-                '<input type="email" id="forgot_mail" class="swal2-input" placeholder="Enter email">'+
-                '<small style="margin-right: 40%;">A Password Reset Email will be sent.</small>',
-
-            showCancelButton: true,
-            focusConfirm: false,
-            preConfirm: () => {
-                return {
-                    mail: $("#forgot_mail").val(),
-                    trigger: "forgot"
-
-                }
-            }
-        })
-
-        if (forgotParams) {
-            var url = window.location.origin + "/forgot/";
-            setCSRF();
-            $.ajax(url, {
-                method: "POST",
-                data: forgotParams,
-                ContentType: 'application/x-www-form-urlencode',
-                success: function (response) {
-                    if (response.error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: response.msg,
-                        })
-                        $(".swal2-cancel").addClass("d-none")
-                    } else {
-                        Swal.fire({
-                            icon: 'success',
-                            title: response.msg,
-                            text: 'Mail sent to your address',
-                        })
-                        $(".swal2-confirm").click(function () {
-                            window.location.href = "";
-                        });
-                    }
-                }
-
-            })
-        }
-    });
-
-    $("#login_btn").click(async function () {
-        var url = window.location.origin + "/login/";
-
-        const {value: loginParams} = await Swal.fire({
-            title: "Sign In",
-            html:
-                '<div class="form-group">'+
-                    '<label for="login_mail" style="margin-right: 100%;"><strong>Email</strong></label>'+
-                    '<input type="email" id="login_mail" class="swal2-input" placeholder="Enter email">' +
-                '</div>'+
-                '<div class="form-group">'+
-                    '<label for="login_password" style="margin-right: 100%;"><strong>Password</strong></label>'+
-                    '<input type="password" id="login_password" class="swal2-input" placeholder="Enter password">' +
-                '</div>'+
-                '<a id="forgot_password" href="#" style="color:#dc3545!important; margin-right: 73%;" onclick="forgot_btn_hidden.click();"> <small> Forgot Password </small> <a>',
-            showCancelButton: true,
-            focusConfirm: false,
-            preConfirm: () => {
-                return {
-                    mail: $("#login_mail").val(),
-                    password: $("#login_password").val(),
-                    trigger: "login"
-
-                }
-            }
-        })
-
-        if (loginParams) {
-            setCSRF();
-            $.ajax(url, {
-                method: "POST",
-                data: loginParams,
-                ContentType: 'application/x-www-form-urlencode',
-                success: function (response) {
-                    if (response.error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!',
-                        })
-                    } else {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Welcome back, ' + response.name,
-                            text: 'Sign In was a success!',
-                        })
-                        $(".swal2-confirm").click(function () {
-                            window.location.href = "";
-                        });
-                    }
-                }
-
-            })
-        }
-    });
-
-
-    $("#faqs_btn").click(function () {
-        window.location.href = "/faqs/";
-    });
-
-    $("#register_btn").click(function () {
+    $("#register_bottom_btn").click(function () {
         Swal.mixin({
             title: "Sign In",
             confirmButtonText: "Next &rarr;",
@@ -314,34 +16,34 @@ $(document).ready(function () {
                         '<label for="register_username" style="margin-right: 100%;"><strong>Username</strong></label>'+
                         '<input type="text" id="register_username" class="swal2-input form-control" placeholder="Username">' +
                         '<div class="alert alert-danger d-none" id="alertUsername" role="alert">The field is empty or already exists</div>'+
-                        '<small id="usernameHelp" class="form-text text-muted" style="text-align: left">Displayed Name</small>'+
+                        '<small id="usernameHelp" class="form-text text-muted" style="padding-right: 74%;">Displayed Name</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_firstname" style="margin-right: 77%;"><strong>First Name</strong></label>'+
-                        '<input type="text" id="register_firstname" class="swal2-input form-control" placeholder="First Name" required>' +
+                        '<input type="text" id="register_firstname" class="swal2-input form-control" placeholder="First Name">' +
                         '<div class="alert alert-danger d-none" id="alertFirstname" role="alert">The field is empty</div>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_lastname" style="margin-right: 77%;"><strong>Last Name</strong></label>'+
-                        '<input type="text" id="register_lastname" class="swal2-input form-control" placeholder="Last Name" required>' +
+                        '<input type="text" id="register_lastname" class="swal2-input form-control" placeholder="Last Name">' +
                         '<div class="alert alert-danger d-none" id="alertLastname" role="alert">The field is empty or invalid</div>'+
-                        '<small id="lastnameHelp" class="form-text text-muted" style="text-align: left"">Please enter just 1 last name</small>'+
+                        '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">Please enter just 1 last name</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_email" style="margin-right: 69%;"><strong>Email Address</strong></label>'+
-                        '<input type="email" id="register_email" class="swal2-input form-control" placeholder="Enter email" required>' +
+                        '<input type="email" id="register_email" class="swal2-input form-control" placeholder="Enter email">' +
                         '<div class="alert alert-danger d-none" id="alertEmail" role="alert">The field is empty or invalid or already exists</div>'+
-                        '<small id="emailHelp" class="form-text text-muted" style="text-align: left">Enter a valid Email Address. Must be a Gmail account.</small>'+
+                        '<small id="emailHelp" class="form-text text-muted" style="padding-right: 57%;">Enter a valid Email Address</small>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_password_1" style="margin-right: 100%;"><strong>Password</strong></label>'+
-                        '<input type="password" id="register_password_1" class="swal2-input form-control" placeholder="Enter password" required>' +
+                        '<input type="password" id="register_password_1" class="swal2-input form-control" placeholder="Enter password">' +
                         '<div class="alert alert-danger d-none" id="alertPassword" role="alert">The field is empty</div>'+
-                        '<small id="password1Help" class="form-text text-muted" style="text-align: left">Between 6 and 20 characters. Only letters and numbers are valid.</small>'+
+                        '<small id="password1Help" class="form-text text-muted" style="padding-right: 32%;">Max. 50 characters. All characters are valid.</small>'+
                     '</div>',
 
                 preConfirm: () => {
@@ -507,21 +209,21 @@ $(document).ready(function () {
 
                 '<div class="form-group">'+
                     '<label for="register_city_1" style="margin-right: 100%;"><strong>City</strong></label>'+
-                    '<input type="text" id="register_city_1" class="swal2-input" placeholder="City" required>' +
+                    '<input type="text" id="register_city_1" class="swal2-input" placeholder="City">' +
                     '<div class="alert alert-danger d-none" id="alertCity1" role="alert">The field is empty</div>'+
                 '</div>'+
 
                 '<div class="form-group">'+
                     '<label for="register_street_1" style="margin-right: 100%;"><strong>Street</strong></label>'+
-                    '<input type="text" id="register_street_1" class="swal2-input" placeholder="Street" required>' +
+                    '<input type="text" id="register_street_1" class="swal2-input" placeholder="Street">' +
                     '<div class="alert alert-danger d-none" id="alertStreet1" role="alert">The field is empty</div>'+
                 '</div>'+
 
                 '<div class="form-group">'+
                     '<label for="register_zip_1" style="margin-right: 81%;"><strong>Zip Code</strong></label>'+
-                    '<input type="text" id="register_zip_1" class="swal2-input" placeholder="Zip Code" required>'+
-                    '<small id="lastnameHelp" class="form-text text-muted" style="text-align: left">All zip codes are numbers.</small>'+
-                    '<div class="alert alert-danger d-none" id="alertZip1" role="alert">The field is empty or Invalid. Zip codes are between 4 and 7 numbers.</div>'+
+                    '<input type="text" id="register_zip_1" class="swal2-input" placeholder="Zip Code">'+
+                    '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">All zip codes are numbers</small>'+
+                    '<div class="alert alert-danger d-none" id="alertZip1" role="alert">The field is empty or Invalid</div>'+
                 '</div>',
 
                 preConfirm: () => {
@@ -609,7 +311,7 @@ $(document).ready(function () {
                         $("#register_zip_1").val(new_value);
 
                         if($("#register_zip_1").val().length > 5) {
-                            new_value = $("#register_zip_1").val().slice(0, 7);
+                            new_value = $("#register_zip_1").val().slice(0, 5);
                             $("#register_zip_1").val(new_value);
                         }
                     })
@@ -657,21 +359,21 @@ $(document).ready(function () {
 
                     '<div class="form-group">'+
                         '<label for="register_city_2" style="margin-right: 100%;"><strong>City</strong></label>'+
-                        '<input type="text" id="register_city_2" class="swal2-input" placeholder="City" required>' +
+                        '<input type="text" id="register_city_2" class="swal2-input" placeholder="City">' +
                         '<div class="alert alert-danger d-none" id="alertCity2" role="alert">The field is empty</div>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_street_2" style="margin-right: 100%;"><strong>Street</strong></label>'+
-                        '<input type="text" id="register_street_2" class="swal2-input" placeholder="Street" required>' +
+                        '<input type="text" id="register_street_2" class="swal2-input" placeholder="Street">' +
                         '<div class="alert alert-danger d-none" id="alertStreet2" role="alert">The field is empty</div>'+
                     '</div>'+
 
                     '<div class="form-group">'+
                         '<label for="register_zip_2" style="margin-right: 81%;"><strong>Zip Code</strong></label>'+
-                        '<input type="text" id="register_zip_2" class="swal2-input" placeholder="Zip Code" required>'+
-                        '<small id="lastnameHelp" class="form-text text-muted" style="text-align: left">All zip codes are numbers</small>'+
-                        '<div class="alert alert-danger d-none" id="alertZip2" role="alert">The field is empty or Invalid. Zip codes are between 4 and 7 numbers.</div>'+
+                        '<input type="text" id="register_zip_2" class="swal2-input" placeholder="Zip Code">'+
+                        '<small id="lastnameHelp" class="form-text text-muted" style="padding-right: 54%;">All zip codes are numbers</small>'+
+                        '<div class="alert alert-danger d-none" id="alertZip2" role="alert">The field is empty or Invalid</div>'+
                     '</div>',
                 preConfirm: () => {
                     if(condition) {
@@ -758,7 +460,7 @@ $(document).ready(function () {
                         $("#register_zip_2").val(new_value);
 
                         if($("#register_zip_2").val().length > 5) {
-                            new_value = $("#register_zip_2").val().slice(0, 7);
+                            new_value = $("#register_zip_2").val().slice(0, 5);
                             $("#register_zip_2").val(new_value);
                         }
                     })
@@ -958,7 +660,7 @@ $(document).ready(function () {
                         dataForm.append("trigger", "avatar");
                         var status = navigator.sendBeacon(window.location.origin+"/avatar/", dataForm);
 
-                        if (response.error || !status) {
+                        if (response.error && !status) {
                             window.value = ""
                             Swal.fire({
                                 icon: 'error',
@@ -985,52 +687,3 @@ $(document).ready(function () {
         })
     });
 });
-
-
-function getCSRFToken() {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            if (cookie.substring(0, 10) == ('csrftoken' + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(10));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-
-}
-
-function setCSRF() {
-
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            if (settings.type == 'POST' || settings.type == 'PUT' || settings.type == 'DELETE') {
-                //if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-                // Only send the token to relative URLs i.e. locally.
-                xhr.setRequestHeader("X-CSRFToken", getCSRFToken());
-                //}
-            }
-        }
-
-    });
-}
-
-function validateEmail(email) {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-}
-
-function readURL(input) {
-  if (input.files && input.files[0]) {
-    var reader = new FileReader();
-
-    reader.onload = function(e) {
-      $('#preview').attr('src', e.target.result);
-    }
-
-    reader.readAsDataURL(input.files[0]); // convert to base64 string
-  }
-}

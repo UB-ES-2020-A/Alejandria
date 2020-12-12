@@ -86,6 +86,7 @@
         </div>
     </div>
 
+
     {% if comingsoon %}
     <h3 id="comming_carrousel" class="scroll-title">Coming soon...</h3>
     <div class="container-fluid">
@@ -165,6 +166,7 @@
     {% endif %}
 
     {% if promotion_books %}
+
     <h3 id="on_sale_carrousel" class="scroll-title">On sale!</h3>
     <div class="container-fluid">
         <div class="row">
@@ -213,6 +215,7 @@
                         <div class="card" style="width: 11rem;">
                             <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
                                 {% if book.discount != 0 %}
+
                                 <div class="tag">ON SALE!</div>
                                 {% endif %}
                                 {% if book.thumbnail %}
@@ -421,10 +424,10 @@
                 <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
                 <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
             </div>
+
         </div>
     </div>
 </div>
-
 
 <script src="/static/js/home-page/modal.js"></script>
 <script src="/static/js/home-page/carrousel.js"></script>
@@ -442,6 +445,5 @@
     <script src="//cdn.jsdelivr.net/npm/less"></script>
 </head>
 
+
 {% endblock %}
-
-
