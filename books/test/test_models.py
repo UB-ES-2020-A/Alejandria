@@ -41,7 +41,7 @@ def test_user():
                fact_address=fact_address)
     obj.save()
     # Retrieve model to check correct creation
-    obj = User.objects.all().last()
+    obj = User.objects.filter(id=_id).last()
     print([_id == obj.id,
            role == obj.role,
            name == obj.name,
