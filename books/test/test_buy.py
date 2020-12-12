@@ -184,7 +184,9 @@ def test_complete_purchase():
     cart = Cart.objects.get(user_id=user.id)
     complete_purchase(request=req)
     bill = Bill.objects.filter(user_id=user).last()
-    #generate_pdf()
+    req2 = RequestFactory().post("/pdf/")
+    req2.user = user
+    generate_pdf(req2)
     user_bank_account = get_or_create_user_bank_account(user)
     assert cart.books.count() == 0 and user_bank_account.cvv == 111 and bill.total_money_spent == total_price
 
