@@ -43,12 +43,14 @@ def create_user(random_user=False):
                password=password,
                email=email,
                user_address=user_address,
-               fact_address=fact_address)
+               fact_address=fact_address,
+               genre_preference_1='BIOG',
+               genre_preference_2='FOOD',
+               genre_preference_3='KIDS')
     obj.save()
 
     cart = Cart(user_id=obj)
     cart.save()
-
 
     return obj
 
@@ -62,7 +64,7 @@ def get_or_create_guest():
         guest = guest_query.first()
     return guest
 
-def create_book():
+def create_book(genre):
     """ Tests Book model, creation and the correct storage of the information"""
 
     isbn = str(random.randint(0, 5156123423456015412))[:12]
@@ -73,7 +75,7 @@ def create_book():
     author = "Author"
     price = 23.45
     language = 'Espanol'
-    primary_genre = 'FANT'
+    primary_genre = genre
     publisher = 'Alejandria'
     num_pages = 100
     num_sold = 0
@@ -95,43 +97,27 @@ def create_book():
     return obj
 
 
-class SellViewTest(TestCase):
-    def test_post_sell(self):
+class SearchViewTest(TestCase):
+    def test_get_search_recommended(self):
 
-        isbn = '2858221'#str(random.randint(0, 5156123423456015412))[:12]
+        kids_book = create_book('KIDS')
+        horror_book = create_book('HORR')
+
         user = create_user(random_user=True)
 
-        dict_book = {
-            'ISBN': isbn,
-            'user': user,
-            'title': 'THis is the TITLE',
-            'description': 'This is the description of a test book',
-            'saga': 'SAGA\'S NAME',
-            'author': "Author",
-            'price': 23.45,
-            'language': 'Espanol',
-            'primary_genre': 'FANT',
-            'publisher': 'Alejandria',
-            'num_pages': 100,
-            'num_sold': 0,
-            'recommended_age': 'Juvenile',
-            'terms': True,
-        }
+        request_get = RequestFactory().get('/search/')
+        request_get.user = user
 
+        response = SearchView.as_view()(request_get)
+        recommended = response.context_data.get('recommended_books')
 
-        #response = client.post(reverse('books:sell'), dict_book) #,follow=True
+        kids = False
+        horr = True
 
+        for i in recommended:
+            if i.ISBN == kids_book.ISBN:
+                kids = True
+            if i.ISBN == horror_book.ISBN:
+                horr = False
 
-        request = RequestFactory().post('/sell/', dict_book)
-        request.user = user
-        request.test = True
-
-
-        response = SellView.post(SellView(), request)
-        print(response)
-        #print(response.context_data)
-
-        # response_get_book = client.get(reverse('books:book', kwargs={'pk': isbn}))
-        # book_obteined = response_get_book.status_code
-        # print(book_obteined)
-        assert True
+        assert kids and horr
