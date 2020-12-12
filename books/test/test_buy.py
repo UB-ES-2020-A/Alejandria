@@ -6,7 +6,7 @@ app = get_wsgi_application()
 from django.test import RequestFactory
 from books.models import User, Address, Cart, Book, Guest, BankAccount, Bill
 from books.test.test_register import random_char
-from books.views import delete_product, add_product, complete_purchase
+from books.views import delete_product, add_product, complete_purchase, generate_pdf
 
 
 def get_or_create_user():
@@ -189,5 +189,6 @@ def test_complete_purchase():
     cart = Cart.objects.get(user_id=user.id)
     complete_purchase(request=req)
     bill = Bill.objects.filter(user_id=user).last()
+    #generate_pdf()
     user_bank_account = get_or_create_user_bank_account(user)
     assert cart.books.count() == 0 and user_bank_account.cvv == 111 and bill.total_money_spent == total_price
