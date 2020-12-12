@@ -38,7 +38,7 @@
 {% endif %}
 
 <!-- Container -->
-<div class="row" style="margin-left: 3%; margin-top: 2%; margin-right: 3%">
+<div class="row" style="margin-left: 3%; margin-top: 2%; margin-right: 3%; margin-bottom:5%">
     <div class="col-75 body-card">
 
         <div class="row">
@@ -193,8 +193,7 @@
                                         <li class="nav-item" style="background-color:black"><a data-toggle="pill"
                                                                                                href="#credit-card"
                                                                                                class="nav-link active">
-                                            <i
-                                                    class="fas fa-credit-card mr-2"></i> Credit Card </a></li>
+                                            <i class="fas fa-credit-card mr-2"></i> Credit Card </a></li>
                                         <li class="nav-item" style="background-color:black"><a data-toggle="pill"
                                                                                                href="#paypal"
                                                                                                class="nav-link "> <i
@@ -210,7 +209,7 @@
                                     <div class="tab-content">
 
                                         <!-- credit card info-->
-                                        <div id="credit-card" class="tab-pane fade show active pt-3">
+                                        <div id="credit-card" class="tab-pane fade show active">
                                             <form action="{% url 'books:purchase' %}" method="post">
                                                 {% csrf_token %}
                                                 <div class="form-group"><label for="username" style="color:white">
@@ -224,7 +223,6 @@
                                                 </div>
                                                 <div class="form-group"><label for="cardNumber" style="color:white"
                                                                                data-toggle="tooltip"
-                                                                               style="color:white"
                                                                                title="Your credit card number must have 16 digits">
                                                     Card number <i class="fa fa-question-circle d-inline"></i>
                                                 </label>
@@ -275,12 +273,13 @@
                                                             class="subscribe btn btn-success btn-block shadow-sm">
                                                         <i class="fas fa-lock mr-2"></i>Confirm Payment
                                                     </button>
+                                                </div>
                                             </form>
                                         </div>
                                     </div> <!-- End -->
 
                                     <!-- Paypal info -->
-                                    <div id="paypal" class="tab-pane fade pt-3">
+                                    <div id="paypal" class="tab-pane fade">
                                         <h6 class="pb-2" style="color:white">Select your paypal account type</h6>
                                         <div class="form-group row">
                                             <div class="col">
@@ -311,7 +310,7 @@
                                     </div> <!-- ./Paypal info -->
 
                                     <!-- bank transfer info -->
-                                    <div id="net-banking" class="tab-pane fade pt-3">
+                                    <div id="net-banking" class="tab-pane fade">
                                         <div class="form-group "><label for="ccmonth" style="color:white">
                                             Select your Bank
                                         </label> <select class="form-control" id="ccmonth">
@@ -349,6 +348,7 @@
             </div>
         </div>
     </div>
+</div>
     <!-- JavaScript files from static folder -->
     <!-- script src="/static/js/payment-page/showproducts.js"></script -->
     <script src="/static/js/payment-page/modal.js"></script>

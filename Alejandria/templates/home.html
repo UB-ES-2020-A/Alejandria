@@ -30,7 +30,7 @@
 
 
 <!--  HEADER MAIN PAGE  -->
-<div class="container-fluid" style="padding: 0">
+<div class="container-fluid" style="padding: 0; margin: 0">
     <!-- Page Wrapper -->
     <div class="page-holder bg-cover" style="height:503px">
         <div class="container py-5">
@@ -43,382 +43,431 @@
 </div>
 <!--  ./HEADER MAIN PAGE  -->
 
+<div class="container">
 
-<!--  SCROLL  -->
-<h3 id="best_seller_carrousel" class="scroll-title">Best sellers</h3>
-<div class="container-fluid">
-    <div class="row" style="margin-left:3%; margin-right:3%;">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel" data-interval="1000">
-            <div class="MultiCarousel-inner">
-                {% for book in book_list %}
-                <div class="item" style="width: 185px;">
-                    <div class="card" style="width: 11rem;">
-                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                            <!-- Change href -->
-                            {% if book.discount != 0 %}
-                            <div class="tag">ON SALE!</div>
-                            {% endif %}
-                            {% if book.thumbnail %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            {% else %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                            {% endif %}
-                            <div class="card-body">
-                                {% if book.title|length > 18 %}
-                                <h5 class="card-title" style="padding-top:15px">{{ book.title|slice:18 }}...</h5>
-                                {% else %}
-                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+
+    <!-- SCROLL TEST -->
+    <h3 class="scroll-title">Best sellers</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    {% for book in book_list %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                                <!-- Change href -->
+                                {% if book.discount != 0 %}
+                                <div class="tag">ON SALE!</div>
                                 {% endif %}
-                                <p class="card-text">{{ book.author }}</p>
-                                <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
-                                    cart</a>
-                            </div>
-                        </a>
+                                {% if book.thumbnail %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                                {% else %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    {% if book.title|length > 18 %}
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title|slice:18 }}...</h5>
+                                    {% else %}
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                    {% endif %}
+                                    <p class="card-text">{{ book.author }}</p>
+                                    <p class="card-text">Preu: {{ book.price }}€</p>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                        cart</a>
+                                </div>
+                            </a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <div class="col-md-2" style="align:center">
+                    <!-- Button Right -->
+                    <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
+                    <!-- ./Button Right -->
+                </div>
             </div>
-            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
         </div>
     </div>
-</div>
 
-{% if comingsoon %}
-<h3 id="comming_carrousel" class="scroll-title">Coming soon...</h3>
-<div class="container-fluid">
-    <div class="row" style="margin-left:3%; margin-right:3%;">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel4" data-interval="1000">
-            <div class="MultiCarousel-inner">
-                {% for book in comingsoon %}
-                <div class="item" style="width: 185px;">
-                    <div class="card" style="width: 11rem;">
-                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                            <!-- Change href -->
-                            {% if book.discount != 0 %}
-                            <div class="tag">ON SALE!</div>
-                            {% endif %}
-                            {% if book.thumbnail %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            <!--TODO: Change to real book image -->
-                            {% else %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.author }}</p>
-                                <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
-                                    cart</a>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
-        </div>
-    </div>
-</div>
-{% endif %}
 
-<!--  SCROLL  -->
-{% if recent %}
-<h3 id="recently_carrousel" class="scroll-title">Recently added</h3>
-<div class="container-fluid">
-    <div class="row" style="margin-left:3%; margin-right:3%;">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel3" data-interval="1000">
-            <div class="MultiCarousel-inner">
-                {% for book in recent %}
-                <div class="item" style="width: 185px;">
-                    <div class="card" style="width: 11rem;">
-                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                            <!-- Change href -->
-                            {% if book.discount != 0 %}
-                            <div class="tag">ON SALE!</div>
-                            {% endif %}
-                            {% if book.thumbnail %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            {% else %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.author }}</p>
-                                <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
-                                    cart</a>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-{% if promotion_books %}
-<h3 id="on_sale_carrousel" class="scroll-title">On sale!</h3>
-<div class="container-fluid">
-    <div class="row" style="margin-left:3%; margin-right:3%;">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel6"  data-interval="1000">
-            <div class="MultiCarousel-inner" id="MultiCarouselCoincidents6">
-                {% for obj in promotion_books %}
-                <div class="item" style="width: 185px;">
-                    <div class="card" style="width: 11rem;">
-                        <a href="/book/{{obj.ISBN}}" style="text-decoration: none; color: inherit;">
-                            {% if book.discount != 0 %}
-                            <div class="tag">ON SALE!</div>
-                            {% endif %}
-                            {% if obj.thumbnail %}
-                            <div class="tag">ON SALE!</div>
-                            <img class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
-                            {% else %}
-                            <div class="tag">ON SALE!</div>
-                            <img class="card-img-top" src= "{% static 'no_available.jpg' %}" alt="Card image cap">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
-                                <p class="card-text">Fernando Aramburu</p>
-                                <p class="card-text">Preu: {{obj.price}}€</p>
-                                <a href="#" class="btn btn-danger my-2 my-sm-0">Add to cart</a>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<!--  SCROLL  -->
-<h3 id="fantasy_carrousel" class="scroll-title">Fantasy</h3>
-<div class="container-fluid">
-    <div class="row" style="margin-left:3%; margin-right:3%;">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel1" data-interval="1000">
-            <div class="MultiCarousel-inner">
-                {% for book in fantasy %}
-                <div class="item" style="width: 185px;">
-                    <div class="card" style="width: 11rem;">
-                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                            {% if book.discount != 0 %}
-                            <div class="tag">ON SALE!</div>
-                            {% endif %}
-                            {% if book.thumbnail %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            <!--TODO: Change to real book image -->
-                            {% else %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.author }}</p>
-                                <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
-                                    cart</a>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
-        </div>
-    </div>
-</div>
-
-<!--  SCROLL  -->
-<h3 id="crime_carrousel" class="scroll-title">Crime</h3>
-<div class="container-fluid">
-    <div class="row" style="margin-left:3%; margin-right:3%;">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel2" data-interval="1000">
-            <div class="MultiCarousel-inner">
-                {% for book in crime %}
-                <div class="item" style="width: 185px;">
-                    <div class="card" style="width: 11rem;">
-                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                            {% if book.discount != 0 %}
-                            <div class="tag">ON SALE!</div>
-                            {% endif %}
-                            {% if book.thumbnail %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            <!--TODO: Change to real book image -->
-                            {% else %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.author }}</p>
-                                <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
-                                    cart</a>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
-        </div>
-    </div>
-</div>
-
-<!--  SCROLL  -->
-<h3 id="horror_carrousel" class="scroll-title">Horror</h3>
-<div class="container-fluid">
-    <div class="row">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel8" data-interval="1000">
-            <div class="MultiCarousel-inner">
-                {% for book in horror %}
-                <div class="item" style="width: 185px;">
-                    <div class="card" style="width: 11rem;">
-                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                            {% if book.discount != 0 %}
+    <!--  SCROLL  -->
+    <h3 id="best_seller_carrousel" class="scroll-title">Best sellers</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    {% for book in book_list %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                                <!-- Change href -->
+                                {% if book.discount != 0 %}
                                 <div class="tag">ON SALE!</div>
-                            {% endif %}
-                            {% if book.thumbnail %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            <!--TODO: Change to real book image -->
-                            {% else %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.author }}</p>
-                                <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
-                                    cart</a>
-                            </div>
-                        </a>
+                                {% endif %}
+                                {% if book.thumbnail %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                                {% else %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    {% if book.title|length > 18 %}
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title|slice:18 }}...</h5>
+                                    {% else %}
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                    {% endif %}
+                                    <p class="card-text">{{ book.author }}</p>
+                                    <p class="card-text">Preu: {{ book.price }}€</p>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                        cart</a>
+                                </div>
+                            </a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
             </div>
-            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
         </div>
     </div>
-</div>
 
-<!--  SCROLL  -->
-<h3 id="fiction_carrousel" class="scroll-title">Fiction</h3>
-<div class="container-fluid">
-    <div class="row">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel9" data-interval="1000">
-            <div class="MultiCarousel-inner">
-                {% for book in fiction %}
-                <div class="item" style="width: 185px;">
-                    <div class="card" style="width: 11rem;">
-                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                            {% if book.discount != 0 %}
+    {% if comingsoon %}
+    <h3 id="comming_carrousel" class="scroll-title">Coming soon...</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel4" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    {% for book in comingsoon %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                                <!-- Change href -->
+                                {% if book.discount != 0 %}
                                 <div class="tag">ON SALE!</div>
-                            {% endif %}
-                            {% if book.thumbnail %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            <!--TODO: Change to real book image -->
-                            {% else %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.author }}</p>
-                                <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
-                                    cart</a>
-                            </div>
-                        </a>
+                                {% endif %}
+                                {% if book.thumbnail %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                                <!--TODO: Change to real book image -->
+                                {% else %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                    <p class="card-text">{{ book.author }}</p>
+                                    <p class="card-text">Preu: {{ book.price }}€</p>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                        cart</a>
+                                </div>
+                            </a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
             </div>
-            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
         </div>
     </div>
-</div>
+    {% endif %}
 
-<!--  SCROLL  -->
-<h3 id="anime_carrousel" class="scroll-title">Anime</h3>
-<div class="container-fluid">
-    <div class="row">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel10" data-interval="1000">
-            <div class="MultiCarousel-inner">
-                {% for book in anime %}
-                <div class="item" style="width: 185px;">
-                    <div class="card" style="width: 11rem;">
-                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                            {% if book.discount != 0 %}
+    <!--  SCROLL  -->
+    {% if recent %}
+    <h3 id="recently_carrousel" class="scroll-title">Recently added</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel3" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    {% for book in recent %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                                <!-- Change href -->
+                                {% if book.discount != 0 %}
                                 <div class="tag">ON SALE!</div>
-                            {% endif %}
-                            {% if book.thumbnail %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            <!--TODO: Change to real book image -->
-                            {% else %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.author }}</p>
-                                <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
-                                    cart</a>
-                            </div>
-                        </a>
+                                {% endif %}
+                                {% if book.thumbnail %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                                {% else %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                    <p class="card-text">{{ book.author }}</p>
+                                    <p class="card-text">Preu: {{ book.price }}€</p>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                        cart</a>
+                                </div>
+                            </a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
             </div>
-            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
         </div>
     </div>
-</div>
+    {% endif %}
 
-<!--  SCROLL  -->
-<h3 id="romance_carrousel" class="scroll-title">Romance</h3>
-<div class="container-fluid">
-    <div class="row">
-        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel11" data-interval="1000">
-            <div class="MultiCarousel-inner">
-                {% for book in romance %}
-                <div class="item" style="width: 185px;">
-                    <div class="card" style="width: 11rem;">
-                        <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                            {% if book.discount != 0 %}
+    {% if promotion_books %}
+    <h3 id="on_sale_carrousel" class="scroll-title">On sale!</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel6" data-interval="1000">
+                <div class="MultiCarousel-inner" id="MultiCarouselCoincidents6">
+                    {% for obj in promotion_books %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{obj.ISBN}}" style="text-decoration: none; color: inherit;">
+                                {% if book.discount != 0 %}
                                 <div class="tag">ON SALE!</div>
-                            {% endif %}
-                            {% if book.thumbnail %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                            <!--TODO: Change to real book image -->
-                            {% else %}
-                            <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                <p class="card-text">{{ book.author }}</p>
-                                <p class="card-text">Preu: {{ book.price }}€</p>
-                                <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
-                                    cart</a>
-                            </div>
-                        </a>
+                                {% endif %}
+                                {% if obj.thumbnail %}
+                                <div class="tag">ON SALE!</div>
+                                <img class="card-img-top" src="{{ obj.thumbnail.url }}" alt="Card image cap"> <!--TODO: Change to real book image -->
+                                {% else %}
+                                <div class="tag">ON SALE!</div>
+                                <img class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title" style="padding-top:15px">{{obj.title}}</h5>
+                                    <p class="card-text">Fernando Aramburu</p>
+                                    <p class="card-text">Preu: {{obj.price}}€</p>
+                                    <a href="#" class="btn btn-danger my-2 my-sm-0">Add to cart</a>
+                                </div>
+                            </a>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
             </div>
-            <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-            <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
+        </div>
+    </div>
+    {% endif %}
+
+    <!--  SCROLL  -->
+    <h3 id="fantasy_carrousel" class="scroll-title">Fantasy</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel1" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    {% for book in fantasy %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                                {% if book.discount != 0 %}
+                                <div class="tag">ON SALE!</div>
+                                {% endif %}
+                                {% if book.thumbnail %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                                <!--TODO: Change to real book image -->
+                                {% else %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                    <p class="card-text">{{ book.author }}</p>
+                                    <p class="card-text">Preu: {{ book.price }}€</p>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                        cart</a>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!--  SCROLL  -->
+    <h3 id="crime_carrousel" class="scroll-title">Crime</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel2" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    {% for book in crime %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                                {% if book.discount != 0 %}
+                                <div class="tag">ON SALE!</div>
+                                {% endif %}
+                                {% if book.thumbnail %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                                <!--TODO: Change to real book image -->
+                                {% else %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                    <p class="card-text">{{ book.author }}</p>
+                                    <p class="card-text">Preu: {{ book.price }}€</p>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                        cart</a>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!--  SCROLL  -->
+    <h3 id="horror_carrousel" class="scroll-title">Horror</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel8" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    {% for book in horror %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                                {% if book.discount != 0 %}
+                                <div class="tag">ON SALE!</div>
+                                {% endif %}
+                                {% if book.thumbnail %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                                <!--TODO: Change to real book image -->
+                                {% else %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                    <p class="card-text">{{ book.author }}</p>
+                                    <p class="card-text">Preu: {{ book.price }}€</p>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                        cart</a>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!--  SCROLL  -->
+    <h3 id="fiction_carrousel" class="scroll-title">Fiction</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel9" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    {% for book in fiction %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                                {% if book.discount != 0 %}
+                                <div class="tag">ON SALE!</div>
+                                {% endif %}
+                                {% if book.thumbnail %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                                <!--TODO: Change to real book image -->
+                                {% else %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                    <p class="card-text">{{ book.author }}</p>
+                                    <p class="card-text">Preu: {{ book.price }}€</p>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                        cart</a>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!--  SCROLL  -->
+    <h3 id="anime_carrousel" class="scroll-title">Anime</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel10" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    {% for book in anime %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                                {% if book.discount != 0 %}
+                                <div class="tag">ON SALE!</div>
+                                {% endif %}
+                                {% if book.thumbnail %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                                <!--TODO: Change to real book image -->
+                                {% else %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                    <p class="card-text">{{ book.author }}</p>
+                                    <p class="card-text">Preu: {{ book.price }}€</p>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                        cart</a>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!--  SCROLL  -->
+    <h3 id="romance_carrousel" class="scroll-title">Romance</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel11" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    {% for book in romance %}
+                    <div class="item" style="width: 185px;">
+                        <div class="card" style="width: 11rem;">
+                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
+                                {% if book.discount != 0 %}
+                                <div class="tag">ON SALE!</div>
+                                {% endif %}
+                                {% if book.thumbnail %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
+                                <!--TODO: Change to real book image -->
+                                {% else %}
+                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
+                                    <p class="card-text">{{ book.author }}</p>
+                                    <p class="card-text">Preu: {{ book.price }}€</p>
+                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
+                                        cart</a>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
+                <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
+            </div>
         </div>
     </div>
 </div>
