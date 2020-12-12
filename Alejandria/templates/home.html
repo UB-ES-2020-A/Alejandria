@@ -45,53 +45,6 @@
 
 <div class="container">
 
-
-    <!-- SCROLL TEST -->
-    <h3 class="scroll-title">Best sellers</h3>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" data-interval="1000">
-                <div class="MultiCarousel-inner">
-                    {% for book in book_list %}
-                    <div class="item" style="width: 185px;">
-                        <div class="card" style="width: 11rem;">
-                            <a href="/book/{{ book.ISBN }}" style="text-decoration: none; color: inherit;">
-                                <!-- Change href -->
-                                {% if book.discount != 0 %}
-                                <div class="tag">ON SALE!</div>
-                                {% endif %}
-                                {% if book.thumbnail %}
-                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{{ book.thumbnail.url }}" alt="Card image cap">
-                                {% else %}
-                                <img style="width: 176px;height: 265px;" class="card-img-top" src="{% static 'no_available.jpg' %}" alt="Card image cap">
-                                {% endif %}
-                                <div class="card-body">
-                                    {% if book.title|length > 18 %}
-                                    <h5 class="card-title" style="padding-top:15px">{{ book.title|slice:18 }}...</h5>
-                                    {% else %}
-                                    <h5 class="card-title" style="padding-top:15px">{{ book.title }}</h5>
-                                    {% endif %}
-                                    <p class="card-text">{{ book.author }}</p>
-                                    <p class="card-text">Preu: {{ book.price }}€</p>
-                                    <a href="{% url 'books:add_product' 'home' book.ISBN %}" class="btn btn-danger my-2 my-sm-0">Add to
-                                        cart</a>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <button class="btn btn-primary leftLst"><i class="fas fa-chevron-left fa-7x"></i></button>
-                <div class="col-md-2" style="align:center">
-                    <!-- Button Right -->
-                    <button class="btn btn-primary rightLst"><i class="fas fa-chevron-right fa-7x"></i></button>
-                    <!-- ./Button Right -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     <!--  SCROLL  -->
     <h3 id="best_seller_carrousel" class="scroll-title">Best sellers</h3>
     <div class="container-fluid">
