@@ -1,6 +1,6 @@
 import random
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from io import BytesIO
 
 from django.views.decorators.csrf import csrf_exempt
@@ -1066,6 +1066,7 @@ def complete_purchase(request):
 
 
 def draw_my_ruler(pdf):
+    pdf.setFont('Courier', 16)
     pdf.drawString(100, 810, 'x100')
     pdf.drawString(200, 810, 'x200')
     pdf.drawString(300, 810, 'x300')
@@ -1092,20 +1093,36 @@ def generate_pdf(request):
 
         books = user_bill.books.all()
 
-        books_titles = [book.title for book in books]
+        books_price = [book.price for book in books]
 
         # Content
-        filename = 'Expenses.pdf'
-        document_title = 'Expenses'
-        title = 'Alejandria'
+        filename = 'Expenses-' + str(user.id) + str(date.today()) + '.pdf'
+        document_title = 'Expenses-' + str(user.id) + str(date.today())
+        title = 'BOOK SALE INVOICE'
         subtitle = 'Thank you for buying through our website!'
+
+        server_details_lines = [
+            'Address:  Gran Via de les Corts Catalanes, 585, 08007 Barcelona',
+            'Email: alejandria.books.2020@gmail.com',
+            'Tlf: + 01 234 567 89'
+        ]
+
+        clients_details_lines = [
+            'Name: ' + user.name + ' ' + user.last_name,
+            'Email: ' + user.email,
+            'Address: ' + user.fact_address.city + ', ' + user.fact_address.country + ', ' + user.fact_address.street,
+            'Zip: ' + str(user.fact_address.zip),
+            'Date: ' + str(user_bill.date)
+        ]
+
+        books_details_lines = [book.title + ' (' + book.ISBN + ')' for book in books]
+
 
         text_lines = [
             'Username: ' + str(User.objects.filter(id=user.id).first().username),
             'Name: ' + user_bill.name,
             'Date: ' + str(user_bill.date),
-            'Total: ' + str(user_bill.total_money_spent) + '€',
-            'Books: ' + ', '.join(books_titles)
+            'Total: ' + str(user_bill.total_money_spent) + '€'
         ]
 
         # Make your response and prep to attach
@@ -1117,29 +1134,81 @@ def generate_pdf(request):
         pdf = canvas.Canvas(tmp)
 
         # Set title
-        pdf.setFillColorRGB(0, 0, 255)
+        pdf.setFillColorRGB(0, 0, 0)
         pdf.setTitle(document_title)
+        pdf.setFont('Courier-Bold', 20)
         pdf.drawCentredString(300, 770, title)
-        pdf.setFont('Courier-Bold', 36)
-        # self.draw_my_ruler(pdf)
+        #draw_my_ruler(pdf)
 
         # Set subtitle
-        pdf.setFont('Courier', 24)
-        pdf.drawCentredString(290, 720, subtitle)
+        pdf.setFont('Courier', 12)
+        pdf.drawCentredString(300, 750, subtitle)
 
-        # Set line
-        pdf.line(30, 710, 550, 710)
+        # Set rect
+        pdf.rect(30, 690, 535, 30, fill=1)
+
+        # Set section: Alejandria
+        pdf.setFillColorRGB(255, 255, 255)
+        pdf.setFont('Courier-Bold', 14)
+        pdf.drawString(40, 700, 'ALEJANDRIA')
 
         # Set body text
-        text = pdf.beginText(40, 680)
-        text.setFont('Courier', 18)
-        # pdf.setFillColor(colors.red)
-        for line in text_lines:
+        text = pdf.beginText(40, 670)
+        text.setFont('Helvetica', 12)
+        pdf.setFillColorRGB(0, 0, 0)
+        for line in server_details_lines:
             text.textLine(line)
         pdf.drawText(text)
 
-        # Draw image
-        # pdf.drawInlineImage(image, 130, 400)
+        # Set rect
+        pdf.rect(30, 590, 535, 30, fill=1)
+
+        # Set section: Client
+        pdf.setFillColorRGB(255, 255, 255)
+        pdf.setFont('Courier-Bold', 14)
+        pdf.drawString(40, 600, 'CLIENT DETAILS')
+
+        # Set body text
+        text = pdf.beginText(40, 570)
+        text.setFont('Helvetica', 12)
+        pdf.setFillColorRGB(0, 0, 0)
+        for line in clients_details_lines:
+            text.textLine(line)
+        pdf.drawText(text)
+
+        # Set rect
+        pdf.rect(30, 466, 535, 30, fill=1)
+
+        # Set section: Books
+        pdf.setFillColorRGB(255, 255, 255)
+        pdf.setFont('Courier-Bold', 14)
+        pdf.drawString(40, 476, 'BOOKS')
+
+        # Set body text
+        text = pdf.beginText(40, 446)
+        text.setFont('Helvetica', 12)
+        pdf.setFillColorRGB(0, 0, 0)
+        for line in books_details_lines:
+            text.textLine(line)
+        pdf.drawText(text)
+
+        # Set body text
+        text = pdf.beginText(520, 446)
+        text.setFont('Helvetica', 12)
+        pdf.setFillColorRGB(0, 0, 0)
+        for line in books_price:
+            text.textLine(str(line) + ' €')
+        pdf.drawText(text)
+
+        # Set Line
+        pdf.line(40, 446 - 12*len(books_price) - 5, 560, 446 - 12*len(books_price) - 5)
+
+        # Write Total
+        pdf.drawString(40, 446 - 12*len(books_price) - 20, 'Total')
+        pdf.drawString(520, 446 - 12*len(books_price) - 20, str(user_bill.total_money_spent) + ' €')
+
+        # Write Copyright
+        pdf.drawCentredString(330, 50, '© 2020 Copyright: Alejandria.com')
 
         # Save changes
         pdf.showPage()
@@ -1295,6 +1364,7 @@ def modifyfaq(request):
         else:
             return HttpResponseForbidden('You have to be an admin to do that')
     return response
+
 
 def deletefaq(request):
     the_user = request.user
