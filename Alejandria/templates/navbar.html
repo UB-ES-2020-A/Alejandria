@@ -38,10 +38,10 @@
 
     <!-- Css files from static folder -->
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
-
     <link rel="stylesheet" href="{% static 'css/common.css' %}">
     <link rel="stylesheet" href="{% static 'css/swal-forms.css' %}">
     <link rel="stylesheet" href="{% static 'css/sweet-alert.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar-page/footer.css' %}">
   
     <!-- JavaScript static -->
     <script type="text/javascript" src="{% static 'js/sweet-alert.js' %}"></script>
@@ -105,31 +105,48 @@
         <!-- <a href="/" class="buttonText2" >Home</a> -->
         <button class="buttonText2" id="home_btn" type="submit">Home</button>
         <div style="margin-left:1%"></div>
-        <a href="#" class="buttonText2">eBooks</a>
+        <a href="#" id="best_sellers_button" class="buttonText2">Best sellers</a>
         <div style="margin-left:1%"></div>
-        <a href="#" class="buttonText2">Best sellers</a>
+        <a href="#" id="recommended_button" class="buttonText2">Recommended</a>
         <div style="margin-left:1%"></div>
-        <a href="#" class="buttonText2">Recommended</a>
+        <a href="#" id="recently_button" class="buttonText2">Recently added</a>
+        <div style="margin-left:1%"></div>
+        <a href="#" id="comming_button" class="buttonText2">Comming soon</a>
+        <div style="margin-left:1%"></div>
+        <a href="#" id="on_sale_button" class="buttonText2">On sale</a>
         <div style="margin-left:1%"></div>
 
         <div class="dropdown">
             <button class="buttonText2 dropdown-toggle" type="button"
                     style="color:white; font-size: 14px; letter-spacing: 0.1em;"
                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                More
+                Top categorie
             </button>
             <div class="dropdown-menu bg-danger" aria-labelledby="dropdownMenuButton" style="align-text:center">
-                <a class="buttonText2 dropdown-item bg-danger"
-                   style="color:white; font-size: 14px; letter-spacing: 0.1em;"
-                   href="#">Help</a>
+                <a id="crime_button" class="buttonText2 dropdown-item bg-danger"
+                   style="color: white; width: 100%; text-align: center;"
+                   href="#">Crime</a>
                 <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
-                <a class="buttonText2 dropdown-item bg-danger"
-                   style="color:white; font-size: 14px; letter-spacing: 0.1em;"
-                   href="#">Blog</a>
+                <a id="fantasy_button" class="buttonText2 dropdown-item bg-danger"
+                   style="color: white; width: 100%; text-align: center;"
+                   href="#">Fantasy</a>
                 <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
-                <a class="buttonText2 dropdown-item bg-danger"
-                   style="color:white; font-size: 14px; letter-spacing: 0.1em;"
-                   href="/faqs/">FAQs</a>
+                <a id="horror_button" class="buttonText2 dropdown-item bg-danger"
+                   style="color: white; width: 100%; text-align: center;"
+                   href="#">Horror</a>
+                <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+                <a id="fiction_button" class="buttonText2 dropdown-item bg-danger"
+                  style="color: white; width: 100%; text-align: center;"
+                   href="#">Fiction</a>
+                <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+                <a id="romance_button" class="buttonText2 dropdown-item bg-danger"
+                   style="color: white; width: 100%; text-align: center;"
+                   href="#">Romance</a>
+                <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+                <a id="anime_button" class="buttonText2 dropdown-item bg-danger"
+                   style="color: white; width: 100%; text-align: center;"
+                   href="#">Anime</a>
+                <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
                 </div>
             </div>
         </div>
@@ -142,25 +159,39 @@
 
 </body>
 
-
-
 {% block content %}
-
-
 
 {% endblock %}
 
-<div class="row horizontal-nav" style="margin:0px;">
-    <div class="col" style="margin-left: 5%;">
-        <a href="#"><img src="/static/images/logo/logo.png"></a>
-    </div>
-    <div class="col-md-3">
-        <div class="share-button">
-            <span class="text">SHARE US</span>
-            <a href="#"><i class="fab fa-facebook-f share-item"></i></a>
-            <a href="#"><i class="fab fa-twitter share-item"></i></a>
-            <a href="#"><i class="fab fa-instagram share-item"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in share-item"></i></a>
+<!-- FOOTER -->
+<div class="footer-container">
+    <div class="row" style="margin-left:2%; margin-right: 2%;">
+        <div class="col-4 text-center">
+            <a href="/"><img src="/static/images/logo/logo.png" style="width:45%"></a>
+            <p class="description">Our company specializes in the sale of digital books. We try to give recognition to artists around the world so that they can publish their books on the internet without the need to do it physically. Our purpose is to provide the best service to both creators and publishers, as well as to the users who read these books.</p>
         </div>
+        <div class="col-4 text-center">
+            <p class="title-foot">Social Networks</p>
+            <div class="template-demo" style="display: flex; justify-content: center; align-items: center; height: 50%;">
+                <button type="button" class="btn btn-social-icon btn-outline-facebook"><i class="fa fa-facebook"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-youtube"><i class="fa fa-youtube"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-twitter"><i class="fa fa-twitter"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-linkedin"><i class="fa fa-linkedin"></i></button>
+                <button type="button" class="btn btn-social-icon btn-outline-instagram"><i class="fa fa-instagram"></i></button>
+            </div>
+        </div>
+        <div class="col text-center">
+            <p class="title-foot">Contact Us</p>
+            <p style="color: white; font-size: 14px; margin-top: 2%;"><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;Gran Via de les Corts Catalanes, 585, 08007 Barcelona</p>
+            <p style="color: white; font-size: 14px;"><i class="fas fa-phone"></i>&nbsp;&nbsp;+ 01 234 567 89</p>
+            <p style="color: white; font-size: 14px;"><i class="fas fa-envelope"></i>&nbsp;&nbsp;alejandria.books.2020@gmail.com</p>
+        </div>
+
     </div>
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3" style="color:white">© 2020 Copyright:
+        <a href="/" style="color:white"> Alejandria.com</a>
+    </div>
+    <!-- Copyright -->
 </div>
+<!-- ./FOOTER -->
