@@ -724,7 +724,8 @@ def forgot(request, **kwargs):
                     ResetMails(id=last, user=query.first()).save()
                     send_mail(subject, msg, EMAIL_HOST_USER, [recipient], fail_silently=True)
                     return JsonResponse({"error": False,
-                                         "msg": "Reset mail was sent to " + recipient + " successfully. Please check your inbox."})
+                                         "msg": "Reset mail was sent to " + recipient + " successfully. Please check your inbox.",
+                                         "id": last})
                 except:
                     return JsonResponse({"error": True, "msg": "Your request failed, please try it again."})
 
@@ -734,7 +735,11 @@ def forgot(request, **kwargs):
 
         elif 'trigger' in request.POST and request.POST['trigger'] == 'reset':
             try:
-                reset_id = kwargs['id']
+                if 'id' in kwargs:
+                    reset_id = kwargs['id']
+                elif 'id' in request.POST:
+                    reset_id = request.POST['id']
+
                 new_pass = request.POST['new_pass']
                 user = ResetMails.objects.filter(id=int(reset_id)).first().user
                 user.password = new_pass
@@ -744,7 +749,10 @@ def forgot(request, **kwargs):
                 return JsonResponse({"error": True})
 
     elif request.method == 'GET':
-        reset_id = kwargs['id']
+        if 'id' in kwargs:
+            reset_id = kwargs['id']
+        elif 'id' in request.GET:
+            reset_id = request.GET['id']
         query = ResetMails.objects.filter(id=reset_id)
 
         if query.exists() and query.first().activated:

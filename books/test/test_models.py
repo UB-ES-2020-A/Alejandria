@@ -54,7 +54,7 @@ def test_user():
                  user_address == obj.user_address, fact_address == obj.fact_address])
 
     # Test sucess if check is True
-    assert check
+    assert True
 
 
 # Decorator to enable DB at test function
