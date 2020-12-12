@@ -206,6 +206,10 @@ class HomeView(generic.ListView):
         context['comingsoon'] = Book.objects.filter(publication_date__range=[today, next_day])[:20]
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")[:20]
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")[:20]
+        context['anime'] = Book.objects.filter(primary_genre__contains="ANIM")[:20]
+        context['fiction'] = Book.objects.filter(primary_genre__contains="FICT")[:20]
+        context['romance'] = Book.objects.filter(primary_genre__contains="ROMA")[:20]
+        context['horror'] = Book.objects.filter(primary_genre__contains="HORR")[:20]
 
         promotions_books = Book.objects.filter(~Q(discount=0))
         context['promotion_books'] = promotions_books[:20]
