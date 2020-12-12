@@ -1,13 +1,14 @@
 import random as rand
 import os
+import unittest
+from django.test import Client
 from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 from django.test import RequestFactory
 from books.models import User, Address, Cart, Book, Guest, BankAccount, Bill
 from books.test.test_register import random_char
-from books.views import delete_product, add_product, complete_purchase
-
+from books.views import delete_product, add_product, complete_purchase, generate_pdf, PaymentView
 
 def get_or_create_user():
     user_query = User.objects.filter(id=1000)
@@ -25,14 +26,7 @@ def get_or_create_user():
         user = user_query.first()
     return user
 
-
-def generate_id():
-    temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-    list_id = [str(rand.randint(0, 16)) if character == 'x' else character for character in temp]
-    id = "".join(list_id)
-    return id
-
-
+  
 def get_or_create_guest():
     device = '123456789'
     guest_query = Guest.objects.filter(device=device)
@@ -189,5 +183,20 @@ def test_complete_purchase():
     cart = Cart.objects.get(user_id=user.id)
     complete_purchase(request=req)
     bill = Bill.objects.filter(user_id=user).last()
+
+    req2 = RequestFactory().post("/pdf/")
+    req2.user = user
+    generate_pdf(req2)
     user_bank_account = get_or_create_user_bank_account(user)
     assert cart.books.count() == 0 and user_bank_account.cvv == 111 and bill.total_money_spent == total_price
+
+
+class SimpleTest(unittest.TestCase):
+    def test_context(self):
+        factory = RequestFactory()
+        request = factory.get('/payment')
+        request.user = get_or_create_user()
+        response = PaymentView.as_view()(request)
+        self.assertIsInstance(response.context_data, dict)
+        self.assertEqual(response.context_data['total_items'], 0)
+

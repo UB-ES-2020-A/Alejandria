@@ -16,9 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-
-from .view import home, search, showDetails, cart
-
 from . import view
 urlpatterns = [
     # path('admin/', admin.site.urls),
