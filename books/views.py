@@ -211,6 +211,26 @@ class HomeView(generic.ListView):
         context['romance'] = Book.objects.filter(primary_genre__contains="ROMA")[:20]
         context['horror'] = Book.objects.filter(primary_genre__contains="HORR")[:20]
 
+        the_user = self.request.user
+        if not 'AnonymousUser' in str(the_user):
+            properties = BookProperties.objects.filter(user = the_user)
+            print(properties)
+            recently_readed = [prop.book for prop in properties if prop.readed][:10]
+            print("reacently readed: ", recently_readed)
+            readed_sagas = list(set([book.saga for book in recently_readed]))
+            readed_genres = list(set([book.primary_genre for book in recently_readed] +  [book.secondary_genre for book in recently_readed] ))
+            
+            recommended_books = Book.objects.filter(
+                (Q(saga__in=readed_sagas)
+                 | Q(primary_genre__in=readed_genres))
+                 | Q(secondary_genre__in=readed_genres)
+                )
+
+            recommended_books_list = [book for book in recommended_books if book not in recently_readed]
+            print("Recommended:", recommended_books_list)
+            recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
+            context['recommended'] = recommended_books_list
+
         promotions_books = Book.objects.filter(~Q(discount=0))
         context['promotion_books'] = promotions_books[:20]
 
