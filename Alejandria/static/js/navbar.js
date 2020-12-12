@@ -297,6 +297,10 @@ $(document).ready(function () {
         window.location.href = "/faqs/";
     });
 
+    $("#about_btn").click(function () {
+        window.location.href = "/about/";
+    });
+
     $("#register_btn").click(function () {
         Swal.mixin({
             title: "Sign In",

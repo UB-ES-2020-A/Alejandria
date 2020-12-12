@@ -1347,3 +1347,6 @@ class DesiredLibrary(generic.ListView): #PermissionRequiredMixin
 
         return context
 
+
+def about_us(request):
+    return render(request, "about_us.html")
