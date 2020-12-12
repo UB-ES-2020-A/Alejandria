@@ -306,10 +306,10 @@ class SearchView(generic.ListView):
         return context
 
 
-class SellView(generic.ListView):#SellView(PermissionRequiredMixin, generic.ListView):
+class SellView(PermissionRequiredMixin, generic.ListView):
     model = Book
     template_name = 'sell.html'
-    #permission_required = ('books.add_book',)
+    permission_required = ('books.add_book',)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
