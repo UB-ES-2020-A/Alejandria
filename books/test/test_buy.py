@@ -1,5 +1,6 @@
 import random as rand
 import os
+import string
 import unittest
 
 from django.contrib.sessions.middleware import SessionMiddleware
@@ -9,8 +10,13 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 from django.test import RequestFactory
 from books.models import User, Address, Cart, Book, Guest, BankAccount, Bill
-from books.test.test_register import random_char
+import random
 from books.views import delete_product, add_product, complete_purchase, generate_pdf, PaymentView
+
+
+
+def random_char(y):
+    return ''.join(random.choice(string.ascii_letters) for x in range(y))
 
 
 def get_or_create_user():
@@ -29,7 +35,7 @@ def get_or_create_user():
         user = user_query.first()
     return user
 
-
+  
 def get_or_create_guest():
     device = '123456789'
     guest_query = Guest.objects.filter(device=device)
@@ -191,6 +197,7 @@ def test_complete_purchase():
     cart = Cart.objects.get(user_id=user.id)
     complete_purchase(request=req)
     bill = Bill.objects.filter(user_id=user).last()
+
     req2 = RequestFactory().post("/pdf/")
     req2.user = user
     generate_pdf(req2)

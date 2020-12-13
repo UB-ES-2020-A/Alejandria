@@ -1,7 +1,9 @@
 import os
-from random import random
+import random
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 
 from django.core.wsgi import get_wsgi_application
+app = get_wsgi_application()
 from django.urls import reverse
 
 # Build up
@@ -9,19 +11,26 @@ from django.test import TestCase, Client, RequestFactory
 
 from books import views
 # from books.views import BookView
-from books.models import Guest, Book, User, Address
-from books.views import BookView, SearchView
+from books.models import Guest, Book, User, Address, Cart
+from books.views import BookView, SearchView, SellView
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
-app = get_wsgi_application()
 
-def create_user():
+
+
+def create_user(random_user=False):
     """ Test if creation of Users has any error, creating or storing the information"""
     # Data to test
-    _id = 30
+    if random_user:
+        _id = random.randint(0, 654891898)
+    else:
+        _id = 1
     role = 'Admin'
     name = 'Josep'
-    username = 'Test User'
+    if random_user:
+        username = str(random.randint(0, 5156123423456015412))[:12]
+    else:
+        username = 'user'
+
     password = 'password1'
     email = 'fakemail@gmail.com'
     user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
@@ -39,9 +48,10 @@ def create_user():
                fact_address=fact_address)
     obj.save()
 
+    cart = Cart(user_id=obj)
+    cart.save()
+
     return obj
-
-
 
 def get_or_create_guest():
     device = '123456789'
@@ -53,11 +63,10 @@ def get_or_create_guest():
         guest = guest_query.first()
     return guest
 
-
-
 def create_book():
     """ Tests Book model, creation and the correct storage of the information"""
-    isbn = '121651'#str(random.randint(0, 5156123423456015412))[:12]
+
+    isbn = str(random.randint(0, 5156123423456015412))[:12]
     user = create_user()
     title = 'THis is the TITLE'
     description = 'This is the description of a test book'
@@ -84,67 +93,53 @@ def create_book():
                num_sold=num_sold,
                recommended_age=recommended_age)
     obj.save()
-    return obj.ISBN
-
-
-# class FaqsViewTest(TestCase):
-#     def test_environment_set_in_context(self):
-#         #request = RequestFactory().get('/book/01456789012/')
-#         #request = RequestFactory().get('book/01456789012',)
-#         client = Client()
-#         request = client.get(reverse('books:faqs'))
-#
-#         print(request.context)
-#         print(request.content)
+    return obj
 
 
 
 
-# class BookViewTest(TestCase):
-#     def test_environment_set_in_context(self):
-#         #request = RequestFactory().get('/book/01456789012/')
-#         #request = RequestFactory().get('book/01456789012',)
-#         guest = get_or_create_guest()
-#         isbn = create_book()
-#         # req = RequestFactory().post("/register/")
-#         # req.COOKIES['device'] = guest.device
-#
-#
-#
-#         client = Client()
-#         request = client.get(reverse('books:book', kwargs={'pk': isbn}))
+class BookViewTest(TestCase):
+    def test_get_book(self):
 
+        previously_added_book = create_book()
+
+        # request = client.get(reverse('books:book', kwargs={'pk': previously_added_book.ISBN}))
+        request = RequestFactory().get('/book/', kwargs={'pk': previously_added_book.ISBN})
+        request.user = create_user(random_user=True)
+        response = BookView.as_view()(request, pk=previously_added_book.ISBN)
+
+        # request.render()
         # request.COOKIES['device'] = guest.device
+        print(type(response))
+        print(response.context_data)
 
-        # book = request.context.get('book')
+        book_obteined = response.context_data.get('book')
 
-        # view = BookView()
-        # view.setup(request)
+        return self.assertEqual(book_obteined, previously_added_book)
 
-        # context = view.get_context_data()
-        # self.assertIn('environment', context)
+    def test_post_book(self):
 
-# class SearchViewTest(TestCase):
-#     def test_environment_set_in_context(self):
-#         #request = RequestFactory().get('/book/01456789012/')
-#         #request = RequestFactory().get('book/01456789012',)
-#
-#         guest = get_or_create_guest()
-#
-#         req = RequestFactory().post("/register/", body)
-#         req.COOKIES['device'] = guest.device
-#
-#
-#
-#
-#         client = Client()
-#         request = client.get(reverse('books:search'))
-#
-#         print(request)
-        # view = SearchView()
-        # view.setup(request)
+        user = create_user(random_user=True)
+        previously_added_book = create_book()
+
+        book_properties = {
+            "readed": ['on'],
+        }
+
+        request = RequestFactory().post('/book/' + previously_added_book.ISBN, book_properties)
+        request.user = user
+        BookView.as_view()(request, kwargs=previously_added_book.ISBN)
+
+        request_get = RequestFactory().get('/book/', kwargs={'pk': previously_added_book.ISBN})
+        request_get.user = user
+        response = BookView.as_view()(request_get, pk=previously_added_book.ISBN)
 
 
-        #
-        # context = view.get_context_data()
-        # self.assertIn('environment', context)
+        form = response.context_data.get('form')
+        desired = form.desired
+        readed = form.readed
+
+        assert not desired and readed
+
+
+
