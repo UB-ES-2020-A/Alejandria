@@ -824,10 +824,10 @@ class PaymentView(generic.ListView):
         self.year = None
         self.month = None
         self.cvv = None
+        self.gifts = []
 
     def get_queryset(self):
         self.user_id = self.request.user.id
-        print(self.request.GET)
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
             if cart:
@@ -844,7 +844,7 @@ class PaymentView(generic.ListView):
             for book in books:
                 total_price += book.price
             context['total_price'] = total_price
-            context['total_items'] = len(cart.books.all())
+            context['total_items'] = len(books)
             if user_bank_account is not None:
                 context['card_owner'] = self.username
                 context['card_number'] = self.card_number
@@ -855,6 +855,14 @@ class PaymentView(generic.ListView):
             context['total_items'] = 0
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        for a in request.POST:
+            self.gifts.append((a, request.POST[a]))
+
+        request.session['gifts'] = self.gifts
+        print(request.session['gifts'])
+        return JsonResponse({'message': 'ok'})
 
 
 class EditorLibrary(PermissionRequiredMixin, generic.ListView):
@@ -1025,7 +1033,6 @@ def complete_purchase(request):
             coupon = Cupon.objects.filter(code=request.POST.get('code'+str(i))).first()
             if coupon:
                 coupons.append(coupon)
-            print(request.POST.get('code'+str(i)))
 
         for book in books:
             total += book.price
@@ -1063,24 +1070,23 @@ def complete_purchase(request):
 
                 bill = Bill(user_id_id=user)
                 bill.save()
-                lib_of_bills, created = LibraryBills.objects.get_or_create(user_id=request.user)
                 setattr(bill, 'total_money_spent', total)
                 setattr(bill, 'payment_method', 'Credit card')
                 setattr(bill, 'name', user_bank_account.name)
+                gifted_books = []
+                if 'gifts' in request.session:
+                    gifted_books = [gift[0] for gift in request.session['gifts']]
                 for book in books:
-                    book.num_sold += 1
-                    book.save()
-                    bill.books.add(book)
+                    if book.ISBN not in gifted_books:
+                        print(book.ISBN)
+                        print("lol")
+                        book.num_sold += 1
+                        book.save()
+                        bill.books.add(book)
                 bill.save()
+                lib_of_bills, created = LibraryBills.objects.get_or_create(user_id=request.user)
                 lib_of_bills.bills.add(bill)
                 lib_of_bills.save()
-                cart.books.clear()
-                cart.save()
-
-                # Add fail_silently=True when testing
-                messages.success(request,
-                                 "Your payment has been processed successfully. Please check your email for "
-                                 "payment details, you can also download the bill.", fail_silently=True)
 
                 subject = 'Alejandria, Thank you for buying through our website'
                 msg = 'Dear ' + request.user.username + ",\nThank you for buying through our website. \nHere you" \
@@ -1091,6 +1097,39 @@ def complete_purchase(request):
                                                         " Total: " + str(total) + "€" + "\n\nAlejandria Team."
 
                 send_mail(subject, msg, EMAIL_HOST_USER, [request.user.email], fail_silently=True)
+
+                for i in range(len(gifted_books)):
+                    print("Gifting book...")
+                    gifted_user = User.objects.filter(username=request.session['gifts'][i][1]).first()
+                    book = Book.objects.filter(ISBN=request.session['gifts'][i][0]).first()
+                    new_bill = Bill(user_id_id=gifted_user.id)
+                    new_bill.save()
+                    book.num_sold += 1
+                    book.save()
+                    new_bill.books.add(book)
+                    new_bill.save()
+                    lib_of_bills, created = LibraryBills.objects.get_or_create(user_id=gifted_user)
+                    lib_of_bills.bills.add(bill)
+                    lib_of_bills.save()
+                    subject = 'Alejandria, Thank you for buying through our website'
+                    msg = 'Dear ' + gifted_user.username + ",\nCongratulations, you got gifted a book by " + \
+                                                            request.user.username + " you for buying through our website. \nHere you" \
+                                                            " will find a copy with the details of your gift." \
+                                                            "\nRemember that you can also find all your bills in your " \
+                                                            "profile on our website. " \
+                                                            "\n\n Name: " + new_bill.name + "\n Date: " + str(
+                        bill.date) + "\n" \
+                                     " Total: " + str(total) + "€" + "\n\nAlejandria Team."
+
+                    send_mail(subject, msg, EMAIL_HOST_USER, [gifted_user.email], fail_silently=True)
+
+                cart.books.clear()
+                cart.save()
+
+                # Add fail_silently=True when testing
+                messages.success(request,
+                                 "Your payment has been processed successfully. Please check your email for "
+                                 "payment details, you can also download the bill.", fail_silently=True)
 
                 return HttpResponseRedirect('/')
         else:
@@ -1301,7 +1340,7 @@ class UserBills(generic.ListView): #PermissionRequiredMixin
         print(user_bills.bills.all())
 
         return context
-      
+
 
 def check_promo_code(request, **kwargs):
     if request.method == 'GET':
@@ -1432,6 +1471,22 @@ class DesiredLibrary(generic.ListView): #PermissionRequiredMixin
 
         return context
 
+
+def checkUsernameGift(request, **kwargs):
+    if request.method == 'GET':
+        user = User.objects.filter(username=kwargs['username']).first()
+        book = Book.objects.filter(ISBN=request.GET['isbn']).first()
+        owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=user)).filter(ISBN=book.ISBN)
+        if user:
+            if user == request.user:
+                return JsonResponse({'error': "You can't gift a book to yourself."}, status=403)
+
+            if owned:
+                return JsonResponse({'error': 'The user already owns the book.'}, status=404)
+
+            return JsonResponse({'message': 'The user is eligible to receive this gift.'})
+
+        return JsonResponse({'error': "The user doesn't exist."}, status=404)
 
 def about_us(request):
     return render(request, "about_us.html")

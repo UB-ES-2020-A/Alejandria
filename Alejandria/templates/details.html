@@ -371,6 +371,7 @@
         formData.append('score', rating);
         formData.append('modifying', "true");
         formData.append('csrfmiddlewaretoken', csrf);
+        console.log(formData);
 
         $.ajax({
             url: post_url,
