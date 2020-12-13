@@ -65,8 +65,8 @@
 
     <div class="collapse navbar-collapse" style="position: absolute; right: 5%;">
         <div style="margin-left:-10%"></div>
-        <button class="buttonText" type="submit">About</button>
-        <button class="buttonText" type="submit">Help</button>
+        <button class="buttonText" type="submit" id="about_btn" >About</button>
+        <button class="buttonText" type="submit">Help</button> <!-- TODO: This should be removed -->
         <button class="buttonText" id="faqs_btn" type="submit">FAQs</button>
         <div style="margin-left:10%"></div>
         {% if not user.is_authenticated %}

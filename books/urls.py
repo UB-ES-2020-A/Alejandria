@@ -39,5 +39,6 @@ urlpatterns = [
     path('avatar/', views.post_avatar, name="avatar"),
     path('promocode/<code>', views.check_promo_code, name='check_promo_code'),
     path('checkUsernameGift/<username>', views.checkUsernameGift, name='check_username_gift'),
+    path('about/', views.about_us, name='about_us')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
