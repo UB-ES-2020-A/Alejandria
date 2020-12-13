@@ -397,6 +397,8 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             return render(request, "edit_book.html", context)
 
         else:
+            print(self.kwargs)
+            print(request)
             if request.method == 'POST':
                 # get the instance to modify
                 s = get_object_or_404(Book, pk=self.kwargs['pk'])
@@ -405,11 +407,14 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
                     book = form.save(commit=False)
                     # intern field (not shown to user)
                     book.user_id = request.user
-                    messages.info(request, 'Your book has been updated successfully!')
+
+                    if not 'testing' in self.kwargs:
+                        messages.info(request, 'Your book has been updated successfully!')
                     book.save()
                     return HttpResponseRedirect('/editor')
                 else:
-                    messages.info(request, 'Oops.. something is wrong')
+                    if not 'testing' in self.kwargs:
+                        messages.info(request, 'Oops.. something is wrong')
                     book = get_object_or_404(Book, pk=self.kwargs['pk'])
                     context = {}
                     context['form'] = form
