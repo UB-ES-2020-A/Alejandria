@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseForbidden, HttpResponse, HttpResponseNotFound
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
@@ -543,7 +543,7 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
-        if 'AnonymousUser' == str(the_user):
+        if 'AnonymousUser' in str(the_user):
             context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
@@ -552,11 +552,6 @@ class FaqsView(generic.ListView):
         context['total_items'] = len(cart.books.all())
 
         return context
-
-    # TODO: In next iterations has to have the option to make POSTs by the admin.
-    def post(self):
-        pass
-
 
 class AddView(generic.ListView):
     model = Book
@@ -1324,7 +1319,7 @@ def deletefaq(request):
                 except:
                     return HttpResponseForbidden('Something went wrong')
             else:
-                return HttpResponseForbidden('This FAQ does not exist')
+                return HttpResponseNotFound('This FAQ does not exist')
         else:
             return HttpResponseForbidden('You have to be an admin to do that')
     return response
