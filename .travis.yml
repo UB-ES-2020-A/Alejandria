@@ -1,13 +1,13 @@
-addons:
-  postgresql: '9.4'
+services:
+  - postgresql
 before_script:
 - psql -c 'create database travis_ci_test;' -U postgres
 - python manage.py makemigrations
 - python manage.py migrate
 - pylint Alejandria books *.py --errors-only
-cache: pip
 env:
 - DATABASE_URL=postgres://postgres:postgres@localhost:5432/travis_ci_test
+cache: pip
 install:
 - pip install -r requirements.txt
 language: python
