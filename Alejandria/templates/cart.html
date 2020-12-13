@@ -67,9 +67,10 @@
                                 </div>
                             </span>
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input">
-                                <label class="custom-control-label" style="color:white">This is a
+                                <input id="gift-checkbox-{{ book.ISBN }}" type="checkbox" class="custom-control-input" onclick="introduceUsername({{ book.ISBN }})">
+                                <label for="gift-checkbox-{{ book.ISBN }}" class="custom-control-label" style="color:white">This is a
                                     gift</label>
+                                <div id="gift-{{ book.ISBN }}-div" style="margin-top:20px; display:flex; flex-direction:column;"></div>
                             </div>
                             <hr>
                             <p class="reviews"><a href="/book/{{ book.ISBN }}" style="color:white">Reviews <span class="badge badge-light"
@@ -269,13 +270,7 @@
                     </div>
                 </div>
 
-                <div class="custom-control custom-checkbox" style="margin-left:4%; margin-bottom: 3%">
-                    <input type="checkbox" class="custom-control-input" id="gift_checkbox_subtotal">
-                    <label class="custom-control-label" for="gift_checkbox_subtotal" style="color:white">This order
-                        contains a
-                        gift</label>
-                </div>
-
+                <form id="proceed-checkout-form">
                 <div style="text-align: center; margin-bottom:2%">
                     {% if user.is_authenticated %}
                     <button class="btn btn-success my-2 my-sm-0"
@@ -293,6 +288,7 @@
                     </button>
                     {% endif %}
                 </div>
+                </form>
             </div>
             <!-- ./Total Payment -->
 
@@ -367,8 +363,105 @@
 <script src="/static/js/cart-page/operateBooks.js"></script>
 <script src="/static/js/cart-page/stars.js"></script>
 <script src="/static/js/cart-page/info-book.js"></script>
-<script src="/static/js/cart-page/navigation.js"></script>
 <script src="/static/js/cart-page/register.js"></script>
+<script>
+    var gifts = {};
+    function introduceUsername(isbn){
+        var div = document.getElementById("gift-" + isbn + "-div");
+        var checkbox = document.getElementById("gift-checkbox-" + isbn);
+        if (checkbox.checked){
+            div.innerHTML = "<label id=\"gift-" + isbn + "-label\" style=\"color:white\"> Introduce the user you want to gift this to (must check to apply)</label>\n" +
+                            "<div style=\"display:flex; flex-direction:row\">" +
+                            "   <input type=\"text\" id=\"gift-" + isbn + "-username-input\" placeholder=\"Username\">" +
+                            "   <button onclick=\"checkUsername(" + isbn + ")\" style=\"margin-left: 20px;\" class=\"btn btn-success my-2 my-sm-0\" type=\"submit\">Check username</button>" +
+                            "</div>";
+            document.getElementById("btn_checkout").disabled = true;
+        }else{
+            div.innerHTML = "";
+            if(gifts[isbn]) {
+                delete gifts[isbn];
+            }
+            document.getElementById("btn_checkout").disabled = false;
+        }
+    }
+
+    function checkUsername(isbn){
+        document.getElementById("btn_checkout").disabled = true;
+        var url = "../checkUsernameGift/" + document.getElementById("gift-" + isbn + "-username-input").value + "?isbn=" + isbn;
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: null,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                alert(response.message);
+                document.getElementById("btn_checkout").disabled = false;
+                gifts[isbn] = document.getElementById("gift-" + isbn + "-username-input").value;
+            },
+            error: function (response) {
+                if(gifts[isbn]){
+                    delete gifts[isbn];
+                }
+                alert(response.responseJSON.error);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+
+        $.ajaxSetup({
+          headers: { "X-CSRFToken": '{{csrf_token}}' }
+        });
+
+        $("#btn_purchase").click(function () {
+            var url = "../payment/";
+            var form = $('#proceed-checkout-form')[0];
+            var postData = new FormData(form);
+            for (let i in gifts){
+                postData.append(i, gifts[i]);
+            }
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: postData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    window.location.replace(url);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        });
+
+        $("#btn_checkout").click(function () {
+            var url = "../payment/";
+            var form = $('#proceed-checkout-form')[0];
+            var postData = new FormData(form);
+            for (let i in gifts){
+                postData.append(i, gifts[i]);
+            }
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: postData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    window.location.replace(url);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        });
+
+    });
+</script>
 <!-- ./JavaScript files from static folder -->
 
 </body>

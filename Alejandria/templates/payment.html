@@ -76,6 +76,11 @@
                                                         <div id="price-book-{{ book.ISBN }}" class="col-2" style="text-align:right">{{ book.price }} €
                                                         </div>
                                                     </div>
+                                                {% for gift in request.session.gifts %}
+                                                            {% if gift.0 == book.ISBN %}
+                                                            <div style="font-size: 12px;" id="gifted-to-{{ book.ISBN }}">Gift to {{ gift.1 }}</div>
+                                                            {% endif %}
+                                                        {% endfor %}
                                                 </div>
                                                 {% endfor %}
 
@@ -368,6 +373,11 @@
     <!-- script src="/static/js/payment-page/showproducts.js"></script -->
     <script src="/static/js/payment-page/modal.js"></script>
     <script>
+        $(document).ready(function () {
+            console.log({{ request.session.gifts }})
+            console.log({{ request.session.gifts.0.0 }});
+            console.log("{{ request.session.gifts.0.1 }}");
+        });
         var redeemedCodes = 0;
         function check_promo_code() {
             var code = document.getElementById("promo-code-input").value
