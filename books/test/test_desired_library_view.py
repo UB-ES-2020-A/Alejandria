@@ -1,9 +1,9 @@
 import random
-from books.models import Guest, Book, User, Address
+from books.models import Guest, Book, User, Address, BookProperties
 from django.test import TestCase, Client, RequestFactory
 
-from books.views import BookView, EditorLibrary
-from django.contrib.auth.models import Group, Permission
+from books.views import BookView, EditorLibrary, DesiredLibrary
+
 
 def create_user(random_user=False):
     """ Test if creation of Users has any error, creating or storing the information"""
@@ -34,11 +34,6 @@ def create_user(random_user=False):
                email=email,
                user_address=user_address,
                fact_address=fact_address)
-    obj.save()
-    group = Group.objects.get(name='editor')  # create?
-    perm = Permission.objects.get(codename='add_book')
-    group.permissions.add(perm)
-    obj.groups.add(group)
     obj.save()
 
     return obj
@@ -86,28 +81,31 @@ def create_book():
     return obj
 
 
-class EditorLibraryViewTest(TestCase):
-    def test_get_editor_library(self):
+class DesiredLibraryViewTest(TestCase):
+    def test_desired_library(self):
 
         previously_added_book = create_book()
         user = previously_added_book.user_id
 
-        request = RequestFactory().get('/editor/')
+        book_properties = BookProperties(book=previously_added_book,user=user,desired=True,readed=True)
+        book_properties.save()
+
+        request = RequestFactory().get('/desiredLibrary/')
         request.user = user
-        response = EditorLibrary.as_view()(request)
+        response = DesiredLibrary.as_view()(request)
+
+        desired_books = response.context_data.get('desired_books')
+        print("desired", desired_books)
 
 
-        editor_books = response.context_data.get('editor_books')
-
-
-        book = editor_books.filter(ISBN=previously_added_book.ISBN).first()
-
-        if book:
+        find=False
+        for book, price in desired_books:
+            if(book.ISBN==previously_added_book.ISBN):
+                find=True
+        if find:
             assert True
         else:
             assert False
-
-
 
 
 
