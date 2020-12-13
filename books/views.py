@@ -1335,14 +1335,13 @@ class DesiredLibrary(generic.ListView): #PermissionRequiredMixin
 
     def get(self, request, *args, **kwargs):
         #self.user_id = self.request.user.id
-        self.user = self.request.user
+        self.user = request.user
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
 
         desired_books = BookProperties.objects.filter(Q(user=self.user) & (Q(desired=True)))
-        print(desired_books)
         desired_list = []
         for desired in desired_books:
             new_price = desired.book.price - (desired.book.discount * desired.book.price / 100)
