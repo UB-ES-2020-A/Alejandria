@@ -790,6 +790,7 @@ class PaymentView(generic.ListView):
         self.year = None
         self.month = None
         self.cvv = None
+        self.gifts = []
 
     def get_queryset(self):
         self.user_id = self.request.user.id
@@ -823,7 +824,10 @@ class PaymentView(generic.ListView):
 
     def post(self, request, *args, **kwargs):
         for a in request.POST:
-            request.session['gifts'].append((a, request.POST[a]))
+            self.gifts.append((a, request.POST[a]))
+
+        request.session['gifts'] = self.gifts
+        print(request.session['gifts'])
         return JsonResponse({'message': 'ok'})
 
 
@@ -1371,7 +1375,6 @@ def checkUsernameGift(request, **kwargs):
         user = User.objects.filter(username=kwargs['username']).first()
         book = Book.objects.filter(ISBN=request.GET['isbn']).first()
         owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=user)).filter(ISBN=book.ISBN)
-        print(owned)
         if user:
             if user == request.user:
                 return JsonResponse({'error': "You can't gift a book to yourself."}, status=403)

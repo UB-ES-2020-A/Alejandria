@@ -76,11 +76,11 @@
                                                         <div id="price-book-{{ book.ISBN }}" class="col-2" style="text-align:right">{{ book.price }} €
                                                         </div>
                                                     </div>
-                                                {% for gift in request.session.gifts %}
-                                                            {% if gift.0 == book.ISBN %}
-                                                            <div style="font-size: 12px;" id="gifted-to-{{ book.ISBN }}">Gift to {{ gift.1 }}</div>
-                                                            {% endif %}
-                                                        {% endfor %}
+                                                    {% for gift in request.session.gifts %}
+                                                        {% if gift.0 == book.ISBN %}
+                                                        <div style="font-size: 12px;" id="gifted-to-{{ book.ISBN }}">Gift to {{ gift.1 }}</div>
+                                                        {% endif %}
+                                                    {% endfor %}
                                                 </div>
                                                 {% endfor %}
 
