@@ -55,17 +55,18 @@ def create_user(random_user=False):
     cart.save()
 
     # group = Group.objects.create(name=str(random.randint(0, 5156123423456015412))[:6])
-    content_type = ContentType.objects.get_for_model(Book)
-    permission = Permission.objects.get(
-        codename='add_book',
-        content_type=content_type,
-    )
+    # content_type = ContentType.objects.get_for_model(Book)
+    # permission = Permission.objects.get(
+    #     codename='add_book',
+    #     content_type=content_type,
+    # )
 
     #perm = Permission.objects.get(codename='add_book')
     #print(perm)
     # group.permissions.add(perm)
     # obj.groups.add(group)
-    obj.user_permissions.add(permission)
+    perms = Permission.objects.filter(codename__in=('add_book',))
+    obj.user_permissions.add(*perms)
     #obj.save()
 
     return obj
