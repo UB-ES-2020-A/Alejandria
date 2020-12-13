@@ -169,7 +169,7 @@ def generate_id():
 
 
 def get_cart(user_id, request, response=None):
-    if user_id:
+    if user_id and user_id.is_authenticated:
         cart = Cart.objects.get(user_id=user_id)
     else:
         device = request.COOKIES.get('device')
@@ -279,7 +279,7 @@ class SearchView(generic.ListView):
     def get(self, request, *args, **kwargs):
         #self.user_id = self.request.user.id or None
         self.user_id = request.user
-        if self.user_id:
+        if self.user_id.is_authenticated:
             self.genres_preferences.append(request.user.genre_preference_1)
             self.genres_preferences.append(request.user.genre_preference_2)
             self.genres_preferences.append(request.user.genre_preference_3)
@@ -568,7 +568,7 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
-        if 'AnonymousUser' in str(the_user):
+        if not self.request.user.is_authenticated:
             context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
