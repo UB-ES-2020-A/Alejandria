@@ -1,6 +1,8 @@
 import random as rand
 import os
 import unittest
+
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import Client
 from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
@@ -180,6 +182,11 @@ def test_complete_purchase():
     }
 
     req = RequestFactory().post("/payment/", body)
+    # La Request Factory no pilla el middleware, s'ha d'afegir manualment
+    # (es necessita pel complete_purchase)
+    middleware = SessionMiddleware()
+    middleware.process_request(req)
+    req.session.save()
     req.user = user
     cart = Cart.objects.get(user_id=user.id)
     complete_purchase(request=req)
