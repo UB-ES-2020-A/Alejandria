@@ -53,7 +53,7 @@ def create_user(random_user=False):
     cart = Cart(user_id=obj)
     cart.save()
 
-    group = Group.objects.get(name='editor') # create?
+    group = Group.objects.create(name=str(random.randint(0, 5156123423456015412))[:6])
     perm = Permission.objects.get(codename='add_book')
     group.permissions.add(perm)
     obj.groups.add(group)

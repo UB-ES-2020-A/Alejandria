@@ -35,11 +35,13 @@ def create_user(random_user=False):
                user_address=user_address,
                fact_address=fact_address)
     obj.save()
-    group = Group.objects.get(name='editor')  # create?
+    group = Group.objects.create(name=str(random.randint(0, 5156123423456015412))[:6])
     perm = Permission.objects.get(codename='add_book')
     group.permissions.add(perm)
     obj.groups.add(group)
     obj.save()
+
+
 
     return obj
 
