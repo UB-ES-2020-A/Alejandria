@@ -790,7 +790,6 @@ class PaymentView(generic.ListView):
         self.year = None
         self.month = None
         self.cvv = None
-        self.gifts = []
 
     def get_queryset(self):
         self.user_id = self.request.user.id
@@ -810,7 +809,7 @@ class PaymentView(generic.ListView):
             for book in books:
                 total_price += book.price
             context['total_price'] = total_price
-            context['total_items'] = len(cart.books.all())
+            context['total_items'] = len(books)
             if user_bank_account is not None:
                 context['card_owner'] = self.username
                 context['card_number'] = self.card_number
@@ -824,9 +823,7 @@ class PaymentView(generic.ListView):
 
     def post(self, request, *args, **kwargs):
         for a in request.POST:
-            self.gifts.append((a, request.POST[a]))
-        print(self.gifts)
-        request.session['gifts'] = self.gifts
+            request.session['gifts'].append((a, request.POST[a]))
         return JsonResponse({'message': 'ok'})
 
 
@@ -1038,6 +1035,7 @@ def complete_purchase(request):
                 setattr(bill, 'total_money_spent', total)
                 setattr(bill, 'payment_method', 'Credit card')
                 setattr(bill, 'name', user_bank_account.name)
+                gifted_books = []
                 if 'gifts' in request.session:
                     gifted_books = [gift[0] for gift in request.session['gifts']]
                 for book in books:
