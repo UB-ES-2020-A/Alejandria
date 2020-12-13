@@ -7,68 +7,69 @@
 
 <html lang="en">
 
-<link rel="stylesheet" href="{% static 'css/editor-page/card.css' %}">
-
 <head>
-  <meta charset="UTF-8">
-  <title>Alejandria</title>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+
+    <link rel="stylesheet" href="{% static 'css/editor-page/card.css' %}">
 </head>
 
 <body>
 
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12 mt-3">
-        {% for book in user_prod %}
-        <div class="card" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
-          <div class="card-horizontal">
-            {% if book.thumbnail %}
-            <img src="{{ book.thumbnail.url }}" alt="Card image cap" style="width:180px; height:250px;">
-            {% else %}
-            <img src="{% static 'no_available.jpg' %}" alt="Card image cap" style="width:180px; height:250px;">
-            {% endif %}
-            <div class="card-body" style="color:white;">
-              <h3 class="card-title">{{ book.title }}</h3>
-              <div class="row" style="margin-top:2%;">
-                <div class="column" style="margin-left:5%;">
-                  <h6 class="card-title"><b>Author:</b> {{ book.author }} </h6>
-                  <h6 class="card-title"><b>Saga:</b> {{ book.saga }} </h6>
-                  <h6 class="card-title"><b>Price:</b> {{ book.price }} $</h6>
-                </div>
-                <div class="column" style="position: absolute; right: 30%">
-                  <h6 class="card-title"><b>ISBN:</b> {{ book.ISBN }}</h6>
-                  <h6 class="card-title"><b>Genre:</b> {{ book.get_primary_genre_display }}, {{ book.get_secondary_genre_display }}</h6>
-                  <h6 class="card-title"><b>Language:</b> {{ book.language }} </h6>
-                  <h6 class="card-title"><b>Publication date:</b> {{ book.publication_date }} </h6>
-                </div>
-                <div class="column" style="position: absolute; right: 5%; ">
-                  <div class="row" style="margin-top: 5%;">
-                    <form action="/book/{{book.ISBN}}">
-                      <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Show" type="submit"><i class="fas fa-search"></i></button>
-                    </form>
-                  </div>
-                  <div class="row" style="margin-top:5%;">
-                    <form action="/pdf">
-                      <!--{{prod.ISBN.ISBN}}-->
-                      <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Download" type="submit"><i class="fas fa-download"></i></button>
-                    </form>
-                  </div>
-                </div>
-              </div>
+<div class="container-fluid" style="margin-bottom: 5%;">
+    {% for book in user_prod %}
+    <div class="row border-colored" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
 
+        <div class="col-2" style="padding: 0">
+            {% if book.thumbnail %}
+            <img src="{{ book.thumbnail.url }}" alt="Card image cap" style="width:100%">
+            {% else %}
+            <img src="{% static 'no_available.jpg' %}" alt="Card image cap" style="width:100%">
+            {% endif %}
+        </div>
+
+        <div class="col-1"></div>
+
+        <div class="col-9 vertical-center">
+            <h3 style="font-size:24px; color:white">{{ book.title }}</h3>
+            <div class="row" style="margin-top:2%;">
+                <div class="col">
+                    <h6 style="font-size:16px; color:white"><b>Author:</b> {{ book.author }} </h6>
+                    <h6 style="font-size:16px; color:white"><b>Saga:</b> {{ book.saga }} </h6>
+                    <h6 style="font-size:16px; color:white"><b>Genre:</b> {{ book.get_primary_genre_display }}, {{ book.get_secondary_genre_display }}</h6>
+                    <h6 style="font-size:16px; color:white"><b>Price:</b> {{ book.price }} €</h6>
+                    <h6 style="font-size:16px; color:white"><b>Publication date:</b> {{ book.publication_date }} </h6>
+                </div>
+                <div class="col">
+                    <h6 style="font-size:16px; color:white"><b>ISBN:</b> {{ book.ISBN }}</h6>
+                    <h6 style="font-size:16px; color:white"><b>Language:</b> {{ book.language }} </h6>
+                    <br>
+                    <div class="row">
+                        <div class="col-2">
+                            <form action="/book/{{book.ISBN}}">
+                                <button class="btn btn-danger my-2 my-sm-0 border-colored" style="width:40px; height: 40px" title="Show" type="submit"><i
+                                        class="fas fa-search"></i></button>
+                            </form>
+                        </div>
+                        <div class="col-2">
+                            <form action="/pdf">
+                                <button class="btn btn-danger my-2 my-sm-0 border-colored" style="width:40px; height: 40px" title="Download" type="submit"><i
+                                        class="fas fa-download"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
             </div>
-          </div>
         </div>
-        {% endfor %}
-      </div>
-      {% if user_prod|length == 0 %}
-      <div class="col-12 mt-3" style="color: white; text-align: center;">
-        <h3>Seems like you did not buy any book yet...</h3>
-      </div>
-      {% endif %}
     </div>
-  </div>
+    {% endfor %}
+</div>
+{% if user_prod|length == 0 %}
+<div class="col-12 mt-3" style="color: white; text-align: center;">
+    <h3>Seems like you did not buy any book yet...</h3>
+</div>
+{% endif %}
 </body>
 
 </html>

@@ -1,5 +1,5 @@
 body {
-    background: #141414;
+    background: black;
 }
 
 .page-holder {
@@ -23,7 +23,6 @@ body {
 .body-structure{
     margin-right: 5%;
     margin-left: 5%;
-    margin-bottom: 5%;
     background-color: black;
 }
 

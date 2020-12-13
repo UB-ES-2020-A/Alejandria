@@ -246,6 +246,10 @@ class HomeView(generic.ListView):
         context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
+        context['anime'] = Book.objects.filter(primary_genre__contains="ANIM")[:20]
+        context['fiction'] = Book.objects.filter(primary_genre__contains="FICT")[:20]
+        context['romance'] = Book.objects.filter(primary_genre__contains="ROMA")[:20]
+        context['horror'] = Book.objects.filter(primary_genre__contains="HORR")[:20]
         return context
 
     def render_to_response(self, context, **response_kwargs):

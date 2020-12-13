@@ -1,0 +1,22 @@
+.checkbox-round {
+    width: 1.0em;
+    height: 1.0em;
+    background-color: white;
+    border-radius: 50%;
+    margin-left: 10%;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.checkbox-round:checked {
+    background-color: #39A63C;
+}
+
+.label-text {
+    margin-left: 2%;
+    color: white;
+    font-size: 16px;
+}
