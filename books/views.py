@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseForbidden, HttpResponse, HttpResponseNotFound
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
@@ -81,7 +81,10 @@ class BookView(generic.DetailView):
 
     def post(self, request, *args, **kwargs):
         if request.method == "POST":
-            book = get_object_or_404(Book, pk=self.kwargs['pk'])
+            if 'kwargs' in kwargs:
+                book = get_object_or_404(Book, pk=kwargs['kwargs'])
+            else:
+                book = get_object_or_404(Book, pk=self.kwargs['pk'])
             properties, created = BookProperties.objects.get_or_create(book=book, user=request.user)
 
             pre_desired = properties.desired
@@ -121,12 +124,17 @@ class BookView(generic.DetailView):
                     book_properties.desired = pre_desired
 
                 book_properties.user = request.user
-                book_properties.book = get_object_or_404(Book, pk=kwargs['pk'])
+                if 'kwargs' in kwargs:
+                    book_properties.book = get_object_or_404(Book, pk=kwargs['kwargs'])
+                else:
+                    book_properties.book = get_object_or_404(Book, pk=kwargs['pk'])
 
-                messages.info(request, 'Your preference has been saved!')
+                if not 'kwargs' in kwargs:
+                    messages.info(request, 'Your preference has been saved!')
                 book_properties.save()
             else:
-                messages.info(request, 'Oops.. something is wrong')
+                if not 'kwargs' in kwargs:
+                    messages.info(request, 'Oops.. something is wrong')
 
         context = {}
         context['book'] = book_properties.book
@@ -211,6 +219,26 @@ class HomeView(generic.ListView):
         context['romance'] = Book.objects.filter(primary_genre__contains="ROMA")[:20]
         context['horror'] = Book.objects.filter(primary_genre__contains="HORR")[:20]
 
+        the_user = self.request.user
+        if not 'AnonymousUser' in str(the_user):
+            properties = BookProperties.objects.filter(user = the_user)
+            print(properties)
+            recently_readed = [prop.book for prop in properties if prop.readed][:10]
+            print("reacently readed: ", recently_readed)
+            readed_sagas = list(set([book.saga for book in recently_readed]))
+            readed_genres = list(set([book.primary_genre for book in recently_readed] +  [book.secondary_genre for book in recently_readed] ))
+            
+            recommended_books = Book.objects.filter(
+                (Q(saga__in=readed_sagas)
+                 | Q(primary_genre__in=readed_genres))
+                 | Q(secondary_genre__in=readed_genres)
+                )
+
+            recommended_books_list = [book for book in recommended_books if book not in recently_readed]
+            print("Recommended:", recommended_books_list)
+            recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
+            context['recommended'] = recommended_books_list
+
         promotions_books = Book.objects.filter(~Q(discount=0))
         context['promotion_books'] = promotions_books[:20]
 
@@ -245,7 +273,8 @@ class SearchView(generic.ListView):
         self.genres_preferences = []
 
     def get(self, request, *args, **kwargs):
-        self.user_id = self.request.user.id or None
+        #self.user_id = self.request.user.id or None
+        self.user_id = request.user
         if self.user_id:
             self.genres_preferences.append(request.user.genre_preference_1)
             self.genres_preferences.append(request.user.genre_preference_2)
@@ -316,17 +345,16 @@ class SellView(PermissionRequiredMixin, generic.ListView):
                 # intern fields (not showed to user)
                 book.user_id = request.user
                 book.num_sold = 0
-
-                messages.info(request, 'Your book has been created successfully!')
+                if not request.test:
+                    messages.info(request, 'Your book has been created successfully!')
 
                 book.save()
                 return HttpResponseRedirect('/editor')
             else:
-                messages.info(request, 'Oops.. something is wrong')
+                if not request.test:
+                    messages.info(request, 'Oops.. something is wrong')
                 form = BookForm()
                 return render(request, "sell.html", {"form": form})
-
-
 
 
 class EditBookView(PermissionRequiredMixin, generic.DetailView):
@@ -337,7 +365,6 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # format data to suit frontend requirements
-        print('CONTEXT BOOK', context.get('book'))
         if context.get('book').publication_date:
             context['date'] = context.get('book').publication_date.strftime("%Y-%m-%d")
         context['promos'] = Cupon.objects.filter(Q(book=context.get('book').ISBN))
@@ -350,14 +377,11 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             book = get_object_or_404(Book, pk=self.kwargs['pk'])
             promo = get_object_or_404(Cupon, pk=request.POST['delete_promo'])
             promo.delete()
-
             context = {}
             context['book'] = book
             context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
             context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
-
             return render(request, "edit_book.html", context)
-
 
         elif "promo_form" in request.POST:
             if request.method == 'POST':
@@ -371,10 +395,12 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
                     promotion.book = book
                     promotion.redeemed = 0
 
-                    messages.info(request, 'Promo code added successfully!')
+                    if not 'test' in request.POST:
+                        messages.info(request, 'Promo code added successfully!')
                     promotion.save()
                 else:
-                    messages.error(request, 'Oops.. something is wrong')
+                    if not 'test' in request.POST:
+                        messages.error(request, 'Oops.. something is wrong')
             else:
                 promo_form = CuponForm()
 
@@ -387,6 +413,8 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             return render(request, "edit_book.html", context)
 
         else:
+            print(self.kwargs)
+            print(request)
             if request.method == 'POST':
                 # get the instance to modify
                 s = get_object_or_404(Book, pk=self.kwargs['pk'])
@@ -395,11 +423,14 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
                     book = form.save(commit=False)
                     # intern field (not shown to user)
                     book.user_id = request.user
-                    messages.info(request, 'Your book has been updated successfully!')
+
+                    if not 'testing' in self.kwargs:
+                        messages.info(request, 'Your book has been updated successfully!')
                     book.save()
                     return HttpResponseRedirect('/editor')
                 else:
-                    messages.info(request, 'Oops.. something is wrong')
+                    if not 'testing' in self.kwargs:
+                        messages.info(request, 'Oops.. something is wrong')
                     book = get_object_or_404(Book, pk=self.kwargs['pk'])
                     context = {}
                     context['form'] = form
@@ -533,7 +564,7 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
-        if 'AnonymousUser' == str(the_user):
+        if 'AnonymousUser' in str(the_user):
             context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
@@ -542,11 +573,6 @@ class FaqsView(generic.ListView):
         context['total_items'] = len(cart.books.all())
 
         return context
-
-    # TODO: In next iterations has to have the option to make POSTs by the admin.
-    def post(self):
-        pass
-
 
 class AddView(generic.ListView):
     model = Book
@@ -724,7 +750,8 @@ def forgot(request, **kwargs):
                     ResetMails(id=last, user=query.first()).save()
                     send_mail(subject, msg, EMAIL_HOST_USER, [recipient], fail_silently=True)
                     return JsonResponse({"error": False,
-                                         "msg": "Reset mail was sent to " + recipient + " successfully. Please check your inbox."})
+                                         "msg": "Reset mail was sent to " + recipient + " successfully. Please check your inbox.",
+                                         "id": last})
                 except:
                     return JsonResponse({"error": True, "msg": "Your request failed, please try it again."})
 
@@ -734,7 +761,11 @@ def forgot(request, **kwargs):
 
         elif 'trigger' in request.POST and request.POST['trigger'] == 'reset':
             try:
-                reset_id = kwargs['id']
+                if 'id' in kwargs:
+                    reset_id = kwargs['id']
+                elif 'id' in request.POST:
+                    reset_id = request.POST['id']
+
                 new_pass = request.POST['new_pass']
                 user = ResetMails.objects.filter(id=int(reset_id)).first().user
                 user.password = new_pass
@@ -744,7 +775,10 @@ def forgot(request, **kwargs):
                 return JsonResponse({"error": True})
 
     elif request.method == 'GET':
-        reset_id = kwargs['id']
+        if 'id' in kwargs:
+            reset_id = kwargs['id']
+        elif 'id' in request.GET:
+            reset_id = request.GET['id']
         query = ResetMails.objects.filter(id=reset_id)
 
         if query.exists() and query.first().activated:
@@ -1366,7 +1400,7 @@ def deletefaq(request):
                 except:
                     return HttpResponseForbidden('Something went wrong')
             else:
-                return HttpResponseForbidden('This FAQ does not exist')
+                return HttpResponseNotFound('This FAQ does not exist')
         else:
             return HttpResponseForbidden('You have to be an admin to do that')
     return response
@@ -1382,14 +1416,13 @@ class DesiredLibrary(generic.ListView): #PermissionRequiredMixin
 
     def get(self, request, *args, **kwargs):
         #self.user_id = self.request.user.id
-        self.user = self.request.user
+        self.user = request.user
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
 
         desired_books = BookProperties.objects.filter(Q(user=self.user) & (Q(desired=True)))
-        print(desired_books)
         desired_list = []
         for desired in desired_books:
             new_price = desired.book.price - (desired.book.discount * desired.book.price / 100)
