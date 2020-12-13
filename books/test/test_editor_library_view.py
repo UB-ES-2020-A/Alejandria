@@ -4,6 +4,7 @@ from django.test import TestCase, Client, RequestFactory
 
 from books.views import BookView, EditorLibrary
 from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 
 def create_user(random_user=False):
     """ Test if creation of Users has any error, creating or storing the information"""
@@ -37,11 +38,18 @@ def create_user(random_user=False):
     obj.save()
 
     # group = Group.objects.create(name=str(random.randint(0, 5156123423456015412))[:6])
-    perm = Permission.objects.get(codename='add_book')
+    content_type = ContentType.objects.get_for_model(Book)
+    permission = Permission.objects.get(
+        codename='add_book',
+        content_type=content_type,
+    )
+
+    # perm = Permission.objects.get(codename='add_book')
+    # print(perm)
     # group.permissions.add(perm)
     # obj.groups.add(group)
-    obj.user_permissions.add(perm)
-    obj.save()
+    obj.user_permissions.add(permission)
+    # obj.save()
 
 
 
