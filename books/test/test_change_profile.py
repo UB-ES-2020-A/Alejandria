@@ -65,6 +65,6 @@ def test_register():
     response_json = json.loads(response.content.decode("utf-8"))
 
     validation = not User.objects.filter(username=username).exists() and User.objects.filter(username=username2, email=email2).exists() and response.status_code == 200 and not response_json["error"]
-    #User.objects.filter(username=username2, email=email2).delete()
+    User.objects.filter(username=username2, email=email2).delete()
 
     assert validation
