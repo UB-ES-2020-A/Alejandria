@@ -74,7 +74,7 @@ def test_update_avatar_register():
     response_json = json.loads(response.content.decode("utf-8"))
 
 
-    image = SimpleUploadedFile(name='test_image.jpg', content=open(r"./media/thumbnails/dummy_book_cover2.jpg", 'rb').read(), content_type='image/jpeg')
+    image = SimpleUploadedFile(name='test_image.jpg', content=open(r"./Alejandria/static/images/cover-images/book_cover.jpg", 'rb').read(), content_type='image/jpeg')
 
     body3 = {
         'avatar': image, 'trigger': 'avatar'
@@ -126,7 +126,7 @@ def test_update_avatar_edit():
     response = login_user(request=req)
     response_json = json.loads(response.content.decode("utf-8"))
 
-    image = SimpleUploadedFile(name='test_image.jpg', content=open(r"./media/thumbnails/dummy_book_cover2.jpg", 'rb').read(), content_type='image/jpeg')
+    image = SimpleUploadedFile(name='test_image.jpg', content=open(r"./Alejandria/static/images/cover-images/book_cover.jpg", 'rb').read(), content_type='image/jpeg')
 
     body3 = {
         'avatar': image, 'trigger': 'avatar', 'username': username,
