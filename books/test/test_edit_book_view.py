@@ -249,3 +249,71 @@ class EditBookViewTest(TestCase):
         assert val and val2
 
 
+    def test_post_promo_book(self):
+        isbn = str(random.randint(0, 5156123423456015412))[:12]
+        user = create_user(random_user=True)
+
+        dict_book = {
+            'ISBN': isbn,
+            'user': user,
+            'title': 'THis is the TITLE',
+            'description': 'This is the description of a test book',
+            'saga': 'SAGA\'S NAME',
+            'author': "Author",
+            'price': 23.45,
+            'language': 'Espanol',
+            'primary_genre': 'FANT',
+            'publisher': 'Alejandria',
+            'num_pages': 100,
+            'num_sold': 0,
+            'recommended_age': 'Juvenile',
+            'terms': True,
+        }
+
+        book = Book(ISBN=dict_book['ISBN'],
+                    user_id=dict_book['user'],
+                    title=dict_book['title'],
+                    saga=dict_book['saga'],
+                    description=dict_book['description'],
+                    author=dict_book['author'],
+                    price=dict_book['price'],
+                    language=dict_book['language'],
+                    publisher=dict_book['publisher'],
+                    num_pages=dict_book['num_pages'],
+                    num_sold=dict_book['num_sold'],
+                    primary_genre=dict_book['primary_genre'],
+                    recommended_age=dict_book['recommended_age'])
+        book.save()
+
+        cupon = Cupon(code = str(random.randint(0, 5156123423456015412))[:5], book = book, percentage = 10,
+                      max_limit = 1000, redeemed = 1)
+        cupon.save()
+
+        dict_promo = {
+            'promo_form' : True,
+            'code' : str(random.randint(0, 5156123423456015412))[:5],
+            'book' : book,
+            'percentage' : 10,
+            'max_limit' : 1000,
+            'redeemed' : 1,
+            'test' : True
+        }
+
+
+        request = RequestFactory().post('/editBook/' + isbn, data=dict_promo)
+        request.user = user
+        EditBookView.as_view()(request, pk=isbn)
+
+        request_get = RequestFactory().get('/editBook/', kwargs={'pk': isbn})
+        request_get.user = user
+        response = EditBookView.as_view()(request_get, pk=isbn)
+
+        response_book = response.context_data.get('book')
+        response_promos = response.context_data.get('promos')
+
+
+        if cupon in response_promos and response_book.ISBN == book.ISBN:
+            assert True
+        else:
+            assert False
+

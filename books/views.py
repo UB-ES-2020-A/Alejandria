@@ -375,10 +375,12 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
                     promotion.book = book
                     promotion.redeemed = 0
 
-                    messages.info(request, 'Promo code added successfully!')
+                    if not 'test' in request.POST:
+                        messages.info(request, 'Promo code added successfully!')
                     promotion.save()
                 else:
-                    messages.error(request, 'Oops.. something is wrong')
+                    if not 'test' in request.POST:
+                        messages.error(request, 'Oops.. something is wrong')
             else:
                 promo_form = CuponForm()
 
