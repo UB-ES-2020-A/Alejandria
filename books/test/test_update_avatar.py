@@ -74,7 +74,7 @@ def test_update_avatar_register():
     response_json = json.loads(response.content.decode("utf-8"))
 
 
-    image = SimpleUploadedFile(name='test_image.jpg', content=open(r"C:\Users\Yusepp\PycharmProjects\Alejandria\media\thumbnails\dummy_book_cover2.jpg", 'rb').read(), content_type='image/jpeg')
+    image = SimpleUploadedFile(name='test_image.jpg', content=open(r"./media/thumbnails/dummy_book_cover2.jpg", 'rb').read(), content_type='image/jpeg')
 
     body3 = {
         'avatar': image, 'trigger': 'avatar'
