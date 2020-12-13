@@ -49,6 +49,10 @@ def test_user():
            email == obj.email,
            user_address == obj.user_address,
            fact_address == obj.fact_address])
+    print('\n\n\n\n\n\n\n\n\n\n\n\n')
+    print(_id,role,name,password,email,user_address,fact_address)
+    print(obj.id,obj.role,obj.name,obj.password,obj.email,obj.user_address,obj.fact_address)
+    print('\n\n\n\n\n\n\n\n\n\n\n\n')
     check = all([_id == obj.id,
                  role == obj.role, name == obj.name, password == obj.password, email == obj.email,
                  user_address == obj.user_address, fact_address == obj.fact_address])

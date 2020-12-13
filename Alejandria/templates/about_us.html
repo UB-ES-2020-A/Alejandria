@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Alejandria About Us</title>
+
+  <!-- CSS Special for FAQs page -->
+  <link rel="stylesheet" href="{% static 'css/about-page/about-us.css' %}">
+
+</head>
+
+<body style="background-color:#141414">
+     <!-- About us example -->
+<div class="about-section">
+  <h1 >About Us</h1>
+  <p>We are a team of students from the University of Barcelona.<br>This website is the result of the main project related to the subject 364316 Enginyeria del Software. <br>Our main objective in this course is to learn to work in a team using Agile methodologies.</p>
+  <p>Our work can be found in <a target="_blank" href="https://github.com/UB-ES-2020-A/Alejandria" style="color: #DC9405">Alejandria</a> public repository.</p>
+</div>
+
+<h2 class="mt-3" style="text-align:center; color: white;">Our Team</h2>
+<div class="row p-1 mx-2">
+  <div class="column">
+    <div class="card">
+      <img src="https://avatars3.githubusercontent.com/u/32162415?s=460&v=4" alt="Jane" style="width:100%">
+      <div class="container">
+        <h2>Bernat Osorio</h2>
+        <p class="title">Contributor</p>
+        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+        <p>bosorigo129@alumnes.ub.edu</p>
+        <p><button class="button" target="_blank" onclick="window.open('https://github.com/bernatosoriogomez', '_blank');">Contact</button></p>
+      </div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="card">
+      <img src="https://avatars0.githubusercontent.com/u/32062571?s=460&u=d9aeeca3dfa470403c2fee339a296376472237a7&v=4" alt="Mike" style="width:100%">
+      <div class="container">
+        <h2>Francisco Barrio</h2>
+        <p class="title">Contributor</p>
+        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+        <p>franciscobarrio98@gmail.com</p>
+        <p><button class="button" target="_blank" onclick="window.open('https://github.com/franchito55', '_blank');">Contact</button></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card">
+      <img src="https://avatars0.githubusercontent.com/u/36641566?v=4" alt="John" style="width:100%">
+      <div class="container">
+        <h2>Josep López</h2>
+        <p class="title">Contributor</p>
+        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+        <p>jlopezca49@alumnes.ub.edu</p>
+        <p><button class="button" target="_blank" onclick="window.open('https://github.com/Yusepp', '_blank');">Contact</button></p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row p-1 mx-2">
+  <div class="column">
+    <div class="card">
+      <img src="https://avatars3.githubusercontent.com/u/31955816?s=460&v=4" alt="Jane" style="width:100%">
+      <div class="container">
+        <h2>Laurentiu Nedelcu</h2>
+        <p class="title">Contributor</p>
+        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+        <p>lnedelne22@alumnes.ub.edu</p>
+        <p><button class="button" target="_blank" onclick="window.open('https://github.com/laurentiuNedelcu', '_blank');">Contact</button></p>
+      </div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="card">
+      <img src="https://avatars2.githubusercontent.com/u/31955958?s=400&u=4e8dbc20f854dba00ebde635de7a7473c1fd032e&v=4" alt="Mike" style="width:100%">
+      <div class="container">
+        <h2>Oscar Fernández</h2>
+        <p class="title">Contributor</p>
+        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+        <p>ofernaba27@alumnes.ub.edu</p>
+        <p><button class="button" target="_blank" onclick="window.open('https://github.com/OscarFernandezBatalla', '_blank');">Contact</button></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card">
+      <img src="https://avatars2.githubusercontent.com/u/43365779?s=460&v=4" alt="John" style="width:100%">
+      <div class="container">
+        <h2>Óscar Jiménez</h2>
+        <p class="title">Contributor</p>
+        <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+        <p>ojimenmu9@alumnes.ub.edu</p>
+        <p><button class="button" target="_blank" onclick="window.open('https://github.com/ojimenmu', '_blank');">Contact</button></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>
+
+{% endblock %}
