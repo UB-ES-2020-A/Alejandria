@@ -1038,8 +1038,8 @@ def complete_purchase(request):
                 setattr(bill, 'total_money_spent', total)
                 setattr(bill, 'payment_method', 'Credit card')
                 setattr(bill, 'name', user_bank_account.name)
-                gifted_books = [gift[0] for gift in request.session['gifts']]
-                print(gifted_books)
+                if 'gifts' in request.session:
+                    gifted_books = [gift[0] for gift in request.session['gifts']]
                 for book in books:
                     if book.ISBN not in gifted_books:
                         print(book.ISBN)
