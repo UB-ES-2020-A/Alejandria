@@ -337,8 +337,6 @@ class SellView(PermissionRequiredMixin, generic.ListView):
                 return render(request, "sell.html", {"form": form})
 
 
-
-
 class EditBookView(PermissionRequiredMixin, generic.DetailView):
     model = Book
     template_name = 'edit_book.html'
@@ -347,7 +345,6 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # format data to suit frontend requirements
-        print('CONTEXT BOOK', context.get('book'))
         if context.get('book').publication_date:
             context['date'] = context.get('book').publication_date.strftime("%Y-%m-%d")
         context['promos'] = Cupon.objects.filter(Q(book=context.get('book').ISBN))
@@ -360,14 +357,11 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             book = get_object_or_404(Book, pk=self.kwargs['pk'])
             promo = get_object_or_404(Cupon, pk=request.POST['delete_promo'])
             promo.delete()
-
             context = {}
             context['book'] = book
             context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
             context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
-
             return render(request, "edit_book.html", context)
-
 
         elif "promo_form" in request.POST:
             if request.method == 'POST':
