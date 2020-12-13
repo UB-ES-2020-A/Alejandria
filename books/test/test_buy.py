@@ -1,5 +1,6 @@
 import random as rand
 import os
+import string
 import unittest
 from django.test import Client
 from django.core.wsgi import get_wsgi_application
@@ -7,9 +8,12 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Alejandria.settings')
 app = get_wsgi_application()
 from django.test import RequestFactory
 from books.models import User, Address, Cart, Book, Guest, BankAccount, Bill
-from books.test.test_register import random_char
+import random
 from books.views import delete_product, add_product, complete_purchase, generate_pdf, PaymentView
 
+
+def random_char(y):
+    return ''.join(random.choice(string.ascii_letters) for x in range(y))
 
 def get_or_create_user():
     user_query = User.objects.filter(id=1000)
