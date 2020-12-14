@@ -44,7 +44,6 @@ class BookView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
 
-        print(type(self.request.user))
 
         context = super().get_context_data(**kwargs)
         relation_book = Book.objects.filter(primary_genre=self.object.primary_genre)[:20]
@@ -226,9 +225,7 @@ class HomeView(generic.ListView):
         the_user = self.request.user
         if not 'AnonymousUser' in str(the_user):
             properties = BookProperties.objects.filter(user = the_user)
-            print(properties)
             recently_readed = [prop.book for prop in properties if prop.readed][:10]
-            print("reacently readed: ", recently_readed)
             readed_sagas = list(set([book.saga for book in recently_readed]))
             readed_genres = list(set([book.primary_genre for book in recently_readed] +  [book.secondary_genre for book in recently_readed] ))
             
@@ -239,7 +236,6 @@ class HomeView(generic.ListView):
                 )
 
             recommended_books_list = [book for book in recommended_books if book not in recently_readed]
-            print("Recommended:", recommended_books_list)
             recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
             context['recommended'] = recommended_books_list
 
@@ -353,14 +349,17 @@ class SellView(PermissionRequiredMixin, generic.ListView):
                 # intern fields (not showed to user)
                 book.user_id = request.user
                 book.num_sold = 0
-                if not request.test:
+                try:
                     messages.info(request, 'Your book has been created successfully!')
-
+                except:
+                    pass
                 book.save()
                 return HttpResponseRedirect('/editor')
             else:
-                if not request.test:
+                try:
                     messages.info(request, 'Oops.. something is wrong')
+                except:
+                    pass
                 form = BookForm()
                 return render(request, "sell.html", {"form": form})
 
@@ -421,8 +420,6 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
             return render(request, "edit_book.html", context)
 
         else:
-            print(self.kwargs)
-            print(request)
             if request.method == 'POST':
                 # get the instance to modify
                 s = get_object_or_404(Book, pk=self.kwargs['pk'])
@@ -500,7 +497,6 @@ class CartView(generic.ListView):
 
 def delete_product(request, book):
     user = request.user or None
-    print(request.GET)
     if user:
         user_id = user.id
         if user_id:
@@ -514,10 +510,9 @@ def delete_product(request, book):
         user = Guest.objects.get(device=device)
         cart = Cart.objects.get(guest_id=user)
 
-    print("DELETE BOOK ", book)
+
     cart.books.remove(book)
     cart.save()
-    print("CART: ", cart.books.all())
     return HttpResponseRedirect('/cart')
 
 
@@ -537,7 +532,6 @@ def add_product(request, view, book):
         user, created = Guest.objects.get_or_create(device=device)
         cart, created = Cart.objects.get_or_create(guest_id=user)
 
-    print("ADD BOOK ", book)
     cart.books.add(book)
     cart.save()
 
@@ -592,7 +586,6 @@ class AddView(generic.ListView):
             if book.user_id != request.user.id:
                 return JsonResponse({'message': 'The book does not belong to you'}, status=401)
             else:
-                print('The book exists')
                 book.title = request.POST['title']
                 book.user_id = request.user.id
                 book.authors = request.POST['author']
@@ -612,7 +605,6 @@ class AddView(generic.ListView):
                 return JsonResponse({'message': 'The book was modified successfully'}, status=200)
 
         else:
-            print('The book does not exist')
             newbook = Book(ISBN=request.POST['isbn'],
                            user_id=User.objects.filter(username="franchito55").first(),
                            title=request.POST['title'],
@@ -869,7 +861,6 @@ class PaymentView(generic.ListView):
             self.gifts.append((a, request.POST[a]))
 
         request.session['gifts'] = self.gifts
-        print(request.session['gifts'])
         return JsonResponse({'message': 'ok'})
 
 
@@ -887,7 +878,6 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
-        print(request.GET)
         self.user_id = self.request.user.id
 
         # if 'search_book' in request.GET:
@@ -904,7 +894,6 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
 
         # Filtering by title or author
         editor_books = Book.objects.filter(user_id=self.user_id)
-        print("editor books", editor_books)
         context['editor_books'] = editor_books
 
         return context
@@ -1027,7 +1016,6 @@ def view_profile(request):
 
 
 def complete_purchase(request, kwarg=None):
-    print(request.POST)
     user = request.user.id or None
     if user:
         user_bank_account, created = BankAccount.objects.get_or_create(user_id=user)
@@ -1052,7 +1040,6 @@ def complete_purchase(request, kwarg=None):
 
         total = float(total)
 
-        print(total)
 
         if current_money - total >= 0:
 
@@ -1086,8 +1073,6 @@ def complete_purchase(request, kwarg=None):
                     gifted_books = [gift[0] for gift in request.session['gifts']]
                 for book in books:
                     if book.ISBN not in gifted_books:
-                        print(book.ISBN)
-                        print("lol")
                         book.num_sold += 1
                         book.save()
                         bill.books.add(book)
@@ -1303,7 +1288,6 @@ class UserLibrary(generic.ListView): #PermissionRequiredMixin
 
     def get(self, request, *args, **kwargs):
         self.user_id = self.request.user.id
-        print(request.GET)
 
         # if 'search_book' in request.GET:
         #     self.searchBook = request.GET['search_book']
@@ -1337,7 +1321,6 @@ class UserBills(generic.ListView): #PermissionRequiredMixin
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
-        print(request.GET)
         self.user_id = self.request.user.id
         return super().get(request, *args, **kwargs)
 
@@ -1347,7 +1330,6 @@ class UserBills(generic.ListView): #PermissionRequiredMixin
         # Filtering by title or author
         user_bills = LibraryBills.objects.get(user_id=self.user_id)
         context['user_bills'] = user_bills.bills.all()
-        print(user_bills.bills.all())
 
         return context
 

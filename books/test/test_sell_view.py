@@ -11,6 +11,7 @@ from django.test import TestCase, Client, RequestFactory
 
 from books import views
 # from books.views import BookView
+from django.contrib.auth.models import Permission
 from books.models import Guest, Book, User, Address, Cart
 from books.views import BookView, SearchView, SellView
 
@@ -48,6 +49,10 @@ def create_user(random_user=False):
 
     cart = Cart(user_id=obj)
     cart.save()
+
+    perms = Permission.objects.filter(codename__in=('add_book',))
+    obj.user_permissions.add(*perms)
+
 
 
     return obj
@@ -118,20 +123,21 @@ class SellViewTest(TestCase):
             'terms': True,
         }
 
-
-        #response = client.post(reverse('books:sell'), dict_book) #,follow=True
-
-
         request = RequestFactory().post('/sell/', dict_book)
         request.user = user
-        request.test = True
+        SellView.as_view()(request, kwargs=isbn)
+
+        request_get = RequestFactory().get('/sell/')
+        request_get.user = user
+        response = SellView.as_view()(request_get, pk=isbn)
+
+        books = response.context_data.get('object_list')
+
+        found = False
+        for book in books:
+            if book.ISBN == isbn:
+                found = True
+
+        assert found
 
 
-        response = SellView.post(SellView(), request)
-        print(response)
-        #print(response.context_data)
-
-        # response_get_book = client.get(reverse('books:book', kwargs={'pk': isbn}))
-        # book_obteined = response_get_book.status_code
-        # print(book_obteined)
-        assert True
