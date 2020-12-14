@@ -29,12 +29,25 @@ select:focus > option:checked {
     width: 100%;
 }
 
+.registerBtn {
+color:#0275d8;
+font-size: 12px;
+cursor: pointer;
+text-decoration: none;
+}
+
+.registerBtn:hover {
+color: #0285ff;
+text-decoration: underline;
+}
+
 .info-book{
     margin-top: 2%;
+    margin-bottom: 2%;
     width: 100%;
     display: flex;
     flex-direction: row;
-    outline: none;     /* oranges! yey */
+    outline: none;
     border-color: #d9534f;
     box-shadow: 0 0 2px 1px #d9534f;
 }

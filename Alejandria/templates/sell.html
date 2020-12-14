@@ -11,25 +11,9 @@
     <meta charset="UTF-8">
     <title>Alejandria</title>
 
-<!--    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>-->
-<!--    <script src="https://kit.fontawesome.com/3cd9e7a108.js" crossorigin="anonymous"></script>-->
-
-
-
-<!--    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">-->
-
-
-<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
-    <!-- popper.js -->
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>-->
-
-
-<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
-
-
     <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
     <link rel="stylesheet" href="{% static 'css/font.css' %}">
-    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+<!--    <link rel="stylesheet" href="{% static 'css/card.css' %}">-->
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/form-sell.css' %}">
     <!-- Css files from static folder -->
@@ -40,9 +24,6 @@
 
 </head>
 <body>
-
-
-
 {% if messages %}
   {% for msg in messages %}
     <div class="alert alert-info alert-dismissable">
@@ -51,27 +32,6 @@
     </div>
   {% endfor %}
 {% endif %}
-
-<!--<div class="signup-container" style="margin:auto; margin-top:50px">
-  <div style="margin:auto;padding-right:30px;">
-    <img src="https://imagessl6.casadellibro.com/a/l/t5/16/9788490667316.jpg" style="width:110%">
-  </div>
-  <div class="right-container" style="width:auto">
-    <form method="POST" enctype = "multipart/form-data"> {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Next" />
-</form>
-
-    </header>
-    <footer>
-      <div class="set">
-        <button id="next">Next</button>
-      </div>
-    </footer>
-  </div>
-</div>-->
-
-
 {% if form.errors %}
     {% for field in form %}
         {% for error in field.errors %}
@@ -203,9 +163,78 @@
   </div>
 </div>
 
+
+
+<!-- Modal -->
+<div id="promotionModal" class="modal fade" role="dialog" >
+  <div class="modal-dialog" style="max-width: 50%;">
+    <!-- Modal content-->
+    <div class="modal-content" style="background:#343a40; color:white">
+      <div class="modal-header">
+          <h4 style="left:0px" class="modal-title">Add a promo code for your book</h4>
+        <button style="color:red;" type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+
+<!--          <div class="card" style="background-color: #963434; margin-top:2%;">-->
+<!--             <div class="card-horizontal" >-->
+<!--                 <div class="card-body" style="color:white;" >-->
+<!--                     <div class="row">-->
+<!--                         <div class="column" style="width: 25%;">-->
+<!--                            <h4 class="card-title" style="margin-left:10%;width:auto;text-align: center; margin-top: 7%;">QWERTYUIOP</h4>-->
+<!--                         </div>-->
+<!--                         <div class="column" style="margin-left:5%">-->
+<!--                            <h5>Discount: 50 %</h5>-->
+<!--                            <h5>Redeemed: 100</h5>-->
+<!--                         </div>-->
+<!--                         <div class="column" style="margin-left:5%">-->
+<!--                            <h5>Final price: 100€</h5>-->
+<!--                            <h5>Promo codes left: 20000</h5>-->
+<!--                         </div>-->
+<!--                         <div class="column" style="margin-left:10%">-->
+<!--                            <button class="btn btn-danger my-2 my-sm-0" style="width:100%" title="Delete"><i class="fas fa-trash-alt"></i></button>-->
+<!--                         </div>-->
+<!--                     </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--          </div>-->
+
+
+          <div class="card" style="background-color: #963434; margin-top:2%;">
+             <div class="card-horizontal" >
+                 <div class="card-body" style="color:white;" >
+                     <div class="row">
+                         <form method="POST"> {% csrf_token %}
+                             <label for="code" style="margin-left:2.5%;">Code:</label>
+                             <input style="width:16%;" id="code" name="code" placeholder="SAVE25" type="text"/>
+                             <label for="Discount" style="margin-left:3%;">Discount:</label>
+                             <input style="width: 7%;" id="Discount" name="percentage" placeholder="25" type="number">%</input>
+                             <label for="max_limit" style="margin-left:3%;">Max redeem:</label>
+                             <input style="width: 15%;" id="max_limit" name="max_limit" placeholder="1500" type="number"/>
+                             <button type="button" style="margin-left:5%; width:14%" class="btn btn-success">Save</button>
+                         </form>
+                         </div>
+                     </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+
+        </div>
+      <div class="modal-footer" style="background:#343a40;">
+        <button type="button" style="color:white; background:#dc3545;" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
-    <img id="blah" style="width:110%" src="{% static 'no_available.jpg' %}" />
+    <img id="thumbImg" style="width:110%" src="{% static 'no_available.jpg' %}" />
   </div>
   <div class="right-container" style="width:auto">
     <header>
@@ -214,58 +243,58 @@
 <div class="set">
         <div class="pets-name">
           <label for="pets-name">* Title</label>
-          <input id="pets-name" name="title" placeholder="Title of book" type="text"></input>
+            <input id="pets-name" name="title" placeholder="Title of book" type="text"/>
         </div>
         <div class="pets-breed">
           <label for="publi_date">Publication date</label>
-          <input style="width: 204px;" id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="date"></input>
+            <input style="width: 204px;" id="publi_date" placeholder="DD/MM/YYYY" name="publication_date" type="date"/>
         </div>
 </div>
       <div class="set">
         <div class="pets-breed">
           <label for="author">* Author</label>
-          <input id="author" placeholder="Anonymous" name="author" type="text"></input>
+            <input id="author" placeholder="Anonymous" name="author" type="text"/>
         </div>
         <div class="pets-birthday">
           <label for="price">* Price</label>
-          <input id="price" name="price" placeholder="12.99" type="number"></input>
+            <input id="price" name="price" placeholder="12.99" type="number"/>
         </div>
       </div>
       <div class="set">
         <div class="pets-gender">
           <label for="isbn">* ISBN</label>
-          <input id="isbn" name="ISBN" placeholder="0123456789012" type="number"></input>
+            <input id="isbn" name="ISBN" placeholder="0123456789012" type="number"/>
         </div>
         <div class="pets-gender">
           <label for="saga">Saga</label>
-          <input id="saga" name="saga" placeholder="Saga of book" type="text"></input>
+            <input id="saga" name="saga" placeholder="Saga of book" type="text"/>
         </div>
       </div>
 
         <div class="set">
         <div class="pets-gender">
           <label for="language">* Language</label>
-          <input id="language" name="language" placeholder="Spanish" type="text"></input>
+            <input id="language" name="language" placeholder="Spanish" type="text"/>
         </div>
         <div class="pets-gender">
           <label for="publisher">* Publisher</label>
-          <input id="publisher" name="publisher" placeholder="Publisher of book" type="text"></input>
+            <input id="publisher" name="publisher" placeholder="Publisher of book" type="text"/>
         </div>
       </div>
           <div class="set">
       <div class="pets-name">
         <label for="numpages">* Nº Pages</label>
-        <input id="numpages" name="num_pages" placeholder="100" type="number"></input>
+          <input id="numpages" name="num_pages" placeholder="100" type="number"/>
       </div>
                <div class="pets-birthday">
       <label for="recommended_age">Recommended age</label>
-        <input id="recommended_age" name="recommended_age" placeholder="Adult" type="text"></input>
+                   <input id="recommended_age" name="recommended_age" placeholder="Adult" type="text"/>
     </div>
       </div>
-
-
-
-
+          <div class="pets-name">
+        <label for="discount-book">Discount (percentage)</label>
+          <input id="discount-book" name="discount" placeholder="50" type="number"/>
+      </div>
 
 
       <div class="pets-name" style="padding-top:20px;padding-bottom:20px;">
@@ -295,45 +324,45 @@
         <label for="horror-p">* Primary genre</label>
         <div class="radio-container" style="padding-left: 4%">
           <div class="row">
-            <input id="horror-p" name="primary_genre" type="radio" value="HORR"></input>
+              <input id="horror-p" name="primary_genre" type="radio" value="HORR"/>
             <label for="horror-p">Horror</label>
-            <input id="romance-p" name="primary_genre" type="radio" value="ROMA"></input>
+              <input id="romance-p" name="primary_genre" type="radio" value="ROMA"/>
             <label for="romance-p">Romance</label>
-            <input id="crime-p" name="primary_genre" type="radio" value="CRIM"></input>
+              <input id="crime-p" name="primary_genre" type="radio" value="CRIM"/>
             <label for="crime-p">Crime</label>
-            <input id="scfi-p" name="primary_genre" type="radio" value="SCFI"></input>
+              <input id="scfi-p" name="primary_genre" type="radio" value="SCFI"/>
             <label for="scfi-p">Sci-fi</label>
-            <input id="fantasy-p" name="primary_genre" type="radio" value="FANT"></input>
+              <input id="fantasy-p" name="primary_genre" type="radio" value="FANT"/>
             <label for="fantasy-p">Fantasy</label>
-            <input id="fiction-p" name="primary_genre" type="radio" value="FICT"></input>
+              <input id="fiction-p" name="primary_genre" type="radio" value="FICT"/>
             <label for="fiction-p">Fiction</label>
-            <input id="teen-p" name="primary_genre" type="radio" value="TEEN"></input>
+              <input id="teen-p" name="primary_genre" type="radio" value="TEEN"/>
             <label for="teen-p">Teen</label>
-            <input id="children-p" name="primary_genre" type="radio" value="KIDS"></input>
+              <input id="children-p" name="primary_genre" type="radio" value="KIDS"/>
             <label for="children-p">Children</label>
-            <input id="anime-p" name="primary_genre" type="radio" value="ANIM"></input>
+              <input id="anime-p" name="primary_genre" type="radio" value="ANIM"/>
             <label for="anime-p">Anime</label>
-            <input id="art-p" name="primary_genre" type="radio" value="ARTS"></input>
+              <input id="art-p" name="primary_genre" type="radio" value="ARTS"/>
             <label for="art-p">Art</label>
-            <input id="biography-p" name="primary_genre" type="radio" value="BIOG"></input>
+              <input id="biography-p" name="primary_genre" type="radio" value="BIOG"/>
             <label for="biography-p">Biography</label>
-            <input id="food-p" name="primary_genre" type="radio" value="FOOD"></input>
+              <input id="food-p" name="primary_genre" type="radio" value="FOOD"/>
             <label for="food-p">Food</label>
-            <input id="history-p" name="primary_genre" type="radio" value="HIST"></input>
+              <input id="history-p" name="primary_genre" type="radio" value="HIST"/>
             <label for="history-p">History</label>
-            <input id="dictionary-p" name="primary_genre" type="radio" value="DICT"></input>
+              <input id="dictionary-p" name="primary_genre" type="radio" value="DICT"/>
             <label for="dictionary-p">Dictionary</label>
-            <input id="health-p" name="primary_genre" type="radio" value="HEAL"></input>
+              <input id="health-p" name="primary_genre" type="radio" value="HEAL"/>
             <label for="health-p">Health</label>
-            <input id="humor-p" name="primary_genre" type="radio" value="HUMO"></input>
+              <input id="humor-p" name="primary_genre" type="radio" value="HUMO"/>
             <label for="humor-p">Humor</label>
-            <input id="sport-p" name="primary_genre" type="radio" value="SPOR"></input>
+              <input id="sport-p" name="primary_genre" type="radio" value="SPOR"/>
             <label for="sport-p">Sport</label>
-            <input id="travel-p" name="primary_genre" type="radio" value="TRAV"></input>
+              <input id="travel-p" name="primary_genre" type="radio" value="TRAV"/>
             <label for="travel-p">Travel</label>
-            <input id="petry-p" name="primary_genre" type="radio" value="POET"></input>
+              <input id="petry-p" name="primary_genre" type="radio" value="POET"/>
             <label for="petry-p">Petry</label>
-            <input id="other-p" name="primary_genre" type="radio" value="OTHR"></input>
+              <input id="other-p" name="primary_genre" type="radio" value="OTHR"/>
             <label for="other-p">Others</label>
           </div>
         </div>
@@ -343,45 +372,45 @@
         <label for="horror-s">Secondary genre</label>
         <div class="radio-container" style="padding-left: 4%">
           <div class="row">
-            <input id="horror-s" name="secondary_genre" type="radio" value="HORR"></input>
+              <input id="horror-s" name="secondary_genre" type="radio" value="HORR"/>
             <label for="horror-s">Horror</label>
-            <input id="romance-s" name="secondary_genre" type="radio" value="ROMA"></input>
+              <input id="romance-s" name="secondary_genre" type="radio" value="ROMA"/>
             <label for="romance-s">Romance</label>
-            <input id="crime-s" name="secondary_genre" type="radio" value="CRIM"></input>
+              <input id="crime-s" name="secondary_genre" type="radio" value="CRIM"/>
             <label for="crime-s">Crime</label>
-            <input id="scfi-s" name="secondary_genre" type="radio" value="SCFI"></input>
+              <input id="scfi-s" name="secondary_genre" type="radio" value="SCFI"/>
             <label for="scfi-s">Sci-fi</label>
-            <input id="fantasy-s" name="secondary_genre" type="radio" value="FANT"></input>
+              <input id="fantasy-s" name="secondary_genre" type="radio" value="FANT"/>
             <label for="fantasy-s">Fantasy</label>
-            <input id="fiction-s" name="secondary_genre" type="radio" value="FICT"></input>
+              <input id="fiction-s" name="secondary_genre" type="radio" value="FICT"/>
             <label for="fiction-s">Fiction</label>
-            <input id="teen-s" name="secondary_genre" type="radio" value="TEEN"></input>
+              <input id="teen-s" name="secondary_genre" type="radio" value="TEEN"/>
             <label for="teen-s">Teen</label>
-            <input id="children-s" name="secondary_genre" type="radio" value="KIDS"></input>
+              <input id="children-s" name="secondary_genre" type="radio" value="KIDS"/>
             <label for="children-s">Children</label>
-            <input id="anime-s" name="secondary_genre" type="radio" value="ANIM"></input>
+              <input id="anime-s" name="secondary_genre" type="radio" value="ANIM"/>
             <label for="anime-s">Anime</label>
-            <input id="art-s" name="secondary_genre" type="radio" value="ARTS"></input>
+              <input id="art-s" name="secondary_genre" type="radio" value="ARTS"/>
             <label for="art-s">Art</label>
-            <input id="biography-s" name="secondary_genre" type="radio" value="BIOG"></input>
+              <input id="biography-s" name="secondary_genre" type="radio" value="BIOG"/>
             <label for="biography-s">Biography</label>
-            <input id="food-s" name="secondary_genre" type="radio" value="FOOD"></input>
+              <input id="food-s" name="secondary_genre" type="radio" value="FOOD"/>
             <label for="food-s">Food</label>
-            <input id="history-s" name="secondary_genre" type="radio" value="HIST"></input>
+              <input id="history-s" name="secondary_genre" type="radio" value="HIST"/>
             <label for="history-s">History</label>
-            <input id="dictionary-s" name="secondary_genre" type="radio" value="DICT"></input>
+              <input id="dictionary-s" name="secondary_genre" type="radio" value="DICT"/>
             <label for="dictionary-s">Dictionary</label>
-            <input id="health-s" name="secondary_genre" type="radio" value="HEAL"></input>
+              <input id="health-s" name="secondary_genre" type="radio" value="HEAL"/>
             <label for="health-s">Health</label>
-            <input id="humor-s" name="secondary_genre" type="radio" value="HUMO"></input>
+              <input id="humor-s" name="secondary_genre" type="radio" value="HUMO"/>
             <label for="humor-s">Humor</label>
-            <input id="sport-s" name="secondary_genre" type="radio" value="SPOR"></input>
+              <input id="sport-s" name="secondary_genre" type="radio" value="SPOR"/>
             <label for="sport-s">Sport</label>
-            <input id="travel-s" name="secondary_genre" type="radio" value="TRAV"></input>
+              <input id="travel-s" name="secondary_genre" type="radio" value="TRAV"/>
             <label for="travel-s">Travel</label>
-            <input id="petry-s" name="secondary_genre" type="radio" value="POET"></input>
+              <input id="petry-s" name="secondary_genre" type="radio" value="POET"/>
             <label for="petry-s">Petry</label>
-            <input id="other-s" name="secondary_genre" type="radio" value="OTHR"></input>
+              <input id="other-s" name="secondary_genre" type="radio" value="OTHR"/>
             <label for="other-s">Other</label>
           </div>
         </div>
@@ -412,7 +441,7 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    $('#blah')
+                    $('#thumbImg')
                         .attr('src', e.target.result)
                         .width(150)
                         .height(200);

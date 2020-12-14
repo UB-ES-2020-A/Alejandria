@@ -28,8 +28,20 @@ $(document).ready(function () {
     let taste2 = $("#id_taste2").html().split(" ").filter(item => !(item.length < 2)).join(' ').replace(/\n/ig, '').replace("&amp;","&");
     let taste3 = $("#id_taste3").html().split(" ").filter(item => !(item.length < 2)).join(' ').replace(/\n/ig, '').replace("&amp;","&");
 
+    
+    $("#avatar-field").change(function () {
+        readURL(this);
+    });
+    
+    $("#avatar-2").click(function () {
+        if($("#edit_btn").html() == "Save Changes"){
+            $("#avatar-field").click();
+        }
+    });
+
     $("#edit_btn").click(function () {
         if($("#edit_btn").html() != "Save Changes") {
+            $("#avatar-2").css("cursor", "pointer");
             $("#id_username").html('<input id="text_username" type="text" class="form-control">');
             $("#text_username").val(username);
             $("#id_name").html('<input id="text_name" type="text" class="form-control">');
@@ -40,8 +52,13 @@ $(document).ready(function () {
             $("#text_street1").val(street1);
             $("#id_city1").html('<input id="text_city1" type="text" class="form-control">');
             $("#text_city1").val(city1);
-            $("#id_country1").html('<input id="text_country1" type="text" class="form-control">');
-            $("#text_country1").val(country1);
+
+            var html_country1 = '<button class="btn btn-secondary dropdown-toggle" type="button" id="countryDropdownBtn1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 100%;">Choose</button> '+
+                            '<div class="dropdown-menu dropdown-menu-right" id="menu_country1" style="height: auto;max-height: 150px;overflow-x: hidden;" aria-labelledby="genreDropdownBtn1">' +
+                            '</div> ';
+            $("#id_country1").html(html_country1);
+            $("#countryDropdownBtn1").text(country1);
+
             $("#id_zip1").html('<input id="text_zip1" type="text" class="form-control">');
             $("#text_zip1").val(zip1);
 
@@ -49,10 +66,48 @@ $(document).ready(function () {
             $("#text_street2").val(street2);
             $("#id_city2").html('<input id="text_city2" type="text" class="form-control">');
             $("#text_city2").val(city2);
-            $("#id_country2").html('<input id="text_country2" type="text" class="form-control">');
-            $("#text_country2").val(country2);
+
+            var html_country2 = '<button class="btn btn-secondary dropdown-toggle" type="button" id="countryDropdownBtn2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 100%;">Choose</button> '+
+                            '<div class="dropdown-menu dropdown-menu-right" id="menu_country2" style="height: auto;max-height: 150px;overflow-x: hidden;" aria-labelledby="genreDropdownBtn2">' +
+                            '</div> ';
+            $("#id_country2").html(html_country2);
+            $("#countryDropdownBtn2").text(country2);
+
             $("#id_zip2").html('<input id="text_zip2" type="text" class="form-control">');
             $("#text_zip2").val(zip2);
+
+            $.ajax("https://pkgstore.datahub.io/core/country-list/data_csv/data/d7c9d7cfb42cb69f4422dec222dbbaa8/data_csv.csv", {
+                        method: "GET",
+                        success: function (response) {
+                            let data = response.split("\n");
+                            data = data.slice(1,data.lenght);
+                            let code1 = "";
+                            let code2 = "";
+                            let countries = data.map(parseData);
+
+
+                            function parseData(value, index, array) {
+                                let country = value.split(",")[0]
+                                let html1 = '<a class="dropdown-item item-country-1" href="#">'+country.replace('"',"")+'</a>';
+                                let html2 = '<a class="dropdown-item item-country-2" href="#">'+country.replace('"',"")+'</a>';
+                                code1 += html1;
+                                code2 += html2;
+                                return html1;
+                            }
+
+                            $("#menu_country1").html(code1);
+                            $("#menu_country2").html(code2);
+                            $(".item-country-1").click(function () {
+                                $("#countryDropdownBtn1").text($(this).text());
+                                $("#countryDropdownBtn1").css("background-color","#dc3545");
+                            })
+                            $(".item-country-2").click(function () {
+                                $("#countryDropdownBtn2").text($(this).text());
+                                $("#countryDropdownBtn2").css("background-color","#dc3545");
+                            })
+
+                        }
+                })
 
             var html1 = '<div class="form-group">'+
                         '<div class="dropdown">' +
@@ -164,15 +219,17 @@ $(document).ready(function () {
 
             $("#mainCard").height($("#profile").height());
             $("#tastes").height($("#facturation").height());
+
+            $("#avatar-2").css("border", "5px solid #d9534f");
             $("#edit_btn").html("Save Changes");
 
-            $("#")
         }
         else {
+            $("#avatar-2").css("cursor", "pointer");
             var data = {
                 username: $("#text_username").val(), full_name: $("#text_name").val(), email: $("#text_email").val(),
-                street1: $("#text_street1").val(), city1: $("#text_city1").val(), country1: $("#text_country1").val(), zip1: $("#text_zip1").val(),
-                street2: $("#text_street2").val(), city2: $("#text_city2").val(), country2: $("#text_country2").val(), zip2: $("#text_zip2").val(),
+                street1: $("#text_street1").val(), city1: $("#text_city1").val(), country1: $("#countryDropdownBtn1").text(), zip1: $("#text_zip1").val(),
+                street2: $("#text_street2").val(), city2: $("#text_city2").val(), country2: $("#countryDropdownBtn2").text(), zip2: $("#text_zip2").val(),
                 taste1: $("#genreDropdownBtn1").text(), taste2: $("#genreDropdownBtn2").text(), taste3: $("#genreDropdownBtn3").text()
             };
 
@@ -191,6 +248,12 @@ $(document).ready(function () {
                         })
                     }
                     else {
+                        if ($("#avatar-field").val() != "") {
+                            var dataForm = new FormData();
+                            dataForm.append("avatar", $('#avatar-field')[0].files[0]);
+                            dataForm.append("trigger", "avatar");
+                            var status = navigator.sendBeacon(window.location.origin + "/avatar/", dataForm);
+                        }
                         Swal.fire({
                             icon: 'success',
                             title: 'Profile updated',
@@ -199,7 +262,7 @@ $(document).ready(function () {
                     }
                     setTimeout(function () {
                             window.location.href = "";
-                        },2000);
+                        },2500);
                 }
             });
 
@@ -212,3 +275,15 @@ $(document).ready(function () {
 
 
 });
+
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      $('#avatar-2').attr('src', e.target.result);
+    }
+
+    reader.readAsDataURL(input.files[0]); // convert to base64 string
+  }
+}

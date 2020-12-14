@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+{% extends "navbar.html" %}
+{% load static %}
+
+{% block content %}
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Alejandria</title>
+
+    <link rel="stylesheet" href="{% static 'css/editor-page/card.css' %}">
+</head>
+
+<body>
+
+<div class="container-fluid" style="margin-bottom: 5%;">
+    {% for book,price in desired_books %}
+    <div class="row border-colored" style="background-color: #963434; margin-left: 15%; margin-right:15%; margin-top:2%;">
+
+        <div class="col-2" style="padding: 0">
+            {% if book.discount != 0 %}
+            <div class="tag">ON SALE!</div>
+            {% endif %}
+            {% if book.thumbnail %}
+            <img src="{{ book.thumbnail.url }}" alt="Card image cap" style="width:100%">
+            {% else %}
+            <img src="{% static 'no_available.jpg' %}" alt="Card image cap" style="width:100%">
+            {% endif %}
+        </div>
+
+        <div class="col-1"></div>
+
+        <div class="col-9 vertical-center">
+            <h3 style="font-size:24px; color:white">{{ book.title }}</h3>
+            <div class="row" style="margin-top:2%;">
+                <div class="col">
+                    <h6 style="font-size:16px; color:white"><b>Author:</b> {{ book.author }} </h6>
+                    <h6 style="font-size:16px; color:white"><b>Saga:</b> {{ book.saga }} </h6>
+                    <h6 style="font-size:16px; color:white"><b>Genre:</b> {{ book.get_primary_genre_display }}, {{ book.get_secondary_genre_display }}</h6>
+                    {% if book.discount != 0 %}
+                    <h6 style="font-size:16px; color:white">Price:
+                        <del>{{book.price}}€</del>
+                    </h6>
+                    <h6 style="font-size:16px; color:white"><b>Discount: {{book.discount}}%!</b></h6>
+                    <h6 style="font-size:16px; color:white">New price: {{ price }}€ </h6>
+                    {% else %}
+                    <h6 style="font-size:16px; color:white">Price: {{book.price}}€</h6>
+                    {% endif %}
+                    <h6 style="font-size:16px; color:white"><b>Publication date:</b> {{ book.publication_date }} </h6>
+                </div>
+                <div class="col">
+                    <h6 style="font-size:16px; color:white"><b>ISBN:</b> {{ book.ISBN }}</h6>
+                    <h6 style="font-size:16px; color:white"><b>Language:</b> {{ book.language }} </h6>
+                    <br>
+                    <div class="row">
+                        <div class="col-2">
+                            <form action="/book/{{book.ISBN}}">
+                                <button class="btn btn-danger my-2 my-sm-0 border-colored" style="width:40px; height: 40px" title="Show" type="submit"><i
+                                        class="fas fa-search"></i></button>
+                            </form>
+                        </div>
+                        <div class="col-2">
+                            <a href="{% url 'books:add_product' 'home' book.ISBN %}" style="width:40px; height: 40px"
+                               class="btn btn-danger my-2 my-sm-0 border-colored">
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if desired_books|length == 0 %}
+    <div class="col-12 mt-3" style="color: white; text-align: center;">
+        <h3>Seems like you did not add any desired book yet...</h3>
+    </div>
+    {% endif %}
+
+</div>
+</body>
+
+</html>
+
+
+{% endblock %}

@@ -12,7 +12,7 @@
     <title>Alejandria</title>
     <link rel="stylesheet" href="{% static 'css/buttons2.css' %}">
     <link rel="stylesheet" href="{% static 'css/font.css' %}">
-    <link rel="stylesheet" href="{% static 'css/card.css' %}">
+<!--    <link rel="stylesheet" href="{% static 'css/card.css' %}">-->
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/form-sell.css' %}">
     <!-- Css files from static folder -->
@@ -44,6 +44,30 @@
         </div>
     {% endfor %}
 {% endif %}
+
+
+
+
+
+
+{% if promo_form.errors %}
+    {% for field in promo_form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>Hubo un problema en el campo "{{ field.name }}". {{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+
+
 
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog" >
@@ -160,13 +184,99 @@
 </div>
 
 
+
+
+
+
+<!-- Modal -->
+<div id="promotionModal" class="modal fade" role="dialog" >
+  <div class="modal-dialog" style="max-width: 50%;">
+    <!-- Modal content-->
+    <div class="modal-content" style="background:#343a40; color:white">
+      <div class="modal-header">
+          <h4 style="left:0px" class="modal-title">Add a promo code for your book</h4>
+        <button style="color:red;" type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+
+          {% for promo in promos %}
+          <div class="card" style="background-color: #963434; margin-top:2%;">
+             <div class="card-horizontal" >
+                 <div class="card-body" style="color:white;" >
+                     <div class="row">
+                         <div class="column" style="width: 25%;">
+                            <h4 class="card-title" style="margin-left:10%;width:auto;text-align: center; margin-top: 7%;">{{promo.code}}</h4>
+                         </div>
+                         <div class="column" style="margin-left:5%; width: 21%;">
+                            <h5>Discount: {{promo.percentage}} %</h5>
+                            <h5>Redeemed: {{promo.redeemed}}</h5>
+                         </div>
+                         <div class="column" style="margin-left:5%; width: 33%;">
+                            <h5>Final price: 100€</h5>
+                            <h5>Promo codes left: 20000</h5>
+                         </div>
+                         <div class="column" style="margin-top: 1.5%;">
+                             <form method="POST" action=".">{% csrf_token %}
+                            <button class="btn btn-danger my-2 my-sm-0" name="delete_promo" value="{{promo.code}}"
+                                    style="width:100%; margin-left:40%; margin-top: 7%;" title="Delete">
+                                <i class="fas fa-trash-alt"></i></button>
+                                 </form>
+                         </div>
+                     </div>
+                </div>
+            </div>
+          </div>
+          {% endfor %}
+
+
+          <div class="card" style="background-color: #963434; margin-top:2%;">
+             <div class="card-horizontal" >
+                 <div class="card-body" style="color:white;" >
+                     <div class="row">
+                         <form method="POST"> {% csrf_token %}
+                             <label for="code" style="margin-left:2.5%;">Code:</label>
+                             <input style="width:16%;" id="code" name="code" placeholder="SAVE25" type="text"/>
+                             <label for="Discount" style="margin-left:3%;">Discount:</label>
+                             <input style="width: 7%;" id="Discount" name="percentage" placeholder="25" type="number">%</input>
+                             <label for="max_limit" style="margin-left:3%;">Max redeem:</label>
+                             <input style="width: 15%;" id="max_limit" name="max_limit" placeholder="1500" type="number"/>
+<!--                             <button type="button" style="margin-left:5%; width:14%" class="btn btn-success">Save</button>-->
+                             <input style="margin-left:7%; width:14%; background-color: #28a745; border: 0;border-radius: 5px;
+                             cursor: pointer; line-height: 1.4;padding: 10px;" name="promo_form" type="submit" value="Save" />
+                         </form>
+                         </div>
+                     </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+
+        </div>
+      <div class="modal-footer" style="background:#343a40;">
+        <button type="button" style="color:white; background:#dc3545;" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 <div class="signup-container" style="margin:auto; margin-top:50px">
   <div style="margin:auto;padding-right:30px;">
       {% if book.thumbnail %}
-        <img id="blah" style="width:110%" src="/media/{{ book.thumbnail }}" />
+        <img id="thumbImg" style="width:110%" src="/media/{{ book.thumbnail }}" />
       {% else %}
-        <img id="blah" style="width:110%" src="{% static 'no_available.jpg' %}" />
+        <img id="thumbImg" style="width:110%" src="{% static 'no_available.jpg' %}" />
       {% endif %}
+      <div style="text-align: center;margin-top: 5%;">
+        <button style="background-color: #e53848; border-color: #e53848" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#promotionModal">Add promo code</button>
+      </div>
   </div>
   <div class="right-container" style="width:auto">
     <header>
@@ -219,6 +329,11 @@
       <div class="pets-name">
         <label for="numpages">* Nº Pages</label>
         <input id="numpages" name="num_pages" placeholder="100" type="number" value="{{ book.num_pages }}"></input>
+      </div>
+
+           <div class="pets-name">
+        <label for="discount-book">Discount (percentage)</label>
+          <input id="discount-book" name="discount" placeholder="50" type="number" value="{{ book.discount }}"/>
       </div>
 
       </div>
@@ -363,12 +478,13 @@ $( document ).ready(function() {
 
 });
 
+
     function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    $('#blah')
+                    $('#thumbImg')
                         .attr('src', e.target.result)
                         .width(150)
                         .height(200);

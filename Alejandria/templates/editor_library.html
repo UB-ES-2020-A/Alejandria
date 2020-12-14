@@ -13,6 +13,14 @@
     <title>Alejandria</title>
 </head>
 <body>
+{% if messages %}
+  {% for msg in messages %}
+    <div class="alert alert-info alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{msg.message}}
+    </div>
+  {% endfor %}
+{% endif %}
     <div class="container-fluid">
         <div class="row" >
             <div class="col-12 mt-3"  >
@@ -31,7 +39,7 @@
                                      <div class="column" style="margin-left:5%;" >
                                          <h6 class="card-title"><b>Author:</b> {{ book.author }} </h6>
                                          <h6 class="card-title"><b>Saga:</b> {{ book.saga }} </h6>
-                                         <h6 class="card-title"><b>Price:</b> {{ book.price }} $</h6>
+                                         <h6 class="card-title"><b>Price:</b> {{ book.price }} €</h6>
                                          <h6 class="card-title"><b>Num sold:</b> {{ book.num_sold }} </h6>
                                      </div>
                                      <div class="column" style="position: absolute; right: 30%">

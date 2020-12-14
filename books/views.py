@@ -1,8 +1,9 @@
 import random
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from io import BytesIO
 
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
@@ -10,7 +11,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseForbidden, HttpResponse, HttpResponseNotFound
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
@@ -19,8 +20,9 @@ from reportlab.pdfgen import canvas
 from Alejandria.settings import EMAIL_HOST_USER
 
 from .utils import *
-from .forms import BookForm, UpdateBookForm
-from .models import Book, FAQ, Cart, Product, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating
+from .forms import BookForm, UpdateBookForm, BookPropertiesForm, CuponForm
+from .models import Book, FAQ, Cart, User, Address, ResetMails, Guest, BankAccount, Bill, LibraryBills, Rating, \
+    BookProperties, Cupon
 
 # Create your views here.
 
@@ -37,15 +39,30 @@ MONTHS_TO_CONSIDER_TOP_SELLER = 6
 class BookView(generic.DetailView):
     model = Book
     template_name = 'details.html'
+    pk_url_kwarg = 'pk'
+
 
     def get_context_data(self, **kwargs):
+
+        print(type(self.request.user))
+
         context = super().get_context_data(**kwargs)
+        relation_book = Book.objects.filter(primary_genre=self.object.primary_genre)[:20]
+        context['isbn'] = str(self.object.ISBN)
+        review_list = Rating.objects.filter(ISBN=self.object)
+        book = get_object_or_404(Book, pk=self.kwargs['pk'])
+
+
+        if self.request.user.is_authenticated:
+            properties, created = BookProperties.objects.get_or_create(book=book, user=self.request.user)
+            context['form'] = properties
+
         relation_book = Book.objects.filter(primary_genre=context['object'].primary_genre)[:20]
         context['isbn'] = str(context['object'].ISBN)
         review_list = Rating.objects.filter(ISBN=context['object'])
 
-        if self.request.user.id != None:
-            owned = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first()
+        if self.request.user.is_authenticated:
+            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=book.ISBN)#.filter(ISBN=book) # TODO: NEED TO FIX THIS
             if owned:
                 context['owned'] = "true"
 
@@ -53,14 +70,123 @@ class BookView(generic.DetailView):
             context['book_relation'] = relation_book
         else:
             context['book_relation'] = Book.objects.all()[:20]
-
         if review_list:
             context['review_list'] = review_list
+        if 'owned' not in context.keys():
+            context['owned'] = 'false'
+
+        if self.object.discount:
+            new_price = self.object.price - (self.object.discount * self.object.price / 100)
+            context['new_price'] = new_price
+
+        return context
+
+
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            if 'kwargs' in kwargs:
+                book = get_object_or_404(Book, pk=kwargs['kwargs'])
+            else:
+                book = get_object_or_404(Book, pk=self.kwargs['pk'])
+            properties, created = BookProperties.objects.get_or_create(book=book, user=request.user)
+
+            pre_desired = properties.desired
+            pre_readed = properties.readed
+
+            change = None
+            value = None
+
+            if 'readed' in request.POST:
+                change = 'readed'
+                aux = request.POST['readed']
+                if aux == 'on':
+                    if pre_readed:
+                        value = False
+                    else:
+                        value = True
+
+            if 'desired' in request.POST:
+                change = 'desired'
+                aux = request.POST['desired']
+                if aux == 'on':
+                    if pre_desired:
+                        value = False
+                    else:
+                        value = True
+
+            form = BookPropertiesForm(request.POST, instance=properties)
+
+            if form.is_valid():
+                book_properties = form.save(commit=False)
+                # intern fields (not showed to user)
+                if change == 'desired':
+                    book_properties.desired = value
+                    book_properties.readed = pre_readed
+                elif change == 'readed':
+                    book_properties.readed = value
+                    book_properties.desired = pre_desired
+
+                book_properties.user = request.user
+                if 'kwargs' in kwargs:
+                    book_properties.book = get_object_or_404(Book, pk=kwargs['kwargs'])
+                else:
+                    book_properties.book = get_object_or_404(Book, pk=kwargs['pk'])
+
+                if not 'kwargs' in kwargs:
+                    messages.info(request, 'Your preference has been saved!')
+                book_properties.save()
+            else:
+                if not 'kwargs' in kwargs:
+                    messages.info(request, 'Oops.. something is wrong')
+
+        context = {}
+        context['book'] = book_properties.book
+        context['form'] = book_properties
+
+        if self.request.user.id is not None:
+            owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=context['book']).first() # TODO: NEED TO FIX THIS
+            if owned:
+                context['owned'] = "true"
 
         if 'owned' not in context.keys():
             context['owned'] = 'false'
 
-        return context
+        return render(request, "details.html", context)
+
+    def render_to_response(self, context, **response_kwargs):
+        response = super(BookView, self).render_to_response(context, **response_kwargs)
+        cart = get_cart(self.request.user, self.request, response)
+        if cart is not None:
+            context['total_items'] = len(cart.books.all())
+        else:
+            context['total_items'] = 0
+        return response
+
+
+
+def generate_id():
+    temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+    list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
+    id = "".join(list_id)
+    return id
+
+
+def get_cart(user_id, request, response=None):
+
+    if user_id and user_id.is_authenticated:
+        cart = Cart.objects.get(user_id=user_id.id)
+    else:
+        device = request.COOKIES.get('device')
+        if not device and response is not None:
+            device = generate_id()
+            response.set_cookie('device', device)
+
+        user, created = Guest.objects.get_or_create(device=device)
+        cart, created = Cart.objects.get_or_create(guest_id=user)
+
+    if cart is not None:
+        return cart
+    return None
 
 
 class HomeView(generic.ListView):
@@ -86,43 +212,63 @@ class HomeView(generic.ListView):
         today = datetime.today().strftime("%Y-%m-%d")
         last_day = (datetime.today() - timedelta(days=7)).strftime("%Y-%m-%d")
 
+        next_day = (datetime.today() + timedelta(days=14)).strftime("%Y-%m-%d")
+
+        context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])[:20]
+        context['comingsoon'] = Book.objects.filter(publication_date__range=[today, next_day])[:20]
+        context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")[:20]
+        context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")[:20]
+        context['anime'] = Book.objects.filter(primary_genre__contains="ANIM")[:20]
+        context['fiction'] = Book.objects.filter(primary_genre__contains="FICT")[:20]
+        context['romance'] = Book.objects.filter(primary_genre__contains="ROMA")[:20]
+        context['horror'] = Book.objects.filter(primary_genre__contains="HORR")[:20]
+
+        the_user = self.request.user
+        if not 'AnonymousUser' in str(the_user):
+            properties = BookProperties.objects.filter(user = the_user)
+            print(properties)
+            recently_readed = [prop.book for prop in properties if prop.readed][:10]
+            print("reacently readed: ", recently_readed)
+            readed_sagas = list(set([book.saga for book in recently_readed]))
+            readed_genres = list(set([book.primary_genre for book in recently_readed] +  [book.secondary_genre for book in recently_readed] ))
+            
+            recommended_books = Book.objects.filter(
+                (Q(saga__in=readed_sagas)
+                 | Q(primary_genre__in=readed_genres))
+                 | Q(secondary_genre__in=readed_genres)
+                )
+
+            recommended_books_list = [book for book in recommended_books if book not in recently_readed]
+            print("Recommended:", recommended_books_list)
+            recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
+            context['recommended'] = recommended_books_list
+
+        promotions_books = Book.objects.filter(~Q(discount=0))
+        context['promotion_books'] = promotions_books[:20]
+
+
         context['recent'] = Book.objects.filter(publication_date__range=[last_day, today])
         context['fantasy'] = Book.objects.filter(primary_genre__contains="FANT")
         context['crime'] = Book.objects.filter(primary_genre__contains="CRIM")
+        context['anime'] = Book.objects.filter(primary_genre__contains="ANIM")[:20]
+        context['fiction'] = Book.objects.filter(primary_genre__contains="FICT")[:20]
+        context['romance'] = Book.objects.filter(primary_genre__contains="ROMA")[:20]
+        context['horror'] = Book.objects.filter(primary_genre__contains="HORR")[:20]
         return context
 
     def render_to_response(self, context, **response_kwargs):
         response = super(HomeView, self).render_to_response(context, **response_kwargs)
-
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
+        cart = get_cart(self.request.user, self.request, response)
+        if cart is not None:
+            context['total_items'] = len(cart.books.all())
         else:
-            device = self.request.COOKIES.get('device')
-            if not device:
-                device = self.generate_id()
-                response.set_cookie('device', device)
-
-            user, created = Guest.objects.get_or_create(device=device)
-            cart, created = Cart.objects.get_or_create(guest_id=user)
-        if cart:
-            products = cart.products.all()
-            items = len(products)
-            context['total_items'] = items
-
+            context['total_items'] = 0
         return response
-
-
-    @staticmethod
-    def generate_id():
-        temp = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-        list_id = [str(random.randint(0, 16)) if character == 'x' else character for character in temp]
-        id = "".join(list_id)
-        return id
 
 
 class SearchView(generic.ListView):
     model = Book
-    template_name = 'search.html'  # TODO: Provisional file
+    template_name = 'search.html'
     context_object_name = 'coincident'
 
     def __init__(self):
@@ -135,8 +281,9 @@ class SearchView(generic.ListView):
         self.genres_preferences = []
 
     def get(self, request, *args, **kwargs):
-        self.user_id = self.request.user.id or None
-        if self.user_id:
+        #self.user_id = self.request.user.id or None
+        self.user_id = request.user
+        if self.user_id.is_authenticated:
             self.genres_preferences.append(request.user.genre_preference_1)
             self.genres_preferences.append(request.user.genre_preference_2)
             self.genres_preferences.append(request.user.genre_preference_3)
@@ -151,18 +298,11 @@ class SearchView(generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
-
-        # Get number of cart products
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
+        cart = get_cart(self.request.user, self.request)
+        if cart is not None:
+            context['total_items'] = len(cart.books.all())
         else:
-            device = self.request.COOKIES['device']
-            user, created = Guest.objects.get_or_create(device=device)
-            cart, created = Cart.objects.get_or_create(guest_id=user)
-
-        products = cart.products.all()
-        items = len(products)
-        context['total_items'] = items
+            context['total_items'] = 0
 
         # Filtering by title or author
         if self.searchBook:
@@ -177,7 +317,7 @@ class SearchView(generic.ListView):
             relation_book = Book.objects.filter(primary_genre__in=genres_relation)[:20]
             if relation_book:
                 context['book_relation'] = relation_book
-                return context
+
 
         if self.genres:
             filtered = Book.objects.filter(Q(primary_genre__in=self.genres) | Q(secondary_genre__in=self.genres))[:20]
@@ -190,7 +330,8 @@ class SearchView(generic.ListView):
             recommended_books_list = list(recommended_books)
             recommended_books_list = random.sample(recommended_books_list, min(len(recommended_books_list), 20))
             context['recommended_books'] = recommended_books_list
-
+            promotions_books = Book.objects.filter(~Q(discount=0))
+            context['promotion_books'] = promotions_books[:20]
         return context
 
 
@@ -212,22 +353,16 @@ class SellView(PermissionRequiredMixin, generic.ListView):
                 # intern fields (not showed to user)
                 book.user_id = request.user
                 book.num_sold = 0
-
-                messages.info(request, 'Your book has been created successfully!')
+                if not request.test:
+                    messages.info(request, 'Your book has been created successfully!')
 
                 book.save()
-
-                product = Product(ISBN=book, price=book.price)
-                product.save()
-
-
+                return HttpResponseRedirect('/editor')
             else:
-                messages.info(request, 'Oops.. something is wrong')
-
-        else:
-            form = BookForm()
-
-        return render(request, "sell.html", {"form": form})
+                if not request.test:
+                    messages.info(request, 'Oops.. something is wrong')
+                form = BookForm()
+                return render(request, "sell.html", {"form": form})
 
 
 class EditBookView(PermissionRequiredMixin, generic.DetailView):
@@ -238,32 +373,79 @@ class EditBookView(PermissionRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # format data to suit frontend requirements
-        context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+        if context.get('book').publication_date:
+            context['date'] = context.get('book').publication_date.strftime("%Y-%m-%d")
+        context['promos'] = Cupon.objects.filter(Q(book=context.get('book').ISBN))
         return context
 
     # post (update) of book
     def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            # get the instance to modify
-            s = get_object_or_404(Book, pk=self.kwargs['pk'])
-            form = UpdateBookForm(request.POST, instance=s)
-            if form.is_valid():
-                book = form.save(commit=False)
-                # intern field (not shown to user)
-                book.user_id = request.user
-                messages.info(request, 'Your book has been updated successfully!')
-                book.save()
 
+        if 'delete_promo' in request.POST:
+            book = get_object_or_404(Book, pk=self.kwargs['pk'])
+            promo = get_object_or_404(Cupon, pk=request.POST['delete_promo'])
+            promo.delete()
+            context = {}
+            context['book'] = book
+            context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+            context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+            return render(request, "edit_book.html", context)
 
-                product = Product.objects.filter(ISBN=book).first()
-                product.price = book.price
-                product.save()
+        elif "promo_form" in request.POST:
+            if request.method == 'POST':
+                # get the instance to modify
+                book = get_object_or_404(Book, pk=self.kwargs['pk'])
+                promo_form = CuponForm(request.POST)
+                book_form = UpdateBookForm(request.POST, instance=book)
+                if promo_form.is_valid():
+                    promotion = promo_form.save(commit=False)
+                    # intern field (not shown to user)
+                    promotion.book = book
+                    promotion.redeemed = 0
 
+                    if not 'test' in request.POST:
+                        messages.info(request, 'Promo code added successfully!')
+                    promotion.save()
+                else:
+                    if not 'test' in request.POST:
+                        messages.error(request, 'Oops.. something is wrong')
             else:
-                messages.info(request, 'Oops.. something is wrong')
+                promo_form = CuponForm()
+
+            context = {}
+            context['promo_form'] = promo_form
+            context['book'] = book
+            context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+            context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+
+            return render(request, "edit_book.html", context)
+
         else:
-            form = UpdateBookForm()
-        return render(request, "edit_book.html", {"form": form})
+            print(self.kwargs)
+            print(request)
+            if request.method == 'POST':
+                # get the instance to modify
+                s = get_object_or_404(Book, pk=self.kwargs['pk'])
+                form = UpdateBookForm(request.POST, instance=s)
+                if form.is_valid():
+                    book = form.save(commit=False)
+                    # intern field (not shown to user)
+                    book.user_id = request.user
+
+                    if not 'testing' in self.kwargs:
+                        messages.info(request, 'Your book has been updated successfully!')
+                    book.save()
+                    return HttpResponseRedirect('/editor')
+                else:
+                    if not 'testing' in self.kwargs:
+                        messages.info(request, 'Oops.. something is wrong')
+                    book = get_object_or_404(Book, pk=self.kwargs['pk'])
+                    context = {}
+                    context['form'] = form
+                    context['book'] = book
+                    context['date'] = context['book'].publication_date.strftime("%Y-%m-%d")
+                    context['promos'] = Cupon.objects.filter(Q(book=context['book'].ISBN))
+                    return render(request, "edit_book.html", context)
 
 
 class DeleteBookView(PermissionRequiredMixin, generic.DeleteView):
@@ -293,16 +475,12 @@ class CartView(generic.ListView):
         self.user_id = None
 
     def get_queryset(self):
-        request = self.request
-        self.user_id = request.user.id or None
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
-        else:
-            device = request.COOKIES['device']
-            user, created = Guest.objects.get_or_create(device=device)
-            cart, created = Cart.objects.get_or_create(guest_id=user)
-
-        return cart.products.all()
+        self.user_id = self.request.user.id
+        cart = get_cart(self.request.user, self.request)
+        if cart is not None:
+            return cart.books.all()
+        print("CART DON'T EXIST")
+        return []
 
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data(**kwargs)
@@ -310,25 +488,17 @@ class CartView(generic.ListView):
         context['books_from_cart_view_1'] = Book.objects.all()[:3]
         context['books_from_cart_view_2'] = Book.objects.all()[3:6]
         context['books_from_cart_view_3'] = Book.objects.all()[6:9]
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
-        else:
-            device = self.request.COOKIES['device']
-            user, created = Guest.objects.get_or_create(device=device)
-            cart, created = Cart.objects.get_or_create(guest_id=user)
-
-        products = cart.products.all()
+        cart = get_cart(self.request.user, self.request)
+        books = cart.books.all()
         total_price = 0
-        items = len(products)
-        for prod in products:
-            total_price += prod.price
+        for book in books:
+            total_price += book.price
         context['total_price'] = total_price
-        context['total_items'] = items
-
+        context['total_items'] = len(books)
         return context
 
 
-def delete_product(request, product_id):
+def delete_product(request, book):
     user = request.user or None
     print(request.GET)
     if user:
@@ -344,16 +514,15 @@ def delete_product(request, product_id):
         user = Guest.objects.get(device=device)
         cart = Cart.objects.get(guest_id=user)
 
-    product = cart.products.get(ID=product_id)
-    print("DELETE BOOK ", product)
-    cart.products.remove(product)
+    print("DELETE BOOK ", book)
+    cart.books.remove(book)
     cart.save()
+    print("CART: ", cart.books.all())
     return HttpResponseRedirect('/cart')
 
 
 def add_product(request, view, book):
     user = request.user or None
-    print(request.POST)
     if user:
         user_id = user.id
         if user_id:
@@ -368,22 +537,21 @@ def add_product(request, view, book):
         user, created = Guest.objects.get_or_create(device=device)
         cart, created = Cart.objects.get_or_create(guest_id=user)
 
-    products = Product.objects.all()
-    for product in products:
-        if product.ISBN.ISBN == book:
-            print("ADD BOOK ", book)
-            cart.products.add(product)
-            cart.save()
+    print("ADD BOOK ", book)
+    cart.books.add(book)
+    cart.save()
 
     if view == 'home':
         return HttpResponseRedirect('/')
     if view == 'cart':
         return HttpResponseRedirect('/cart')
+    if view == 'details':
+        return HttpResponseRedirect('/book/'+book)
 
 
 class FaqsView(generic.ListView):
     model = FAQ
-    template_name = 'faqs.html'  # TODO: Provisional file
+    template_name = 'faqs.html'
     context_object_name = 'faqs'
 
     def __init__(self, **kwargs):
@@ -391,7 +559,7 @@ class FaqsView(generic.ListView):
         self.user_id = None
 
     def get_queryset(self):
-        self.user_id = self.request.user.id or None
+        self.user_id = self.request.user.id
         return FAQ.objects.all()
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -404,29 +572,15 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
-        print(the_user)
-        if 'AnonymousUser' is str(the_user):
-            context['admin']= False
+        if not self.request.user.is_authenticated:
+            context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
 
-        if self.user_id:
-            cart = Cart.objects.get(user_id=self.user_id)
-        else:
-            device = self.request.COOKIES['device']
-            user, created = Guest.objects.get_or_create(device=device)
-            cart, created = Cart.objects.get_or_create(guest_id=user)
-
-        products = cart.products.all()
-        items = len(products)
-        context['total_items'] = items
+        cart = get_cart(self.request.user, self.request)
+        context['total_items'] = len(cart.books.all())
 
         return context
-
-    # TODO: In next iterations has to have the option to make POSTs by the admin.
-    def post(self):
-        pass
-
 
 class AddView(generic.ListView):
     model = Book
@@ -434,12 +588,9 @@ class AddView(generic.ListView):
 
     def post(self, request, *args, **kwargs):
         book = Book.objects.filter(ISBN=request.POST['isbn']).first()
-
         if book:
-
             if book.user_id != request.user.id:
                 return JsonResponse({'message': 'The book does not belong to you'}, status=401)
-
             else:
                 print('The book exists')
                 book.title = request.POST['title']
@@ -522,26 +673,66 @@ def register(request):
 
                 user.save()
 
-                # Create user's cart
-                device = request.COOKIES.get('device')
-                guest, created = Guest.objects.get_or_create(device=device)
-                cart_user, created = Cart.objects.get_or_create(user_id=user)
-                if device:
-                    cart_guest_query = Cart.objects.filter(guest_id=guest)
-                    if cart_guest_query.count() != 0:
-                        cart_guest = cart_guest_query.first()
-                        for product in cart_guest.products.all():
-                            cart_user.products.add(product)
-                        cart_guest.products.clear()
-                        cart_guest.save()
-                        cart_user.save()
+                try:
+                    fact_address.clean()
+                    user_address.clean()
+                    user.full_clean()
 
-                return JsonResponse({"error": False})
+                except ValidationError:
+                    # Do something when validation is not passing
+                    print("ERROR VALIDATION REGISTER")
+                    fact_address.delete()
+                    user_address.delete()
+                    user.delete()
+                    return JsonResponse({"error": True})
+
+                else:
+                    # Create user's cart
+                    device = request.COOKIES.get('device')
+                    guest, created = Guest.objects.get_or_create(device=device)
+                    cart_user, created = Cart.objects.get_or_create(user_id=user)
+                    if device:
+                        cart_guest_query = Cart.objects.filter(guest_id=guest)
+                        if cart_guest_query.count() != 0:
+                            cart_guest = cart_guest_query.first()
+                            for book in cart_guest.books.all():
+                                cart_user.books.add(book)
+                            cart_guest.books.clear()
+                            cart_guest.save()
+                            cart_user.save()
+
+                    return JsonResponse({"error": False})
 
             else:
                 return JsonResponse({"error": True})
 
         return JsonResponse({"error": True})
+
+
+@csrf_exempt
+def post_avatar(request):
+    if 'trigger' in request.POST and 'avatar' in request.POST['trigger']:
+        file = request.FILES.get("avatar")
+        if file is not None:
+            if request.user.is_authenticated:
+                user = request.user
+            else:
+                user = request.POST["username"]
+                user = User.objects.filter(username=user).first()
+
+            user.avatar.save(file.name, file)
+            return JsonResponse({"error": False})
+    return JsonResponse({"error": True})
+
+
+def check_data(request):
+    if request.method == 'POST':
+        if 'username' in request.POST:
+            username = request.POST["username"]
+            return JsonResponse({"exists": User.objects.filter(username=username).exists()})
+        if 'email' in request.POST:
+            email = request.POST["email"]
+            return JsonResponse({"exists": User.objects.filter(email=email).exists()})
 
 
 def forgot(request, **kwargs):
@@ -567,7 +758,8 @@ def forgot(request, **kwargs):
                     ResetMails(id=last, user=query.first()).save()
                     send_mail(subject, msg, EMAIL_HOST_USER, [recipient], fail_silently=True)
                     return JsonResponse({"error": False,
-                                         "msg": "Reset mail was sent to " + recipient + " successfully. Please check your inbox."})
+                                         "msg": "Reset mail was sent to " + recipient + " successfully. Please check your inbox.",
+                                         "id": last})
                 except:
                     return JsonResponse({"error": True, "msg": "Your request failed, please try it again."})
 
@@ -577,7 +769,11 @@ def forgot(request, **kwargs):
 
         elif 'trigger' in request.POST and request.POST['trigger'] == 'reset':
             try:
-                reset_id = kwargs['id']
+                if 'id' in kwargs:
+                    reset_id = kwargs['id']
+                elif 'id' in request.POST:
+                    reset_id = request.POST['id']
+
                 new_pass = request.POST['new_pass']
                 user = ResetMails.objects.filter(id=int(reset_id)).first().user
                 user.password = new_pass
@@ -587,7 +783,10 @@ def forgot(request, **kwargs):
                 return JsonResponse({"error": True})
 
     elif request.method == 'GET':
-        reset_id = kwargs['id']
+        if 'id' in kwargs:
+            reset_id = kwargs['id']
+        elif 'id' in request.GET:
+            reset_id = request.GET['id']
         query = ResetMails.objects.filter(id=reset_id)
 
         if query.exists() and query.first().activated:
@@ -621,7 +820,7 @@ def login_user(request):
 class PaymentView(generic.ListView):
     # model = Account
     template_name = 'payment.html'
-    queryset = Product.objects.all()
+    queryset = Book.objects.all()
     context_object_name = 'cart_list'
 
     def __init__(self, **kwargs):
@@ -630,19 +829,17 @@ class PaymentView(generic.ListView):
         self.username = ''
         self.card_number = ''
         self.total = 0
-        self.products = None
         self.year = None
         self.month = None
         self.cvv = None
+        self.gifts = []
 
     def get_queryset(self):
-        request = self.request
-        print(request.GET)
-        self.user_id = request.user.id or None
+        self.user_id = self.request.user.id
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
             if cart:
-                return cart.products.all()
+                return cart.books.all()
         return None
 
     def get_context_data(self, **kwargs):
@@ -650,13 +847,12 @@ class PaymentView(generic.ListView):
         if self.user_id:
             cart = Cart.objects.get(user_id=self.user_id)
             user_bank_account = BankAccount.objects.filter(user_id=self.user_id).first() or None
-            products = cart.products.all()
+            books = cart.books.all()
             total_price = 0
-            items = len(products)
-            for prod in products:
-                total_price += prod.price
+            for book in books:
+                total_price += book.price
             context['total_price'] = total_price
-            context['total_items'] = items
+            context['total_items'] = len(books)
             if user_bank_account is not None:
                 context['card_owner'] = self.username
                 context['card_number'] = self.card_number
@@ -668,10 +864,18 @@ class PaymentView(generic.ListView):
 
         return context
 
+    def post(self, request, *args, **kwargs):
+        for a in request.POST:
+            self.gifts.append((a, request.POST[a]))
+
+        request.session['gifts'] = self.gifts
+        print(request.session['gifts'])
+        return JsonResponse({'message': 'ok'})
+
 
 class EditorLibrary(PermissionRequiredMixin, generic.ListView):
     model = Book
-    template_name = 'editor_library.html'  # TODO: Provisional file
+    template_name = 'editor_library.html'
     context_object_name = 'coincident'
     permission_required = ('books.add_book',)
 
@@ -684,7 +888,7 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
 
     def get(self, request, *args, **kwargs):
         print(request.GET)
-        self.user_id = self.request.user.id or None
+        self.user_id = self.request.user.id
 
         # if 'search_book' in request.GET:
         #     self.searchBook = request.GET['search_book']
@@ -699,7 +903,6 @@ class EditorLibrary(PermissionRequiredMixin, generic.ListView):
         context = super().get_context_data(**kwargs)
 
         # Filtering by title or author
-        print(self.user_id)
         editor_books = Book.objects.filter(user_id=self.user_id)
         print("editor books", editor_books)
         context['editor_books'] = editor_books
@@ -777,13 +980,13 @@ def view_profile(request):
                 last_name = " ".join(tokens[-1:])
 
                 # Process tastes
-                if request.POST["taste1"]:
+                if request.POST["taste1"] and request.POST["taste1"] != "None":
                     genre_preference_1 = encode_genre(request.POST["taste1"])
 
-                if request.POST["taste2"]:
+                if request.POST["taste2"] and request.POST["taste2"] != "None":
                     genre_preference_2 = encode_genre(request.POST["taste2"])
 
-                if request.POST["taste3"]:
+                if request.POST["taste3"] and request.POST["taste3"] != "None":
                     genre_preference_3 = encode_genre(request.POST["taste3"])
 
                 # Apply changes
@@ -794,9 +997,13 @@ def view_profile(request):
                 user.name = first_name
                 user.first_name = first_name
                 user.last_name = last_name
-                user.genre_preference_1 = genre_preference_1
-                user.genre_preference_2 = genre_preference_2
-                user.genre_preference_3 = genre_preference_3
+
+                if request.POST["taste1"] != "None":
+                    user.genre_preference_1 = genre_preference_1
+                if request.POST["taste2"] != "None":
+                    user.genre_preference_2 = genre_preference_2
+                if request.POST["taste3"] != "None":
+                    user.genre_preference_3 = genre_preference_3
 
                 user.save()
 
@@ -811,30 +1018,41 @@ def view_profile(request):
         user = request.user.id
         if user:
             cart = Cart.objects.get(user_id=user)
-            products = cart.products.all()
-            items = len(products)
             context = {
-                'total_items': items
+                'total_items': len(cart.books.all())
             }
+        else:
+            context = {}
         return render(request, "view_profile.html", context)
 
 
-def complete_purchase(request):
+def complete_purchase(request, kwarg=None):
     print(request.POST)
-
     user = request.user.id or None
-
     if user:
-
         user_bank_account, created = BankAccount.objects.get_or_create(user_id=user)
         current_money = float(user_bank_account.money)
-
         cart = Cart.objects.get(user_id=user)
-        products = cart.products.all()
+        books = cart.books.all()
         total = 0
-        for p in products:
-            total += p.price
+        coupons = []
+
+        for i in range(int(request.POST.get('redeemed_codes'))):
+            coupon = Cupon.objects.filter(code=request.POST.get('code'+str(i))).first()
+            if coupon:
+                coupons.append(coupon)
+
+        for book in books:
+            total += book.price
+
+            for coupon in coupons:
+                if coupon.book == book:
+                    total -= book.price * coupon.percentage/100
+
+
         total = float(total)
+
+        print(total)
 
         if current_money - total >= 0:
 
@@ -860,22 +1078,23 @@ def complete_purchase(request):
 
                 bill = Bill(user_id_id=user)
                 bill.save()
-                lib_of_bills, created = LibraryBills.objects.get_or_create(user_id=request.user)
                 setattr(bill, 'total_money_spent', total)
                 setattr(bill, 'payment_method', 'Credit card')
                 setattr(bill, 'name', user_bank_account.name)
-                for p in products:
-                    bill.products.add(p)
+                gifted_books = []
+                if 'gifts' in request.session:
+                    gifted_books = [gift[0] for gift in request.session['gifts']]
+                for book in books:
+                    if book.ISBN not in gifted_books:
+                        print(book.ISBN)
+                        print("lol")
+                        book.num_sold += 1
+                        book.save()
+                        bill.books.add(book)
                 bill.save()
+                lib_of_bills, created = LibraryBills.objects.get_or_create(user_id=request.user)
                 lib_of_bills.bills.add(bill)
                 lib_of_bills.save()
-                cart.products.clear()
-                cart.save()
-
-                # Add fail_silently=True when testing
-                messages.success(request,
-                                 "Your payment has been processed successfully. Please check your email for "
-                                 "payment details, you can also download the bill.", fail_silently=True)
 
                 subject = 'Alejandria, Thank you for buying through our website'
                 msg = 'Dear ' + request.user.username + ",\nThank you for buying through our website. \nHere you" \
@@ -887,28 +1106,46 @@ def complete_purchase(request):
 
                 send_mail(subject, msg, EMAIL_HOST_USER, [request.user.email], fail_silently=True)
 
+                for i in range(len(gifted_books)):
+                    print("Gifting book...")
+                    gifted_user = User.objects.filter(username=request.session['gifts'][i][1]).first()
+                    book = Book.objects.filter(ISBN=request.session['gifts'][i][0]).first()
+                    new_bill = Bill(user_id_id=gifted_user.id)
+                    new_bill.save()
+                    book.num_sold += 1
+                    book.save()
+                    new_bill.books.add(book)
+                    new_bill.save()
+                    lib_of_bills, created = LibraryBills.objects.get_or_create(user_id=gifted_user)
+                    lib_of_bills.bills.add(bill)
+                    lib_of_bills.save()
+                    subject = 'Alejandria, Thank you for buying through our website'
+                    msg = 'Dear ' + gifted_user.username + ",\nCongratulations, you got gifted a book by " + \
+                                                            request.user.username + " you for buying through our website. \nHere you" \
+                                                            " will find a copy with the details of your gift." \
+                                                            "\nRemember that you can also find all your bills in your " \
+                                                            "profile on our website. " \
+                                                            "\n\n Name: " + new_bill.name + "\n Date: " + str(
+                        bill.date) + "\n" \
+                                     " Total: " + str(total) + "€" + "\n\nAlejandria Team."
+
+                    send_mail(subject, msg, EMAIL_HOST_USER, [gifted_user.email], fail_silently=True)
+
+                cart.books.clear()
+                cart.save()
+
+                # Add fail_silently=True when testing
+                if not kwarg:
+                    messages.success(request,
+                                 "Your payment has been processed successfully. Please check your email for "
+                                 "payment details, you can also download the bill.", fail_silently=True)
+
                 return HttpResponseRedirect('/')
         else:
-            messages.error(request, "You can't complete the purchase, you haven't enough money!")
+            if not kwarg:
+                messages.error(request, "You can't complete the purchase, you haven't enough money!")
 
     return HttpResponseRedirect('/payment')
-
-
-def draw_my_ruler(pdf):
-    pdf.drawString(100, 810, 'x100')
-    pdf.drawString(200, 810, 'x200')
-    pdf.drawString(300, 810, 'x300')
-    pdf.drawString(400, 810, 'x400')
-    pdf.drawString(500, 810, 'x500')
-
-    pdf.drawString(10, 100, 'y100')
-    pdf.drawString(10, 200, 'y200')
-    pdf.drawString(10, 300, 'y300')
-    pdf.drawString(10, 400, 'y400')
-    pdf.drawString(10, 500, 'y500')
-    pdf.drawString(10, 600, 'y600')
-    pdf.drawString(10, 700, 'y700')
-    pdf.drawString(10, 800, 'y800')
 
 
 def generate_pdf(request):
@@ -919,22 +1156,38 @@ def generate_pdf(request):
         user_bills = LibraryBills.objects.get(user_id=user)
         user_bill = user_bills.bills.filter(user_id=user).last()
 
-        products = user_bill.products.all()
+        books = user_bill.books.all()
 
-        products_titles = [p.ISBN.title for p in products]
+        books_price = [book.price for book in books]
 
         # Content
-        filename = 'Expenses.pdf'
-        document_title = 'Expenses'
-        title = 'Alejanria'
+        filename = 'Expenses-' + str(user.id) + str(date.today()) + '.pdf'
+        document_title = 'Expenses-' + str(user.id) + str(date.today())
+        title = 'BOOK SALE INVOICE'
         subtitle = 'Thank you for buying through our website!'
+
+        server_details_lines = [
+            'Address:  Gran Via de les Corts Catalanes, 585, 08007 Barcelona',
+            'Email: alejandria.books.2020@gmail.com',
+            'Tlf: + 01 234 567 89'
+        ]
+
+        clients_details_lines = [
+            'Name: ' + user.name + ' ' + user.last_name,
+            'Email: ' + user.email,
+            'Address: ' + user.fact_address.city + ', ' + user.fact_address.country + ', ' + user.fact_address.street,
+            'Zip: ' + str(user.fact_address.zip),
+            'Date: ' + str(user_bill.date)
+        ]
+
+        books_details_lines = [book.title + ' (' + book.ISBN + ')' for book in books]
+
 
         text_lines = [
             'Username: ' + str(User.objects.filter(id=user.id).first().username),
             'Name: ' + user_bill.name,
             'Date: ' + str(user_bill.date),
-            'Total: ' + str(user_bill.total_money_spent) + '€',
-            'Products: ' + ', '.join(products_titles)
+            'Total: ' + str(user_bill.total_money_spent) + '€'
         ]
 
         # Make your response and prep to attach
@@ -946,29 +1199,81 @@ def generate_pdf(request):
         pdf = canvas.Canvas(tmp)
 
         # Set title
-        pdf.setFillColorRGB(0, 0, 255)
+        pdf.setFillColorRGB(0, 0, 0)
         pdf.setTitle(document_title)
+        pdf.setFont('Courier-Bold', 20)
         pdf.drawCentredString(300, 770, title)
-        pdf.setFont('Courier-Bold', 36)
-        # self.draw_my_ruler(pdf)
+        #draw_my_ruler(pdf)
 
         # Set subtitle
-        pdf.setFont('Courier', 24)
-        pdf.drawCentredString(290, 720, subtitle)
+        pdf.setFont('Courier', 12)
+        pdf.drawCentredString(300, 750, subtitle)
 
-        # Set line
-        pdf.line(30, 710, 550, 710)
+        # Set rect
+        pdf.rect(30, 690, 535, 30, fill=1)
+
+        # Set section: Alejandria
+        pdf.setFillColorRGB(255, 255, 255)
+        pdf.setFont('Courier-Bold', 14)
+        pdf.drawString(40, 700, 'ALEJANDRIA')
 
         # Set body text
-        text = pdf.beginText(40, 680)
-        text.setFont('Courier', 18)
-        # pdf.setFillColor(colors.red)
-        for line in text_lines:
+        text = pdf.beginText(40, 670)
+        text.setFont('Helvetica', 12)
+        pdf.setFillColorRGB(0, 0, 0)
+        for line in server_details_lines:
             text.textLine(line)
         pdf.drawText(text)
 
-        # Draw image
-        # pdf.drawInlineImage(image, 130, 400)
+        # Set rect
+        pdf.rect(30, 590, 535, 30, fill=1)
+
+        # Set section: Client
+        pdf.setFillColorRGB(255, 255, 255)
+        pdf.setFont('Courier-Bold', 14)
+        pdf.drawString(40, 600, 'CLIENT DETAILS')
+
+        # Set body text
+        text = pdf.beginText(40, 570)
+        text.setFont('Helvetica', 12)
+        pdf.setFillColorRGB(0, 0, 0)
+        for line in clients_details_lines:
+            text.textLine(line)
+        pdf.drawText(text)
+
+        # Set rect
+        pdf.rect(30, 466, 535, 30, fill=1)
+
+        # Set section: Books
+        pdf.setFillColorRGB(255, 255, 255)
+        pdf.setFont('Courier-Bold', 14)
+        pdf.drawString(40, 476, 'BOOKS')
+
+        # Set body text
+        text = pdf.beginText(40, 446)
+        text.setFont('Helvetica', 12)
+        pdf.setFillColorRGB(0, 0, 0)
+        for line in books_details_lines:
+            text.textLine(line)
+        pdf.drawText(text)
+
+        # Set body text
+        text = pdf.beginText(520, 446)
+        text.setFont('Helvetica', 12)
+        pdf.setFillColorRGB(0, 0, 0)
+        for line in books_price:
+            text.textLine(str(line) + ' €')
+        pdf.drawText(text)
+
+        # Set Line
+        pdf.line(40, 446 - 12*len(books_price) - 5, 560, 446 - 12*len(books_price) - 5)
+
+        # Write Total
+        pdf.drawString(40, 446 - 12*len(books_price) - 20, 'Total')
+        pdf.drawString(520, 446 - 12*len(books_price) - 20, str(user_bill.total_money_spent) + ' €')
+
+        # Write Copyright
+        pdf.drawCentredString(330, 50, '© 2020 Copyright: Alejandria.com')
 
         # Save changes
         pdf.showPage()
@@ -982,10 +1287,10 @@ def generate_pdf(request):
         response.write(pdf)
         return response
 
-        
+
 class UserLibrary(generic.ListView): #PermissionRequiredMixin
     model = Book
-    template_name = 'user_library.html'  # TODO: Provisional file
+    template_name = 'user_library.html'
     context_object_name = 'coincident'
     # permission_required = ('books.add_book',)
 
@@ -997,8 +1302,8 @@ class UserLibrary(generic.ListView): #PermissionRequiredMixin
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
+        self.user_id = self.request.user.id
         print(request.GET)
-        self.user_id = self.request.user.id or None
 
         # if 'search_book' in request.GET:
         #     self.searchBook = request.GET['search_book']
@@ -1013,17 +1318,15 @@ class UserLibrary(generic.ListView): #PermissionRequiredMixin
         context = super().get_context_data(**kwargs)
 
         # Filtering by title or author
-        print(self.user_id)
-        user_products = Product.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user.id))
-        print("books", user_products)
-        context['user_prod'] = user_products
+        user_books = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user.id))
+        context['user_prod'] = user_books
 
         return context
 
 
 class UserBills(generic.ListView): #PermissionRequiredMixin
     model = Book
-    template_name = 'user_bills.html'  # TODO: Provisional file
+    template_name = 'user_bills.html'
     context_object_name = 'coincident'
     # permission_required = ('books.add_book',)
 
@@ -1031,13 +1334,11 @@ class UserBills(generic.ListView): #PermissionRequiredMixin
 
     def __init__(self):
         super().__init__()
-        self.userBooks = None
         self.user_id = None
 
     def get(self, request, *args, **kwargs):
         print(request.GET)
-        self.user_id = self.request.user.id or None
-
+        self.user_id = self.request.user.id
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
@@ -1049,3 +1350,153 @@ class UserBills(generic.ListView): #PermissionRequiredMixin
         print(user_bills.bills.all())
 
         return context
+
+
+def check_promo_code(request, **kwargs):
+    if request.method == 'GET':
+        coupon = Cupon.objects.filter(code=kwargs['code']).first()
+        if not coupon:
+            return JsonResponse({'error': 'The coupon does not exist.'}, status=404)
+
+        if coupon.redeemed >= coupon.max_limit:
+            return JsonResponse({'error': 'The coupon has already been redeemed.'}, status=404)
+
+        dic = {}
+        books = Cart.objects.filter(user_id=request.user).first().books.all()
+        for book in books:
+            if coupon.book == book:
+                dic[book.ISBN] = book.price - book.price * coupon.percentage / 100
+
+        if dic == {}:
+            return JsonResponse({'error': 'The coupon introduced does not apply to any book in your cart.'}, status=404)
+
+        return JsonResponse(dic)
+
+
+def addfaq(request):
+    the_user = request.user
+    response = HttpResponse()
+    if 'AnonymousUser' in str(the_user):
+        return HttpResponseForbidden('You have to be an admin to do that')
+    else:
+        admin = request.user.role in 'Admin'
+        if admin:
+            category = request.POST.get('category')
+            question = request.POST.get('question')
+            answer = request.POST.get('answer')
+
+            try:
+                category = [cat[0] for cat in FAQ.FAQ_CHOICES if category in cat][0]
+            except:
+                return HttpResponseForbidden('Select a valid category')
+
+            try:
+                faq = FAQ(category=category, question=question, answer=answer)
+                faq.save()
+            except:
+                return HttpResponseForbidden('Something went wrong')
+        else:
+            return HttpResponseForbidden('You have to be an admin to do that')
+    return response
+
+def modifyfaq(request):
+    the_user = request.user
+    response = HttpResponse()
+    if 'AnonymousUser' in str(the_user):
+        return HttpResponseForbidden('You have to be an admin to do that')
+    else:
+        admin = request.user.role in 'Admin'
+        if admin:
+            original = request.POST.get('original')
+            category = request.POST.get('category')
+            question = request.POST.get('question')
+            answer = request.POST.get('answer')
+
+            try:
+                category = [cat[0] for cat in FAQ.FAQ_CHOICES if category in cat][0]
+            except:
+                return HttpResponseForbidden('Select a valid category')
+
+            original_faq = FAQ.objects.filter(question=original)
+
+            if original_faq:
+                try:
+                    original_faq.update(category=category, question=question, answer=answer)
+                except:
+                    return HttpResponseForbidden('Something went wrong')
+            else:
+                return HttpResponseForbidden('This FAQ does not exist')
+        else:
+            return HttpResponseForbidden('You have to be an admin to do that')
+    return response
+
+
+def deletefaq(request):
+    the_user = request.user
+    response = HttpResponse()
+    if 'AnonymousUser' in str(the_user):
+        return HttpResponseForbidden('You have to be an admin to do that')
+    else:
+        admin = request.user.role in 'Admin'
+        if admin:
+            original = request.POST.get('original')
+
+            original_faq = FAQ.objects.filter(question=original)
+
+            if original_faq:
+                try:
+                    original_faq.delete()
+                except:
+                    return HttpResponseForbidden('Something went wrong')
+            else:
+                return HttpResponseNotFound('This FAQ does not exist')
+        else:
+            return HttpResponseForbidden('You have to be an admin to do that')
+    return response
+
+
+class DesiredLibrary(generic.ListView): #PermissionRequiredMixin
+    model = Book
+    template_name = 'desired_library.html'
+
+    def __init__(self):
+        super().__init__()
+        self.user = None
+
+    def get(self, request, *args, **kwargs):
+        #self.user_id = self.request.user.id
+        self.user = request.user
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
+        context = super().get_context_data(**kwargs)
+
+        desired_books = BookProperties.objects.filter(Q(user=self.user) & (Q(desired=True)))
+        desired_list = []
+        for desired in desired_books:
+            new_price = desired.book.price - (desired.book.discount * desired.book.price / 100)
+            desired_list.append((desired.book,new_price))
+
+        context['desired_books'] = desired_list
+
+        return context
+
+
+def checkUsernameGift(request, **kwargs):
+    if request.method == 'GET':
+        user = User.objects.filter(username=kwargs['username']).first()
+        book = Book.objects.filter(ISBN=request.GET['isbn']).first()
+        owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=user)).filter(ISBN=book.ISBN)
+        if user:
+            if user == request.user:
+                return JsonResponse({'error': "You can't gift a book to yourself."}, status=403)
+
+            if owned:
+                return JsonResponse({'error': 'The user already owns the book.'}, status=404)
+
+            return JsonResponse({'message': 'The user is eligible to receive this gift.'})
+
+        return JsonResponse({'error': "The user doesn't exist."}, status=404)
+
+def about_us(request):
+    return render(request, "about_us.html")
