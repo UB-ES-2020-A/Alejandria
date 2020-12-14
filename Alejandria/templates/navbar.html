@@ -38,6 +38,7 @@
 
     <!-- Css files from static folder -->
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+
     <link rel="stylesheet" href="{% static 'css/common.css' %}">
     <link rel="stylesheet" href="{% static 'css/swal-forms.css' %}">
     <link rel="stylesheet" href="{% static 'css/sweet-alert.css' %}">
@@ -51,150 +52,109 @@
 </head>
 <body>
 
-<div class="container-fluid sticky-top" style="padding:0">
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" id="headnav" style="height:60px">
+    <a class="navbar-brand" href="/"><img style='height: 100%; width: 60%; object-fit: contain'
+                                          src="/static/images/logo/logo.png"></a>
 
-    <nav class="navbar navbar-expand-lg bg-dark" id="headnav" style="height:60px;">
+    <div class="collapse navbar-collapse navHeaderCollapse" style="margin-left:-70px" id="navbarSearch">
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="textSearch">
+            <div class="btn btn-outline-success my-2 my-sm-0" id = "buttonSearch">Search</div>
 
-        <div class="row w-100">
-            <div class="col-2">
-                <a class="navbar-brand" href="/"><img style='width: 100%; object-fit: contain'
-                                                      src="/static/images/logo/logo.png"></a>
-            </div>
+        </form>
+    </div>
 
-            <div class="col-5" id="navbarSearch">
-                <form class="form-inline my-2 my-lg-0">
-                    <div class="row horizontal">
-                        <div class="col center-items-navbar">
-                            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" id="textSearch">
-                        </div>
-                        <div class="col center-items-navbar">
-                            <div class="btn btn-outline-success my-2 my-sm-0" id="buttonSearch">Search</div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="col-5">
-                <div class="row">
-                    <div class="col-4"></div>
-                    <div class="col-1 center-items-navbar">
-                        <button class="buttonText" type="submit">About</button>
-
-                    </div>
-                    <div class="col-1 center-items-navbar">
-                        <button class="buttonText" type="submit">Help</button>
-                    </div>
-                    <div class="col-1 center-items-navbar">
-                        <button class="buttonText" id="faqs_btn" type="submit">FAQs</button>
-                    </div>
-                    <div class="col">
-                        <div class="row center-items-navbar">
-
-                            {% if not user.is_authenticated %}
-                            <div class="col center-items-navbar">
-                                <button class="btn btn-danger my-2 my-sm-0" id="login_btn" type="submit">Sign In</button>
-                            </div>
-                            <div class="col center-items-navbar">
-                                <button class="btn btn-danger my-2 my-sm-0" id="register_btn" type="submit">Register</button>
-                            </div>
-
-                            {% else %}
-                            <div class="form-group center-items-navbar">
-                                <div class="dropdown">
-                                    <button class="btn btn-danger dropdown-toggle" type="button" id="profileDropdownBtn"
-                                            data-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false">{{ user.username }}
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" style="position: absolute; z-index: 100"
-                                         aria-labelledby="profileDropdownBtn">
-                                        <a class="dropdown-item" id="goProfile" href="/profile/">My profile</a>
-                                        <a class="dropdown-item" href="/editor">Editor</a>
-                                        <a class="dropdown-item" href="/library/">My library</a>
-                                        <a class="dropdown-item" href="/desiredLibrary">Desired books</a>
-                                        <a class="dropdown-item" id="performLogout" href="#">Logout</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn btn-danger d-none" id="logout_btn" type="submit">Logout</button>
-                            {% endif %}
-
-                        </div>
-                    </div>
-                    <button class="button d-none" id="forgot_btn_hidden" type="button"></button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <nav class="navbar navbar-expand-lg bg-danger" style="height:40px; z-index: 50">
-        <div class="col-md-10">
-            <div class="row">
-                <div style="margin-left:5%"></div>
-                <!-- <a href="/" class="buttonText2" >Home</a> -->
-                <button class="buttonText2" id="home_btn" type="submit">Home</button>
-                <div style="margin-left:1%"></div>
-                <a href="#" id="best_sellers_button" class="buttonText2">Best sellers</a>
-                <div style="margin-left:1%"></div>
-                <a href="#" id="recommended_button" class="buttonText2">Recommended</a>
-                <div style="margin-left:1%"></div>
-                <a href="#" id="recently_button" class="buttonText2">Recently added</a>
-                <div style="margin-left:1%"></div>
-                <a href="#" id="comming_button" class="buttonText2">Comming soon</a>
-                <div style="margin-left:1%"></div>
-                <a href="#" id="on_sale_button" class="buttonText2">On sale</a>
-                <div style="margin-left:1%"></div>
-
-
+    <div class="collapse navbar-collapse" style="position: absolute; right: 5%;">
+        <div style="margin-left:-10%"></div>
+        <button class="buttonText" type="submit" id="about_btn" >About</button>
+        <button class="buttonText" type="submit">Help</button> <!-- TODO: This should be removed -->
+        <button class="buttonText" id="faqs_btn" type="submit">FAQs</button>
+        <div style="margin-left:10%"></div>
+        {% if not user.is_authenticated %}
+            <button class="btn btn-danger my-2 my-sm-0" id="login_btn" type="submit">Sign In</button>
+            <div style="margin-left:5%"></div>
+            <button class="btn btn-danger my-2 my-sm-0" id="register_btn" type="submit">Register</button>
+        {% else %}
+            <div class="form-group">
                 <div class="dropdown">
-                    <button class="buttonText2 dropdown-toggle" type="button"
-                            style="color:white; font-size: 14px; letter-spacing: 0.1em;"
-                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Top categories
-                    </button>
-                    <div class="dropdown-menu bg-danger" aria-labelledby="dropdownMenuButton" style="align-text:center">
-                        <a id="crime_button" class="buttonText2 dropdown-item bg-danger"
-                           style="color: white; width: 100%; text-align: center;"
-                           href="#">Crime</a>
-                        <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
-                        <a id="fantasy_button" class="buttonText2 dropdown-item bg-danger"
-                           style="color: white; width: 100%; text-align: center;"
-                           href="#">Fantasy</a>
-                        <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
-                        <a id="horror_button" class="buttonText2 dropdown-item bg-danger"
-                           style="color: white; width: 100%; text-align: center;"
-                           href="#">Horror</a>
-                        <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
-                        <a id="fiction_button" class="buttonText2 dropdown-item bg-danger"
-                           style="color: white; width: 100%; text-align: center;"
-                           href="#">Fiction</a>
-                        <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
-                        <a id="romance_button" class="buttonText2 dropdown-item bg-danger"
-                           style="color: white; width: 100%; text-align: center;"
-                           href="#">Romance</a>
-                        <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
-                        <a id="anime_button" class="buttonText2 dropdown-item bg-danger"
-                           style="color: white; width: 100%; text-align: center;"
-                           href="#">Anime</a>
-                        <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+                    <button class="btn btn-danger dropdown-toggle" style="margin-top: 22%" type="button" id="profileDropdownBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user.username }}</button>
+                    <div class="dropdown-menu dropdown-menu-right" style="position: absolute; z-index: 100" aria-labelledby="profileDropdownBtn">
+                        <a class="dropdown-item" id="goProfile" href="/profile/">My profile</a>
+                        <a class="dropdown-item" href="/editor">Editor</a>
+                        <a class="dropdown-item"  href="/library/">My library</a>
+                        <a class="dropdown-item" href="/desiredLibrary">Desired books</a>
+                        <a class="dropdown-item" id="performLogout" href="#">Logout</a>
                     </div>
                 </div>
             </div>
+            <button class="btn btn-danger d-none" id="logout_btn" type="submit">Logout</button>
+        {% endif %}
+            <button class="button d-none" id="forgot_btn_hidden" type="button"></button>
+    </div>
+
+</nav>
+
+<nav class="navbar sticky-top navbar-expand-lg bg-danger" style="height:40px; top:60px; z-index: 50">
+    <div class="col-md-11">
+        <div class="row">
+        <div style="margin-left:5%"></div>
+        <!-- <a href="/" class="buttonText2" >Home</a> -->
+        <button class="buttonText2" id="home_btn" type="submit">Home</button>
+        <div style="margin-left:1%"></div>
+        <a href="#" id="best_sellers_button" class="buttonText2">Best sellers</a>
+        <div style="margin-left:1%"></div>
+        <a href="#" id="recommended_button" class="buttonText2">Recommended</a>
+        <div style="margin-left:1%"></div>
+        <a href="#" id="recently_button" class="buttonText2">Recently added</a>
+        <div style="margin-left:1%"></div>
+        <a href="#" id="comming_button" class="buttonText2">Comming soon</a>
+        <div style="margin-left:1%"></div>
+        <a href="#" id="on_sale_button" class="buttonText2">On sale</a>
+        <div style="margin-left:1%"></div>
+
+        <div class="dropdown">
+            <button class="buttonText2 dropdown-toggle" type="button"
+                    style="color:white; font-size: 14px; letter-spacing: 0.1em;"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Top categories
+            </button>
+            <div class="dropdown-menu bg-danger" aria-labelledby="dropdownMenuButton" style="align-text:center">
+                <a id="crime_button" class="buttonText2 dropdown-item bg-danger"
+                   style="color: white; width: 100%; text-align: center;"
+                   href="#">Crime</a>
+                <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+                <a id="fantasy_button" class="buttonText2 dropdown-item bg-danger"
+                   style="color: white; width: 100%; text-align: center;"
+                   href="#">Fantasy</a>
+                <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+                <a id="horror_button" class="buttonText2 dropdown-item bg-danger"
+                   style="color: white; width: 100%; text-align: center;"
+                   href="#">Horror</a>
+                <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+                <a id="fiction_button" class="buttonText2 dropdown-item bg-danger"
+                  style="color: white; width: 100%; text-align: center;"
+                   href="#">Fiction</a>
+                <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+                <a id="romance_button" class="buttonText2 dropdown-item bg-danger"
+                   style="color: white; width: 100%; text-align: center;"
+                   href="#">Romance</a>
+                <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+                <a id="anime_button" class="buttonText2 dropdown-item bg-danger"
+                   style="color: white; width: 100%; text-align: center;"
+                   href="#">Anime</a>
+                <div class="main-hr" style="width:100%; margin-left:0%; border-top: 1px solid #B72424;"></div>
+                </div>
+            </div>
         </div>
-        <div class="col center-items-navbar">
-            <a href="/cart" style="color:white; text-align:right; background: transparent; border: none; text-decoration:none"><i
-                    class="fas fa-shopping-cart"></i>
-                <span class="badge badge-light" id="total_items_not">{{ total_items }}</span></a>
-        </div>
-    </nav>
-
-
-</div>
-
+    </div>
+    <div class="col">
+        <a href="/cart" style="color:white; text-align:right; background: transparent; border: none; text-decoration:none"><i class="fas fa-shopping-cart"></i>
+        <span class="badge badge-light" id="total_items_not">{{ total_items }}</span></a>
+    </div>
+</nav>
 </body>
 
 {% block content %}
-
-
 {% endblock %}
 
 <!-- FOOTER -->

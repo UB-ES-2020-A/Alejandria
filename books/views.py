@@ -44,11 +44,14 @@ class BookView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
 
+        print(type(self.request.user))
+
         context = super().get_context_data(**kwargs)
         relation_book = Book.objects.filter(primary_genre=self.object.primary_genre)[:20]
         context['isbn'] = str(self.object.ISBN)
         review_list = Rating.objects.filter(ISBN=self.object)
         book = get_object_or_404(Book, pk=self.kwargs['pk'])
+
 
         if self.request.user.is_authenticated:
             properties, created = BookProperties.objects.get_or_create(book=book, user=self.request.user)
@@ -58,7 +61,7 @@ class BookView(generic.DetailView):
         context['isbn'] = str(context['object'].ISBN)
         review_list = Rating.objects.filter(ISBN=context['object'])
 
-        if self.request.user.id:
+        if self.request.user.is_authenticated:
             owned = Book.objects.filter(bill__in=Bill.objects.filter(user_id=self.request.user)).filter(ISBN=book.ISBN)#.filter(ISBN=book) # TODO: NEED TO FIX THIS
             if owned:
                 context['owned'] = "true"
@@ -152,7 +155,7 @@ class BookView(generic.DetailView):
 
     def render_to_response(self, context, **response_kwargs):
         response = super(BookView, self).render_to_response(context, **response_kwargs)
-        cart = get_cart(self.request.user.id, self.request, response)
+        cart = get_cart(self.request.user, self.request, response)
         if cart is not None:
             context['total_items'] = len(cart.books.all())
         else:
@@ -169,8 +172,9 @@ def generate_id():
 
 
 def get_cart(user_id, request, response=None):
-    if user_id:
-        cart = Cart.objects.get(user_id=user_id)
+
+    if user_id and user_id.is_authenticated:
+        cart = Cart.objects.get(user_id=user_id.id)
     else:
         device = request.COOKIES.get('device')
         if not device and response is not None:
@@ -254,7 +258,7 @@ class HomeView(generic.ListView):
 
     def render_to_response(self, context, **response_kwargs):
         response = super(HomeView, self).render_to_response(context, **response_kwargs)
-        cart = get_cart(self.user_id, self.request, response)
+        cart = get_cart(self.request.user, self.request, response)
         if cart is not None:
             context['total_items'] = len(cart.books.all())
         else:
@@ -279,7 +283,7 @@ class SearchView(generic.ListView):
     def get(self, request, *args, **kwargs):
         #self.user_id = self.request.user.id or None
         self.user_id = request.user
-        if self.user_id:
+        if self.user_id.is_authenticated:
             self.genres_preferences.append(request.user.genre_preference_1)
             self.genres_preferences.append(request.user.genre_preference_2)
             self.genres_preferences.append(request.user.genre_preference_3)
@@ -294,7 +298,7 @@ class SearchView(generic.ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):  # TODO: Test
         context = super().get_context_data(**kwargs)
-        cart = get_cart(self.user_id, self.request)
+        cart = get_cart(self.request.user, self.request)
         if cart is not None:
             context['total_items'] = len(cart.books.all())
         else:
@@ -472,7 +476,7 @@ class CartView(generic.ListView):
 
     def get_queryset(self):
         self.user_id = self.request.user.id
-        cart = get_cart(self.user_id, self.request)
+        cart = get_cart(self.request.user, self.request)
         if cart is not None:
             return cart.books.all()
         print("CART DON'T EXIST")
@@ -484,7 +488,7 @@ class CartView(generic.ListView):
         context['books_from_cart_view_1'] = Book.objects.all()[:3]
         context['books_from_cart_view_2'] = Book.objects.all()[3:6]
         context['books_from_cart_view_3'] = Book.objects.all()[6:9]
-        cart = get_cart(self.user_id, self.request)
+        cart = get_cart(self.request.user, self.request)
         books = cart.books.all()
         total_price = 0
         for book in books:
@@ -568,12 +572,12 @@ class FaqsView(generic.ListView):
                                                   FAQ.objects.filter(category='FAC'),
                                                   FAQ.objects.filter(category='CON')]))
         the_user = self.request.user
-        if 'AnonymousUser' in str(the_user):
+        if not self.request.user.is_authenticated:
             context['admin'] = False
         else:
             context['admin'] = self.request.user.role in 'Admin'
 
-        cart = get_cart(self.user_id, self.request)
+        cart = get_cart(self.request.user, self.request)
         context['total_items'] = len(cart.books.all())
 
         return context
@@ -1022,7 +1026,7 @@ def view_profile(request):
         return render(request, "view_profile.html", context)
 
 
-def complete_purchase(request):
+def complete_purchase(request, kwarg=None):
     print(request.POST)
     user = request.user.id or None
     if user:
@@ -1131,13 +1135,15 @@ def complete_purchase(request):
                 cart.save()
 
                 # Add fail_silently=True when testing
-                messages.success(request,
+                if not kwarg:
+                    messages.success(request,
                                  "Your payment has been processed successfully. Please check your email for "
                                  "payment details, you can also download the bill.", fail_silently=True)
 
                 return HttpResponseRedirect('/')
         else:
-            messages.error(request, "You can't complete the purchase, you haven't enough money!")
+            if not kwarg:
+                messages.error(request, "You can't complete the purchase, you haven't enough money!")
 
     return HttpResponseRedirect('/payment')
 

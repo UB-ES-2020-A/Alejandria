@@ -19,6 +19,42 @@ def random_char(y):
     return ''.join(random.choice(string.ascii_letters) for x in range(y))
 
 
+def create_user(random_user=False):
+    """ Test if creation of Users has any error, creating or storing the information"""
+    # Data to test
+    if random_user:
+        _id = random.randint(0, 654891898)
+    else:
+        _id = 1
+    role = 'Admin'
+    name = 'Josep'
+    if random_user:
+        username = str(random.randint(0, 5156123423456015412))[:12]
+    else:
+        username = 'user'
+
+    password = 'password1'
+    email = 'fakemail@gmail.com'
+    user_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
+    fact_address = Address(city='Barcelona', street='C/ Test, 112', country='Spain', zip='08942')
+    user_address.save()
+    fact_address.save()
+
+    # Model creation
+    obj = User(id=_id, role=role,
+               username=username,
+               name=name,
+               password=password,
+               email=email,
+               user_address=user_address,
+               fact_address=fact_address)
+    obj.save()
+
+    cart = Cart(user_id=obj)
+    cart.save()
+
+    return obj
+
 def get_or_create_user():
     user_query = User.objects.filter(id=1000)
     if user_query.count() == 0:
@@ -177,7 +213,7 @@ def get_or_create_user_bank_account(user):
 
 
 def test_complete_purchase():
-    user = get_or_create_user()
+    user = create_user(random_user=True)
     total_price = push_some_products(user)
     user_bank_account = get_or_create_user_bank_account(user)
     user_bank_account.save()
@@ -188,14 +224,15 @@ def test_complete_purchase():
     }
 
     req = RequestFactory().post("/payment/", body)
+    req.test = True
     # La Request Factory no pilla el middleware, s'ha d'afegir manualment
     # (es necessita pel complete_purchase)
     middleware = SessionMiddleware()
     middleware.process_request(req)
     req.session.save()
     req.user = user
-    cart = Cart.objects.get(user_id=user.id)
-    complete_purchase(request=req)
+    cart = Cart.objects.get(user_id=user)
+    complete_purchase(request=req, kwarg=True)
     bill = Bill.objects.filter(user_id=user).last()
 
     req2 = RequestFactory().post("/pdf/")
@@ -209,7 +246,7 @@ class SimpleTest(unittest.TestCase):
     def test_context(self):
         factory = RequestFactory()
         request = factory.get('/payment')
-        request.user = get_or_create_user()
+        request.user = create_user(random_user=True)
         response = PaymentView.as_view()(request)
         self.assertIsInstance(response.context_data, dict)
         self.assertEqual(response.context_data['total_items'], 0)
