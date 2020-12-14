@@ -12,6 +12,9 @@
     <title>Alejandria</title>
 
     <link rel="stylesheet" href="{% static 'css/editor-page/card.css' %}">
+    {% if desired_books|length == 0 %}
+    <link rel="stylesheet" href="{% static 'css/navbar-page/footer2.css' %}">
+    {% endif %}
 </head>
 
 <body>
@@ -33,7 +36,11 @@
 
         <div class="col-1"></div>
 
+        {% if book.discount != 0 %}
         <div class="col-9 vertical-center">
+        {% else %}
+        <div class="col-9">
+        {% endif %}
             <h3 style="font-size:24px; color:white">{{ book.title }}</h3>
             <div class="row" style="margin-top:2%;">
                 <div class="col">
@@ -74,6 +81,7 @@
             </div>
         </div>
     </div>
+    </div>
     {% endfor %}
 
     {% if desired_books|length == 0 %}
@@ -84,8 +92,5 @@
 
 </div>
 </body>
-
-</html>
-
-
 {% endblock %}
+</html>
