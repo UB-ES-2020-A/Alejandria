@@ -101,6 +101,8 @@ def create_book():
 class BookViewTest(TestCase):
     def test_get_book(self):
 
+
+
         previously_added_book = create_book()
 
         # request = client.get(reverse('books:book', kwargs={'pk': previously_added_book.ISBN}))
