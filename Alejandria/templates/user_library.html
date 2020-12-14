@@ -12,6 +12,9 @@
     <title>Alejandria</title>
 
     <link rel="stylesheet" href="{% static 'css/editor-page/card.css' %}">
+    {% if user_prod|length == 0 %}
+    <link rel="stylesheet" href="{% static 'css/navbar-page/footer2.css' %}">
+    {% endif %}
 </head>
 
 <body>
